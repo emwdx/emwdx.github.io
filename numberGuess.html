@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1"> 
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<link rel = "stylesheet" href = "css/style.css">
+<link rel="stylesheet" type="text/css" href="mathquill/mathquill.css">
+    
+<script src = "http://code.google.com/apis/libraries/devguide.html#jquery"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>    
+<script src="https://www.desmos.com/api/v0.4/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
+
+<title>A Guessing Theory</title>
+    
+<!--Enter templates below this line.-->
+    
+<script type="text/spacebars" name="main">
+ <body> 
+ <div class = "container">
+ <div class = "row">
+ <div class = "col-md-4">
+ {{{calculator}}}
+ </div>
+ <div class = "col-md-8">
+{{>currentPage}}
+</div>
+</div>
+{{>buttonBar}}
+</div>
+
+ </body>
+ 
+</script>
+
+<script type = "text/spacebars" name = "currentPage">
+<div id = "main">    
+    {{#if is1}}
+    {{>slide1}}
+    {{/if}}
+    {{#if is2}}
+    {{>slide2}}
+    {{/if}}
+    {{#if is3}}
+    {{>slide3}}
+    {{/if}}
+    {{#if is4}}
+    {{>slide4}}
+    {{/if}}
+    {{#if is5}}
+    {{>slide5}}
+    {{/if}}
+    {{#if is6}}
+    {{>slide6}}
+    {{/if}}
+    {{#if is7}}
+    {{>slide7}}
+    {{/if}}
+    {{#if is8}}
+    {{>slide8}}
+    {{/if}}
+</div>   
+
+</script>    
+    
+    
+<script type="text/spacebars" name="buttonBar">
+<div class = "row">
+<div class = "col-md-2 col-md-offset-4 text-center">
+<button class = "btn btn-primary" id = "back">Back</button>
+</div>
+<div class = "col-md-2 text-center">
+<button class = "btn btn-primary " id = "next">Next</button>
+</div>
+</div>
+</script>
+
+<script type="text/spacebars" name="slide1">
+<div class = "row">
+<div class = "col-md-10 col-md-offset-1 ">
+
+Hey there. I'm a computer, obviously. 
+<p></p>
+I'm not like any old computer though. I can think for myself. We're going to play a game to prove it. 
+<p></p>
+You can keep an eye on what I'm doing in the <a href = "http://www.desmos.com">Desmos</a> calculator on the left side.
+
+<p></p>Click <span class = "text-info">Next</span> to begin.
+</div>
+
+</div>
+</script>
+    
+<script type="text/spacebars" name="slide2">
+<div class = "row">
+<div class = "col-md-10 col-md-offset-1 ">
+<div class = "row">
+
+I'm thinking of a rule.
+<p></p>
+For example, <span class = "text-info">add two to twice a number</span>, <p></p>or <span class = "text-info">ten less than a number squared.</span>
+
+Your job is to guess the rule from the information I give you below.
+</div>
+{{#each inputGuess}}
+<div class = "row">
+<div class = "col-md-12">
+<h3>
+{{>makeGuess}}
+</h3>
+</div>
+</div>
+{{/each}}
+<div class = "row">
+<div class = "col-md-12">
+<h3>When you're ready to make a guess, please click 'Next'.</h3>
+</div>
+</div>
+</div>
+
+</div>
+</script>
+    
+<script type="text/spacebars" name="slide3">
+<div class = "row">
+<div class = "col-md-10 col-md-offset-1 ">
+
+Ok, enter your guess for my rule in the box below.
+</div>
+</div>
+
+
+{{>guessComputerRule}}
+{{#if submittedGuess}}
+    {{#if guessedCorrectly}}
+
+    {{>guessIsCorrect}}
+
+    {{/if}}
+
+    {{#unless guessedCorrectly}}
+
+    {{>guessIsNotCorrect}}
+
+    {{/unless}}
+
+{{/if}}
+
+</script>
+    
+<script type="text/spacebars" name="slide4">
+<div class = "row">
+<div class = "col-md-10 col-md-offset-1">
+
+Now it's your turn to invent a rule. Throw in an exponent or two if you want. <p></p>
+
+<p></p>
+I'm going to try to learn your rule. Here's what I want you to do:
+<p></p>
+<ul>
+<li>Tell me three pairs of inputs and outputs.</li>
+<li>After that, I only want you to tell me if I'm right or wrong.</li>
+<li>Once I think I'm confident in my answer, I'll tell you that I can predict it every time.</li>
+</ul>
+
+<p></p>
+The only thing I ask is that you use a calculator or computer to check <u>your</u> calculations. It's easiest to learn from perfect data!
+
+
+Click 'Next' and I'll get information from you so I can start learning about your rule.
+
+
+</div>
+
+</div>
+</script>
+
+ <script type = "text/spacebars" name = "slide5">
+ 
+ {{>enterData}}
+ {{#if thinking}}
+ {{>progressBar}}
+ {{/if}}
+ {{#if doneThinking}}
+ {{>nextStep}}
+ {{/if}}
+ </script>
+  <script type = "text/spacebars" name = "slide6">
+  {{>progressBar}}
+  {{#unless doneGuessing}}
+  <div class = "row">
+  <div class = "col-md-12">
+  Answer these questions for me, please.
+  <hr>
+  </div>
+  </div>
+  {{#each guesses}}
+  <div class = "row">
+  <div class = "col-md-12">
+    {{>isThisRight}}<p></p>
+    <hr>
+  </div>
+  </div>
+ {{/each}}
+ {{/unless}}
+ {{#if doneGuessing}}
+ <div class = "row">
+  <div class = "col-md-12">
+  Ok, I think I've learned enough information.
+  </div>
+  </div>
+  {{>yourRule}}
+  <div class = "row">
+  <div class = "col-md-12">
+  How did I do?
+  </div>
+  </div>
+ {{/if}}
+ </script>
+    
+    
+ <script type = "text/spacebars" name = "isThisRight">
+ <div class = "row">   
+ <div class = "col-md-9 text-center">If the input is <span class = "text-success">{{input}}</span>, is the output <span class = "text-success">{{output}}</span>?</div>
+ <div class = "col-md-3 text-center">
+ <select class = "yesOrNo">
+ <option>Select one:</option>
+ <option value = "1">Yes</option>
+ <option value = "0">No</option>
+ </select>
+ </div>
+ </div>
+ </script>    
+ <script type = "text/spacebars" name = "slide7">
+ <div class = "row">
+  <div class = "col-md-12">
+  Some questions to think about:
+  <ul>
+  <li>What knowledge or concepts did you use to figure out my rule?</li>
+    <li>Every bit of knowledge you gave me helped me decide whether I had guessed your rule or not. How do you think I used this knowledge to help me know what it was? </li>
+    <li>Do you believe I was thinking on my own?</li>
+  </ul>
+  </div>
+  </div>
+ </script>
+     <script type = "text/spacebars" name = "slide8">
+ </script>
+ 
+    
+<script type = "text/spacebars" name = "makeGuess">
+    
+If you put in <input type = "number" class = "inputNumber" value = "{{currentVal}}">, the result is <span class = "text-success">{{output}}</span>.    
+    
+</script>  
+    
+<script type = "text/spacebars" name = "guessComputerRule">
+ <div class = "row">
+ <div class = "col-md-10 col-md-offset-1 text-center">
+  <h3>I think your rule is:</h3>  
+  <input type = "text" id = "guessComputerRuleInput" class = "input" placeholder = "Ex. 3*number + 5 or number^2 + 2" value = "number^2 - 1">
+  <button class = "btn btn-primary" id = "submitGuessComputerRule">Submit my guess!</button>
+  </div>
+  </div>
+    
+</script>    
+<script type = "text/spacebars" name = "guessIsCorrect">
+<div class = "row">
+ <div class = "col-md-10 col-md-offset-1 text-center">
+<h3>Nice work! <p></p>Now let's change the game a little bit. Select 'Next'.</h3>    
+</div>
+</div>
+</script>    
+    
+<script type = "text/spacebars" name = "guessIsNotCorrect">
+<div class = "row">
+ <div class = "col-md-10 col-md-offset-1 text-center">
+ <h3>That's not my rule. Try entering another one.</h3> 
+ </div>
+ </div>
+</script>  
+
+<script type = "text/spacebars" name = "enterData">
+<div class = "row">
+<div class = "col-md-8 col-md-offset-2 text-center">
+Please enter three inputs and the matching outputs for your rule:
+</div>
+</div>
+<div class = "row">
+<div class = "col-md-12 enterValues text-info">
+If you put in <input type = "number" class = "inputNumber" value = "1" placeholder = "Input #1" id = "input1">, the result is <input type = "number" class = "inputNumber" value = "1" placeholder = "Output #1" id = "output1">.    
+</div>
+</div>
+<div class = "row">
+<div class = "col-md-12 enterValues text-info">
+If you put in <input type = "number" class = "inputNumber" value = "2" placeholder = "Input #2" id = "input2">, the result is <input type = "number" class = "inputNumber" value = "4" placeholder = "Output #2" id = "output2">.    
+</div>
+</div>
+<div class = "row">
+<div class = "col-md-12 enterValues text-info">
+If you put in <input type = "number" class = "inputNumber" value = "3" placeholder = "Input #3" id = "input3">, the result is <input type = "number" class = "inputNumber" value = "9" placeholder = "Output #3" id = "output3">.    
+</div>
+</div>
+<div class = "row">
+<div class = "col-md-12 text-center">
+<button class = "btn btn-primary" id = "submitInputData">Submit my data!</button>
+</div>
+</div>
+</script>
+
+<script type = "text/spacebars" name = "progressBar">
+<div class = "row">
+<div class = "col-md-12 text-center">
+Processing...
+<div class="progress enterValues">
+  <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: {{currentProgressValue}}%;">
+    
+  </div>
+</div>
+</div>
+</div>    
+</script> 
+    
+<script type = "text/spacebars" name = "nextStep">
+<div class = "row">
+<div class = "col-md-12 text-center">
+Please go on to the next screen.
+</div>
+</div>   
+    
+</script>
+
+<script type = "text/spacebars" name = "yourRule">
+    
+<div class = "row">
+<div class = "col-md-8">
+I think your rule is <span class = "mathquill-embedded-latex" id = "yourRule">{{yourRule}} </span> with:<p></p>
+{{#each properties}}
+{{variable}}={{value}}<p></p>
+{{/each}}
+</div>
+</div>
+    
+</script>    
+<!--Put all templates above this line-->
+   
+<script src="js/blaze.js"></script>
+<script src="mathquill/mathquill.js"></script>
+<script src = "js/templates.js"></script>
+
+<!--Do not change the above two lines.-->
+    
+</head>
+ 
+    
+</html>

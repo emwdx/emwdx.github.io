@@ -1,0 +1,49 @@
+body{
+    
+font-size:22px;    
+    
+    
+}
+
+
+#main{
+    
+    
+ height: 600px;   
+ border: solid gray 1px;
+ border-radius: 5px;
+ margin: 10px;    
+ padding:10px;   
+    
+}
+
+.inputNumber{
+    
+    
+ width:150px;   
+    
+    
+}
+
+#guessComputerRuleInput{
+    
+ font-size: 18px;
+ width:90%;
+    
+    
+}
+
+#submitGuessComputerRule{
+    
+margin:10px;    
+    
+    
+}
+
+.enterValues{
+    
+ margin:10px;
+ 
+    
+    
+}
