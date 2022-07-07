@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	
+	xmlns:georss="http://www.georss.org/georss"
+	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+	>
+
+<channel>
+	<title>geogebra</title>
+	<atom:link href="/category/geogebra/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>iteration, making, building, and coding in education</description>
+	<lastBuildDate>Fri, 25 Jul 2014 01:40:44 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.7.6</generator>
+<site xmlns="com-wordpress:feed-additions:1">180381780</site>	<item>
+		<title>The Nature of Variables for Students vs. Programmers</title>
+		<link>/2014/07/25/the-nature-of-variables-for-students-vs-programmers/</link>
+					<comments>/2014/07/25/the-nature-of-variables-for-students-vs-programmers/#comments</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Fri, 25 Jul 2014 01:40:44 +0000</pubDate>
+				<category><![CDATA[computational-thinking]]></category>
+		<category><![CDATA[geogebra]]></category>
+		<category><![CDATA[abstraction]]></category>
+		<category><![CDATA[programming]]></category>
+		<category><![CDATA[variables]]></category>
+		<guid isPermaLink="false">/?p=1909</guid>
+
+					<description><![CDATA[Dan Meyer has provoked us again with this post questioning the meaning of variables in programming compared with how they exist in the minds of our students. I previously wrote about something I tried at the beginning of last year with my students that probed this question a bit. My]]></description>
+										<content:encoded><![CDATA[<p>Dan Meyer has provoked us again with <a href="http://blog.mrmeyer.com/2014/makeover-these-tragic-write-an-expression-problems/">this post questioning the meaning of variables</a> in programming compared with how they exist in the minds of our students. </p>
+<p>I previously <a href="/2013/09/06/computational-thinking-and-algebraic-expressions/">wrote about something I tried at the beginning of last year</a> with my students that probed this question a bit. My contention then was that writing expressions is something that occurs with students only in math class world, and that it is an inherently non-interactive process. The spirit of what variables do is something with which students have familiarity. It&#8217;s the abstraction of the mathematical representation that pushes that familiarity away from them.</p>
+<p>I&#8217;m going to use a different expression problem since the one in Dan&#8217;s post doesn&#8217;t do it for me.</p>
+<blockquote>
+<h3>Dan estimates that around 3/4 of any group of people drink soda.</h3>
+</blockquote>
+<p>I&#8217;d start with this activity that students would be able to answer:<br />
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2014/07/Screen-Shot-2014-07-24-at-7.01.57-PM.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2014/07/Screen-Shot-2014-07-24-at-7.01.57-PM.png" alt="Screen Shot 2014-07-24 at 7.01.57 PM" width="746" height="367" class="alignnone size-full wp-image-1910" srcset="/wp-content/uploads/2014/07/Screen-Shot-2014-07-24-at-7.01.57-PM.png 746w, /wp-content/uploads/2014/07/Screen-Shot-2014-07-24-at-7.01.57-PM-300x148.png 300w" sizes="(max-width: 746px) 100vw, 746px" /></a></p>
+<p>Students could each click on the people go through the process of figuring out how many in each group drink soda according to Dan&#8217;s estimate, and would record the number in each group. The third group serves to construct a bit of controversy for discussion purposes. In doing this four times, students are presumably going through a similar process each time. </p>
+<p>Mathematics serves to create structure for this repetition, but on its own, is not necessarily in the realm of what our students would do to manage this repetition. Programming provides a way to bridge this gap using the same idea of variables that exists in the mathematical realm, and here is where the value sits for this discussion.</p>
+<p>In the post I mentioned previously, I said that I briefly showed students how to type expressions into a spreadsheet and play around with inputs and outputs so that they match concrete values. In a non 1:1 laptop classroom, I might start with this:</p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2014/07/Screen-Shot-2014-07-24-at-7.22.34-PM.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2014/07/Screen-Shot-2014-07-24-at-7.22.34-PM.png" alt="Screen Shot 2014-07-24 at 7.22.34 PM" width="710" height="214" class="alignnone size-full wp-image-1912" srcset="/wp-content/uploads/2014/07/Screen-Shot-2014-07-24-at-7.22.34-PM.png 710w, /wp-content/uploads/2014/07/Screen-Shot-2014-07-24-at-7.22.34-PM-300x90.png 300w" sizes="(max-width: 710px) 100vw, 710px" /></a></p>
+<p>A calculation links the outputs to the inputs in each of these tables. Students have concrete values sitting in front of them, so they will notice that each of these tables must be making the wrong calculations, even though they each have one correct value. Here, we have the computer making the same calculation each time, but these calculations do not work in each case. This is the wrong <em>model</em> to match our data. The computer is doing exactly what we are telling it to do, but the model is wrong.</p>
+<p>How do we fix this, class? Obviously we use a different computational model. I might have students decide in a group what calculation I need to do to correctly reproduce the values from the exercise, and elicit those suggestions from them. </p>
+<p>Once we establish this correct model, this calculation we are making is common to every set of data. We can show that this calculation makes an interesting prediction of 7.5 people liking soda in the group of 10. We can use this calculation to predict how many people in a group of 28 drink soda (and in a 1:1 classroom, I&#8217;d have them go through this entire programming process themselves.)</p>
+<p>I might now generate a table hundreds of entries long and ask whether there is a better way to represent the set of all possible answers to this question. The table will work, but it is tedious. We need a better way. How do we do this? Here is where variables come in.</p>
+<p>Programmers use variables because they want to build a program that produces a correct output for <em>every</em> possible input that might be used to solve a given problem or design. Mathematicians also want to have the same level of universality, and have a syntax and structure that allows for <u>efficient</u> communication of that universality. Computers are really good at calculating. The human brain is really good at managing the abstraction of designing those calculations. This, ultimately, is what we want students to be able to do, but they often get lost in <u>both</u> the design stage and the calculation stage, especially because these get divorced from the actual problem students are trying to solve.</p>
+<p>If we can have students spend more time in the design stage and get feedback on whether their calculations are correct, that&#8217;s the sweet spot for making the jump to using mathematical variables.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2014/07/25/the-nature-of-variables-for-students-vs-programmers/feed/</wfw:commentRss>
+			<slash:comments>3</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">1909</post-id>	</item>
+		<item>
+		<title>Volumes of Revolution &#8211; Using This Stuff.</title>
+		<link>/2013/04/08/volumes-of-revolution-using-this-stuff/</link>
+					<comments>/2013/04/08/volumes-of-revolution-using-this-stuff/#comments</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Mon, 08 Apr 2013 08:37:17 +0000</pubDate>
+				<category><![CDATA[calculus]]></category>
+		<category><![CDATA[geogebra]]></category>
+		<category><![CDATA[teaching stories]]></category>
+		<category><![CDATA[volumes of revolution]]></category>
+		<guid isPermaLink="false">/?p=1366</guid>
+
+					<description><![CDATA[As an activity before our spring break, the Calculus class put its knowledge of finding volumes of revolution to, well, find volumes of things. It was easy to find different containers to use for this &#8211; a sample: We used Geogebra to place points and model the profile of the]]></description>
+										<content:encoded><![CDATA[<p>As an activity before our spring break, the Calculus class put its knowledge of finding volumes of revolution to, well, find volumes of things. It was easy to find different containers to use for this &#8211; a sample:<br />
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2013/04/dsc_0164.jpg"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2013/04/dsc_0164.jpg?w=500" alt="DSC_0164" width="500" height="332" class="alignright size-large wp-image-1367" srcset="/wp-content/uploads/2013/04/dsc_0164.jpg 1504w, /wp-content/uploads/2013/04/dsc_0164-300x199.jpg 300w, /wp-content/uploads/2013/04/dsc_0164-1024x681.jpg 1024w, /wp-content/uploads/2013/04/dsc_0164-768x511.jpg 768w, /wp-content/uploads/2013/04/dsc_0164-1200x798.jpg 1200w" sizes="(max-width: 500px) 100vw, 500px" /></a></p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2013/04/img_0573.jpg"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2013/04/img_0573.jpg?w=500" alt="IMG_0573" width="500" height="666" class="alignright size-large wp-image-1368" /></a></p>
+<p>We used Geogebra to place points and model the profile of the containers using polynomials. There were many rich discussions about wise placement of points and which polynomials make more sense to use. One involved the subtle differences between these two profiles and what they meant for the resulting volume through calculus methods:</p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2013/04/screen-shot-2013-04-08-at-4-19-33-pm.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2013/04/screen-shot-2013-04-08-at-4-19-33-pm.png" alt="Screen Shot 2013-04-08 at 4.19.33 PM" width="500" height="215" class="alignright size-full wp-image-1369" srcset="/wp-content/uploads/2013/04/screen-shot-2013-04-08-at-4-19-33-pm.png 830w, /wp-content/uploads/2013/04/screen-shot-2013-04-08-at-4-19-33-pm-300x129.png 300w, /wp-content/uploads/2013/04/screen-shot-2013-04-08-at-4-19-33-pm-768x331.png 768w" sizes="(max-width: 500px) 100vw, 500px" /></a></p>
+<p>The task was to predict the volume and then use flasks and graduated cylinders to accurately measure the volume. Lowest error wins. I was happy though that by the end, nobody really cared about &#8216;winning&#8217;. They were motivated themselves to theorize why their calculated answer was above or below, and then adjust their model to test their theories and see how their answer changes. </p>
+<p>As usual, I have editorial reflections:</p>
+<ul>
+<li>If I had students calculating the volume by hand by integration every time, they would have been much more reluctant to adjust their answers and figure out why the discrepancies existed. Integration within Geogebra was key to this being successful. Technology greases the rails of mathematical experimentation in a way that nothing else does. </li>
+<li>There were a few many lessons that needed to happen along the way as the students worked. They figured out that the images had to be scaled to match the dimensions in Geogebra to the actual dimensions of the object. They figured out that measurements were necessary to make this work. The task demanded that the mathematical tools be developed, so I showed them what they needed to do as needed. It would have been a lot more boring and algorithmic if I had done all of the presentation work up front, and then they just followed steps. </li>
+<li>There were many opportunities for reinforcing the fundamentals of the Calculus concepts through the activity. This is a tangible example of application &#8211; the actual volume is either close to the calculated volume or not &#8211; there&#8217;s a great deal more meaning built up here that solidifies the abstraction of volume of revolution. There were several &#8216;aha&#8217; moments and I saw them happen. That felt great.</li>
+</ul>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2013/04/08/volumes-of-revolution-using-this-stuff/feed/</wfw:commentRss>
+			<slash:comments>2</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">1366</post-id>	</item>
+		<item>
+		<title>The post where I remind myself that written instructions for computer tasks stink.</title>
+		<link>/2013/02/27/the-post-where-i-remind-myself-that-written-instructions-for-computer-tasks-stink/</link>
+					<comments>/2013/02/27/the-post-where-i-remind-myself-that-written-instructions-for-computer-tasks-stink/#comments</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Wed, 27 Feb 2013 10:17:11 +0000</pubDate>
+				<category><![CDATA[geogebra]]></category>
+		<category><![CDATA[geometry]]></category>
+		<category><![CDATA[reflection]]></category>
+		<category><![CDATA[clear instructions]]></category>
+		<category><![CDATA[exploration]]></category>
+		<category><![CDATA[parallelograms]]></category>
+		<category><![CDATA[video]]></category>
+		<category><![CDATA[written instructions]]></category>
+		<guid isPermaLink="false">/?p=976</guid>
+
+					<description><![CDATA[It&#8217;s not so much that I can&#8217;t follow written instructions. I&#8217;m human and I miss steps occasionally, but with everything written down, it&#8217;s easy to retrace steps and figure out where I went wrong if I did miss something. The big issue is that written instructions are not the best]]></description>
+										<content:encoded><![CDATA[<p>It&#8217;s not so much that I can&#8217;t follow written instructions. I&#8217;m human and I miss steps occasionally, but with everything written down, it&#8217;s easy to retrace steps and figure out where I went wrong if I did miss something. The big issue is that written instructions are not the best way to show someone how to do something. Text is good for some specific things, but defining steps for completing a task on a computer is not one of them.</p>
+<p>Today I showed my students the following video at the start of class.<br />
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2013/02/geo-u6d2-1-constructing-parallelogram-in-geogebra.mp4">GEO-U6D2.1-Constructing Parallelogram in Geogebra</a></p>
+<p>I also gave them this image on the handout, which I wrote last year, but students only marginally followed:<br />
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2013/02/screen-shot-2013-02-27-at-5-53-31-pm.png"><img loading="lazy" class="aligncenter size-full wp-image-978" alt="Screen Shot 2013-02-27 at 5.53.31 PM" src="http://blog.evanweinberg.org/wp-content/uploads/2013/02/screen-shot-2013-02-27-at-5-53-31-pm.png" width="500" height="264" srcset="/wp-content/uploads/2013/02/screen-shot-2013-02-27-at-5-53-31-pm.png 996w, /wp-content/uploads/2013/02/screen-shot-2013-02-27-at-5-53-31-pm-300x159.png 300w, /wp-content/uploads/2013/02/screen-shot-2013-02-27-at-5-53-31-pm-768x406.png 768w" sizes="(max-width: 500px) 100vw, 500px" /></a></p>
+<p>It was remarkable how this simple change to delivery made the whole class really fun to manage today.</p>
+<ul>
+<li>Students saw exactly what I wanted them to produce, and how to produce it.</li>
+<li>The arrows in the video identified one of the vocabulary words from previous lessons as it appeared on screen.</li>
+<li>My ESOL students were keeping up (if not outpacing) the rest of the class.</li>
+<li>The black boxes introduced both the ideas of what I wanted them to investigate using Geogebra, and simultaneously teased them to make their own guesses about what was hidden. They had theories immediately, and they knew that I wanted them to figure out what was hidden through the activity described in the video. Compare this to the awkwardness of doing so through text, where they have to guess both what I am looking for, and what it might look like. You could easily argue this is on the wrong side of abstraction.</li>
+<li>I spent the class going around monitoring progress and having conversations. Not a word of whole-class direct instruction for the fifty minutes of class that followed showing the video. Some students I directed to algebraic exercises to apply their observations. Others I encouraged to start proofs of their theorems. Easy differentiation for the different levels of students in the room.</li>
+</ul>
+<p>Considering how long I sometimes spend writing unambiguous instructions for an exploration, and then the heartbreak involved when I inevitably leave out a crucial element, I could easily be convinced not to try anymore.</p>
+<p>One student on a survey last year critiqued my use of Geogebra explorations saying that it wasn&#8217;t always clear what the goal was, even when I wrote it on the paper. These exploratory tasks are different enough and more demanding than sitting and watching example problems, and require a bit more selling for students to buy into them being productive and useful. These tasks need to quickly define themselves,<a href="http://blog.mrmeyer.com/?p=12141"> and as Dan Meyer suggests</a>, get out of the way so that discovery and learning happens as soon as possible.</p>
+<p>Today was a perfect example of how much I have repeatedly shot myself in the foot during previous lessons trying to establish a valid context for these tasks through written instructions. The gimmick of hiding information from students is not the point &#8211; yes there was some novelty factor here that may have led to them getting straight to work as they did today. This was all about clear communication of objectives and process, and <em>that</em> was the real power of what transpired today.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2013/02/27/the-post-where-i-remind-myself-that-written-instructions-for-computer-tasks-stink/feed/</wfw:commentRss>
+			<slash:comments>4</slash:comments>
+		
+		<enclosure url="http://blog.evanweinberg.org/wp-content/uploads/2013/02/geo-u6d2-1-constructing-parallelogram-in-geogebra.mp4" length="13414853" type="video/mp4" />
+
+		<post-id xmlns="com-wordpress:feed-additions:1">976</post-id>	</item>
+		<item>
+		<title>Cell phone tracking, Processing, and computational thinking</title>
+		<link>/2012/11/28/computational-thinking-cell-phone-location/</link>
+					<comments>/2012/11/28/computational-thinking-cell-phone-location/#comments</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Wed, 28 Nov 2012 14:13:58 +0000</pubDate>
+				<category><![CDATA[algebra 2]]></category>
+		<category><![CDATA[computational-thinking]]></category>
+		<category><![CDATA[geogebra]]></category>
+		<category><![CDATA[programming]]></category>
+		<category><![CDATA[computational thinking]]></category>
+		<category><![CDATA[localization]]></category>
+		<category><![CDATA[location]]></category>
+		<category><![CDATA[particle filter]]></category>
+		<category><![CDATA[processing]]></category>
+		<guid isPermaLink="false">/?p=801</guid>
+
+					<description><![CDATA[I gave a survey to my students recently. My lowest score on any of the questions was &#8216;What I learn in this class will help me in real life.&#8217; I&#8217;ve given this question before, and am used to getting less than optimal responses. I even think I probably had a]]></description>
+										<content:encoded><![CDATA[<p>I gave a survey to my students recently. My lowest score on any of the questions was &#8216;What I learn in this class will help me in real life.&#8217; I&#8217;ve given this question before, and am used to getting less than optimal responses. I even think I probably had a higher score on this question than I have received previously, but it still bothers me that we are having this discussion. Despite my efforts to include more problem solving, modeling, and focusing on conceptual understanding related tasks over boring algorithmic lessons, the fact that I am still getting lower scores on this question compared to others convinces me that I have a long way to go.</p>
+<p>I came up with this activity in response. It combines some of the ideas I learned in my <a href="http://www.udacity.com/overview/Course/cs373">Udacity course on robotic cars</a> with the fact that nearly all my students carry cell phones. While I know many cell phones have GPS, it is my understanding that phones have used cell towers for a while to help with the process of locating phones. It always amazes me, for example, how my cell service immediately switches to roaming immediately when driving across the US-Canada border, even when I had a non-GPS capable phone.</p>
+<p>My students know how to find distance using the distance formula and sets of coordinates, but they were intrigued by the idea of going backwards &#8211; if you know your distance from known locations, can you figure out your own location?  The idea of figuring this out isn&#8217;t complicated. It can most easily be done by identifying intersections of circles as shown below:<br />
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2012/11/screen-shot-2012-11-28-at-9-43-05-pm.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2012/11/screen-shot-2012-11-28-at-9-43-05-pm.png?w=300" alt="" title="Screen Shot 2012-11-28 at 9.43.05 PM" width="300" height="255" class="alignright size-medium wp-image-802" srcset="/wp-content/uploads/2012/11/screen-shot-2012-11-28-at-9-43-05-pm.png 628w, /wp-content/uploads/2012/11/screen-shot-2012-11-28-at-9-43-05-pm-300x255.png 300w" sizes="(max-width: 300px) 100vw, 300px" /></a></p>
+<p>One of my students recalled this method of solving the problem from what he saw in the movie <a href="http://en.wikipedia.org/wiki/Taken_2">Taken 2 </a>, and was quickly able to solve the problem this way graphically in <a href="http://geogebratube.org/material/show/id/23369">Geogebra</a>. Most students didn&#8217;t follow this method though &#8211; the general trend was to take a guess and adjust the guess to reduce the overall error until the distances were as close to the given distances as possible. </p>
+<p>I got them to also look at other situations &#8211; if only two measurements to known locations are known, where could the cell phone be located? They played around to find that there were two locations in this case. I again pointed out that they were following an algorithm that could easily be taught to a computer. </p>
+<p>I then showed them <a href="http://www.openprocessing.org/sketch/81113">a Processing sketch</a> that went through this process. It is not a true particle filter that goes through resampling to improve the guessed location over time, but it does use the idea of making a number of guesses and highlighting the ones with the lowest error. The idea of making 300,000 random guesses and choosing the ones that are closest to the set of distances is something that computers are clearly better at than humans are. There are analytical ways of solving this problem, but this is a good way of using the computational power of the computer to make a brute force calculation to get an approximate answer to the question.</p>
+<p>You can look at the activity we did in class here:<br />
+<a href='http://blog.evanweinberg.org/wp-content/uploads/2012/11/using-cell-phones-to-track-location.pdf'>Using Cell Phones to Track Location</a></p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2012/11/28/computational-thinking-cell-phone-location/feed/</wfw:commentRss>
+			<slash:comments>3</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">801</post-id>	</item>
+		<item>
+		<title>First day of Geometry proofs &#8211; Refining my process</title>
+		<link>/2012/09/27/first-day-of-geometry-proofs-refining-my-process/</link>
+					<comments>/2012/09/27/first-day-of-geometry-proofs-refining-my-process/#comments</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Thu, 27 Sep 2012 07:28:32 +0000</pubDate>
+				<category><![CDATA[geogebra]]></category>
+		<category><![CDATA[reflection]]></category>
+		<category><![CDATA[algebra]]></category>
+		<category><![CDATA[flipclass]]></category>
+		<category><![CDATA[justifying steps]]></category>
+		<category><![CDATA[proofs]]></category>
+		<guid isPermaLink="false">/?p=772</guid>
+
+					<description><![CDATA[Last year, I figured out about a week or two after the first introduction to proofs in Geometry last year that I should have started with a more clear connection to the ideas we had been working on in the classes before. We did a progression of logical statements, conditional]]></description>
+										<content:encoded><![CDATA[<p>Last year, I figured out about a week or two after the <a href="/2011/11/05/teaching-proofs-in-geometry-what-i-do/">first introduction to proofs in Geometry</a> last year that I should have started with a more clear connection to the ideas we had been working on in the classes before. We did a progression of logical statements, conditional statements, working on biconditionals as definitions, and then the laws of detachment and syllogism. I realized then that I never made strong references to these concepts and how they all fit together &#8211; I just hoped that the students would see how the proofs were built out of these ideas without formally telling them as such.</p>
+<p>This year I was much more explicit in how the ideas fit together, particularly by showing a paragraph proof as a series of conditional statements with true hypotheses.  I was really happy with the results. I created two videos to use as part of the instruction:<br />
+[wpvideo 4LLQ8TEa]</p>
+<p>Students watched the video and then worked on identifying the properties of equality and congruence being applied in a few different situations, and completing statements given that a particular property is being applied. This led to some great conversations about subtle differences between the transitive property of equality and the substitution property of equality. (&#8216;If a = 5 and b = 5, then a = b&#8217; is the latter, not the former. This assumes only one property is being applied at a time, of course.)</p>
+<p>Once I was satisfied with their progress, I sent them on to watch this video:<br />
+[wpvideo EY4lUecB]</p>
+<p>Some students immediately took the equation, solved it, and said they were done. This led to more good discussions about the purpose of this lesson. We already knew how to solve equations &#8211; what was new this time was justifying each step using a property. It was an opportunity to push these students to then focus on what was happening in each step and not so much on the algebra that they did quickly. Once I was convinced that they did understand what was going on in each step of the video, I had them move to either some problems with the steps written out, missing only the justifications (for weaker students), and for others, full algebraic problems that they do from start to finish.</p>
+<p>The thing I did differently here (and which was made easier by the magic of video) is emphasizing that the different steps in a proof are really all either conditional statements, statements of fact (the given information), and possibly steps of arithmetic simplification. Each line should be connected to the previous one in the form of a conditional statement. I have said it in the past, but never explicitly written it out each time so that the students think of it this way.</p>
+<p>The whole point of doing things this way is so that students are not introduced to two concepts simultaneously: writing steps in a proof, and proving a statement deductively from scratch. Having a good sense of algebra, this lesson focused on introducing students to the process first. Next time we will move on to actually finding and proving theorems about line segments, with the idea that they already have a basic sense for how different thoughts can be linked together logically in a proof. I am hoping that being this deliberate will pay off &#8211; this was definitely the smoothest this lesson has ever gone for me.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2012/09/27/first-day-of-geometry-proofs-refining-my-process/feed/</wfw:commentRss>
+			<slash:comments>5</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">772</post-id>	</item>
+		<item>
+		<title>Geometric Optics &#8211; hitting complexity first</title>
+		<link>/2012/05/08/geometric-optics-hitting-complexity-first/</link>
+					<comments>/2012/05/08/geometric-optics-hitting-complexity-first/#comments</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Tue, 08 May 2012 14:01:07 +0000</pubDate>
+				<category><![CDATA[geogebra]]></category>
+		<category><![CDATA[physics]]></category>
+		<category><![CDATA[mirrors]]></category>
+		<category><![CDATA[Optics]]></category>
+		<guid isPermaLink="false">https://gealgerobophysiculus.wordpress.com/?p=593</guid>
+
+					<description><![CDATA[I started what may end up being the last unit in physics with the idea that I would do things differently compared to my usual approach. I taught optics as part of Physics B for a few years, and as many things end to be in that rushed curriculum, it]]></description>
+										<content:encoded><![CDATA[<p>I started what may end up being the last unit in physics with the idea that I would do things differently compared to my usual approach. I taught optics as part of Physics B for a few years, and as many things end to be in that rushed curriculum, it was fairly traditional. Plane mirrors, ray diagrams, equations. Snell&#8217;s law, lenses, ray tracing, equations. This was followed by a summary lesson shamefully titled &#8220;Mirrors and lenses are both similar and different&#8221; , a tribute to the unfortunate starter sentence for many students&#8217; answers to compare and contrast questions that always got my blood boiling.</p>
+<p>This time, given the absence of any time pressure, there has been plenty more space to play. We played with the question of how big a plane mirror must be to see one&#8217;s whole body with diagrams and debate. We messed with a quick reflection diagram of a circular mirror I threw together in Geogebra to show that light seems to be brought to a point under certain conditions. Granted, I did make suggestions on the three rays that could be used in a ray diagram to locate an image &#8211; that was a bit of direct instruction &#8211; but today when the warm up involved just drawing some diagrams, they had an entry point to start from.</p>
+<p>After drawing diagrams for some convex and concave mirrors, I put a set of mirrors in front of them and asked them to set up the situation described by their diagrams. They made the connection to the terms convex and concave by the labels printed on the flimsy paper envelopes they were shipped in &#8211; no big introduction of the vocabulary first was needed, and it would have broken the natural flow of their work. They observed images getting magnified and minefied, and forming inverted or upright. They gasped when I told them to hold a blank sheet of paper above a concave mirror pointed at one of the overhead lights and saw the clear edges of the fluorescent tubes projected on the paper surface. They poked and stared, mystified, while moving their faces forward and backward at the focal point to find the exact location where their face shifted upside down.</p>
+<p>After a while with this, I took out some lenses. Each got two to play with. They instantly started holding them up to their eyes and moving them away and noticing the connections to their observations with the mirrors. One immediately noticed that one lens flipped the room when held at arms length but didn&#8217;t when it was close, and that another always made everything smaller like the convex mirror did. I asked them to use the terms virtual and real, and they were right on. They were again amazed when the view outside was clearly projected through the convex lens was held in front of a student&#8217;s notebook.</p>
+<p>I hope I never take for granted how great this small group of students is &#8211; I appreciate their willingness to explore and humor me when I am clearly not telling them everything that they need to know to analyze a situation. That said, there is really something to the backwards model of presenting complexity up front, and using that complexity to motivate students to want to understand the basics that will help them explain what they observe. Now that my students see that the lenses are somehow acting like mirrors, it is so much easier to call upon their curiosity to motivate exploring why that is. Now there is a reason for Snell&#8217;s law to be in our classroom. </p>
+<p>Without planting a hint of why anyone aside from over excited physics teachers would give a flying fish about normals and indices of refraction, it becomes yet one more fact to remember. There&#8217;s no mystery. To demand that students go through the entire process of developing physics from basic principles betrays the reality that reverse engineering a finished product can be just as enlightening. I would wager that few people read an instruction manual anymore. Even the design of help in software has changed from a linear list of features in one menu after another to a web of wiki-style tidbits of information on how to do things. Our students are used to managing complexity to do things that are not school related, things that are a lot more real world to them. There is no reason school world has to be different from real world in how we explore and approach learning new things.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2012/05/08/geometric-optics-hitting-complexity-first/feed/</wfw:commentRss>
+			<slash:comments>3</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">593</post-id>	</item>
+		<item>
+		<title>EARCOS 2012 Presentation &#8211; Using Geogebra for Skill Development</title>
+		<link>/2012/03/30/earcos-2012-presentation-using-geogebra-for-skill-development/</link>
+					<comments>/2012/03/30/earcos-2012-presentation-using-geogebra-for-skill-development/#respond</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Fri, 30 Mar 2012 06:59:53 +0000</pubDate>
+				<category><![CDATA[geogebra]]></category>
+		<category><![CDATA[active learning]]></category>
+		<category><![CDATA[EARCOS]]></category>
+		<category><![CDATA[ETC2012]]></category>
+		<category><![CDATA[flipped classroom]]></category>
+		<category><![CDATA[skill development]]></category>
+		<guid isPermaLink="false">/?p=465</guid>
+
+					<description><![CDATA[After a late night getting into Bangkok and a couple hours of sleep (though I suppose few good stories start &#8220;I had a good long night of sleep when I first arrived in Thailand) I made it to the start of the EARCOS 2012 Teachers&#8217; conference yesterday morning. I&#8217;ll have]]></description>
+										<content:encoded><![CDATA[<p>After a late night getting into Bangkok and a couple hours of sleep (though I suppose few good stories start &#8220;I had a good long night of sleep when I first arrived in Thailand) I made it to the start of the <a href="http://www.earcos.org/etc2012/#">EARCOS 2012 Teachers&#8217; conference</a> yesterday morning. I&#8217;ll have more to say about the details of the conference later on, but I wanted to post briefly about the presentation I gave on <a href="http://www.geogebra.org/">Geogebra</a> in the afternoon.</p>
+<p>The room was packed with teachers and coaches armed with laptops and interested in seeing how the program works. My focus was on giving feedback, with Geogebra as the medium for that feedback. I did not intend it to be a beginner&#8217;s tutorial on Geogebra for a few reasons:</p>
+<ul>
+<li>There is so much fantastic material out there already that shows how to use the software.</li>
+<li>I wanted to specifically focus on the philosophy of using software to provide instant feedback to students on mathematical tasks.</li>
+<li><a href="http://www.dynamicgeometry.com/General_Resources/The_Sketchpad_Story.html">Nick Jankiw</a> from <a href="http://www.dynamicgeometry.com/">Geometers Sketchpad</a> was doing a series of workshops on GSP and I didn&#8217;t want to engage in the Geometers Sketchpad vs. Geogebra debate. I see them both as excellent pieces of software. I choose to use Geogebra for a number of reasons that I mentioned in my presentation. The truth is that Geometers Sketchpad defined the field of dynamic geometry, and I do think it&#8217;s important to acknowledge that fact.</li>
+</ul>
+<div>That said, anyone that wants help getting started with Geogebra should feel free to ask me for help. Thanks to a great suggestion from <a href="http://quantumprogress.wordpress.com/">John Burk</a> (<a href="https://twitter.com/#!/occam98">@occam98</a>) and Andy Rundquist (<a href="https://twitter.com/#!/arundquist">@arundquist</a>) I had some screencasts demonstrating more advanced sketches of my own playing on the screen while waiting for the program to download and while figuring out the basics.</div>
+<div></div>
+<div>I thought the workshop went well  &#8211; I wish I had not felt the need to talk so much and had given more time for people to interact with each other. That said, I think there were many that came and left with much more knowledge than when they entered. A few told me that they already plan to use it next week in their classes.</div>
+<p>My slides and accompanying notes can be found here: <a href="http://blog.evanweinberg.org/wp-content/uploads/2012/03/earcos-presentation-notes-pages.pdf">EARCOS presentation &#8211; notes pages</a></p>
+<p>The video is below &#8211; unfortunately there wasn&#8217;t a great place to put the camera to be able to get me and the slides, and the contrast is not great to be able to see what I am doing in the program. I&#8217;ll find some time to post some screencasts of the demonstrations I did with the software later on.</p>
+<p>[youtube http://www.youtube.com/watch?v=eW4-OxkqbfM&#038;w=560&#038;h=315]</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2012/03/30/earcos-2012-presentation-using-geogebra-for-skill-development/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">465</post-id>	</item>
+		<item>
+		<title>Turning random facts into logistics curves &#8211; ODE per day series continued.</title>
+		<link>/2012/02/15/turning-random-facts-into-logistics-curves-ode-per-day-series-continued/</link>
+					<comments>/2012/02/15/turning-random-facts-into-logistics-curves-ode-per-day-series-continued/#comments</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Wed, 15 Feb 2012 08:48:49 +0000</pubDate>
+				<category><![CDATA[calculus]]></category>
+		<category><![CDATA[geogebra]]></category>
+		<category><![CDATA[teaching stories]]></category>
+		<category><![CDATA[data collection]]></category>
+		<category><![CDATA[differential equation]]></category>
+		<category><![CDATA[learning curve]]></category>
+		<category><![CDATA[logistics]]></category>
+		<category><![CDATA[python]]></category>
+		<guid isPermaLink="false">/?p=404</guid>
+
+					<description><![CDATA[I previously wrote about making sure that every class during our unit on differential equations starts with some differential equation they can see or feel in a concrete way. During the last class, we investigated a draining tank using the video posted by Dan Meyer at his blog. Today we did]]></description>
+										<content:encoded><![CDATA[<p>I <a title="Experiencing an ODE per day" href="/2012/02/07/showing-and-experiencing-an-ode-per-day/">previously wrote about making sure </a>that every class during our unit on differential equations starts with some differential equation they can see or feel in a concrete way.</p>
+<p>During the last class,<a href="http://wiki.hischina.org/groups/gealgerobophysiculus/wiki/90481/CalcABUnit_6Draining_Tank.html"> we investigated a draining tank </a>using the<a href="http://blog.mrmeyer.com/?p=5990"> video posted by Dan Meyer</a> at his blog.</p>
+<p>Today we did something different. I told them that I was doing an experiment with a simple task. They all needed to find the answers to some  questions as quickly as possible:</p>
+<p>When they found the answers, I wanted them to quickly throw a hand in the air to let me know. I told them to be honest &#8211; they didn&#8217;t know what I was doing with the information yet, so there really wasn&#8217;t a chance to skew it.</p>
+<p>I then showed them the slide with the questions:</p>
+<p style="text-align:center;"><a href="http://blog.evanweinberg.org/wp-content/uploads/2012/02/logistics_questions.jpg"><img loading="lazy" class="aligncenter" title="logistics_questions" src="http://blog.evanweinberg.org/wp-content/uploads/2012/02/logistics_questions.jpg?w=300" alt="" width="300" height="179" /></a></p>
+<p style="text-align:left;">I also simultaneously started the following Python program. (UPDATE: Code is posted <a href="//gist.github.com/1842082.git">here</a>.) This let me easily record any time a student raised his/her hand.</p>
+<p style="text-align:left;"><a href="http://blog.evanweinberg.org/wp-content/uploads/2012/02/logistics-python_prog.jpg"><img loading="lazy" class="aligncenter size-medium wp-image-406" title="logistics-python_prog" src="http://blog.evanweinberg.org/wp-content/uploads/2012/02/logistics-python_prog.jpg?w=300" alt="" width="300" height="198" srcset="/wp-content/uploads/2012/02/logistics-python_prog.jpg 420w, /wp-content/uploads/2012/02/logistics-python_prog-300x199.jpg 300w" sizes="(max-width: 300px) 100vw, 300px" /></a></p>
+<p style="text-align:left;">I then pasted the data directly into a Geogebra spreadsheet and graphed the data&#8230;</p>
+<p style="text-align:left;"><a href="http://blog.evanweinberg.org/wp-content/uploads/2012/02/logistics-data-in-geogebra.jpg"><img loading="lazy" class="aligncenter size-medium wp-image-407" title="logistics-data-in-geogebra" src="http://blog.evanweinberg.org/wp-content/uploads/2012/02/logistics-data-in-geogebra.jpg?w=300" alt="" width="300" height="175" srcset="/wp-content/uploads/2012/02/logistics-data-in-geogebra.jpg 1065w, /wp-content/uploads/2012/02/logistics-data-in-geogebra-300x175.jpg 300w, /wp-content/uploads/2012/02/logistics-data-in-geogebra-1024x599.jpg 1024w, /wp-content/uploads/2012/02/logistics-data-in-geogebra-768x449.jpg 768w" sizes="(max-width: 300px) 100vw, 300px" /></a></p>
+<p style="text-align:left;">&#8230;and then fit a logistics curve to the data:</p>
+<p style="text-align:left;"><a href="http://blog.evanweinberg.org/wp-content/uploads/2012/02/logistics-curve-with-fit.jpg"><img loading="lazy" class="aligncenter size-medium wp-image-408" title="logistics-curve-with-fit" src="http://blog.evanweinberg.org/wp-content/uploads/2012/02/logistics-curve-with-fit.jpg?w=300" alt="" width="300" height="209" srcset="/wp-content/uploads/2012/02/logistics-curve-with-fit.jpg 1580w, /wp-content/uploads/2012/02/logistics-curve-with-fit-300x209.jpg 300w, /wp-content/uploads/2012/02/logistics-curve-with-fit-1024x714.jpg 1024w, /wp-content/uploads/2012/02/logistics-curve-with-fit-768x536.jpg 768w, /wp-content/uploads/2012/02/logistics-curve-with-fit-1536x1071.jpg 1536w, /wp-content/uploads/2012/02/logistics-curve-with-fit-1200x837.jpg 1200w" sizes="(max-width: 300px) 100vw, 300px" /></a></p>
+<p style="text-align:left;">They had seen and heard the concept of learning/performance curves before, but it was really great to be able to develop one on the spot with the class. I was impressed with how good the data turned out. It was then neat to be able to show the differential equation that describes this type of phenomenon and solve it to get this type of function.</p>
+<p style="text-align:left;">As is probably obvious, I only have ten students in this group. It would be really cool to try something like this with a bigger group and see if the data fits as nicely.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2012/02/15/turning-random-facts-into-logistics-curves-ode-per-day-series-continued/feed/</wfw:commentRss>
+			<slash:comments>2</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">404</post-id>	</item>
+		<item>
+		<title>My tutor&#8217;s name is Geogebra CAS.</title>
+		<link>/2012/01/20/my-tutors-name-is-geogebra-cas/</link>
+					<comments>/2012/01/20/my-tutors-name-is-geogebra-cas/#respond</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Fri, 20 Jan 2012 09:36:16 +0000</pubDate>
+				<category><![CDATA[algebra 2]]></category>
+		<category><![CDATA[geogebra]]></category>
+		<category><![CDATA[teaching stories]]></category>
+		<category><![CDATA[CAS]]></category>
+		<category><![CDATA[checking work]]></category>
+		<category><![CDATA[factoring]]></category>
+		<category><![CDATA[feedback]]></category>
+		<category><![CDATA[multiplying polynomials]]></category>
+		<guid isPermaLink="false">/?p=370</guid>
+
+					<description><![CDATA[When I first started teaching, I learned that the best thing to have students do after factoring a trinomial was to have the students check by multiplying out the binomials. At the time, it naively made total sense &#8211; students don&#8217;t even need me to be there to practice! They]]></description>
+										<content:encoded><![CDATA[<p>When I first started teaching, I learned that the best thing to have students do after factoring a trinomial was to have the students check by multiplying out the binomials. At the time, it naively made total sense &#8211; students don&#8217;t even need me to be there to practice! They can do this on their own while sitting on the subway or waiting for the bus &#8211; whatever dead time they have. The students that need to practice factoring can do as much of this as they need until they can factor with some degree of automaticity.</p>
+<p>Some (not all) students took my advice. Of those that did, I often saw stuff like this:</p>
+<blockquote><p>x² &#8211; 4 = (x &#8211; 2)(x &#8211; 2)<br />
+= x² &#8211; 2x + x(2) + 4 = x² &#8211; 4</p></blockquote>
+<p>This was a worse situation than how we started &#8211; not only were they factoring incorrectly, but their inability to multiply binomials was giving them the false idea that they were doing a good job of factoring! This frustrated me to no end &#8211; even if I did give students time during class to practice and develop these skills, what could I tell them to do to improve outside of class? One colleague considered stopping giving homework because he saw it repeatedly reinforcing student errors. I didn&#8217;t go that far, but I did start grading homework to try to find mistakes.</p>
+<p>The missing piece for these students is the lack of useful and correct feedback. Most of them learned the procedures, but made arithmetic or careless errors such as leaving out terms when simplifying. Without any correct data to make decisions on, these students were just going through a procedure and generating incorrect results, and using the incorrect results to validate an incorrect procedure. If they had a way to generate correct feedback, this experience would stop being worthless and instead become a useful method for developing student skills!</p>
+<p>This is where CAS systems come in &#8211; Wolfram Alpha is nice, but Geogebra CAS is even better because of speed. I worked with a student that needed practice both in simplifying polynomial expressions and factoring polynomials completely. This is what I had him do while he sat with me:</p>
+<ul>
+<li>Make up a pair of binomials of the form (x &#8211; 5)(4x &#8211; 5), multiply them, and then find the quadratic and linear coefficients. When you are ready, use the <strong>Simplify[]</strong> command to check your answer.</li>
+<li>Make up a product of polynomials of the form 4x^2(x+5)(2x-5) . Multiply it out all the way on paper, and then check your result using the <strong>Simplify[]</strong> command.</li>
+</ul>
+<p>After this step, we talked about how he could do this on his own and check his work. While we were sitting there, he made mistakes, but was able to catch them himself. He was the source of the problems, and was able to check and see if his final answers were correct. We then moved on to factoring practice:</p>
+<ul>
+<li>Write out 15 products of binomials (3x-1)(x+5). For some of them, add a monomial factor. Include a couple sum and difference polynomials as well. Multiply any three of them out manually and check using <strong>Simplify[]</strong>.</li>
+<li>Use Geogebra to multiply any ten of the the rest of them and write down the resulting polynomials on a separate sheet of paper.</li>
+<li>Eat dinner, watch TV, or something that has nothing to do with factoring.</li>
+<li>Return to the paper and factor the ten polynomials you wrote down completely. Use <strong>Factor[]</strong> to check and make sure your final answers match what Geogebra produces &#8211; if there are differences, check to see if you have actually factored completely or not. Make a note of any repeat mistakes.</li>
+</ul>
+<p>There is a whole lot of extra busy work involved in this process, but part of that is because it&#8217;s easy to factor a polynomial that you just generated moments before if you still remember the factors. For some students, this won&#8217;t matter, but it helps ensure that the exercises generates are actually useful. This student was on fire during class today, even though we were looking at a different topic entirely. I should have asked him directly whether this is the case, but perhaps the boost of confidence going through this process gave him is part of the reason. I also really like that this method allows the student to simultaneously work on multiplying polynomials and factoring them. My method beforehand would have been to stick to multiplying, then factoring, and then mix them up &#8211; there&#8217;s no reason to do this.</p>
+<p>Computer algebra has been around for a while. The reason I think it&#8217;s now to the point where it can be transformational is that it&#8217;s easily accessible, easy to use, and almost instant. This idea of using technology (and particularly Geogebra) to help students develop their pencil and paper skills is one that really excites me. I&#8217;m excited to see if it works with the students that came in a bit behind but are willing to put in the time to catch up. I don&#8217;t want my class time to be spent learning algorithms &#8211; that defeats my strong belief that we should focus on teaching mathematical thinking, modeling, and problem formulation instead of algorithms. That said, students do need to be able to develop their skills, and this offers a personalized way to help them do so on their own.</p>
+<p>&nbsp;</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2012/01/20/my-tutors-name-is-geogebra-cas/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">370</post-id>	</item>
+		<item>
+		<title>Geogebra for Triangle Congruence Postulates</title>
+		<link>/2011/12/05/geogebra-for-triangle-congruence-postulates/</link>
+					<comments>/2011/12/05/geogebra-for-triangle-congruence-postulates/#respond</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Mon, 05 Dec 2011 10:37:31 +0000</pubDate>
+				<category><![CDATA[geogebra]]></category>
+		<category><![CDATA[geometry]]></category>
+		<category><![CDATA[exploration]]></category>
+		<category><![CDATA[triangle congruence]]></category>
+		<guid isPermaLink="false">http://gealgerobophysiculus.wordpress.com/?p=301</guid>
+
+					<description><![CDATA[It has been busy-ville in gealgerobophysicsulus-town, so I have barely had time to catch my breath over the last few days of music performances, school events, and preparations for the end of the semester. My efforts over the  past couple days in Geometry have focused on getting in a bit]]></description>
+										<content:encoded><![CDATA[<p>It has been busy-ville in gealgerobophysicsulus-town, so I have barely had time to catch my breath over the last few days of music performances, school events, and preparations for the end of the semester.</p>
+<p>My efforts over the  past couple days in Geometry have focused on getting in a bit of understanding of congruent triangles. We have used some Geogebra sketches I designed to have them build a triangle with specific requirements. With some feedback from some Twitter folks (thanks a_mcsquared!) and students after doing the activities, I&#8217;ve got these the way I want them.</p>
+<p>Constructing a 7-8-9 triangle: Download <a href="http://www.geogebra.org/en/upload/index.php?action=downloadfile&amp;filename=Constructing%20a%207-8-9%20triangle.ggb&amp;directory=weinbergmath&amp;">here</a>. (For discovering SSS)</p>
+<p>Constructing a 3-4-45 degree triangle: Download <a href="http://www.geogebra.org/en/upload/index.php?action=downloadfile&amp;filename=Constructing%20a%203-4%20triangle.ggb&amp;directory=weinbergmath&amp;">here</a>. (For discovering SAS)</p>
+<p>Looking for an ASA postulate. Download<a href="http://www.geogebra.org/en/upload/index.php?action=downloadfile&amp;filename=Looking%20for%20an%20ASA%20postulate.ggb&amp;directory=weinbergmath&amp;"> here</a>. (Clearly for ASA explorations.) &#8211; This one I made a quick change before class to making it so that the initial coordinates of the base of the triangle are randomized when loading the sketch. This almost guarantees that every student will have a differently oriented triangle. This makes for GREAT conversations in class. Here are three of the ones students created this afternoon:</p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2011/12/asa-triangle-congruence.jpg"><img loading="lazy" class="aligncenter size-full wp-image-302" title="ASA triangle congruence" src="http://blog.evanweinberg.org/wp-content/uploads/2011/12/asa-triangle-congruence.jpg" alt="" width="500" height="518" srcset="/wp-content/uploads/2011/12/asa-triangle-congruence.jpg 560w, /wp-content/uploads/2011/12/asa-triangle-congruence-289x300.jpg 289w" sizes="(max-width: 500px) 100vw, 500px" /></a></p>
+<p>I&#8217;m doing a lot of thinking about making these sorts of activities clearly driven by simple, short instructions. This is particularly in light of a few of the students in my class with limited English proficiency. Creating these simple activities is also a lot more fun than just asking students to draw them by hand, guess, or just listen to me tell them the postulates and theorems. Having a room full of different examples of clearly congruent triangles calls upon the social aspect of the classroom. Today they completed the activity and showed each other their triangles and had good interactions about why they knew they had to be congruent.</p>
+<p>Last year I had them construct the triangles themselves, but the power of the end message was weakened by the written steps I included in the activity. Giving them clear instructions made the final product, a slew of congruent (or at least approximately in the case of 7-8-9) triangles a nice &#8220;coincidence&#8221; to lead to generalizing the idea.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2011/12/05/geogebra-for-triangle-congruence-postulates/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">301</post-id>	</item>
+	</channel>
+</rss>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	
+	xmlns:georss="http://www.georss.org/georss"
+	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+	
+	>
+<channel>
+	<title>
+	Comments on: Python in Algebra 2 &#8211; An Experiment	</title>
+	<atom:link href="/2012/08/23/python-in-algebra-2-an-experiment/feed/" rel="self" type="application/rss+xml" />
+	<link>/2012/08/23/python-in-algebra-2-an-experiment/</link>
+	<description>iteration, making, building, and coding in education</description>
+	<lastBuildDate>Sun, 02 Sep 2012 12:16:41 +0000</lastBuildDate>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.7.6</generator>
+	<item>
+		<title>
+		By: Meghan		</title>
+		<link>/2012/08/23/python-in-algebra-2-an-experiment/#comment-99</link>
+
+		<dc:creator><![CDATA[Meghan]]></dc:creator>
+		<pubDate>Sun, 02 Sep 2012 12:16:41 +0000</pubDate>
+		<guid isPermaLink="false">/?p=726#comment-99</guid>
+
+					<description><![CDATA[Thanks for sharing this!  I run an after school programming club and the kids are mostly students who definitely struggle with the idea of how the computer &#039;understands&#039; their code.  It&#039;s useful to see the first program you&#039;ve asked your students to work on and how much information you gave them.  It seems like having it help them with the stuff they&#039;d have to do on their own is a nice hook.]]></description>
+			<content:encoded><![CDATA[<p>Thanks for sharing this!  I run an after school programming club and the kids are mostly students who definitely struggle with the idea of how the computer &#8216;understands&#8217; their code.  It&#8217;s useful to see the first program you&#8217;ve asked your students to work on and how much information you gave them.  It seems like having it help them with the stuff they&#8217;d have to do on their own is a nice hook.</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: Winning the battle with Python programming &#124; gealgerobophysiculus		</title>
+		<link>/2012/08/23/python-in-algebra-2-an-experiment/#comment-98</link>
+
+		<dc:creator><![CDATA[Winning the battle with Python programming &#124; gealgerobophysiculus]]></dc:creator>
+		<pubDate>Fri, 31 Aug 2012 11:31:54 +0000</pubDate>
+		<guid isPermaLink="false">/?p=726#comment-98</guid>
+
+					<description><![CDATA[[...]  Two stories to share after this week&#8217;s activities with students about programming. I have posted previously about my interest in making Python a fundamental part of my classes this year, and so I am finding [...]]]></description>
+			<content:encoded><![CDATA[<p>[&#8230;]  Two stories to share after this week&#8217;s activities with students about programming. I have posted previously about my interest in making Python a fundamental part of my classes this year, and so I am finding [&#8230;]</p>
+]]></content:encoded>
+		
+			</item>
+	</channel>
+</rss>

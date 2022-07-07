@@ -1,0 +1,304 @@
+/**
+ * Theme Name:     Drift Blog
+ * Author:         candidthemes
+ * Template:       gist
+ * Text Domain:	   drift-blog
+ * Description:    Drift Blog is the Child Theme of <a href="https://www.candidthemes.com/themes/gist-clean-minimal-wordpress-blog-theme/">Gist.</a> This theme is best ever crafted free WordPress theme for Blog, news and Magazine. It is a simple, easy to use, modern and creative, user friendly WordPress theme with typography, fonts and color options. In addition Drift Blog is responsive, cross browser compatible and child theme ready. Gist comes with added custom widgets for social and author, sticky sidebar options, footer widget, sidebar options, meta option, copyright option, social options etc. 
+ * Theme URI:      https://www.candidthemes.com/themes/drift-blog/
+ * Author URI:     https://www.candidthemes.com/
+ * Version:        1.0.2
+ * License:        GNU General Public License v2 or later
+ * License URI:    http://www.gnu.org/licenses/gpl-2.0.html
+ * Tested up to: 5.4
+ * Requires PHP: 5.2
+ * Tags:           two-columns, right-sidebar, custom-background, custom-colors, custom-menu, featured-images, theme-options, threaded-comments, translation-ready, blog
+ */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Playfair Display', sans-serif;
+}
+
+.p-15 .entry-content {
+    display: block;
+    overflow: hidden;
+}
+.p-15 .entry-header, 
+.p-15 .entry-footer{
+	text-align: left;
+}
+.p-15 .entry-content p{
+	margin-bottom: 15px;
+}
+.btn-primary {
+    border: none;
+    padding: 0;
+}
+.btn-primary:hover {
+    color: #555;
+}
+.btn-primary:hover {
+    background-color: #fff;
+}
+a.btn-primary::after {
+	content: "\f101";
+    font-family: FontAwesome;
+    position: relative;
+}
+.widget-title {
+    text-align: initial;
+}
+.widget-title:after {
+    left: 0;
+    margin-left: 0;
+}
+.p-15 .entry-content {
+    margin: 0;
+}
+/*--------------------------------------------------------------
+## Pagination
+--------------------------------------------------------------*/
+.candid-pagination {
+    clear: both;
+}
+
+/*--------------------------------------------------------------
+## Footer
+--------------------------------------------------------------*/
+.top-footer{
+    background: #111;
+    padding: 60px 0 40px 0;
+}
+footer .site-info{
+    text-align: center;
+    color: #fff;
+    padding: 20px 10px;
+}
+footer .site-info a{
+    color: #fff;
+    opacity: 0.75;
+}
+footer.site-footer {
+    background: #000;
+}
+
+footer .top-footer a,
+footer.site-footer,
+footer .featured-post-title a,
+footer .featured-post-title a:visited{
+    color: #eee;
+}
+footer .widget-title{
+    text-align: left;
+}
+footer .widget-title:after{
+    background: #efefef;
+    left: 0;
+    margin-left: 0;
+}
+footer.site-footer {
+    text-align: justify;
+}
+
+@media screen and (max-width: 767px) {
+    footer .ct-col-4,
+    footer .ct-col-3,
+    footer .ct-col-2,
+    footer .ct-col-1{
+        padding: 0 20px;
+    }
+}
+
+/*---------------------------------------------------
+*   Post Column
+*   ----------------------------------------------------- */
+@media screen and (min-width: 768px) {
+    #main:after{
+        clear: left;
+        content: "";
+        display: table;
+        table-layout: fixed;
+    }
+    .ct-col-3 {
+        width: 31%;
+        float: left;
+        margin-right: 3.5%;
+    }
+    .ct-col-3:nth-child(3n+1){
+        clear: left;
+    }
+    .ct-col-3:nth-child(3n){
+        margin-right: 0;
+    }
+    .ct-col-2{
+        width: 48%;
+        float: left;
+        margin-right: 4%;
+    }
+    .ct-col-2:nth-child(2n+1){
+        clear: left;
+    }
+    .ct-col-2:nth-child(2n){
+        margin-right: 0;
+    }
+    .ct-col-4{
+        width: 22%;
+        float: left;
+        margin-right: 4%;
+    }
+    .ct-col-4:nth-child(4n+1){
+        clear: left;
+    }
+    .ct-col-4:nth-child(4n){
+        margin-right: 0;
+    }
+    .ct-col-4 img.right-image,
+    .ct-col-4 img.left-image,
+    .ct-col-3 img.right-image,
+    .ct-col-3 img.left-image,
+    .ct-col-2 img.right-image,
+    .ct-col-2 img.left-image{
+        width: 100%;
+        float: none;
+        margin-left: 0;
+        margin-right: 0;
+    }
+}
+/*---------------------------------------------------
+*   Footer Section
+*   ----------------------------------------------------- */
+
+.clearfix:after{
+    display: table;
+    content: '';
+    clear: left;
+}
+footer.site-footer{
+    padding: 0;
+}
+
+/*---------------------------------------------------
+*  Menu Design
+* ----------------------------------------------------- */
+.main-navigation ul:after{
+    content: "";
+    display: block;
+    clear: both;
+}
+.main-navigation li {
+    padding: 0 16px;
+}
+.main-navigation ul li.menu-item-has-children > a:after {
+    font-family: "FontAwesome";
+    content: "\f107";
+    font-size: 17px;
+}
+
+.menu-top-menus-container ul {
+    justify-content: left;
+    background: #fafafa;
+}
+.menu-top-menus-container ul li a {
+    font-size: 12px;
+}
+.menu-top-menus-container ul li{
+    padding: 0 12px;
+}
+.top-menu-container-inner nav{
+    clear: none;
+}
+.top-menu-container-inner .top-header-social li{
+    margin-bottom: 0;
+}
+.top-header-social .gist-menu-social{
+    line-height: 1;
+}
+.top-header-social .gist-menu-social li a{
+    background: none;
+    margin-right: 0;
+    width: auto;
+    height: auto;
+    line-height: 1.5;
+    padding: 10px 2px;
+}
+.top-header-social .gist-menu-social li a:before{
+    color: #333;
+    font-size: 12px;
+    margin: 0;
+    font-weight: bold;
+}
+article .left-image:after{
+    display: table;
+    content: '';
+    width: 0;
+    height: 0;
+    clear: both;
+}
+.widget ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+@media screen and (min-width: 1024px) {
+    .top-menu-container-inner .top-header-social{
+        text-align: right;
+    }
+    .top-menu-container-inner .top-header-social {
+        width: 28%;
+        float: right;
+        margin-left: 2%;
+    }
+
+    .top-menu-container-inner nav {
+        width: 70%;
+        float: left;
+    }
+    .top-menu-container-inner nav ul li a{
+        padding: 10px 0;
+        font-size: 12px;
+    }
+    .top-menu-container-inner nav ul ul > li > a{
+        padding: 10px 20px;
+    }
+    .top-menu-container-inner nav ul li.menu-item-has-children > a:after{
+        font-size: 12px;
+    }
+    .top-menu-container-inner nav  ul{
+
+        justify-content: left;
+    }
+    .top-menu-container-inner .main-navigation ul ul{
+        top: 38px;
+    }
+    .top-menu-toggle{
+        display: none;
+    }
+    .main-navigation li{
+        padding: 0 10px;
+    }
+    .main-navigation ul li a{
+        padding: 15px;
+    }
+    #site-navigation{
+        text-align: center;
+    }
+}
+@media screen and (max-width: 1023px) {
+    .top-menu-container-inner nav ul.top-menu{
+        display: none;
+    }
+    .top-menu-container-inner .top-header-social {
+        position: relative;
+    }
+    .top-menu-toggle{
+        border: none;
+        position: absolute;
+        line-height: 1.5;
+        top: 2px;
+        right: 0;
+        background: transparent;
+    }
+}

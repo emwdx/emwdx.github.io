@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	
+	xmlns:georss="http://www.georss.org/georss"
+	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+	
+	>
+<channel>
+	<title>
+	Comments on: Scheming with Schema&#8230;	</title>
+	<atom:link href="/2011/10/20/scheming-with-schema/feed/" rel="self" type="application/rss+xml" />
+	<link>/2011/10/20/scheming-with-schema/</link>
+	<description>iteration, making, building, and coding in education</description>
+	<lastBuildDate>Thu, 20 Oct 2011 10:44:51 +0000</lastBuildDate>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.7.6</generator>
+	<item>
+		<title>
+		By: Kelly O'Shea		</title>
+		<link>/2011/10/20/scheming-with-schema/#comment-21</link>
+
+		<dc:creator><![CDATA[Kelly O'Shea]]></dc:creator>
+		<pubDate>Thu, 20 Oct 2011 10:44:51 +0000</pubDate>
+		<guid isPermaLink="false">/?p=118#comment-21</guid>
+
+					<description><![CDATA[In reply to &lt;a href=&quot;/2011/10/20/scheming-with-schema/#comment-20&quot;&gt;Evan Weinberg&lt;/a&gt;.
+
+Yeah, the same issues come up for my students. They usually try to imagine what kind of force it must be. It is usually a tension force, so the object usually ends up being a rope. :) But now you&#039;re seeing the power of thinking with models! :)]]></description>
+			<content:encoded><![CDATA[<p>In reply to <a href="/2011/10/20/scheming-with-schema/#comment-20">Evan Weinberg</a>.</p>
+<p>Yeah, the same issues come up for my students. They usually try to imagine what kind of force it must be. It is usually a tension force, so the object usually ends up being a rope. 🙂 But now you&#8217;re seeing the power of thinking with models! 🙂</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: Evan Weinberg		</title>
+		<link>/2011/10/20/scheming-with-schema/#comment-20</link>
+
+		<dc:creator><![CDATA[Evan Weinberg]]></dc:creator>
+		<pubDate>Thu, 20 Oct 2011 10:34:28 +0000</pubDate>
+		<guid isPermaLink="false">/?p=118#comment-20</guid>
+
+					<description><![CDATA[In reply to &lt;a href=&quot;/2011/10/20/scheming-with-schema/#comment-19&quot;&gt;Kelly O&#039;Shea&lt;/a&gt;.
+
+Hi Kelly,
+
+I completely agree - all the more reason why these random forces that &#039;appear&#039; on problems from textbooks (and from my own old problem sets, unfortunately) don&#039;t make sense. To really jive with the real idea that forces are interactions between objects, there must be another object involved when these forces appear. I&#039;m not saying it won&#039;t ever happen again on problems. I am just really energized by the fact that the students called me out on this inconsistency on Day 2 while it wasn&#039;t even a discussion in my previous classes.]]></description>
+			<content:encoded><![CDATA[<p>In reply to <a href="/2011/10/20/scheming-with-schema/#comment-19">Kelly O&#8217;Shea</a>.</p>
+<p>Hi Kelly,</p>
+<p>I completely agree &#8211; all the more reason why these random forces that &#8216;appear&#8217; on problems from textbooks (and from my own old problem sets, unfortunately) don&#8217;t make sense. To really jive with the real idea that forces are interactions between objects, there must be another object involved when these forces appear. I&#8217;m not saying it won&#8217;t ever happen again on problems. I am just really energized by the fact that the students called me out on this inconsistency on Day 2 while it wasn&#8217;t even a discussion in my previous classes.</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: Kelly O'Shea		</title>
+		<link>/2011/10/20/scheming-with-schema/#comment-19</link>
+
+		<dc:creator><![CDATA[Kelly O'Shea]]></dc:creator>
+		<pubDate>Thu, 20 Oct 2011 10:27:09 +0000</pubDate>
+		<guid isPermaLink="false">/?p=118#comment-19</guid>
+
+					<description><![CDATA[I don&#039;t like the idea of a &quot;source&quot; for a force. It makes it sound like something can &quot;have&quot; force and then give it to something else. But really a force is an interaction between two objects. And the interaction isn&#039;t singularly directional. Both objects experience the interaction (a 3rd law force pair being a single line on the system schema is particularly powerful when you get to that point... I do it at the end of balanced forces when they are already pros at making system schemas and FBDs).
+
+These diagrams are also super useful when you do conservation laws. Just draw the dashed line around the entire system and easily see internal interactions vs external interactions.]]></description>
+			<content:encoded><![CDATA[<p>I don&#8217;t like the idea of a &#8220;source&#8221; for a force. It makes it sound like something can &#8220;have&#8221; force and then give it to something else. But really a force is an interaction between two objects. And the interaction isn&#8217;t singularly directional. Both objects experience the interaction (a 3rd law force pair being a single line on the system schema is particularly powerful when you get to that point&#8230; I do it at the end of balanced forces when they are already pros at making system schemas and FBDs).</p>
+<p>These diagrams are also super useful when you do conservation laws. Just draw the dashed line around the entire system and easily see internal interactions vs external interactions.</p>
+]]></content:encoded>
+		
+			</item>
+	</channel>
+</rss>

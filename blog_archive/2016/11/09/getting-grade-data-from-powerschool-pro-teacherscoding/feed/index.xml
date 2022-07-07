@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	
+	xmlns:georss="http://www.georss.org/georss"
+	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+	
+	>
+<channel>
+	<title>
+	Comments on: Getting Grade Data from PowerSchool Pro (#TeachersCoding)	</title>
+	<atom:link href="/2016/11/09/getting-grade-data-from-powerschool-pro-teacherscoding/feed/" rel="self" type="application/rss+xml" />
+	<link>/2016/11/09/getting-grade-data-from-powerschool-pro-teacherscoding/</link>
+	<description>iteration, making, building, and coding in education</description>
+	<lastBuildDate>Fri, 07 Apr 2017 20:07:30 +0000</lastBuildDate>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.7.6</generator>
+	<item>
+		<title>
+		By: PowerSchool Evangelist		</title>
+		<link>/2016/11/09/getting-grade-data-from-powerschool-pro-teacherscoding/#comment-491</link>
+
+		<dc:creator><![CDATA[PowerSchool Evangelist]]></dc:creator>
+		<pubDate>Fri, 07 Apr 2017 20:07:30 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2579#comment-491</guid>
+
+					<description><![CDATA[Yes!  We are listening. Importing scores is coming soon...]]></description>
+			<content:encoded><![CDATA[<p>Yes!  We are listening. Importing scores is coming soon&#8230;</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: Evan Weinberg		</title>
+		<link>/2016/11/09/getting-grade-data-from-powerschool-pro-teacherscoding/#comment-490</link>
+
+		<dc:creator><![CDATA[Evan Weinberg]]></dc:creator>
+		<pubDate>Tue, 17 Jan 2017 00:05:59 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2579#comment-490</guid>
+
+					<description><![CDATA[In reply to &lt;a href=&quot;/2016/11/09/getting-grade-data-from-powerschool-pro-teacherscoding/#comment-489&quot;&gt;Erickukin&lt;/a&gt;.
+
+I completely agree - I figured (hoped?) that the PowerSchool folks would be adding this feature at some point since it seems so obvious.
+
+I also would love to have grades live in a spreadsheet and periodically upload them to update, perhaps once a week. That would help reduce some of the anxiety students develop over grades being updated instantly. Maybe the PS powers that be are listening?]]></description>
+			<content:encoded><![CDATA[<p>In reply to <a href="/2016/11/09/getting-grade-data-from-powerschool-pro-teacherscoding/#comment-489">Erickukin</a>.</p>
+<p>I completely agree &#8211; I figured (hoped?) that the PowerSchool folks would be adding this feature at some point since it seems so obvious.</p>
+<p>I also would love to have grades live in a spreadsheet and periodically upload them to update, perhaps once a week. That would help reduce some of the anxiety students develop over grades being updated instantly. Maybe the PS powers that be are listening?</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: Erickukin		</title>
+		<link>/2016/11/09/getting-grade-data-from-powerschool-pro-teacherscoding/#comment-489</link>
+
+		<dc:creator><![CDATA[Erickukin]]></dc:creator>
+		<pubDate>Wed, 11 Jan 2017 09:36:04 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2579#comment-489</guid>
+
+					<description><![CDATA[This is useful, although it seems that with the new 10.1 update the feature to download the scoresheet as a .csv has returned. What would be REALLY helpful is a way to go the other way. My systems would connect much better if I could use a .csv to upload grades into PTP as we could with PTG. 
+
+hmmm.... (as well as grrr....)]]></description>
+			<content:encoded><![CDATA[<p>This is useful, although it seems that with the new 10.1 update the feature to download the scoresheet as a .csv has returned. What would be REALLY helpful is a way to go the other way. My systems would connect much better if I could use a .csv to upload grades into PTP as we could with PTG. </p>
+<p>hmmm&#8230;. (as well as grrr&#8230;.)</p>
+]]></content:encoded>
+		
+			</item>
+	</channel>
+</rss>

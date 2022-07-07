@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	
+	xmlns:georss="http://www.georss.org/georss"
+	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+	
+	>
+<channel>
+	<title>
+	Comments on: Programming and Making Use of Structure in Math	</title>
+	<atom:link href="/2013/10/14/programming-and-making-use-of-structure-in-math/feed/" rel="self" type="application/rss+xml" />
+	<link>/2013/10/14/programming-and-making-use-of-structure-in-math/</link>
+	<description>iteration, making, building, and coding in education</description>
+	<lastBuildDate>Wed, 16 Oct 2013 00:43:44 +0000</lastBuildDate>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.7.6</generator>
+	<item>
+		<title>
+		By: Evan Weinberg		</title>
+		<link>/2013/10/14/programming-and-making-use-of-structure-in-math/#comment-273</link>
+
+		<dc:creator><![CDATA[Evan Weinberg]]></dc:creator>
+		<pubDate>Wed, 16 Oct 2013 00:43:44 +0000</pubDate>
+		<guid isPermaLink="false">/?p=1757#comment-273</guid>
+
+					<description><![CDATA[In reply to &lt;a href=&quot;/2013/10/14/programming-and-making-use-of-structure-in-math/#comment-272&quot;&gt;David Wees (@davidwees)&lt;/a&gt;.
+
+Please do - I think getting these examples out there is important.]]></description>
+			<content:encoded><![CDATA[<p>In reply to <a href="/2013/10/14/programming-and-making-use-of-structure-in-math/#comment-272">David Wees (@davidwees)</a>.</p>
+<p>Please do &#8211; I think getting these examples out there is important.</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: David Wees (@davidwees)		</title>
+		<link>/2013/10/14/programming-and-making-use-of-structure-in-math/#comment-272</link>
+
+		<dc:creator><![CDATA[David Wees (@davidwees)]]></dc:creator>
+		<pubDate>Wed, 16 Oct 2013 00:42:20 +0000</pubDate>
+		<guid isPermaLink="false">/?p=1757#comment-272</guid>
+
+					<description><![CDATA[I hope you don&#039;t mind if I use this example in a presentation I&#039;ve been tinkering with and doing for a while. I keep looking for specific examples from the field to try and explain how I see the intersection of programming and mathematical thinking.]]></description>
+			<content:encoded><![CDATA[<p>I hope you don&#8217;t mind if I use this example in a presentation I&#8217;ve been tinkering with and doing for a while. I keep looking for specific examples from the field to try and explain how I see the intersection of programming and mathematical thinking.</p>
+]]></content:encoded>
+		
+			</item>
+	</channel>
+</rss>

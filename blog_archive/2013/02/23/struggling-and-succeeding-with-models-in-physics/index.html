@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="profile" href="https://gmpg.org/xfn/11">
+
+    <title>Struggling (and succeeding) with models in physics</title>
+<meta name="robots" content="max-image-preview:large">
+<link rel="dns-prefetch">
+<link rel="dns-prefetch" href="//fonts.googleapis.com">
+<link rel="dns-prefetch" href="//s.w.org">
+<link rel="alternate" type="application/rss+xml" title=" &raquo; Feed" href="/feed/">
+<link rel="alternate" type="application/rss+xml" title=" &raquo; Comments Feed" href="/comments/feed/">
+<link rel="alternate" type="application/rss+xml" title=" &raquo; Struggling (and succeeding) with models in physics Comments Feed" href="/2013/02/23/struggling-and-succeeding-with-models-in-physics/feed/">
+		<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/svg\/","svgExt":".svg","source":{"concatemoji":"https13.229.58.164\/wp-includes\/js\/wp-emoji-release.min.js?ver=5.7.6"}};
+			!function(e,a,t){var n,r,o,i=a.createElement("canvas"),p=i.getContext&&i.getContext("2d");function s(e,t){var a=String.fromCharCode;p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,e),0,0);e=i.toDataURL();return p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,t),0,0),e===i.toDataURL()}function c(e){var t=a.createElement("script");t.src=e,t.defer=t.type="text/javascript",a.getElementsByTagName("head")[0].appendChild(t)}for(o=Array("flag","emoji"),t.supports={everything:!0,everythingExceptFlag:!0},r=0;r<o.length;r++)t.supports[o[r]]=function(e){if(!p||!p.fillText)return!1;switch(p.textBaseline="top",p.font="600 32px Arial",e){case"flag":return s([127987,65039,8205,9895,65039],[127987,65039,8203,9895,65039])?!1:!s([55356,56826,55356,56819],[55356,56826,8203,55356,56819])&&!s([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]);case"emoji":return!s([55357,56424,8205,55356,57212],[55357,56424,8203,55356,57212])}return!1}(o[r]),t.supports.everything=t.supports.everything&&t.supports[o[r]],"flag"!==o[r]&&(t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&t.supports[o[r]]);t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&!t.supports.flag,t.DOMReady=!1,t.readyCallback=function(){t.DOMReady=!0},t.supports.everything||(n=function(){t.readyCallback()},a.addEventListener?(a.addEventListener("DOMContentLoaded",n,!1),e.addEventListener("load",n,!1)):(e.attachEvent("onload",n),a.attachEvent("onreadystatechange",function(){"complete"===a.readyState&&t.readyCallback()})),(n=t.source||{}).concatemoji?c(n.concatemoji):n.wpemoji&&n.twemoji&&(c(n.twemoji),c(n.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+		<style type="text/css">img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}</style>
+	<link rel="stylesheet" id="wp-block-library-css" href="/wp-includes/css/dist/block-library/style.min.css?ver=5.7.6" type="text/css" media="all">
+<style id="wp-block-library-inline-css" type="text/css">.has-text-align-justify{text-align:justify;}</style>
+<link rel="stylesheet" id="wp-block-library-theme-css" href="/wp-includes/css/dist/block-library/theme.min.css?ver=5.7.6" type="text/css" media="all">
+<link rel="stylesheet" id="gist-style-css" href="/wp-content/themes/gist/style.css?ver=5.7.6" type="text/css" media="all">
+<style id="gist-style-inline-css" type="text/css">{ clip: rect(1px, 1px, 1px, 1px); height: 1px; position: absolute; overflow: hidden; width: 1px; }
+body { font-family: Open Sans; }body { font-size: 16px; }body { line-height : 2; }.breadcrumbs span.breadcrumb, .nav-links a, .search-form input[type=submit], #toTop, .candid-pagination .page-numbers.current, .candid-pagination .page-numbers:hover  { background : #ca9b52; }.search-form input.search-field, .sticky .p-15, .related-post-entries li, .candid-pagination .page-numbers { border-color : #ca9b52; }.error-404 h1, .no-results h1, a, a:visited, .related-post-entries .title:hover, .entry-title a:hover, .featured-post-title a:hover, .entry-meta.entry-category a,.widget li a:hover, .widget h1 a:hover, .widget h2 a:hover, .widget h3 a:hover, .site-title a, .site-title a:visited, .main-navigation ul li a:hover { color : #ca9b52; }.btn-primary { border: 2px solid #ca9b52;}</style>
+<link rel="stylesheet" id="drift-blog-style-css" href="/wp-content/themes/drift-blog/style.css?ver=5.7.6" type="text/css" media="all">
+<link rel="stylesheet" id="drift-blog-google-fonts-css" href="//fonts.googleapis.com/css?family=Playfair+Display&#038;ver=5.7.6" type="text/css" media="all">
+<link rel="stylesheet" id="gist-googleapis-css" href="//fonts.googleapis.com/css?family=Open+Sans&#038;ver=5.7.6" type="text/css" media="all">
+<link rel="stylesheet" id="gist-google-fonts-css" href="//fonts.googleapis.com/css?family=Oswald&#038;ver=5.7.6" type="text/css" media="all">
+<link rel="stylesheet" id="font-awesome-css" href="/wp-content/themes/gist/candidthemes/assets/framework/Font-Awesome/css/font-awesome.min.css?ver=4.7.0" type="text/css" media="all">
+<link rel="stylesheet" id="jetpack_css-css" href="/wp-content/plugins/jetpack/css/jetpack.css?ver=8.6.2" type="text/css" media="all">
+<script type="text/javascript" src="/wp-includes/js/jquery/jquery.min.js?ver=3.5.1" id="jquery-core-js"></script>
+<script type="text/javascript" src="/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.3.2" id="jquery-migrate-js"></script>
+<link rel="https://api.w.org/" href="/wp-json/">
+<link rel="alternate" type="application/json" href="/wp-json/wp/v2/posts/950">
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="/wp-includes/wlwmanifest.xml"> 
+<meta name="generator" content="WordPress 5.7.6">
+<link rel="canonical" href="/2013/02/23/struggling-and-succeeding-with-models-in-physics/">
+<link rel="shortlink" href="/?p=950">
+<link rel="alternate" type="application/json+oembed" href="/wp-json/oembed/1.0/embed?url=https%3A%2F%2F%2F2013%2F02%2F23%2Fstruggling-and-succeeding-with-models-in-physics%2F">
+<link rel="alternate" type="text/xml+oembed" href="/wp-json/oembed/1.0/embed?url=https%3A%2F%2F%2F2013%2F02%2F23%2Fstruggling-and-succeeding-with-models-in-physics%2F&#038;format=xml">
+<style type="text/css">img#wpstats{display:none}</style>
+<link rel="pingback" href="/xmlrpc.php">		<style type="text/css" id="wp-custom-css">.custom-logo{
+	height:300px;
+	width:300px
+	
+}</style>
+		</head>
+
+<body data-rsssl="1" class="post-template-default single single-post postid-950 single-format-standard wp-custom-logo wp-embed-responsive ct-sticky-sidebar right-sidebar">
+    <div id="page" class="site container-main">
+        <a class="skip-link screen-reader-text" href="#content">Skip to content</a>
+
+        <header id="masthead" class="site-header" role="banner">
+            <div class="top-menu-container-inner container-inner">
+                    <div id="mainnav-wrap" class="clear">
+                        <div class="top-header-social">
+                            
+                            <button class="top-menu-toggle"><i class="fa fa-bars"></i></button>
+                        </div>
+
+                        <nav id="top-site-navigation" class="main-navigation" role="navigation">
+                            <div class="menu-pages-container"><ul id="top-menu" class="top-menu nav_menu">
+<li id="menu-item-2781" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-2781"><a href="/">Home</a></li>
+<li id="menu-item-2782" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2782"><a href="/about/">About Evan Weinberg</a></li>
+</ul></div>                        </nav>
+                            <!-- #site-navigation -->
+                    </div>
+                </div>
+                    <!-- .top-menu-container-inner -->
+            <div class="site-branding">
+                <div class="container-inner">
+                    <a href="/" class="custom-logo-link" rel="home"><img width="1000" height="1000" src="/wp-content/uploads/2018/10/for.next_.001.jpeg" class="custom-logo" alt="" srcset="/wp-content/uploads/2018/10/for.next_.001.jpeg 1000w, /wp-content/uploads/2018/10/for.next_.001-300x300.jpeg 300w, /wp-content/uploads/2018/10/for.next_.001-150x150.jpeg 150w, /wp-content/uploads/2018/10/for.next_.001-768x768.jpeg 768w" sizes="(max-width: 1000px) 100vw, 1000px"></a>                            <p class="site-title"><a href="/" rel="home"></a></p>
+                                                           <p class="site-description">iteration, making, building, and coding in education</p>
+                                                </div>
+                </div>
+                <!-- .site-branding -->
+
+                <div class="container-inner">
+                    <div id="mainnav-wrap">
+                        <nav id="site-navigation" class="main-navigation" role="navigation">
+                            <button class="menu-toggle" aria-controls="primary-menu" aria-expanded="false"><i class="fa fa-bars"></i></button>
+                                                            </nav>
+                            <!-- #site-navigation -->
+                        </div>
+                    </div>
+                    <!-- .container-inner -->
+                </header>
+                <!-- #masthead -->
+                <div class="header-image-block">
+                                    </div>
+
+                <div id="content" class="site-content container-inner p-t-15">
+	<div id="primary" class="content-area">
+		<main id="main" class="site-main">
+			<div class="breadcrumbs">
+                            </div>
+		
+<article id="post-950" class="post-950 post type-post status-publish format-standard hentry category-computational-thinking-2 category-physics">
+    <div class="p-15 left-image">
+        <div class="ct-featured-image">
+                    </div>
+        <div class="entry-content">
+            <header class="entry-header">
+                <h1 class="entry-title">Struggling (and succeeding) with models in physics</h1>    </header>
+    <!-- .entry-header -->
+    <p>Today we moved into exploring projectile motion in my non-AP physics class. Exhibit A:<br>
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2013/02/screen-shot-2013-02-22-at-4-29-27-pm.png"><img loading="lazy" src="https://blog.evanweinberg.org/wp-content/uploads/2013/02/screen-shot-2013-02-22-at-4-29-27-pm.png?w=300" alt="Screen Shot 2013-02-22 at 4.29.27 PM" width="300" height="222" class="aligncenter size-medium wp-image-951" srcset="/wp-content/uploads/2013/02/screen-shot-2013-02-22-at-4-29-27-pm.png 466w, /wp-content/uploads/2013/02/screen-shot-2013-02-22-at-4-29-27-pm-300x223.png 300w" sizes="(max-width: 300px) 100vw, 300px"></a></p>
+<p>I launched a single marble and asked them to tell me what angle for a given setting of the launched would lead to a maximum distance. They came up with a few possibilities, and we tried them all. The maximum ended up around 35 degrees. (Those that know the actual answer from theory with no air resistance might find this curious. I certainly did.) </p>
+<p>I had the students load the latest version of <a href="http://www.cabrillo.edu/~dbrown/tracker/">Tracker</a> on their computers. While this was going on, I showed them how to use the program to step frame-by-frame through one of the included videos of a ball being thrown in front of a black background:<br>
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2013/02/screen-shot-2013-02-22-at-4-34-45-pm.png"><img loading="lazy" src="https://blog.evanweinberg.org/wp-content/uploads/2013/02/screen-shot-2013-02-22-at-4-34-45-pm.png?w=300" alt="Screen Shot 2013-02-22 at 4.34.45 PM" width="300" height="146" class="aligncenter size-medium wp-image-952" srcset="/wp-content/uploads/2013/02/screen-shot-2013-02-22-at-4-34-45-pm.png 1105w, /wp-content/uploads/2013/02/screen-shot-2013-02-22-at-4-34-45-pm-300x147.png 300w, /wp-content/uploads/2013/02/screen-shot-2013-02-22-at-4-34-45-pm-1024x501.png 1024w, /wp-content/uploads/2013/02/screen-shot-2013-02-22-at-4-34-45-pm-768x376.png 768w" sizes="(max-width: 300px) 100vw, 300px"></a><br>
+Students called out that the x-position vs. t graph was a straight line with constant slope &#8211; perfect for the constant velocity model. When we looked at the y-position vs t, they again recognized this as a possible constant acceleration situation. Not much of a stretch here at all. I demonstrated (quickly) how the dynamic particle model in Tracker lets you simulate a particle on top of the video based on the mass and forces acting on it. I asked them to tell me how to match the particle &#8211; they shouted out different values for position and velocity components until eventually they matched. We then stepped through the frames of the video to watch the actual ball and the simulated ball move in sync with each other.</p>
+<p>I did one more demo and added an air resistance force to the dynamic model and asked how it would change the simulated ball. They were right on describing it, even giving me an &#8216;ooh!&#8217; when the model changed on screen as they expected.<br>
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2013/02/screen-shot-2013-02-22-at-5-04-31-pm.png"><img loading="lazy" src="https://blog.evanweinberg.org/wp-content/uploads/2013/02/screen-shot-2013-02-22-at-5-04-31-pm.png?w=300" alt="Screen Shot 2013-02-22 at 5.04.31 PM" width="300" height="142" class="aligncenter size-medium wp-image-953" srcset="/wp-content/uploads/2013/02/screen-shot-2013-02-22-at-5-04-31-pm.png 453w, /wp-content/uploads/2013/02/screen-shot-2013-02-22-at-5-04-31-pm-300x142.png 300w" sizes="(max-width: 300px) 100vw, 300px"></a></p>
+<p>I then gave them my <a href="http://geogebratube.org/student/m28398">Projectile Motion Simulator</a> in Geogebra. I told them that it had the characteristics they described from the graphs &#8211; constant velocity in x, constant acceleration of gravity in y. Their task was to answer the following question by adjusting the model:</p>
+<blockquote><p>A soccer ball is kicked from the ground at 25 degrees from the horizontal. How far and how high does the ball travel? How long is it in the air?</p></blockquote>
+<p>They quickly figured out how it works and identified that information was missing. Once I gave them the speed of the ball, they answered the three questions and checked with each other on the answers. </p>
+<p>I then asked them to use the Geogebra model to simulate the launcher and the marble from the beginning of the class. I asked them to match the computer model to what the launcher actually did. My favorite part of the lesson was that they started asking for measuring devices themselves. One asked for a stopwatch, but ended up not needing it. They worked together to figure out unknown information, and then got the model to do a pretty good job of predicting the landing location. I then changed the angle of the launcher and asked them to predict where the marble would land. Here is the result:<br>
+[wpvideo ZPhs5x2s]</p>
+<p>Nothing in this lesson is particularly noteworthy. I probably talked a bit too much, and could have had them go through the steps of creating the model in Tracker. That&#8217;s something I will do in future classes. When I do things on the computer with students, the issues of getting programs installed always takes longer than I want it to, and it gets away from the fundamental process that I wanted them to see and have a part of &#8211; experiencing the creation of a computer model, and then actually matching that model to something in the real world.</p>
+<p>My assertions:</p>
+<ul>
+<li>Matching a model (mathematical, physical, numerical, graphical, algebraic) to observations is a challenge that is understood with minimal explanation. <em>Make <b>a</b> look like <b>b</b> using tool <b>c.</b></em>
+</li>
+<li>The hand waving involved in getting students to experiment with a computer model is minimized when that model is being made to match actual observations or data. While I can make a computer model do all sorts of unrealistic things, a model that is unrealistic wont match anything that students actually see or measure.</li>
+<li>Students in this activity realized what values and measurements they need, and then went and  made them. This is the real power of having these computer tools available. </li>
+<li>While the focus in the final modeling activity was not an algebraic analysis of how projectile motion works mathematically, it did require them to recognize which factors are at play. It required them to look at their computed answer and see how it compared with observations. These two steps (identifying given information, checking answer) are the ones I have always had the most difficulty getting students to be explicit about. Using the computer model focuses the problem on these two tasks in a way that hand calculations have never really pushed students to do. That&#8217;s certainly my failure, but it&#8217;s hard to deny how engaged and naturally this evolved during today&#8217;s lesson.</li>
+</ul>
+<p>The homework assignment after the class was to solve a number of projectile motion problems using the Geogebra model to focus them on the last bullet point. If they know the answers based on a model they have applied in a few different situations, it will hopefully make more intuitive sense later on when we do apply more abstract algebraic models. </p>
+<p>Algebra is very much not dead. It just doesn&#8217;t make sense anymore to treat algebraic methods as the most rigorous way to solve a problem, or as a simple way to introduce a topic. It has to start somewhere real and concrete. Computers have a lot of potential for developing the intuition for how a concept works without the high bar for entry (and uphill battle for engagement) that algebra often carries as baggage.</p>
+
+    <footer class="entry-footer">
+        </footer>
+<!-- .entry-footer -->
+</div>
+<!-- .entry-content -->
+</div>
+<!-- .p-15 -->
+</article><!-- #post-950 -->
+
+	<nav class="navigation post-navigation" role="navigation" aria-label="Posts">
+		<h2 class="screen-reader-text">Post navigation</h2>
+		<div class="nav-links">
+<div class="nav-previous"><a href="/2013/02/06/what-do-i-have-wrong-here-computational-thinking-obsession-continues/" rel="prev">What do I have wrong here? Computational thinking obsession continues</a></div>
+<div class="nav-next"><a href="/2013/02/25/a-computational-approach-to-modeling-projectile-motion-continued/" rel="next">A computational approach to modeling projectile motion, continued.</a></div>
+</div>
+	</nav>            <div class="related-pots-block">
+                <h2 class="widget-title">
+                    Related Posts                </h2>
+                <ul class="related-post-entries clear">
+                                            <li>
+                                                        <div class="featured-desc">
+                                <a href="/2017/05/03/probability-spreadsheets-and-the-citizen-database/">
+                                    <h2 class="title">
+                                       Probability, Spreadsheets, and the Citizen Database                                    </h2>
+                                </a>
+                            </div>
+                        </li>
+                                            <li>
+                                                        <div class="featured-desc">
+                                <a href="/2017/04/21/making-groups-a-genetic-algorithm-experiment/">
+                                    <h2 class="title">
+                                       Making Groups &#8211; A Genetic Algorithm Experiment                                    </h2>
+                                </a>
+                            </div>
+                        </li>
+                                            <li>
+                                                        <div class="featured-desc">
+                                <a href="/2017/03/31/generating-the-mandelbrot-set-with-peardeck/">
+                                    <h2 class="title">
+                                       Generating the Mandelbrot Set with PearDeck                                    </h2>
+                                </a>
+                            </div>
+                        </li>
+                                    </ul>
+            </div> <!-- .related-post-block -->
+        
+<div id="comments" class="comments-area">
+
+			<h2 class="comments-title">
+			4 thoughts on &ldquo;<span>Struggling (and succeeding) with models in physics</span>&rdquo;		</h2>
+<!-- .comments-title -->
+
+		
+		<ol class="comment-list">
+					<li id="comment-173" class="comment even thread-even depth-1 parent">
+			<article id="div-comment-173" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="https://secure.gravatar.com/avatar/070ae1fbfe0c961121e1c3a70ce37a90?s=32&#038;d=mm&#038;r=g" srcset="https://secure.gravatar.com/avatar/070ae1fbfe0c961121e1c3a70ce37a90?s=64&#038;d=mm&#038;r=g 2x" class="avatar avatar-32 photo" height="32" width="32" loading="lazy">						<b class="fn">Andy "SuperFly" Rundquist</b> <span class="says">says:</span>					</div>
+<!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="/2013/02/23/struggling-and-succeeding-with-models-in-physics/#comment-173"><time datetime="2013-02-23T11:11:11+08:00">February 23, 2013 at 11:11 am</time></a>					</div>
+<!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>I really like your last paragraph. It reminds me of some struggles I have with teaching, especially with departmental colleagues who very much disagree with your last paragraph. For me it&#8217;s sometimes about having a computer do algebra for you after the physics is established, sometimes it&#8217;s similar but with calculus instead of algebra. Sometimes it&#8217;s having the computer do numeric solutions to differential equations to establish things like the quantum numbers in hydrogen. My colleagues always say that students benefit from &#8220;doing it themselves.&#8221; One, when he teachers quantum, has students do dozens of normalization problems. Ugh, I say, if we really only need to get the students to grasp that the integral of psi* psi needs to be one.</p>
+				</div>
+<!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="/2013/02/23/struggling-and-succeeding-with-models-in-physics/?replytocom=173#respond" data-commentid="173" data-postid="950" data-belowelement="div-comment-173" data-respondelement="respond" data-replyto="Reply to Andy &quot;SuperFly&quot; Rundquist" aria-label="Reply to Andy &quot;SuperFly&quot; Rundquist">Reply</a></div>			</article><!-- .comment-body -->
+		<ol class="children">
+		<li id="comment-174" class="comment odd alt depth-2 parent">
+			<article id="div-comment-174" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="https://secure.gravatar.com/avatar/509d79173df4009f0620939f5069f8be?s=32&#038;d=mm&#038;r=g" srcset="https://secure.gravatar.com/avatar/509d79173df4009f0620939f5069f8be?s=64&#038;d=mm&#038;r=g 2x" class="avatar avatar-32 photo" height="32" width="32" loading="lazy">						<b class="fn"><a href="http://gealgerobophysiculus.wordpress.com/" rel="external nofollow ugc" class="url">Evan Weinberg</a></b> <span class="says">says:</span>					</div>
+<!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="/2013/02/23/struggling-and-succeeding-with-models-in-physics/#comment-174"><time datetime="2013-02-23T13:15:37+08:00">February 23, 2013 at 1:15 pm</time></a>					</div>
+<!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>Thanks Andy – I really want to dig in to figuring out that reluctance because doing so would help sell others on a computational approach. It has to be more than just an institutional &#8216;this is how we do things&#8217; argument, no? I don&#8217;t mean to suggest that students get NO benefit from doing hand calculations themselves. I think we overstate its importance because our first inclination when we see students that don&#8217;t have automatic skills is that they haven&#8217;t practiced enough. </p>
+<p>I also agree that there is a level of relativism in play here – as an algebra teacher, I&#8217;d love all of my students to have their integer operations down. In Calculus, I&#8217;d love it if my students can factor quadratics and solve equations effortlessly. The goal in those courses, however, is not to make sure they have those pre-requisite skills, it&#8217;s to get them to understand new ideas. Those new ideas don&#8217;t necessarily require those skills be solid to develop intuition or understanding, especially with computers around.</p>
+<p>The last thing that feeds into this is that few people actually do backward design for learning. The default plan is usually a sequence of ideas that starts with a definition, poses examples around that definition that get gradually more complicated, and then application problems appear. This is not usually how true discovery happens in the real world. In the real world, we start with a problem to be solved, try to attack it using the models we already understand. </p>
+				</div>
+<!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="/2013/02/23/struggling-and-succeeding-with-models-in-physics/?replytocom=174#respond" data-commentid="174" data-postid="950" data-belowelement="div-comment-174" data-respondelement="respond" data-replyto="Reply to Evan Weinberg" aria-label="Reply to Evan Weinberg">Reply</a></div>			</article><!-- .comment-body -->
+		<ol class="children">
+		<li id="comment-175" class="comment even depth-3">
+			<article id="div-comment-175" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="https://secure.gravatar.com/avatar/070ae1fbfe0c961121e1c3a70ce37a90?s=32&#038;d=mm&#038;r=g" srcset="https://secure.gravatar.com/avatar/070ae1fbfe0c961121e1c3a70ce37a90?s=64&#038;d=mm&#038;r=g 2x" class="avatar avatar-32 photo" height="32" width="32" loading="lazy">						<b class="fn">Andy "SuperFly" Rundquist</b> <span class="says">says:</span>					</div>
+<!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="/2013/02/23/struggling-and-succeeding-with-models-in-physics/#comment-175"><time datetime="2013-02-23T21:13:05+08:00">February 23, 2013 at 9:13 pm</time></a>					</div>
+<!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>Yes, I think the relativism idea is a big part of this. Just this week I was teaching about blackbody radiation. There are a couple of tricky integrals involved, but, to me, the big idea is simply that Planck found that letting the oscillators in the wall of the cavity only have discrete energy levels makes the theory fit the data. At the last minute I changed my plans for the day from helping with the integral to discussing whether my students would be brave enough to embrace a model that has such weird ramifications (a pendulum can only have certain amplitudes). I&#8217;m glad I did it, but if my colleagues found out, I&#8217;d catch some heat. Ugh.</p>
+				</div>
+<!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="/2013/02/23/struggling-and-succeeding-with-models-in-physics/?replytocom=175#respond" data-commentid="175" data-postid="950" data-belowelement="div-comment-175" data-respondelement="respond" data-replyto="Reply to Andy &quot;SuperFly&quot; Rundquist" aria-label="Reply to Andy &quot;SuperFly&quot; Rundquist">Reply</a></div>			</article><!-- .comment-body -->
+		</li>
+<!-- #comment-## -->
+</ol>
+<!-- .children -->
+</li>
+<!-- #comment-## -->
+</ol>
+<!-- .children -->
+</li>
+<!-- #comment-## -->
+		<li id="comment-176" class="pingback odd alt thread-odd thread-alt depth-1">
+			<div class="comment-body">
+				Pingback: <a href="/2013/02/25/a-computational-approach-to-modeling-projectile-motion-continued/" rel="external nofollow ugc" class="url">A computational approach to modeling projectile motion, continued. | gealgerobophysiculus</a> 			</div>
+		</li>
+<!-- #comment-## -->
+		</ol>
+<!-- .comment-list -->
+
+			<div id="respond" class="comment-respond">
+		<h3 id="reply-title" class="comment-reply-title">Leave a Reply <small><a rel="nofollow" id="cancel-comment-reply-link" href="/2013/02/23/struggling-and-succeeding-with-models-in-physics/#respond" style="display:none;">Cancel reply</a></small>
+</h3>
+<form action="https13.229.58.164/wp-comments-post.php" method="post" id="commentform" class="comment-form" novalidate>
+<p class="comment-notes"><span id="email-notes">Your email address will not be published.</span> Required fields are marked <span class="required">*</span></p>
+<p class="comment-form-comment"><label for="comment">Comment</label> <textarea id="comment" name="comment" cols="45" rows="8" maxlength="65525" required="required"></textarea></p>
+<p class="comment-form-author"><label for="author">Name <span class="required">*</span></label> <input id="author" name="author" type="text" value="" size="30" maxlength="245" required="required"></p>
+<p class="comment-form-email"><label for="email">Email <span class="required">*</span></label> <input id="email" name="email" type="email" value="" size="30" maxlength="100" aria-describedby="email-notes" required="required"></p>
+<p class="comment-form-url"><label for="url">Website</label> <input id="url" name="url" type="url" value="" size="30" maxlength="200"></p>
+<p class="comment-form-cookies-consent"><input id="wp-comment-cookies-consent" name="wp-comment-cookies-consent" type="checkbox" value="yes"> <label for="wp-comment-cookies-consent">Save my name, email, and website in this browser for the next time I comment.</label></p>
+<p class="form-submit"><input name="submit" type="submit" id="submit" class="submit" value="Post Comment"> <input type="hidden" name="comment_post_ID" value="950" id="comment_post_ID">
+<input type="hidden" name="comment_parent" id="comment_parent" value="0">
+</p>
+<p style="display: none;"><input type="hidden" id="akismet_comment_nonce" name="akismet_comment_nonce" value="37601c5bb5"></p>
+<p style="display: none;"><input type="hidden" id="ak_js" name="ak_js" value="35"></p>
+</form>	</div>
+<!-- #respond -->
+	
+</div>
+<!-- #comments -->
+
+		</main><!-- #main -->
+	</div>
+<!-- #primary -->
+
+
+<aside id="secondary" class="widget-area" role="complementary">
+	<section id="categories-2" class="widget widget_categories"><h2 class="widget-title">Categories</h2>
+			<ul>
+					<li class="cat-item cat-item-2">
+<a href="/category/algebra-2/">algebra 2</a>
+</li>
+	<li class="cat-item cat-item-3">
+<a href="/category/array/">Array</a>
+</li>
+	<li class="cat-item cat-item-4">
+<a href="/category/calculus/">calculus</a>
+</li>
+	<li class="cat-item cat-item-5">
+<a href="/category/computational-thinking-2/">computational-thinking</a>
+</li>
+	<li class="cat-item cat-item-6">
+<a href="/category/geogebra/">geogebra</a>
+</li>
+	<li class="cat-item cat-item-7">
+<a href="/category/geometry/">geometry</a>
+</li>
+	<li class="cat-item cat-item-8">
+<a href="/category/ib/">IB</a>
+</li>
+	<li class="cat-item cat-item-9">
+<a href="/category/physics/">physics</a>
+</li>
+	<li class="cat-item cat-item-10">
+<a href="/category/precalculus/">precalculus</a>
+</li>
+	<li class="cat-item cat-item-11">
+<a href="/category/programming/">programming</a>
+</li>
+	<li class="cat-item cat-item-12">
+<a href="/category/reflection/">reflection</a>
+</li>
+	<li class="cat-item cat-item-13">
+<a href="/category/robotics/">robotics</a>
+</li>
+	<li class="cat-item cat-item-14">
+<a href="/category/standards-based-grading/">standards based grading</a>
+</li>
+	<li class="cat-item cat-item-15">
+<a href="/category/studentwork/">studentwork</a>
+</li>
+	<li class="cat-item cat-item-16">
+<a href="/category/teaching-philosophy/">teaching philosophy</a>
+</li>
+	<li class="cat-item cat-item-17">
+<a href="/category/teaching-stories/">teaching stories</a>
+</li>
+	<li class="cat-item cat-item-1">
+<a href="/category/uncategorized/">Uncategorized</a>
+</li>
+	<li class="cat-item cat-item-18">
+<a href="/category/year-in-review/">year-in-review</a>
+</li>
+			</ul>
+
+			</section><section id="meta-2" class="widget widget_meta"><h2 class="widget-title">Meta</h2>
+		<ul>
+						<li><a href="/wp-login.php">Log in</a></li>
+			<li><a href="/feed/">Entries feed</a></li>
+			<li><a href="/comments/feed/">Comments feed</a></li>
+
+			<li><a href="https://wordpress.org/">WordPress.org</a></li>
+		</ul>
+
+		</section></aside><!-- #secondary -->
+
+	</div>
+<!-- #content -->
+
+<footer id="colophon" class="site-footer">
+    		<div class="site-info">
+        			<span class="copy-right-text">All Right Reserved 2018</span>
+						<div class="powered-text">
+				<a href="https://wordpress.org/">Proudly powered by WordPress</a>
+				<span class="sep"> | </span>
+				Theme: Drift Blog by <a href="http://www.candidthemes.com/">Candid Themes</a>.			</div>
+			        <a id="toTop" class="go-to-top" href="#" title="Go to Top">
+            <i class="fa fa-angle-double-up"></i>
+        </a>
+    		</div>
+<!-- .site-info -->
+	</footer><!-- #colophon -->
+</div>
+<!-- #page -->
+
+<script type="text/javascript" src="/wp-content/themes/drift-blog/js/drift-blog-custom.js?ver=20151215" id="drift-blog-custom-js"></script>
+<script type="text/javascript" src="/wp-content/themes/gist/candidthemes/assets/js/gist-custom.js?ver=20151215" id="gist-custom-js"></script>
+<script type="text/javascript" src="/wp-content/themes/gist/candidthemes/assets/js/theia-sticky-sidebar.js?ver=20151215" id="theia-sticky-sidebar-js"></script>
+<script type="text/javascript" src="/wp-content/themes/gist/js/navigation.js?ver=20151215" id="gist-navigation-js"></script>
+<script type="text/javascript" src="/wp-content/themes/gist/js/skip-link-focus-fix.js?ver=20151215" id="gist-skip-link-focus-fix-js"></script>
+<script type="text/javascript" src="/wp-includes/js/comment-reply.min.js?ver=5.7.6" id="comment-reply-js"></script>
+<script type="text/javascript" src="/wp-includes/js/wp-embed.min.js?ver=5.7.6" id="wp-embed-js"></script>
+<script async="async" type="text/javascript" src="/wp-content/plugins/akismet/_inc/form.js?ver=4.1.7" id="akismet-form-js"></script>
+<script type="text/javascript" src="https://stats.wp.com/e-202219.js" async="async" defer></script>
+<script type="text/javascript">
+	_stq = window._stq || [];
+	_stq.push([ 'view', {v:'ext',j:'1:8.6.2',blog:'180381780',post:'950',tz:'8',srv:'evanweinberg.com'} ]);
+	_stq.push([ 'clickTrackerInit', '180381780', '950' ]);
+</script>
+
+
+</body>
+</html>

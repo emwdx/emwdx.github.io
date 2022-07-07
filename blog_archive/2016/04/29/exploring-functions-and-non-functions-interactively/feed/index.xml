@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	
+	xmlns:georss="http://www.georss.org/georss"
+	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+	
+	>
+<channel>
+	<title>
+	Comments on: Exploring Functions (and Non-Functions) Interactively	</title>
+	<atom:link href="/2016/04/29/exploring-functions-and-non-functions-interactively/feed/" rel="self" type="application/rss+xml" />
+	<link>/2016/04/29/exploring-functions-and-non-functions-interactively/</link>
+	<description>iteration, making, building, and coding in education</description>
+	<lastBuildDate>Sat, 28 May 2016 13:44:28 +0000</lastBuildDate>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.7.6</generator>
+	<item>
+		<title>
+		By: Xavier		</title>
+		<link>/2016/04/29/exploring-functions-and-non-functions-interactively/#comment-458</link>
+
+		<dc:creator><![CDATA[Xavier]]></dc:creator>
+		<pubDate>Sat, 28 May 2016 13:44:28 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2441#comment-458</guid>
+
+					<description><![CDATA[In reply to &lt;a href=&quot;/2016/04/29/exploring-functions-and-non-functions-interactively/#comment-455&quot;&gt;Evan Weinberg&lt;/a&gt;.
+
+Thanks a lot, Evan.]]></description>
+			<content:encoded><![CDATA[<p>In reply to <a href="/2016/04/29/exploring-functions-and-non-functions-interactively/#comment-455">Evan Weinberg</a>.</p>
+<p>Thanks a lot, Evan.</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: Xavier		</title>
+		<link>/2016/04/29/exploring-functions-and-non-functions-interactively/#comment-457</link>
+
+		<dc:creator><![CDATA[Xavier]]></dc:creator>
+		<pubDate>Sun, 15 May 2016 09:41:04 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2441#comment-457</guid>
+
+					<description><![CDATA[Thanks a lot, for all.]]></description>
+			<content:encoded><![CDATA[<p>Thanks a lot, for all.</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: Evan Weinberg		</title>
+		<link>/2016/04/29/exploring-functions-and-non-functions-interactively/#comment-456</link>
+
+		<dc:creator><![CDATA[Evan Weinberg]]></dc:creator>
+		<pubDate>Sun, 15 May 2016 04:47:22 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2441#comment-456</guid>
+
+					<description><![CDATA[In reply to &lt;a href=&quot;/2016/04/29/exploring-functions-and-non-functions-interactively/#comment-455&quot;&gt;Evan Weinberg&lt;/a&gt;.
+
+Never mind - I figured out it was a window sizing issue. I haven&#039;t played with the helper classes on the input for the medium size browser window to fix this.]]></description>
+			<content:encoded><![CDATA[<p>In reply to <a href="/2016/04/29/exploring-functions-and-non-functions-interactively/#comment-455">Evan Weinberg</a>.</p>
+<p>Never mind &#8211; I figured out it was a window sizing issue. I haven&#8217;t played with the helper classes on the input for the medium size browser window to fix this.</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: Evan Weinberg		</title>
+		<link>/2016/04/29/exploring-functions-and-non-functions-interactively/#comment-455</link>
+
+		<dc:creator><![CDATA[Evan Weinberg]]></dc:creator>
+		<pubDate>Sun, 15 May 2016 04:45:00 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2441#comment-455</guid>
+
+					<description><![CDATA[In reply to &lt;a href=&quot;/2016/04/29/exploring-functions-and-non-functions-interactively/#comment-454&quot;&gt;Xavier&lt;/a&gt;.
+
+This is great Xavier - I&#039;ll have to dig into the details on how to reproduce the Chrome bug. At the moment it seems to be working fine on my end, unless I&#039;m not actually understanding the issues you found.
+
+I also added an MIT license - mix it up as much as you want and share away.]]></description>
+			<content:encoded><![CDATA[<p>In reply to <a href="/2016/04/29/exploring-functions-and-non-functions-interactively/#comment-454">Xavier</a>.</p>
+<p>This is great Xavier &#8211; I&#8217;ll have to dig into the details on how to reproduce the Chrome bug. At the moment it seems to be working fine on my end, unless I&#8217;m not actually understanding the issues you found.</p>
+<p>I also added an MIT license &#8211; mix it up as much as you want and share away.</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: Xavier		</title>
+		<link>/2016/04/29/exploring-functions-and-non-functions-interactively/#comment-454</link>
+
+		<dc:creator><![CDATA[Xavier]]></dc:creator>
+		<pubDate>Sun, 01 May 2016 10:49:07 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2441#comment-454</guid>
+
+					<description><![CDATA[I cloned your repo and make a catalan trasnlation: https://github.com/somenxavier/functions-exploration I filed some issues...]]></description>
+			<content:encoded><![CDATA[<p>I cloned your repo and make a catalan trasnlation: <a href="https://github.com/somenxavier/functions-exploration" rel="nofollow ugc">https://github.com/somenxavier/functions-exploration</a> I filed some issues&#8230;</p>
+]]></content:encoded>
+		
+			</item>
+	</channel>
+</rss>

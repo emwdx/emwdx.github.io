@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	
+	xmlns:georss="http://www.georss.org/georss"
+	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+	
+	>
+<channel>
+	<title>
+	Comments on: Proofs in Geometry &#8211; The Modification Continues&#8230;	</title>
+	<atom:link href="/2013/11/10/proofs-in-geometry-the-modification-continues/feed/" rel="self" type="application/rss+xml" />
+	<link>/2013/11/10/proofs-in-geometry-the-modification-continues/</link>
+	<description>iteration, making, building, and coding in education</description>
+	<lastBuildDate>Sat, 14 Dec 2013 07:01:45 +0000</lastBuildDate>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.7.6</generator>
+	<item>
+		<title>
+		By: Celeste Sinclair		</title>
+		<link>/2013/11/10/proofs-in-geometry-the-modification-continues/#comment-274</link>
+
+		<dc:creator><![CDATA[Celeste Sinclair]]></dc:creator>
+		<pubDate>Sat, 14 Dec 2013 07:01:45 +0000</pubDate>
+		<guid isPermaLink="false">/?p=1779#comment-274</guid>
+
+					<description><![CDATA[Interesting idea. I like the scaffolding of this approach. I&#039;m teaching proofs for the first time next semester, so I need all the help I can get! Thanks for posting.]]></description>
+			<content:encoded><![CDATA[<p>Interesting idea. I like the scaffolding of this approach. I&#8217;m teaching proofs for the first time next semester, so I need all the help I can get! Thanks for posting.</p>
+]]></content:encoded>
+		
+			</item>
+	</channel>
+</rss>

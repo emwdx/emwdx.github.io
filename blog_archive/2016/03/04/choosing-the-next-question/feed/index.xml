@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	
+	xmlns:georss="http://www.georss.org/georss"
+	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+	
+	>
+<channel>
+	<title>
+	Comments on: Choosing the Next Question	</title>
+	<atom:link href="/2016/03/04/choosing-the-next-question/feed/" rel="self" type="application/rss+xml" />
+	<link>/2016/03/04/choosing-the-next-question/</link>
+	<description>iteration, making, building, and coding in education</description>
+	<lastBuildDate>Fri, 04 Mar 2016 00:34:16 +0000</lastBuildDate>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.7.6</generator>
+	<item>
+		<title>
+		By: Evan Weinberg		</title>
+		<link>/2016/03/04/choosing-the-next-question/#comment-423</link>
+
+		<dc:creator><![CDATA[Evan Weinberg]]></dc:creator>
+		<pubDate>Fri, 04 Mar 2016 00:34:16 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2388#comment-423</guid>
+
+					<description><![CDATA[In reply to &lt;a href=&quot;/2016/03/04/choosing-the-next-question/#comment-422&quot;&gt;annablinstein&lt;/a&gt;.
+
+I totally agree - the question that comes next doesn&#039;t need to be another question on content. Having that dialogue with the students is likely more informative than another problem.]]></description>
+			<content:encoded><![CDATA[<p>In reply to <a href="/2016/03/04/choosing-the-next-question/#comment-422">annablinstein</a>.</p>
+<p>I totally agree &#8211; the question that comes next doesn&#8217;t need to be another question on content. Having that dialogue with the students is likely more informative than another problem.</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: annablinstein		</title>
+		<link>/2016/03/04/choosing-the-next-question/#comment-422</link>
+
+		<dc:creator><![CDATA[annablinstein]]></dc:creator>
+		<pubDate>Fri, 04 Mar 2016 00:30:21 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2388#comment-422</guid>
+
+					<description><![CDATA[I think that the other big advantage human teachers have over adaptive software is that we can ask, &quot;how did you do this problem?&quot; or &quot;why did you do this first?&quot; or &quot;can you make up a problem similar to this one that would be easier/harder for you?&quot; or a host of other questions that unpack students&#039; thinking and that give us information we can use to create follow-up questions and problems that will challenge the student or allow a misconception to be brought out more clearly. The software only knows that the answer was right or wrong, and that&#039;s significantly less information (I&#039;m not even counting the wealth of information the teacher likely has about the student&#039;s prior work and thinking, disposition towards math, and how to motivate him or her).]]></description>
+			<content:encoded><![CDATA[<p>I think that the other big advantage human teachers have over adaptive software is that we can ask, &#8220;how did you do this problem?&#8221; or &#8220;why did you do this first?&#8221; or &#8220;can you make up a problem similar to this one that would be easier/harder for you?&#8221; or a host of other questions that unpack students&#8217; thinking and that give us information we can use to create follow-up questions and problems that will challenge the student or allow a misconception to be brought out more clearly. The software only knows that the answer was right or wrong, and that&#8217;s significantly less information (I&#8217;m not even counting the wealth of information the teacher likely has about the student&#8217;s prior work and thinking, disposition towards math, and how to motivate him or her).</p>
+]]></content:encoded>
+		
+			</item>
+	</channel>
+</rss>

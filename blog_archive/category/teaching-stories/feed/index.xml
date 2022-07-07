@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	
+	xmlns:georss="http://www.georss.org/georss"
+	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+	>
+
+<channel>
+	<title>teaching stories</title>
+	<atom:link href="/category/teaching-stories/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>iteration, making, building, and coding in education</description>
+	<lastBuildDate>Fri, 07 Apr 2017 10:35:27 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.7.6</generator>
+<site xmlns="com-wordpress:feed-additions:1">180381780</site>	<item>
+		<title>Trello for Class Organization</title>
+		<link>/2017/04/07/trello-for-class-organization/</link>
+					<comments>/2017/04/07/trello-for-class-organization/#comments</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Fri, 07 Apr 2017 10:35:27 +0000</pubDate>
+				<category><![CDATA[precalculus]]></category>
+		<category><![CDATA[teaching stories]]></category>
+		<category><![CDATA[eduscrum]]></category>
+		<category><![CDATA[trello]]></category>
+		<guid isPermaLink="false">/?p=2688</guid>
+
+					<description><![CDATA[Our school hosted the Vietnam Technology Conference this past February. (Yes, I&#8217;m just getting around to talking about it. Don&#8217;t judge.) One of the sessions I attended was about agile development in education, specifically as a way to organize the classroom into a room of independently functioning teams that are]]></description>
+										<content:encoded><![CDATA[<p>Our school hosted the <a href="http://2017.vietnamtechconference.org/">Vietnam Technology Conference</a> this past February. </p>
+<p>(Yes, I&#8217;m just getting around to talking about it. Don&#8217;t judge.)</p>
+<p>One of the sessions I attended was about <a href="https://en.wikipedia.org/wiki/Agile_software_development">agile development</a> in education, specifically as a way to organize the classroom into a room of independently functioning teams that are all trying to reach the goal of learning content. The full details on the philosophy can be found at <a href="http://eduscrum.com/">http://eduscrum.com/</a>. I most certainly am <u>not</u> following the full implementation described there.</p>
+<p>My interest was piqued by the possibility of using <a href="http://trello.com/">a Trello board</a> to organize tasks for my classroom. I always make a digital handout for each class that consists of a series of tasks, links, problems, and chunks of information. Within the class block, I weave these together in a mix of direct instruction, group tasks, PearDeck activities, Desmos explorations, and so on. I advise students not to just do every problem on my handouts from start to finish because there is an order to my madness. I have a plan for students to go through the different activities, but I don&#8217;t always clearly indicate that plan on these handouts. </p>
+<p>This is where Trello came in. For my past two units in PreCalculus, I broke up the tasks on my digital handout into tasks on a Trello board. This consists of a list of tasks, and then three columns labeled &#8216;to-do&#8217;, &#8216;in progress&#8217;, and &#8216;completed&#8217;. </p>
+<p><a href="http://ec2-13-229-58-164.ap-southeast-1.compute.amazonaws.com/wp-content/uploads/2017/04/Screen-Shot-2017-04-07-at-5.08.19-PM.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2017/04/Screen-Shot-2017-04-07-at-5.08.19-PM-1024x550.png" alt="" width="604" height="324" class="alignnone size-large wp-image-2689" srcset="/wp-content/uploads/2017/04/Screen-Shot-2017-04-07-at-5.08.19-PM-1024x550.png 1024w, /wp-content/uploads/2017/04/Screen-Shot-2017-04-07-at-5.08.19-PM-300x161.png 300w, /wp-content/uploads/2017/04/Screen-Shot-2017-04-07-at-5.08.19-PM-768x413.png 768w, /wp-content/uploads/2017/04/Screen-Shot-2017-04-07-at-5.08.19-PM-1536x825.png 1536w, /wp-content/uploads/2017/04/Screen-Shot-2017-04-07-at-5.08.19-PM-2048x1100.png 2048w, /wp-content/uploads/2017/04/Screen-Shot-2017-04-07-at-5.08.19-PM-1200x645.png 1200w, /wp-content/uploads/2017/04/Screen-Shot-2017-04-07-at-5.08.19-PM-1980x1064.png 1980w" sizes="(max-width: 604px) 100vw, 604px" /></a></p>
+<p>I put students in groups, and then shared <a href="https://trello.com/b/OiDb9QSC/precalculus-unit-6">this Trello board here with them.</a> Their group needed to make a Trello board for their group, and then copy the day&#8217;s tasks onto their group&#8217;s board. I told students how long a &#8216;sprint&#8217; (an agile development term) was going to be, and the group would decide which tasks they would collectively (or individually) do during that time. They moved these tasks into the appropriate column of the board. As I continued to use the system, I realized that I could color code tasks according to the learning standards, and identify them according to the day of class. This helped students to understand the context of individual tasks later on.</p>
+<p>The thing I liked the most about this experiment was that it actually enabled students to take charge of what they were doing during the lesson. I sometimes said that I was going to go over a concept at a particular time during the class block, and that teams could pay attention or not depending on their needs. This could be replaced by videos of this direct instruction to allow for more asynchronous learning for the students that weren&#8217;t ready at that time. There were some great conversations between students about what they did and didn&#8217;t understand. I could circulate and interject when I saw the need.</p>
+<p>This put me in the position of curating interesting and productive tasks related to the course content, which is a lot more fun than planning a lecture. The students also liked being able to talk to each other and work at their own pace. Here&#8217;s some feedback from the students:</p>
+<h4>What they liked: </h4>
+<blockquote>
+<ul>
+<li>&#8220;I think it was nice how I could do things by whatever pace I felt more comfortable with to an extent since we did things as a small group rather than as an entire class.&#8221;</li>
+<li>&#8220;It kept me working and thinking the whole class. It also helped me work out problems independently which helped my understanding.&#8221;</li>
+<li>&#8220;I liked the ability to keep track of all my work, as well  as knowing all the problems beforehand. I also like being able to have more time to discuss with friends to understand how we each came up with various solutions.&#8221;</li>
+</ul>
+</blockquote>
+<h4>What could be improved:</h4>
+<blockquote>
+<ul>
+<li>&#8220;Maybe I rather stick with traditional teaching methods. This is borderline self-taught and it&#8217;s not so much better with group of people that I don&#8217;t know well.&#8221;</li>
+<li>&#8220;I think it would be better to go through the theory and concepts of the standard first, meaning how to do a problem as a class before splitting into smaller groups for individual/team work.&#8221; </li>
+<li>&#8220;For future classes, I would also like informative videos to be included so that we can learn new topics this way.&#8221;</li>
+</ul>
+</blockquote>
+<p>This feedback made it easy to adjust for the next classes, and I continued to tweak in the next unit. The students really like the act of moving tasks between the different columns on the Trello board too. I really like the ease with which students can copy tasks, move them around, and plan their time independently. There are some good habits here that I&#8217;ll be thinking about expanding to other classes later this semester or for the next school year.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2017/04/07/trello-for-class-organization/feed/</wfw:commentRss>
+			<slash:comments>3</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">2688</post-id>	</item>
+		<item>
+		<title>Exploring Dan Meyer&#8217;s Boat Dock with PearDeck</title>
+		<link>/2017/01/26/exploring-dan-meyers-boat-dock-with-peardeck/</link>
+					<comments>/2017/01/26/exploring-dan-meyers-boat-dock-with-peardeck/#respond</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Thu, 26 Jan 2017 05:12:30 +0000</pubDate>
+				<category><![CDATA[teaching stories]]></category>
+		<category><![CDATA[PearDeck]]></category>
+		<guid isPermaLink="false">/?p=2652</guid>
+
+					<description><![CDATA[In PreCalculus, I tend to be application heavy whenever possible. This unit, which has focused on analytic trigonometry, has been pretty high on the abstraction ladder. I try to emphasize right triangle trigonometry in nearly everything we do so that students have a way in, but that&#8217;s still pretty abstract.]]></description>
+										<content:encoded><![CDATA[<p>In PreCalculus, I tend to be application heavy whenever possible. This unit, which has focused on analytic trigonometry, has been pretty high on the abstraction ladder. I try to emphasize right triangle trigonometry in nearly everything we do so that students have a way in, but that&#8217;s still pretty abstract. I decided it was time to do something more on the application side.</p>
+<p>Enter Dan Meyer&#8217;s <a href="http://blog.mrmeyer.com/2016/makeover-marine-ramp/">Boat Dock</a>, a makeover concept he put together a year ago on his blog. </p>
+<p>I decided to put some of it into Pear Deck to allow for efficient collection of student responses. The start of my activity was the same as what Dan suggested in his blog post:<br />
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2017/01/Screen-Shot-2017-01-26-at-11.57.31-AM.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2017/01/Screen-Shot-2017-01-26-at-11.57.31-AM-1024x351.png" alt="" width="604" height="207" class="alignnone size-large wp-image-2653" srcset="/wp-content/uploads/2017/01/Screen-Shot-2017-01-26-at-11.57.31-AM-1024x351.png 1024w, /wp-content/uploads/2017/01/Screen-Shot-2017-01-26-at-11.57.31-AM-300x103.png 300w, /wp-content/uploads/2017/01/Screen-Shot-2017-01-26-at-11.57.31-AM-768x263.png 768w, /wp-content/uploads/2017/01/Screen-Shot-2017-01-26-at-11.57.31-AM-1200x411.png 1200w, /wp-content/uploads/2017/01/Screen-Shot-2017-01-26-at-11.57.31-AM.png 1418w" sizes="(max-width: 604px) 100vw, 604px" /></a></p>
+<p>After collecting the data, I asked students to clarify what they meant by &#8216;best&#8217; and &#8216;worst&#8217;. Student comments were focused on safety, cost, and limiting the movement of the ramp. </p>
+<p>I shared that the maximum safe angle for the ramp was 18˚, and then called upon PearDeck to use one of its best features to see what the class was thinking visually. I asked students to draw the best ramp. </p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2017/01/Screen-Shot-2017-01-26-at-11.59.35-AM.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2017/01/Screen-Shot-2017-01-26-at-11.59.35-AM-1024x437.png" alt="" width="604" height="258" class="alignnone size-large wp-image-2654" srcset="/wp-content/uploads/2017/01/Screen-Shot-2017-01-26-at-11.59.35-AM-1024x437.png 1024w, /wp-content/uploads/2017/01/Screen-Shot-2017-01-26-at-11.59.35-AM-300x128.png 300w, /wp-content/uploads/2017/01/Screen-Shot-2017-01-26-at-11.59.35-AM-768x327.png 768w, /wp-content/uploads/2017/01/Screen-Shot-2017-01-26-at-11.59.35-AM-1536x655.png 1536w, /wp-content/uploads/2017/01/Screen-Shot-2017-01-26-at-11.59.35-AM-1200x512.png 1200w, /wp-content/uploads/2017/01/Screen-Shot-2017-01-26-at-11.59.35-AM.png 1642w" sizes="(max-width: 604px) 100vw, 604px" /></a></p>
+<p>After having them draw it, I had them calculate the length of the best ramp. This is where some of the best conflict arose. Not everyone responded, for a number of reasons, but the spread was pretty awesome in terms of stoking conversation. Check it out:</p>
+<p><a href="http://ec2-13-229-58-164.ap-southeast-1.compute.amazonaws.com/wp-content/uploads/2017/01/Screen-Shot-2017-01-26-at-12.02.21-PM.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2017/01/Screen-Shot-2017-01-26-at-12.02.21-PM-1024x391.png" alt="" width="604" height="231" class="alignnone size-large wp-image-2655" srcset="/wp-content/uploads/2017/01/Screen-Shot-2017-01-26-at-12.02.21-PM-1024x391.png 1024w, /wp-content/uploads/2017/01/Screen-Shot-2017-01-26-at-12.02.21-PM-300x115.png 300w, /wp-content/uploads/2017/01/Screen-Shot-2017-01-26-at-12.02.21-PM-768x293.png 768w, /wp-content/uploads/2017/01/Screen-Shot-2017-01-26-at-12.02.21-PM-1536x587.png 1536w, /wp-content/uploads/2017/01/Screen-Shot-2017-01-26-at-12.02.21-PM-1200x458.png 1200w, /wp-content/uploads/2017/01/Screen-Shot-2017-01-26-at-12.02.21-PM-1980x756.png 1980w, /wp-content/uploads/2017/01/Screen-Shot-2017-01-26-at-12.02.21-PM.png 2016w" sizes="(max-width: 604px) 100vw, 604px" /></a></p>
+<p>The source of some of the conflict was this commonly drawn triangle, which prompted lots of productive discussion.</p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2017/01/Screen-Shot-2017-01-26-at-12.04.02-PM.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2017/01/Screen-Shot-2017-01-26-at-12.04.02-PM.png" alt="" width="618" height="519" class="alignnone size-full wp-image-2656" srcset="/wp-content/uploads/2017/01/Screen-Shot-2017-01-26-at-12.04.02-PM.png 618w, /wp-content/uploads/2017/01/Screen-Shot-2017-01-26-at-12.04.02-PM-300x252.png 300w" sizes="(max-width: 618px) 100vw, 618px" /></a></p>
+<p>When students <u>built</u> their safest ramp using the <a href="http://mrmeyer.com/boatdock/">Boat Dock simulator</a>, it prompted the modelling cycle to return to the start, which is always great to have the ability to do.</p>
+<p>I then asked students to create a tool using a spreadsheet, program, or algorithm by hand for finding the safest ramp of least cost for every random length of the ramp in the simulator. This open-ended request led to a lot of students nodding their heads about concepts learned in their programming classes being applied in a new context. It also lead to a lot of confusion, but productive confusion.</p>
+<p>This was a lot of fun &#8211; I need to do this more often. I say that a lot about things like this though, so I also hope I follow my own advice.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2017/01/26/exploring-dan-meyers-boat-dock-with-peardeck/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">2652</post-id>	</item>
+		<item>
+		<title>Collaborative Review with Google Docs</title>
+		<link>/2016/11/07/collaborative-review-with-google-docs/</link>
+					<comments>/2016/11/07/collaborative-review-with-google-docs/#comments</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Mon, 07 Nov 2016 06:38:00 +0000</pubDate>
+				<category><![CDATA[teaching stories]]></category>
+		<category><![CDATA[exam review]]></category>
+		<category><![CDATA[Google docs]]></category>
+		<guid isPermaLink="false">/?p=2574</guid>
+
+					<description><![CDATA[This is another post celebrating my presence in a part of the world that has unfettered access to Google and its online tools. I hope this continues. For two out of my previous three units, I&#8217;ve started the final day of class before an exam with a document in Google]]></description>
+										<content:encoded><![CDATA[<p>This is another post celebrating my presence in a part of the world that has unfettered access to Google and its online tools. I hope this continues.</p>
+<p>For two out of my previous three units, I&#8217;ve started the final day of class before an exam with a document in Google Docs that is organised into two parts. </p>
+<p>At the top is a list the standards and their descriptions for the unit. I might include an empty table for vocabulary, but no words.</p>
+<p>At the bottom is a list of problems or online resources.</p>
+<p>Before students get started with answering questions and getting help, I get the entire class working on sorting these questions into the related standards in this document. A flurry of cutting and pasting ensues:</p>
+<p><a href="http://ec2-13-229-58-164.ap-southeast-1.compute.amazonaws.com/wp-content/uploads/2016/11/Screen-Shot-2016-11-07-at-1.30.51-PM.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2016/11/Screen-Shot-2016-11-07-at-1.30.51-PM-1024x462.png" alt="screen-shot-2016-11-07-at-1-30-51-pm" width="500" height="226" class="alignnone size-large wp-image-2575" srcset="/wp-content/uploads/2016/11/Screen-Shot-2016-11-07-at-1.30.51-PM-1024x462.png 1024w, /wp-content/uploads/2016/11/Screen-Shot-2016-11-07-at-1.30.51-PM-300x135.png 300w, /wp-content/uploads/2016/11/Screen-Shot-2016-11-07-at-1.30.51-PM-768x347.png 768w, /wp-content/uploads/2016/11/Screen-Shot-2016-11-07-at-1.30.51-PM-1200x542.png 1200w, /wp-content/uploads/2016/11/Screen-Shot-2016-11-07-at-1.30.51-PM.png 1318w" sizes="(max-width: 500px) 100vw, 500px" /></a></p>
+<p>The number of edits and simultaneous users is a pretty cool indication that this document, in less than a couple of minutes, ceases to be mine, and begins to be <u>ours</u>. Some students then upload solutions to problems as they complete them, or can pose questions below a problem that another student might answer. </p>
+<p>It isn&#8217;t a perfect system at all, but feels a lot better than printing out a set of problems that show what I value in assessing the standards. That represents a line segment that starts at my computer and ends at the student&#8217;s notebook. This system at least approaches a more complex interaction of ideas and synthesis at the end of a unit of study that helps both the strong and the weak students make progress before an exam.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2016/11/07/collaborative-review-with-google-docs/feed/</wfw:commentRss>
+			<slash:comments>3</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">2574</post-id>	</item>
+		<item>
+		<title>Fail Early, Fail Often: Learning Names</title>
+		<link>/2016/08/16/fail-early-fail-often-learning-names/</link>
+					<comments>/2016/08/16/fail-early-fail-often-learning-names/#respond</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Tue, 16 Aug 2016 12:43:37 +0000</pubDate>
+				<category><![CDATA[teaching stories]]></category>
+		<category><![CDATA[first day]]></category>
+		<category><![CDATA[learning names]]></category>
+		<category><![CDATA[names]]></category>
+		<guid isPermaLink="false">/?p=2517</guid>
+
+					<description><![CDATA[Learning names this year was a bigger challenge this time around in comparison to the past few years. The first reason is that my new school is substantially bigger than my previous school, as are the class sizes. Another major reason: I&#8217;m the new guy. The students generally know each]]></description>
+										<content:encoded><![CDATA[<p>Learning names this year was a bigger challenge this time around in comparison to the past few years. The first reason is that my new school is substantially bigger than my previous school, as are the class sizes. Another major reason: I&#8217;m the new guy.</p>
+<p>The students generally know each other, so I decided the first day wasn&#8217;t actually about them learning each other&#8217;s names. I still included activities that got them interacting with each other, but <u>I</u> was the one that needed to learn <u>their</u> names. I decided the quick forty minute block on the first day was an opportunity to model my class credo: fail early, fail often.</p>
+<p>When they walked in, I asked them their names, and what they wanted to be called. I&#8217;ve learned that these are not necessarily the same. These names were noted on my clipboard. I made a big show out of going around to each student, looking them in the eyes, and saying their name. Taking attendance then became my first opportunity to assess what I remembered. The order on the roster definitely didn&#8217;t match the order that the students entered the classroom.</p>
+<p>I then had them line up alphabetically along the back wall. I had them all say their names one in a row. I had my reference material on the clipboard and went reverse alphabetical order. I publicly made mistakes, lots of them. Then I had them say the name of the person immediately to their left. For me learning the names, this meant that the voice saying the name was different, but the name was the same. I narrated that I wasn&#8217;t actually looking at the person saying the name &#8211; my attention was on the person whose name was being said.</p>
+<p>I then had them get in line in order of birthday, but without any words. Once they figured out their order, I went down the line and tried to get names. I looked at my clipboard if I needed to, and I often did, but often had them just say their names back. I explained that I made them move around because I didn&#8217;t want to learn names based on who each person was next to &#8211; I needed to connect the name to the face. This ensured I was learning the right information, not an arbitrary order.</p>
+<p>Then I had them get into two or three random orders. If there was time, I had a student go down the line reciting names. Then I went again myself, now trying not to look at the clipboard unless it was absolutely necessary. The mistakes continued to come, but I generally was having more success at this stage. I again told them that I had quizzes myself enough &#8211; it was time to let my brain do connecting behind the scenes. I emphasized that this was why cramming doesn&#8217;t tend to work: the brain is really good at organizing the information if it has the time to do so.</p>
+<p>It was great putting myself in the position of not knowing answers and having to ask students for help. The students appeared to enjoy my genuine attempt to demonstrate how I learn information efficiently, and how essential failure is to being successful in the end.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2016/08/16/fail-early-fail-often-learning-names/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">2517</post-id>	</item>
+		<item>
+		<title>Exploring Functions (and Non-Functions) Interactively</title>
+		<link>/2016/04/29/exploring-functions-and-non-functions-interactively/</link>
+					<comments>/2016/04/29/exploring-functions-and-non-functions-interactively/#comments</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Fri, 29 Apr 2016 02:23:16 +0000</pubDate>
+				<category><![CDATA[computational-thinking]]></category>
+		<category><![CDATA[reflection]]></category>
+		<category><![CDATA[teaching stories]]></category>
+		<category><![CDATA[functions]]></category>
+		<category><![CDATA[javascript]]></category>
+		<category><![CDATA[SMP]]></category>
+		<category><![CDATA[teachers coding]]></category>
+		<guid isPermaLink="false">/?p=2441</guid>
+
+					<description><![CDATA[Heeding Dan&#8217;s encouragement to step things up in his NCTM talk, I revisited an introduction to functions activity that I put together three years ago. The idea is to get students to make observations about inputs and outputs and use the &#8216;notice and wonder&#8217; parlance from the Math Forum to]]></description>
+										<content:encoded><![CDATA[<p>Heeding Dan&#8217;s encouragement to step things up in his NCTM talk, I revisited an introduction to functions activity that I put together three years ago. The idea is to get students to make observations about inputs and outputs and use the <a href="http://mathforum.org/workshops/universal/documents/notice_wonder_intro.pdf">&#8216;notice and wonder&#8217; parlance from the Math Forum</a> to prompt conversations about these ideas.</p>
+<p>I rewrote the activity with some deliberate changes and webified it to make it easy to access and share &#8211; you can find it here:<br />
+<a href="http://emwdx.github.io/functions-exploration/index.html">http://emwdx.github.io/functions-exploration/index.html</a></p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2016/04/Screen-Shot-2016-04-29-at-9.55.09-AM.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2016/04/Screen-Shot-2016-04-29-at-9.55.09-AM-1024x562.png" alt="Screen Shot 2016-04-29 at 9.55.09 AM" width="500" height="274" class="alignnone size-large wp-image-2442" srcset="/wp-content/uploads/2016/04/Screen-Shot-2016-04-29-at-9.55.09-AM-1024x562.png 1024w, /wp-content/uploads/2016/04/Screen-Shot-2016-04-29-at-9.55.09-AM-300x165.png 300w, /wp-content/uploads/2016/04/Screen-Shot-2016-04-29-at-9.55.09-AM-768x422.png 768w, /wp-content/uploads/2016/04/Screen-Shot-2016-04-29-at-9.55.09-AM-1536x844.png 1536w, /wp-content/uploads/2016/04/Screen-Shot-2016-04-29-at-9.55.09-AM-2048x1125.png 2048w, /wp-content/uploads/2016/04/Screen-Shot-2016-04-29-at-9.55.09-AM-1200x659.png 1200w, /wp-content/uploads/2016/04/Screen-Shot-2016-04-29-at-9.55.09-AM-1980x1087.png 1980w" sizes="(max-width: 500px) 100vw, 500px" /></a></p>
+<p>The activity has a few elements that I want to highlight with the hope that you might consider (a) trying the activity  with your students or (b) downloading the code for the activity, tweaking it, and then re-sharing it with your enhancements.</p>
+<h3>Students go through the modeling cycle multiple times.</h3>
+<p>The activity begs students to take a playful approach. Change the input value and watch the output. Predict what&#8217;s going to happen and see if your mental model is correct. Then do the next one, and the next.</p>
+<h3>Arithmetic isn&#8217;t necessarily a prerequisite.</h3>
+<p>Some students were actually more puzzled by the functions that took text inputs. They experimented nevertheless to figure out what was happening, and some noticed that the pattern worked for numbers too. </p>
+<h3>Controversy is built in.</h3>
+<p>Students working on Functions 5 and 6 saw nothing weird happening when they worked alone. When they then went to <i>share</i> their answers with classmates, the latter function started some really interesting interactions between students trying to figure out who was wrong. </p>
+<h3>Students of different levels <u>all</u> succeeded and all struggled at some point.</h3>
+<p>One student zipped through the arithmetic exercises and then got stuck figuring out Function 3 or 7. Some of the weaker students jumped around and got Functions 1 and 4 and 8, which is enough to get in the game of finding patterns and drawing conclusions. A higher level student experimented with Function 7 to find that there was a well defined range for the outputs &#8211; random, but with limitations. </p>
+<h3>The need for definitions came out of the activity, not the other way around.</h3>
+<p>Students felt the need to clearly define the behavior of Functions 6 and 7 as being different than the others in a fundamental way. Definitions for relations and functions weren&#8217;t huge cognitive jumps for students since there was a recently established context. It&#8217;s also important to notice that the definition for relations that <u>aren&#8217;t</u> functions has to be more than just the lack of a pattern. Function 6 helps with this.</p>
+<h3>Many of the CCSS standards for mathematical practice are embedded within.</h3>
+<p>&#8230;as are some of the high school standards for functions.</p>
+<p>If you try this with students, let me know how it goes.</p>
+<hr>
+<h4>Technical Details:</h4>
+<p>If you want to try this yourself, you can download the code from Github here:<br />
+<a href="https://github.com/emwdx/functions-exploration/tree/gh-pages">https://github.com/emwdx/functions-exploration/tree/gh-pages</a></p>
+<p>I did this also as an attempt to whip together something using the <a href="http://reactjs.org/">React JS</a> library which I&#8217;ve been learning recently. It makes for a really nice interface for building this type of interactivity into a webpage. There will be more, so stay tuned.</p>
+<p>The React components for the eight functions are in lines 86-102 of the index.html file. The function definitions used by each component are defined toward the bottom of the code in that file. You could change these around using Javascript to make these functions fit with your vision of this activity for students. The file is self contained, so you share just the HTML file you change with students, the page will function correctly.</p>
+<p>Happy coding!</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2016/04/29/exploring-functions-and-non-functions-interactively/feed/</wfw:commentRss>
+			<slash:comments>5</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">2441</post-id>	</item>
+		<item>
+		<title>Crutches and Exponents</title>
+		<link>/2015/10/29/crutches-and-exponents/</link>
+					<comments>/2015/10/29/crutches-and-exponents/#comments</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Thu, 29 Oct 2015 01:50:24 +0000</pubDate>
+				<category><![CDATA[studentwork]]></category>
+		<category><![CDATA[teaching stories]]></category>
+		<category><![CDATA[exponents]]></category>
+		<guid isPermaLink="false">/?p=2338</guid>
+
+					<description><![CDATA[Math teachers frequently discuss how students forget what the exponent rules actually mean when they make mistakes applying them. The layer of abstraction that these rules lay over the numbers and operations is at fault, of course. The reason we teach the rules is that they show structure that goes]]></description>
+										<content:encoded><![CDATA[<p>Math teachers frequently discuss how students forget what the exponent rules actually mean when they make mistakes applying them. The layer of abstraction that these rules lay over the numbers and operations is at fault, of course. The reason we teach the rules is that they show structure that goes beyond the operations. They simplify our work in calculating expressions.</p>
+<p>I was really glad that a student used this approach today when she forgot the rules:<br />
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2015/10/Screen-Shot-2015-10-29-at-9.38.07-AM.png"><img loading="lazy" class="alignnone size-full wp-image-2339" src="http://blog.evanweinberg.org/wp-content/uploads/2015/10/Screen-Shot-2015-10-29-at-9.38.07-AM.png" alt="Screen Shot 2015-10-29 at 9.38.07 AM" width="792" height="182" srcset="/wp-content/uploads/2015/10/Screen-Shot-2015-10-29-at-9.38.07-AM.png 792w, /wp-content/uploads/2015/10/Screen-Shot-2015-10-29-at-9.38.07-AM-300x69.png 300w, /wp-content/uploads/2015/10/Screen-Shot-2015-10-29-at-9.38.07-AM-768x176.png 768w" sizes="(max-width: 792px) 100vw, 792px" /></a></p>
+<p>I would much rather a student move back to a method they know rather than blindly apply the rules they don&#8217;t. This method, or crutch, is less efficient, but holds more meaning for the student. We dissuade students from crutches like counting on their fingers because they <u>should</u> be able to do the arithmetic in other ways. Building meaning is important, however, and the better approach would be to show how learning the mathematical ideas and structures can simplify the process. In speaking with this student afterwards, it was clear that going back to this method that we used to motivate the rule helped her understand what it meant.</p>
+<p>I continued with this approach in reviewing zero and negative exponents today. Of the students that said they knew the rule already, only a couple of them actually applied it correctly before we did this activity. I primed the class with this:<br />
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2015/10/Screen-Shot-2015-10-29-at-9.41.32-AM.png"><img loading="lazy" class="alignnone size-large wp-image-2340" src="http://blog.evanweinberg.org/wp-content/uploads/2015/10/Screen-Shot-2015-10-29-at-9.41.32-AM-1024x494.png" alt="Screen Shot 2015-10-29 at 9.41.32 AM" width="500" height="241" srcset="/wp-content/uploads/2015/10/Screen-Shot-2015-10-29-at-9.41.32-AM-1024x494.png 1024w, /wp-content/uploads/2015/10/Screen-Shot-2015-10-29-at-9.41.32-AM-300x145.png 300w, /wp-content/uploads/2015/10/Screen-Shot-2015-10-29-at-9.41.32-AM-768x371.png 768w, /wp-content/uploads/2015/10/Screen-Shot-2015-10-29-at-9.41.32-AM-1536x741.png 1536w, /wp-content/uploads/2015/10/Screen-Shot-2015-10-29-at-9.41.32-AM-1200x579.png 1200w, /wp-content/uploads/2015/10/Screen-Shot-2015-10-29-at-9.41.32-AM.png 1844w" sizes="(max-width: 500px) 100vw, 500px" /></a></p>
+<p>Students worked in groups to apply the rules and rewrite them, and I nudged them gently with using what they saw as motivation for rules about zero and negative exponents. From this, I introduced a new crutch as a way to show what negative exponents mean:</p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2015/10/Screen-Shot-2015-10-29-at-9.43.48-AM.png"><img loading="lazy" class="alignnone wp-image-2341 size-medium" src="http://blog.evanweinberg.org/wp-content/uploads/2015/10/Screen-Shot-2015-10-29-at-9.43.48-AM-201x300.png" alt="Screen Shot 2015-10-29 at 9.43.48 AM" width="201" height="300" srcset="/wp-content/uploads/2015/10/Screen-Shot-2015-10-29-at-9.43.48-AM-201x300.png 201w, /wp-content/uploads/2015/10/Screen-Shot-2015-10-29-at-9.43.48-AM.png 322w" sizes="(max-width: 201px) 100vw, 201px" /></a></p>
+<p>Just as the student wrote out the factors and then divided them out in the problem above, I don&#8217;t mind if a student does this as a reminder of what the rule means. I find this much more productive than a simple rule that states that fractions to a negative power simply &#8216;flip&#8217;. Hopefully I&#8217;ll see the benefits of this approach moving forward.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2015/10/29/crutches-and-exponents/feed/</wfw:commentRss>
+			<slash:comments>3</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">2338</post-id>	</item>
+		<item>
+		<title>Perplexity and Figuring It Out</title>
+		<link>/2015/10/08/perplexity-and-figuring-it-out/</link>
+					<comments>/2015/10/08/perplexity-and-figuring-it-out/#comments</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Thu, 08 Oct 2015 08:44:35 +0000</pubDate>
+				<category><![CDATA[teaching philosophy]]></category>
+		<category><![CDATA[teaching stories]]></category>
+		<category><![CDATA[growth mindset]]></category>
+		<category><![CDATA[javascript]]></category>
+		<category><![CDATA[perplexity]]></category>
+		<category><![CDATA[programming]]></category>
+		<guid isPermaLink="false">/?p=2313</guid>
+
+					<description><![CDATA[For two years in a row, I&#8217;ve hit a sweet spot of engagement, discussion, and really invigorating student interaction with one particular exercise in my web design course. I sit with a web browser console open, and just ask students to go through this cycle: Make a prediction of what&#8217;s]]></description>
+										<content:encoded><![CDATA[<p>For two years in a row, I&#8217;ve hit a sweet spot of engagement, discussion, and really invigorating student interaction with one particular exercise in my web design course. I sit with a web browser console open, and just ask students to go through this cycle:</p>
+<ul>
+<li>Make a prediction of what&#8217;s going to appear when I hit enter.</li>
+<li>See what actually appears.</li>
+<li>Adjust your model and repeat.</li>
+</ul>
+<p>Here was today&#8217;s series:<br />
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2015/10/Screen-Shot-2015-10-08-at-3.56.01-PM.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2015/10/Screen-Shot-2015-10-08-at-3.56.01-PM-1024x636.png" alt="Screen Shot 2015-10-08 at 3.56.01 PM" width="500" height="311" class="alignnone size-large wp-image-2314" srcset="/wp-content/uploads/2015/10/Screen-Shot-2015-10-08-at-3.56.01-PM-1024x636.png 1024w, /wp-content/uploads/2015/10/Screen-Shot-2015-10-08-at-3.56.01-PM-300x186.png 300w, /wp-content/uploads/2015/10/Screen-Shot-2015-10-08-at-3.56.01-PM-768x477.png 768w, /wp-content/uploads/2015/10/Screen-Shot-2015-10-08-at-3.56.01-PM-1200x746.png 1200w, /wp-content/uploads/2015/10/Screen-Shot-2015-10-08-at-3.56.01-PM.png 1252w" sizes="(max-width: 500px) 100vw, 500px" /></a></p>
+<p>I say almost nothing aside from &#8220;here&#8217;s another one&#8221;. The amount of laughter, head slapping, and students talking through their attempts to understand is a beautiful thing to witness. The fact that no student blurts out the answer speaks to the respect my students have for each other and for this model.</p>
+<p>This is a simple type of activity that I do from time to time, and only from time to time, because I don&#8217;t want it to lose its novelty. There&#8217;s no engagement from a real world context. There&#8217;s no lecture beforehand about what I&#8217;m about to do, and how I want them to respond. (Ok, I do ask that they not blurt out the answer or how it works once they know, but that&#8217;s about it.) </p>
+<p>I hope to establish an unspoken agreement with my students that goes something like this:</p>
+<ul>
+<li>
+There <u>is</u> a pattern, and I am confident that you&#8217;ll be able to figure it out.</li>
+<li>If you can&#8217;t get it right away, that&#8217;s fine. You probably aren&#8217;t the only one.</li>
+<li>If you are the only one, then you have a lot of people around to nudge you in the right direction. </li>
+<li>If you&#8217;re wrong, you&#8217;ll get another chance to be right in just a minute.</li>
+<li>Once you know how it works, you might not care anymore. Enjoy the journey.</li>
+</ul>
+<p>Getting this agreement across takes time and trust and is really difficult to force. It&#8217;s remarkably satisfying when it happens. The important part is the consistent commitment to failure: Everyone will fail at least once. Everyone will also likely be wrong at least once after they are right. </p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2015/10/08/perplexity-and-figuring-it-out/feed/</wfw:commentRss>
+			<slash:comments>1</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">2313</post-id>	</item>
+		<item>
+		<title>Coding The Feud with Meteor</title>
+		<link>/2015/06/17/coding-the-feud-with-meteor/</link>
+					<comments>/2015/06/17/coding-the-feud-with-meteor/#respond</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Wed, 17 Jun 2015 13:31:37 +0000</pubDate>
+				<category><![CDATA[programming]]></category>
+		<category><![CDATA[teaching stories]]></category>
+		<guid isPermaLink="false">/?p=2234</guid>
+
+					<description><![CDATA[Now that I&#8217;m cleaning up loose ends from the year, I&#8217;m finding time to share some of the projects that have kept me from posting here as of late. Sorry, folks. We decided to shift from our usual Quiz Bowl activity at the end of the year to a new]]></description>
+										<content:encoded><![CDATA[<p>Now that I&#8217;m cleaning up loose ends from the year, I&#8217;m finding time to share some of the projects that have <em>kept</em> me from posting here as of late. Sorry, folks.</p>
+<p>We decided to shift from our usual Quiz Bowl activity at the end of the year to a new format of <a href="http://www.familyfeud.com/">Family Feud</a>. This process developed over the final quarter of the year, so I was able to get some student help putting a web application together for the visuals. A big shout out to Alex Canon in 9th grade who did prototyping of the HTML templates using Blaze in my Web Programming class.</p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2015/06/Screen-Shot-2015-06-17-at-9.20.49-PM.png"><img loading="lazy" class="alignnone wp-image-2235 size-large" src="http://blog.evanweinberg.org/wp-content/uploads/2015/06/Screen-Shot-2015-06-17-at-9.20.49-PM-1024x508.png" alt="Screen Shot 2015-06-17 at 9.20.49 PM" width="500" height="248" srcset="/wp-content/uploads/2015/06/Screen-Shot-2015-06-17-at-9.20.49-PM-1024x508.png 1024w, /wp-content/uploads/2015/06/Screen-Shot-2015-06-17-at-9.20.49-PM-300x149.png 300w, /wp-content/uploads/2015/06/Screen-Shot-2015-06-17-at-9.20.49-PM-768x381.png 768w, /wp-content/uploads/2015/06/Screen-Shot-2015-06-17-at-9.20.49-PM-1200x596.png 1200w, /wp-content/uploads/2015/06/Screen-Shot-2015-06-17-at-9.20.49-PM.png 1352w" sizes="(max-width: 500px) 100vw, 500px" /></a></p>
+<p>The application is written all in <a href="http://www.meteor.com/">Meteor</a> and was a big hit. I&#8217;ve posted the code <a href="https://github.com/emwdx/feud/tree/master">here at Github</a> and a demo application at <a href="http://HISfeud.meteor.com/">http://HISfeud.meteor.com/</a>. The looping music and authentic sound effects made for a good show while students tried to remember what they answered on their survey from a month ago. This was part of our end of year house competition, which complicated things a bit since Family Feud is played two teams at a time. Still, I like how it worked out.</p>
+<p>Lots more to share, so stay tuned.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2015/06/17/coding-the-feud-with-meteor/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">2234</post-id>	</item>
+		<item>
+		<title>Circuits &#038; Building Mental Models</title>
+		<link>/2015/05/13/circuits-building-mental-models/</link>
+					<comments>/2015/05/13/circuits-building-mental-models/#comments</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Wed, 13 May 2015 02:06:37 +0000</pubDate>
+				<category><![CDATA[physics]]></category>
+		<category><![CDATA[teaching stories]]></category>
+		<guid isPermaLink="false">/?p=2196</guid>
+
+					<description><![CDATA[I moved up my electric circuit unit this year for the senior physics class. Usually I put it after a full unit on waves, but after completing the waves unit with the IB students, I wasn&#8217;t so pumped to go through it again from the beginning. I began by having]]></description>
+										<content:encoded><![CDATA[<p>I moved up my electric circuit unit this year for the senior physics class. Usually I put it after a full unit on waves, but after completing the waves unit with the IB students, I wasn&#8217;t so pumped to go through it again from the beginning.</p>
+<p>I began by having students try to generate the largest voltage they could from a set of batteries, motors, solar panels, lemons, and some other fun gadgets. That was a great way to spend a full 90 minute block. The next class, we played around with the <a href="http://phet.colorado.edu/en/simulation/circuit-construction-kit-dc">PhET circuit simulator</a> as I described <a href="/2012/05/27/electric-circuits-starting-at-the-end/">in a previous post</a>. The goal was to get them to have some intuition about circuits before we actually got down to analyzing it. Our conversation focused on batteries <em>generally</em> contributing energy to the circuit, and other circuit elements using that energy, leaving nothing behind at the negative terminal of the starting battery. Our working definitions for voltage, current, and resistance came out of the need for describing what was happening in the circuit.</p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-9.38.58-AM.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-9.38.58-AM-300x198.png" alt="Screen Shot 2015-05-13 at 9.38.58 AM" width="300" height="198" class="alignnone size-medium wp-image-2197" srcset="/wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-9.38.58-AM-300x198.png 300w, /wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-9.38.58-AM.png 407w" sizes="(max-width: 300px) 100vw, 300px" /></a></p>
+<p>This started a pretty textbook version of the modeling process. I gave students some circuits, asked them to make a prediction for voltage/current, they made the predictions, and then tested them in the simulator. As needed, they made adjustments to their mental model to make it consistent across all examples.<br />
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-9.36.28-AM.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-9.36.28-AM-300x93.png" alt="Screen Shot 2015-05-13 at 9.36.28 AM" width="300" height="93" class="alignnone size-medium wp-image-2198" srcset="/wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-9.36.28-AM-300x93.png 300w, /wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-9.36.28-AM-768x238.png 768w, /wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-9.36.28-AM.png 896w" sizes="(max-width: 300px) 100vw, 300px" /></a></p>
+<p>What interested me most about the results here was that the students put together a pretty solid mental model that centered on the voltage divider concept. <u>This</u> came out of their other assertion that current is the same for resistors in series.</p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-9.42.01-AM.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-9.42.01-AM-300x144.png" alt="Screen Shot 2015-05-13 at 9.42.01 AM" width="300" height="144" class="alignnone size-medium wp-image-2199" srcset="/wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-9.42.01-AM-300x144.png 300w, /wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-9.42.01-AM.png 554w" sizes="(max-width: 300px) 100vw, 300px" /></a></p>
+<p>This led to the students tackling this problem on the second day of looking at circuits this way:<br />
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-9.44.27-AM.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-9.44.27-AM-300x99.png" alt="Screen Shot 2015-05-13 at 9.44.27 AM" width="300" height="99" class="alignnone size-medium wp-image-2200" srcset="/wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-9.44.27-AM-300x99.png 300w, /wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-9.44.27-AM-768x254.png 768w, /wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-9.44.27-AM.png 795w" sizes="(max-width: 300px) 100vw, 300px" /></a></p>
+<p>In my AP Physics sequence, this is something I don&#8217;t get to until Kirchoff&#8217;s rules, so I was impressed with how nonchalantly they reported their answers after only a minute or so of thinking about the circuit.</p>
+<p>On day 3, we went through an approximation of this lesson that I described in a previous post titled <u><a href="/2012/05/27/electric-circuits-starting-at-the-end/">Starting at the end</a></u>. We didn&#8217;t get to the more complex circuits, but did get to the concept of parallel circuits.</p>
+<p>On day 4, we spent a day getting our hands dirty building actual circuits, not with the simulator. The students had a good time piecing things together and seeing bulbs light up and make measurements with actual voltmeters and ammeters.</p>
+<p>Today, on day 5, I was finally thinking I was going to teach them about equivalent resistance&#8230;but I hesitated. I was too scared that providing a formula would risk undermining all of the intuition they had developed. </p>
+<p>The students worked through some Physics Bowl questions from a while back. Here&#8217;s one:<br />
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-9.54.29-AM.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-9.54.29-AM-300x70.png" alt="Screen Shot 2015-05-13 at 9.54.29 AM" width="300" height="70" class="alignnone size-medium wp-image-2201" srcset="/wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-9.54.29-AM-300x70.png 300w, /wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-9.54.29-AM-768x179.png 768w, /wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-9.54.29-AM.png 818w" sizes="(max-width: 300px) 100vw, 300px" /></a></p>
+<p>I noted down a student&#8217;s explanation of why the answer was 36 volts, and another student&#8217;s addition to explain why it had to be 42 volts:<br />
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-9.55.42-AM.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-9.55.42-AM-300x86.png" alt="Screen Shot 2015-05-13 at 9.55.42 AM" width="300" height="86" class="alignnone size-medium wp-image-2202" srcset="/wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-9.55.42-AM-300x86.png 300w, /wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-9.55.42-AM-768x219.png 768w, /wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-9.55.42-AM.png 999w" sizes="(max-width: 300px) 100vw, 300px" /></a></p>
+<p>It then I threw this one at students:<br />
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-9.57.47-AM.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-9.57.47-AM-300x250.png" alt="Screen Shot 2015-05-13 at 9.57.47 AM" width="300" height="250" class="alignnone size-medium wp-image-2203" srcset="/wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-9.57.47-AM-300x250.png 300w, /wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-9.57.47-AM.png 484w" sizes="(max-width: 300px) 100vw, 300px" /></a> I set the battery voltage to be 10 volts.</p>
+<p>If my students had followed the sequence of physics lessons from the 2005 me, this would have been a piece of cake because they would have had the formula. Instead, they went through a nice sequence of stating what they knew and didn&#8217;t know and making guesses. I suggested a spreadsheet as a way to keep track of those guesses and their reasoning in one place:</p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-10.00.41-AM.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-10.00.41-AM-300x160.png" alt="Screen Shot 2015-05-13 at 10.00.41 AM" width="300" height="160" class="alignnone size-medium wp-image-2205" srcset="/wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-10.00.41-AM-300x160.png 300w, /wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-10.00.41-AM.png 373w" sizes="(max-width: 300px) 100vw, 300px" /></a></p>
+<p>We went through the spreadsheet cell by cell and decided on formulas to put in. In the end, they figured out that the final two currents had to be the same. </p>
+<p>I did some guessing and checking following their monitoring of the values, and eventually ended up with the 100 ohm resistor having a voltage drop of 9.923 volts.</p>
+<p>Only at this point (which was five minutes before the end of class) did I apply an equivalent resistance formula:<br />
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-10.04.34-AM.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-10.04.34-AM-300x185.png" alt="Screen Shot 2015-05-13 at 10.04.34 AM" width="300" height="185" class="alignnone size-medium wp-image-2206" srcset="/wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-10.04.34-AM-300x185.png 300w, /wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-10.04.34-AM-1024x633.png 1024w, /wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-10.04.34-AM-768x475.png 768w, /wp-content/uploads/2015/05/Screen-Shot-2015-05-13-at-10.04.34-AM.png 1045w" sizes="(max-width: 300px) 100vw, 300px" /></a></p>
+<p>It was a great moment to end on. My presentation of the equivalent resistance formula came out of a need, and for that reason, I was glad to provide it. I&#8217;m so happy I waited.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2015/05/13/circuits-building-mental-models/feed/</wfw:commentRss>
+			<slash:comments>1</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">2196</post-id>	</item>
+		<item>
+		<title>A Small Change: Unit Circle &#038; Trigonometric Functions</title>
+		<link>/2015/04/22/a-small-change-unit-circle-trigonometric-functions/</link>
+					<comments>/2015/04/22/a-small-change-unit-circle-trigonometric-functions/#respond</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Wed, 22 Apr 2015 02:40:30 +0000</pubDate>
+				<category><![CDATA[algebra 2]]></category>
+		<category><![CDATA[teaching stories]]></category>
+		<category><![CDATA[coordinates]]></category>
+		<category><![CDATA[trigonometric ratios]]></category>
+		<category><![CDATA[trigonometry]]></category>
+		<category><![CDATA[unit circle]]></category>
+		<guid isPermaLink="false">/?p=2164</guid>
+
+					<description><![CDATA[I wrote nearly a year ago about my adjustment to what I had done previously to develop the topic. The idea was based on what my own pre-Calculus teacher did in high school, a series of activities related to a &#8216;wrapping function&#8217; moving around the unit circle. This lesson is]]></description>
+										<content:encoded><![CDATA[<p>I wrote <a title="After a hiatus: circular functions" href="/2014/05/20/after-a-hiatus-circular-functions/">nearly a year ago</a> about my adjustment to what I had done previously to develop the topic. The idea was based on what my own pre-Calculus teacher did in high school, a series of activities related to a &#8216;wrapping function&#8217; moving around the unit circle. This lesson is for a group of Algebra 2 level students that will likely move into the IB program for next year. Mastery of trigonometric functions isn&#8217;t necessary, but I do want students to feel comfortable converting between radians and degrees, locating angles on the unit circle, and evaluating trigonometric functions.</p>
+<p>In the last class, we talked about 30-60-90 and 45-45-90 triangles and the fact that we can evaluate trigonometric functions exactly using our knowledge of ratios and the Pythagorean theorem. We also did a series of exercises having students locate angles on the unit circle during the last class.</p>
+<p>Today&#8217;s warm-up was a continuation of these ideas through these sets of questions:</p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2015/04/Screen-Shot-2015-04-22-at-10.44.18-AM.png"><img loading="lazy" class="alignnone size-medium wp-image-2174" src="http://blog.evanweinberg.org/wp-content/uploads/2015/04/Screen-Shot-2015-04-22-at-10.44.18-AM-300x126.png" alt="Screen Shot 2015-04-22 at 10.44.18 AM" width="300" height="126" srcset="/wp-content/uploads/2015/04/Screen-Shot-2015-04-22-at-10.44.18-AM-300x126.png 300w, /wp-content/uploads/2015/04/Screen-Shot-2015-04-22-at-10.44.18-AM-768x322.png 768w, /wp-content/uploads/2015/04/Screen-Shot-2015-04-22-at-10.44.18-AM.png 829w" sizes="(max-width: 300px) 100vw, 300px" /></a> <a href="http://blog.evanweinberg.org/wp-content/uploads/2015/04/Screen-Shot-2015-04-22-at-10.44.24-AM.png"><img loading="lazy" class="alignnone size-medium wp-image-2173" src="http://blog.evanweinberg.org/wp-content/uploads/2015/04/Screen-Shot-2015-04-22-at-10.44.24-AM-300x109.png" alt="Screen Shot 2015-04-22 at 10.44.24 AM" width="300" height="109" srcset="/wp-content/uploads/2015/04/Screen-Shot-2015-04-22-at-10.44.24-AM-300x109.png 300w, /wp-content/uploads/2015/04/Screen-Shot-2015-04-22-at-10.44.24-AM-768x278.png 768w, /wp-content/uploads/2015/04/Screen-Shot-2015-04-22-at-10.44.24-AM.png 820w" sizes="(max-width: 300px) 100vw, 300px" /></a></p>
+<p>&nbsp;</p>
+<p>Normally at this stage, I show a development using similar triangles of finding what these coordinates are. Though I bring up this goal in a number of different ways, whether students are doing this at their seats, or I&#8217;m doing it for them, I can never the sense of understanding that I want. This development is also <span style="text-decoration: underline;">not</span> what I want them to do when they are evaluating trigonometric functions either &#8211; I want them to figure out where they are on the unit circle, and then evaluate based on the x and y-coordinates of the point.</p>
+<p>Today I made a subtle change to my sequence. I directly told students that the coordinates of these points were some combination of a set of five lengths. Two of these lengths we found in a previous lesson, but I never made a connection to it here. I asked them to put the numbers in order from least to greatest</p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2015/04/Screen-Shot-2015-04-22-at-10.20.16-AM.png"><img loading="lazy" class="alignnone size-medium wp-image-2167" src="http://blog.evanweinberg.org/wp-content/uploads/2015/04/Screen-Shot-2015-04-22-at-10.20.16-AM-300x110.png" alt="Screen Shot 2015-04-22 at 10.20.16 AM" width="300" height="110" srcset="/wp-content/uploads/2015/04/Screen-Shot-2015-04-22-at-10.20.16-AM-300x110.png 300w, /wp-content/uploads/2015/04/Screen-Shot-2015-04-22-at-10.20.16-AM-768x282.png 768w, /wp-content/uploads/2015/04/Screen-Shot-2015-04-22-at-10.20.16-AM.png 810w" sizes="(max-width: 300px) 100vw, 300px" /></a></p>
+<p>Then I asked them to complete the coordinates in this blank unit circle. Here&#8217;s a student&#8217;s work, corrected by a classmate when it was shared:<br />
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2015/04/Screen-Shot-2015-04-22-at-10.21.32-AM.png"><img loading="lazy" class="alignnone size-medium wp-image-2168" src="http://blog.evanweinberg.org/wp-content/uploads/2015/04/Screen-Shot-2015-04-22-at-10.21.32-AM-300x249.png" alt="Screen Shot 2015-04-22 at 10.21.32 AM" width="300" height="249" srcset="/wp-content/uploads/2015/04/Screen-Shot-2015-04-22-at-10.21.32-AM-300x249.png 300w, /wp-content/uploads/2015/04/Screen-Shot-2015-04-22-at-10.21.32-AM.png 603w" sizes="(max-width: 300px) 100vw, 300px" /></a></p>
+<p>All of the conversations about sign and value that I had to force previously happened naturally this time. The handout was folded so that as students finished, I could then nudge them into the next step of finding angles that match to particular coordinates, an exercise on the other side.</p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2015/04/IMG_08271.jpg"><img loading="lazy" class="alignnone size-medium wp-image-2170" src="http://blog.evanweinberg.org/wp-content/uploads/2015/04/IMG_08271-300x225.jpg" alt="IMG_0827" width="300" height="225" srcset="/wp-content/uploads/2015/04/IMG_08271-300x225.jpg 300w, /wp-content/uploads/2015/04/IMG_08271-1024x768.jpg 1024w, /wp-content/uploads/2015/04/IMG_08271-768x576.jpg 768w, /wp-content/uploads/2015/04/IMG_08271-1536x1152.jpg 1536w, /wp-content/uploads/2015/04/IMG_08271-2048x1536.jpg 2048w, /wp-content/uploads/2015/04/IMG_08271-1200x900.jpg 1200w, /wp-content/uploads/2015/04/IMG_08271-1980x1485.jpg 1980w" sizes="(max-width: 300px) 100vw, 300px" /></a></p>
+<p>For most of the students, this wasn&#8217;t a problem. Some even looked like they were enjoying it.</p>
+<p>It was only in the last few minutes of the class that I introduced the sine, cosine, and tangent as a shorthand way of asking the question of finding the x-coordinate, y-coordinate, or the ratio of the two. My students are pretty trusting, but they have also become used to asking why [Statement A] is true once they have the basic idea of what [Statement A] means. This lesson was just a continuation of this process. Almost every student was able to evaluate a cosine function of a different angle during the exit activity.</p>
+<p>I felt a little bad about giving the coordinates and putting off the understanding to later. This short bit of mathematical fact, however, was followed immediately by a task that required them to reason about what they mean. It builds the need to show why those coordinates are what they are, and this process of looking at 45-45-90 and 30-60-90 triangles on the unit circle will make much more sense in the context of the student experiences here.</p>
+<p>One student summed up my motivation for doing this beautifully as she was packing up &#8211; <em>I love that I&#8217;m not making this quote up</em>:</p>
+<blockquote><p>It&#8217;s good that you don&#8217;t have to memorize it because you can just see the picture in your head and know what the answer is.</p></blockquote>
+<p>&nbsp;</p>
+<p>Jackpot.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2015/04/22/a-small-change-unit-circle-trigonometric-functions/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">2164</post-id>	</item>
+	</channel>
+</rss>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	
+	xmlns:georss="http://www.georss.org/georss"
+	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+	
+	>
+<channel>
+	<title>
+	Comments on: Rubrics and Numerical Grades &#8211; Hacking the 100-Point Scale, Part 3	</title>
+	<atom:link href="/2016/06/13/rubrics-and-numerical-grades-hacking-the-100-point-scale-part-3/feed/" rel="self" type="application/rss+xml" />
+	<link>/2016/06/13/rubrics-and-numerical-grades-hacking-the-100-point-scale-part-3/</link>
+	<description>iteration, making, building, and coding in education</description>
+	<lastBuildDate>Sat, 18 Jun 2016 05:53:10 +0000</lastBuildDate>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.7.6</generator>
+	<item>
+		<title>
+		By: Evan Weinberg		</title>
+		<link>/2016/06/13/rubrics-and-numerical-grades-hacking-the-100-point-scale-part-3/#comment-470</link>
+
+		<dc:creator><![CDATA[Evan Weinberg]]></dc:creator>
+		<pubDate>Sat, 18 Jun 2016 05:53:10 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2466#comment-470</guid>
+
+					<description><![CDATA[In reply to &lt;a href=&quot;/2016/06/13/rubrics-and-numerical-grades-hacking-the-100-point-scale-part-3/#comment-467&quot;&gt;Dennis Ashendorf&lt;/a&gt;.
+
+I agree that this is necessary. It&#039;s also done in a haphazard way that involves setting points or weights that seem &#039;good enough&#039;. My argument (which I will develop later on) is that we can decide what our priorities are in determining achievement levels, and the weights can develop from those priorities.]]></description>
+			<content:encoded><![CDATA[<p>In reply to <a href="/2016/06/13/rubrics-and-numerical-grades-hacking-the-100-point-scale-part-3/#comment-467">Dennis Ashendorf</a>.</p>
+<p>I agree that this is necessary. It&#8217;s also done in a haphazard way that involves setting points or weights that seem &#8216;good enough&#8217;. My argument (which I will develop later on) is that we can decide what our priorities are in determining achievement levels, and the weights can develop from those priorities.</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: Evan Weinberg		</title>
+		<link>/2016/06/13/rubrics-and-numerical-grades-hacking-the-100-point-scale-part-3/#comment-469</link>
+
+		<dc:creator><![CDATA[Evan Weinberg]]></dc:creator>
+		<pubDate>Sat, 18 Jun 2016 05:48:13 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2466#comment-469</guid>
+
+					<description><![CDATA[In reply to &lt;a href=&quot;/2016/06/13/rubrics-and-numerical-grades-hacking-the-100-point-scale-part-3/#comment-468&quot;&gt;Clara Maxcy (Cleargrace)&lt;/a&gt;.
+
+This is a totally a valid question, but I&#039;m excluding it for a practical reason: we don&#039;t need the number of rubric categories to match our levels. We make categorizations of students all the time based on our experience, and the mismatch in dimensions here forces us to make choices on what matters. I&#039;ll be clarifying my reasons further in my next post.]]></description>
+			<content:encoded><![CDATA[<p>In reply to <a href="/2016/06/13/rubrics-and-numerical-grades-hacking-the-100-point-scale-part-3/#comment-468">Clara Maxcy (Cleargrace)</a>.</p>
+<p>This is a totally a valid question, but I&#8217;m excluding it for a practical reason: we don&#8217;t need the number of rubric categories to match our levels. We make categorizations of students all the time based on our experience, and the mismatch in dimensions here forces us to make choices on what matters. I&#8217;ll be clarifying my reasons further in my next post.</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: Clara Maxcy (Cleargrace)		</title>
+		<link>/2016/06/13/rubrics-and-numerical-grades-hacking-the-100-point-scale-part-3/#comment-468</link>
+
+		<dc:creator><![CDATA[Clara Maxcy (Cleargrace)]]></dc:creator>
+		<pubDate>Tue, 14 Jun 2016 13:16:52 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2466#comment-468</guid>
+
+					<description><![CDATA[If you want it to go to 4, why no section in your rubric for four?]]></description>
+			<content:encoded><![CDATA[<p>If you want it to go to 4, why no section in your rubric for four?</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: Dennis Ashendorf		</title>
+		<link>/2016/06/13/rubrics-and-numerical-grades-hacking-the-100-point-scale-part-3/#comment-467</link>
+
+		<dc:creator><![CDATA[Dennis Ashendorf]]></dc:creator>
+		<pubDate>Mon, 13 Jun 2016 19:09:58 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2466#comment-467</guid>
+
+					<description><![CDATA[New to the thread, but &quot;multi-attribute analysis&quot; is needed in rubrics - each topic needs a weight assigned (100% each level).  Easy in a spreadsheet to do.]]></description>
+			<content:encoded><![CDATA[<p>New to the thread, but &#8220;multi-attribute analysis&#8221; is needed in rubrics &#8211; each topic needs a weight assigned (100% each level).  Easy in a spreadsheet to do.</p>
+]]></content:encoded>
+		
+			</item>
+	</channel>
+</rss>

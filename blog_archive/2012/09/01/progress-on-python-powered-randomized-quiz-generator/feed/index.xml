@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	
+	xmlns:georss="http://www.georss.org/georss"
+	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+	
+	>
+<channel>
+	<title>
+	Comments on: Progress on Python-Powered randomized quiz generator	</title>
+	<atom:link href="/2012/09/01/progress-on-python-powered-randomized-quiz-generator/feed/" rel="self" type="application/rss+xml" />
+	<link>/2012/09/01/progress-on-python-powered-randomized-quiz-generator/</link>
+	<description>iteration, making, building, and coding in education</description>
+	<lastBuildDate>Mon, 03 Sep 2012 13:16:10 +0000</lastBuildDate>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.7.6</generator>
+	<item>
+		<title>
+		By: Evan Weinberg		</title>
+		<link>/2012/09/01/progress-on-python-powered-randomized-quiz-generator/#comment-114</link>
+
+		<dc:creator><![CDATA[Evan Weinberg]]></dc:creator>
+		<pubDate>Mon, 03 Sep 2012 13:16:10 +0000</pubDate>
+		<guid isPermaLink="false">/?p=733#comment-114</guid>
+
+					<description><![CDATA[In reply to &lt;a href=&quot;/2012/09/01/progress-on-python-powered-randomized-quiz-generator/#comment-113&quot;&gt;Jim P&lt;/a&gt;.
+
+Hi Jim,
+
+If you click on the &#039;play&#039; button, you should see the questions pop up one by one. I&#039;ve made some changes since the weekend based on some comments, new things I&#039;ve learned to do, and suggestions from readers and students. Check out the questions and let me know what you think.
+
+Thanks!
+
+Evan]]></description>
+			<content:encoded><![CDATA[<p>In reply to <a href="/2012/09/01/progress-on-python-powered-randomized-quiz-generator/#comment-113">Jim P</a>.</p>
+<p>Hi Jim,</p>
+<p>If you click on the &#8216;play&#8217; button, you should see the questions pop up one by one. I&#8217;ve made some changes since the weekend based on some comments, new things I&#8217;ve learned to do, and suggestions from readers and students. Check out the questions and let me know what you think.</p>
+<p>Thanks!</p>
+<p>Evan</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: Jim P		</title>
+		<link>/2012/09/01/progress-on-python-powered-randomized-quiz-generator/#comment-113</link>
+
+		<dc:creator><![CDATA[Jim P]]></dc:creator>
+		<pubDate>Sat, 01 Sep 2012 13:34:14 +0000</pubDate>
+		<guid isPermaLink="false">/?p=733#comment-113</guid>
+
+					<description><![CDATA[awesome idea!  I&#039;ve tried doing something similar with excel, but it was far too restricting in terms of what I needed from it.  I would love to learn how this works, but my programming ability is close to non-existent...
+
+I tried going on this website to see if I can learn how to use what you wrote:
+http://repl.it/Chw
+but I didn&#039;t even understand what I could do on it!
+
+If you could offer some instructions, I would love to be a beta tester!
+
+Thanks!]]></description>
+			<content:encoded><![CDATA[<p>awesome idea!  I&#8217;ve tried doing something similar with excel, but it was far too restricting in terms of what I needed from it.  I would love to learn how this works, but my programming ability is close to non-existent&#8230;</p>
+<p>I tried going on this website to see if I can learn how to use what you wrote:<br />
+<a href="http://repl.it/Chw" rel="nofollow ugc">http://repl.it/Chw</a><br />
+but I didn&#8217;t even understand what I could do on it!</p>
+<p>If you could offer some instructions, I would love to be a beta tester!</p>
+<p>Thanks!</p>
+]]></content:encoded>
+		
+			</item>
+	</channel>
+</rss>

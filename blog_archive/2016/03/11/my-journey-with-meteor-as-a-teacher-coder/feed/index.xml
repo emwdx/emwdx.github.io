@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	
+	xmlns:georss="http://www.georss.org/georss"
+	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+	
+	>
+<channel>
+	<title>
+	Comments on: My Journey with Meteor as a Teacher-Coder	</title>
+	<atom:link href="/2016/03/11/my-journey-with-meteor-as-a-teacher-coder/feed/" rel="self" type="application/rss+xml" />
+	<link>/2016/03/11/my-journey-with-meteor-as-a-teacher-coder/</link>
+	<description>iteration, making, building, and coding in education</description>
+	<lastBuildDate>Fri, 18 Mar 2016 03:11:17 +0000</lastBuildDate>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.7.6</generator>
+	<item>
+		<title>
+		By: Evan Weinberg		</title>
+		<link>/2016/03/11/my-journey-with-meteor-as-a-teacher-coder/#comment-443</link>
+
+		<dc:creator><![CDATA[Evan Weinberg]]></dc:creator>
+		<pubDate>Fri, 18 Mar 2016 03:11:17 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2412#comment-443</guid>
+
+					<description><![CDATA[In reply to &lt;a href=&quot;/2016/03/11/my-journey-with-meteor-as-a-teacher-coder/#comment-442&quot;&gt;Brian Bennett&lt;/a&gt;.
+
+From the comments I&#039;ve been receiving from various channels, there&#039;s a need for understanding the steps. Stay tuned.]]></description>
+			<content:encoded><![CDATA[<p>In reply to <a href="/2016/03/11/my-journey-with-meteor-as-a-teacher-coder/#comment-442">Brian Bennett</a>.</p>
+<p>From the comments I&#8217;ve been receiving from various channels, there&#8217;s a need for understanding the steps. Stay tuned.</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: Brian Bennett		</title>
+		<link>/2016/03/11/my-journey-with-meteor-as-a-teacher-coder/#comment-442</link>
+
+		<dc:creator><![CDATA[Brian Bennett]]></dc:creator>
+		<pubDate>Mon, 14 Mar 2016 16:19:05 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2412#comment-442</guid>
+
+					<description><![CDATA[This post has convinced me to spend some time learning Meteor. I can see a bunch of applications for physics and chemistry...I just need to find time to do it now.
+
+Any chance you would write up how you deploy the apps to your own server? I&#039;d be in the same boat.]]></description>
+			<content:encoded><![CDATA[<p>This post has convinced me to spend some time learning Meteor. I can see a bunch of applications for physics and chemistry&#8230;I just need to find time to do it now.</p>
+<p>Any chance you would write up how you deploy the apps to your own server? I&#8217;d be in the same boat.</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: Dan Meyer		</title>
+		<link>/2016/03/11/my-journey-with-meteor-as-a-teacher-coder/#comment-441</link>
+
+		<dc:creator><![CDATA[Dan Meyer]]></dc:creator>
+		<pubDate>Sat, 12 Mar 2016 02:57:29 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2412#comment-441</guid>
+
+					<description><![CDATA[Dave would be proud.]]></description>
+			<content:encoded><![CDATA[<p>Dave would be proud.</p>
+]]></content:encoded>
+		
+			</item>
+	</channel>
+</rss>

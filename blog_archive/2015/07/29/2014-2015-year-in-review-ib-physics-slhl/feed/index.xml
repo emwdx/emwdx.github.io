@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	
+	xmlns:georss="http://www.georss.org/georss"
+	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+	
+	>
+<channel>
+	<title>
+	Comments on: 2014-2015 Year In Review: IB Physics SL/HL	</title>
+	<atom:link href="/2015/07/29/2014-2015-year-in-review-ib-physics-slhl/feed/" rel="self" type="application/rss+xml" />
+	<link>/2015/07/29/2014-2015-year-in-review-ib-physics-slhl/</link>
+	<description>iteration, making, building, and coding in education</description>
+	<lastBuildDate>Wed, 05 Aug 2015 03:41:58 +0000</lastBuildDate>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.7.6</generator>
+	<item>
+		<title>
+		By: Evan Weinberg		</title>
+		<link>/2015/07/29/2014-2015-year-in-review-ib-physics-slhl/#comment-391</link>
+
+		<dc:creator><![CDATA[Evan Weinberg]]></dc:creator>
+		<pubDate>Wed, 05 Aug 2015 03:41:58 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2269#comment-391</guid>
+
+					<description><![CDATA[Hi Danny,
+
+Those are tricky ones, but I do know the AMTA members site has some materials on modeling atomic structure from the chemistry folks. I&#039;m likely going to do some online activities that center on the failure of atomic models as the basis for needing new ones, as that taps nicely into concepts from the IB Theory of Knowledge course. 
+
+As for energy generation, I&#039;m not sure. My plan is to do some analysis of the actual power sources here in China to figure out where the electricity comes from. In the US there&#039;s a lot more info, so this will actually take some detective work on the part of my students.
+
+Thanks for writing!]]></description>
+			<content:encoded><![CDATA[<p>Hi Danny,</p>
+<p>Those are tricky ones, but I do know the AMTA members site has some materials on modeling atomic structure from the chemistry folks. I&#8217;m likely going to do some online activities that center on the failure of atomic models as the basis for needing new ones, as that taps nicely into concepts from the IB Theory of Knowledge course. </p>
+<p>As for energy generation, I&#8217;m not sure. My plan is to do some analysis of the actual power sources here in China to figure out where the electricity comes from. In the US there&#8217;s a lot more info, so this will actually take some detective work on the part of my students.</p>
+<p>Thanks for writing!</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: Danny		</title>
+		<link>/2015/07/29/2014-2015-year-in-review-ib-physics-slhl/#comment-390</link>
+
+		<dc:creator><![CDATA[Danny]]></dc:creator>
+		<pubDate>Sun, 02 Aug 2015 05:38:05 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2269#comment-390</guid>
+
+					<description><![CDATA[Hey Evan, totally agree about the effectiveness of Modeling. Have you thought about how you&#039;ll model or do labs with units 7 and 8 (atomic/etc and energy production)?]]></description>
+			<content:encoded><![CDATA[<p>Hey Evan, totally agree about the effectiveness of Modeling. Have you thought about how you&#8217;ll model or do labs with units 7 and 8 (atomic/etc and energy production)?</p>
+]]></content:encoded>
+		
+			</item>
+	</channel>
+</rss>

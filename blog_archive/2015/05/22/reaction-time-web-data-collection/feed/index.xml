@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	
+	xmlns:georss="http://www.georss.org/georss"
+	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+	
+	>
+<channel>
+	<title>
+	Comments on: Reaction Time &#038; Web Data Collection	</title>
+	<atom:link href="/2015/05/22/reaction-time-web-data-collection/feed/" rel="self" type="application/rss+xml" />
+	<link>/2015/05/22/reaction-time-web-data-collection/</link>
+	<description>iteration, making, building, and coding in education</description>
+	<lastBuildDate>Mon, 25 May 2015 09:04:44 +0000</lastBuildDate>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.7.6</generator>
+	<item>
+		<title>
+		By: Evan Weinberg		</title>
+		<link>/2015/05/22/reaction-time-web-data-collection/#comment-383</link>
+
+		<dc:creator><![CDATA[Evan Weinberg]]></dc:creator>
+		<pubDate>Mon, 25 May 2015 09:04:44 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2228#comment-383</guid>
+
+					<description><![CDATA[In reply to &lt;a href=&quot;/2015/05/22/reaction-time-web-data-collection/#comment-382&quot;&gt;Dan Meyer&lt;/a&gt;.
+
+It ended up being a perfect motivation for standard deviation, which we hadn&#039;t yet discussed. The means were right on top of each other, but the variability of the Facebook only data was higher and evident merely from students looking at the values. We needed a better way to describe that variability, so standard deviation was there to save us.
+
+I&#039;d love to say that we did a lot more with it, but we&#039;re getting squeezed against the end of the year here, and I still had a bit further to go before reviewing for finals, so I&#039;m setting it aside. It would be great if it inspired students to perhaps design their own survey for their exploration/internal assessment.]]></description>
+			<content:encoded><![CDATA[<p>In reply to <a href="/2015/05/22/reaction-time-web-data-collection/#comment-382">Dan Meyer</a>.</p>
+<p>It ended up being a perfect motivation for standard deviation, which we hadn&#8217;t yet discussed. The means were right on top of each other, but the variability of the Facebook only data was higher and evident merely from students looking at the values. We needed a better way to describe that variability, so standard deviation was there to save us.</p>
+<p>I&#8217;d love to say that we did a lot more with it, but we&#8217;re getting squeezed against the end of the year here, and I still had a bit further to go before reviewing for finals, so I&#8217;m setting it aside. It would be great if it inspired students to perhaps design their own survey for their exploration/internal assessment.</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: Dan Meyer		</title>
+		<link>/2015/05/22/reaction-time-web-data-collection/#comment-382</link>
+
+		<dc:creator><![CDATA[Dan Meyer]]></dc:creator>
+		<pubDate>Sat, 23 May 2015 02:59:46 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2228#comment-382</guid>
+
+					<description><![CDATA[Neat. What did your students do with this data?]]></description>
+			<content:encoded><![CDATA[<p>Neat. What did your students do with this data?</p>
+]]></content:encoded>
+		
+			</item>
+	</channel>
+</rss>

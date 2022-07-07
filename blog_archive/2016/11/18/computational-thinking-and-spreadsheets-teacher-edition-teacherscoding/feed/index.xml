@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	
+	xmlns:georss="http://www.georss.org/georss"
+	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+	
+	>
+<channel>
+	<title>
+	Comments on: Computational Thinking and Spreadsheets, Teacher Edition (#TeachersCoding)	</title>
+	<atom:link href="/2016/11/18/computational-thinking-and-spreadsheets-teacher-edition-teacherscoding/feed/" rel="self" type="application/rss+xml" />
+	<link>/2016/11/18/computational-thinking-and-spreadsheets-teacher-edition-teacherscoding/</link>
+	<description>iteration, making, building, and coding in education</description>
+	<lastBuildDate>Fri, 18 Nov 2016 17:37:18 +0000</lastBuildDate>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.7.6</generator>
+	<item>
+		<title>
+		By: xiousgeonz		</title>
+		<link>/2016/11/18/computational-thinking-and-spreadsheets-teacher-edition-teacherscoding/#comment-492</link>
+
+		<dc:creator><![CDATA[xiousgeonz]]></dc:creator>
+		<pubDate>Fri, 18 Nov 2016 17:37:18 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2583#comment-492</guid>
+
+					<description><![CDATA[I think the &quot;onboarding&quot; thing is huge:   something easy to understand and do that is actually useful.   Then, even if it stops there, they&#039;ve got something useful, and they might just do it more than once, which would make it more likely to try to extend a little further...]]></description>
+			<content:encoded><![CDATA[<p>I think the &#8220;onboarding&#8221; thing is huge:   something easy to understand and do that is actually useful.   Then, even if it stops there, they&#8217;ve got something useful, and they might just do it more than once, which would make it more likely to try to extend a little further&#8230;</p>
+]]></content:encoded>
+		
+			</item>
+	</channel>
+</rss>

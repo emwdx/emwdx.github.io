@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="profile" href="https://gmpg.org/xfn/11">
+
+    <title>Testing expected values using Geogebra</title>
+<meta name="robots" content="max-image-preview:large">
+<link rel="dns-prefetch">
+<link rel="dns-prefetch" href="//fonts.googleapis.com">
+<link rel="dns-prefetch" href="//s.w.org">
+<link rel="alternate" type="application/rss+xml" title=" &raquo; Feed" href="/feed/">
+<link rel="alternate" type="application/rss+xml" title=" &raquo; Comments Feed" href="/comments/feed/">
+<link rel="alternate" type="application/rss+xml" title=" &raquo; Testing expected values using Geogebra Comments Feed" href="/2011/11/29/testing-expected-values-using-geogebra/feed/">
+		<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/svg\/","svgExt":".svg","source":{"concatemoji":"https13.229.58.164\/wp-includes\/js\/wp-emoji-release.min.js?ver=5.7.6"}};
+			!function(e,a,t){var n,r,o,i=a.createElement("canvas"),p=i.getContext&&i.getContext("2d");function s(e,t){var a=String.fromCharCode;p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,e),0,0);e=i.toDataURL();return p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,t),0,0),e===i.toDataURL()}function c(e){var t=a.createElement("script");t.src=e,t.defer=t.type="text/javascript",a.getElementsByTagName("head")[0].appendChild(t)}for(o=Array("flag","emoji"),t.supports={everything:!0,everythingExceptFlag:!0},r=0;r<o.length;r++)t.supports[o[r]]=function(e){if(!p||!p.fillText)return!1;switch(p.textBaseline="top",p.font="600 32px Arial",e){case"flag":return s([127987,65039,8205,9895,65039],[127987,65039,8203,9895,65039])?!1:!s([55356,56826,55356,56819],[55356,56826,8203,55356,56819])&&!s([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]);case"emoji":return!s([55357,56424,8205,55356,57212],[55357,56424,8203,55356,57212])}return!1}(o[r]),t.supports.everything=t.supports.everything&&t.supports[o[r]],"flag"!==o[r]&&(t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&t.supports[o[r]]);t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&!t.supports.flag,t.DOMReady=!1,t.readyCallback=function(){t.DOMReady=!0},t.supports.everything||(n=function(){t.readyCallback()},a.addEventListener?(a.addEventListener("DOMContentLoaded",n,!1),e.addEventListener("load",n,!1)):(e.attachEvent("onload",n),a.attachEvent("onreadystatechange",function(){"complete"===a.readyState&&t.readyCallback()})),(n=t.source||{}).concatemoji?c(n.concatemoji):n.wpemoji&&n.twemoji&&(c(n.twemoji),c(n.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+		<style type="text/css">img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}</style>
+	<link rel="stylesheet" id="wp-block-library-css" href="/wp-includes/css/dist/block-library/style.min.css?ver=5.7.6" type="text/css" media="all">
+<style id="wp-block-library-inline-css" type="text/css">.has-text-align-justify{text-align:justify;}</style>
+<link rel="stylesheet" id="wp-block-library-theme-css" href="/wp-includes/css/dist/block-library/theme.min.css?ver=5.7.6" type="text/css" media="all">
+<link rel="stylesheet" id="gist-style-css" href="/wp-content/themes/gist/style.css?ver=5.7.6" type="text/css" media="all">
+<style id="gist-style-inline-css" type="text/css">{ clip: rect(1px, 1px, 1px, 1px); height: 1px; position: absolute; overflow: hidden; width: 1px; }
+body { font-family: Open Sans; }body { font-size: 16px; }body { line-height : 2; }.breadcrumbs span.breadcrumb, .nav-links a, .search-form input[type=submit], #toTop, .candid-pagination .page-numbers.current, .candid-pagination .page-numbers:hover  { background : #ca9b52; }.search-form input.search-field, .sticky .p-15, .related-post-entries li, .candid-pagination .page-numbers { border-color : #ca9b52; }.error-404 h1, .no-results h1, a, a:visited, .related-post-entries .title:hover, .entry-title a:hover, .featured-post-title a:hover, .entry-meta.entry-category a,.widget li a:hover, .widget h1 a:hover, .widget h2 a:hover, .widget h3 a:hover, .site-title a, .site-title a:visited, .main-navigation ul li a:hover { color : #ca9b52; }.btn-primary { border: 2px solid #ca9b52;}</style>
+<link rel="stylesheet" id="drift-blog-style-css" href="/wp-content/themes/drift-blog/style.css?ver=5.7.6" type="text/css" media="all">
+<link rel="stylesheet" id="drift-blog-google-fonts-css" href="//fonts.googleapis.com/css?family=Playfair+Display&#038;ver=5.7.6" type="text/css" media="all">
+<link rel="stylesheet" id="gist-googleapis-css" href="//fonts.googleapis.com/css?family=Open+Sans&#038;ver=5.7.6" type="text/css" media="all">
+<link rel="stylesheet" id="gist-google-fonts-css" href="//fonts.googleapis.com/css?family=Oswald&#038;ver=5.7.6" type="text/css" media="all">
+<link rel="stylesheet" id="font-awesome-css" href="/wp-content/themes/gist/candidthemes/assets/framework/Font-Awesome/css/font-awesome.min.css?ver=4.7.0" type="text/css" media="all">
+<link rel="stylesheet" id="jetpack_css-css" href="/wp-content/plugins/jetpack/css/jetpack.css?ver=8.6.2" type="text/css" media="all">
+<script type="text/javascript" src="/wp-includes/js/jquery/jquery.min.js?ver=3.5.1" id="jquery-core-js"></script>
+<script type="text/javascript" src="/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.3.2" id="jquery-migrate-js"></script>
+<link rel="https://api.w.org/" href="/wp-json/">
+<link rel="alternate" type="application/json" href="/wp-json/wp/v2/posts/295">
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="/wp-includes/wlwmanifest.xml"> 
+<meta name="generator" content="WordPress 5.7.6">
+<link rel="canonical" href="/2011/11/29/testing-expected-values-using-geogebra/">
+<link rel="shortlink" href="/?p=295">
+<link rel="alternate" type="application/json+oembed" href="/wp-json/oembed/1.0/embed?url=https%3A%2F%2F%2F2011%2F11%2F29%2Ftesting-expected-values-using-geogebra%2F">
+<link rel="alternate" type="text/xml+oembed" href="/wp-json/oembed/1.0/embed?url=https%3A%2F%2F%2F2011%2F11%2F29%2Ftesting-expected-values-using-geogebra%2F&#038;format=xml">
+<style type="text/css">img#wpstats{display:none}</style>
+<link rel="pingback" href="/xmlrpc.php">		<style type="text/css" id="wp-custom-css">.custom-logo{
+	height:300px;
+	width:300px
+	
+}</style>
+		</head>
+
+<body data-rsssl="1" class="post-template-default single single-post postid-295 single-format-standard wp-custom-logo wp-embed-responsive ct-sticky-sidebar right-sidebar">
+    <div id="page" class="site container-main">
+        <a class="skip-link screen-reader-text" href="#content">Skip to content</a>
+
+        <header id="masthead" class="site-header" role="banner">
+            <div class="top-menu-container-inner container-inner">
+                    <div id="mainnav-wrap" class="clear">
+                        <div class="top-header-social">
+                            
+                            <button class="top-menu-toggle"><i class="fa fa-bars"></i></button>
+                        </div>
+
+                        <nav id="top-site-navigation" class="main-navigation" role="navigation">
+                            <div class="menu-pages-container"><ul id="top-menu" class="top-menu nav_menu">
+<li id="menu-item-2781" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-2781"><a href="/">Home</a></li>
+<li id="menu-item-2782" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2782"><a href="/about/">About Evan Weinberg</a></li>
+</ul></div>                        </nav>
+                            <!-- #site-navigation -->
+                    </div>
+                </div>
+                    <!-- .top-menu-container-inner -->
+            <div class="site-branding">
+                <div class="container-inner">
+                    <a href="/" class="custom-logo-link" rel="home"><img width="1000" height="1000" src="/wp-content/uploads/2018/10/for.next_.001.jpeg" class="custom-logo" alt="" srcset="/wp-content/uploads/2018/10/for.next_.001.jpeg 1000w, /wp-content/uploads/2018/10/for.next_.001-300x300.jpeg 300w, /wp-content/uploads/2018/10/for.next_.001-150x150.jpeg 150w, /wp-content/uploads/2018/10/for.next_.001-768x768.jpeg 768w" sizes="(max-width: 1000px) 100vw, 1000px"></a>                            <p class="site-title"><a href="/" rel="home"></a></p>
+                                                           <p class="site-description">iteration, making, building, and coding in education</p>
+                                                </div>
+                </div>
+                <!-- .site-branding -->
+
+                <div class="container-inner">
+                    <div id="mainnav-wrap">
+                        <nav id="site-navigation" class="main-navigation" role="navigation">
+                            <button class="menu-toggle" aria-controls="primary-menu" aria-expanded="false"><i class="fa fa-bars"></i></button>
+                                                            </nav>
+                            <!-- #site-navigation -->
+                        </div>
+                    </div>
+                    <!-- .container-inner -->
+                </header>
+                <!-- #masthead -->
+                <div class="header-image-block">
+                                    </div>
+
+                <div id="content" class="site-content container-inner p-t-15">
+	<div id="primary" class="content-area">
+		<main id="main" class="site-main">
+			<div class="breadcrumbs">
+                            </div>
+		
+<article id="post-295" class="post-295 post type-post status-publish format-standard hentry category-algebra-2 category-geogebra category-geometry category-reflection category-teaching-stories tag-expected-value tag-geogebra tag-probability tag-spinner">
+    <div class="p-15 left-image">
+        <div class="ct-featured-image">
+                    </div>
+        <div class="entry-content">
+            <header class="entry-header">
+                <h1 class="entry-title">Testing expected values using Geogebra</h1>    </header>
+    <!-- .entry-header -->
+    <p>I was intrigued last night looking at<a href="http://blog.mrmeyer.com/?p=12128"> Dan Meyer&#8217;s blog post</a> about the power of video to clearly define a problem in a way that a static image does not. I loved the simple idea that his video provoked in me &#8211; when does one switch from betting on blue vs. purple? This gets at the idea of expected value in a really nice and elegant way. When the discussion turned to interactivity, Geogebra was the clear choice.</p>
+<p>I created this simple sketch (downloadable <a href="http://www.geogebra.org/en/upload/index.php?action=downloadfile&amp;filename=Expected%20Value%20Spinner.ggb&amp;directory=weinbergmath&amp;">here</a>)as a demonstration that this could easily be turned into an interactive task with some cool opportunities for collecting data from classes. I found myself explaining the task in a slightly different way to the first couple students I showed this to, so I decided to just show Dan&#8217;s video to everyone and take my own variable out of the experiment. After doing this with the Algebra 2 (10th grade) group, I did it again later with Geometry (9th) and a Calculus student that happened to be around before lunch.</p>
+<p>The results were staggering.<br>
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2011/11/expected-value-g9-101calcstudent.jpg"><img loading="lazy" class="aligncenter size-medium wp-image-296" title="expected-value-G9-10+1calcstudent" src="https://blog.evanweinberg.org/wp-content/uploads/2011/11/expected-value-g9-101calcstudent.jpg?w=300" alt="" width="300" height="225" srcset="/wp-content/uploads/2011/11/expected-value-g9-101calcstudent.jpg 1126w, /wp-content/uploads/2011/11/expected-value-g9-101calcstudent-300x226.jpg 300w, /wp-content/uploads/2011/11/expected-value-g9-101calcstudent-1024x771.jpg 1024w, /wp-content/uploads/2011/11/expected-value-g9-101calcstudent-768x578.jpg 768w" sizes="(max-width: 300px) 100vw, 300px"></a></p>
+<p>Each colored point represents a single student&#8217;s choice for when they would no longer choose blue. Why they chose these was initially beyond me. The general ability level of these groups is pretty strong. After a while of thinking and chatting with students, I realized the following:</p>
+<ul>
+<li>Since the math level of the groups were fairly strong, there had to be something about the way the question was posed that was throwing them off. I got it, but something was off for them.</li>
+</ul>
+<ul>
+<li>The questions the students were asking were all about winning or losing. For example, if they chose purple, but the spinner landed on blue, what would happen? The assumption they had in their heads was that they would either get $200 or nothing. Of course they would choose to wait until there was a better than 50:50 chance before switching to purple. The part about <span style="text-decoration:underline;">maximizing</span> the winnings wasn&#8217;t what they understood from the task.</li>
+</ul>
+<ul>
+<li>When I modified the language in the sketch to say when do you &#8216;choose&#8217; purple instead of &#8216;bet&#8217; on the $200  between the Algebra 2 group and the Geometry group, there wasn&#8217;t a significant change in the results. They still tended to choose percentages that were close to the 50:50 range.</li>
+</ul>
+<p>Dan made this suggestion:</p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2011/11/dan-comment-expected-value.jpg"><img loading="lazy" class="aligncenter size-full wp-image-297" title="dan-comment-expected-value" src="https://blog.evanweinberg.org/wp-content/uploads/2011/11/dan-comment-expected-value.jpg" alt="" width="500" height="62" srcset="/wp-content/uploads/2011/11/dan-comment-expected-value.jpg 527w, /wp-content/uploads/2011/11/dan-comment-expected-value-300x38.jpg 300w" sizes="(max-width: 500px) 100vw, 500px"></a></p>
+<p>I made an updated sketch that allowed students to do just that, available<a href="http://www.geogebra.org/en/upload/index.php?action=downloadfile&amp;filename=Expected%20Value%20Spinner%20w%20simulation.ggb&amp;directory=weinbergmath&amp;"> here</a> in my Geogebra repository. It lets the user choose the moment for switching, simulates 500 spins, and shows the amount earned if the person stuck to either color. I tried it out on an unsuspecting student that stayed after school for some help, one of the ones that had done the task earlier.</p>
+<p>Over the course of working with the sketch, the thing he started looking for was not when the best point to switch was, but when the switch point resulted in no difference in the amount of money earned in the long run by spinning 500 times. This, after all, was why when both winning amounts were $100, there was no difference in choosing blue or purple. This is the idea of expected value &#8211; when are the two expected values equal? When posed this way, the student was quickly able to make a fairly good guess, even when I changed the amount of the winnings for each color using the sketch.</p>
+<p>I&#8217;m thinking of doing this again as a quick quiz with colleagues tomorrow to see what the difference is between adults and the students given the same choice. The thing is, probably because I am a math teacher, I knew exactly what Dan was getting at when I watched the video myself &#8211; this is why I was so jazzed by the problem. I saw this as an expected value problem though.</p>
+<p>The students had no such biases &#8211; in fact, they had more realistic ones that reflect their life experiences. This is the challenge we all face designing learning activities for the classroom. We can try our best to come up with engaging, interesting activities (and engagement was not the issue &#8211; they were into the idea) but we never know exactly how they will respond. That&#8217;s part of the excitement of the job, no?</p>
+
+    <footer class="entry-footer">
+        </footer>
+<!-- .entry-footer -->
+</div>
+<!-- .entry-content -->
+</div>
+<!-- .p-15 -->
+</article><!-- #post-295 -->
+
+	<nav class="navigation post-navigation" role="navigation" aria-label="Posts">
+		<h2 class="screen-reader-text">Post navigation</h2>
+		<div class="nav-links">
+<div class="nav-previous"><a href="/2011/11/27/from-projectile-motion-to-orbits-using-geogebra/" rel="prev">From projectile motion to orbits using Geogebra</a></div>
+<div class="nav-next"><a href="/2011/12/05/geogebra-for-triangle-congruence-postulates/" rel="next">Geogebra for Triangle Congruence Postulates</a></div>
+</div>
+	</nav>            <div class="related-pots-block">
+                <h2 class="widget-title">
+                    Related Posts                </h2>
+                <ul class="related-post-entries clear">
+                                            <li>
+                                                        <div class="featured-desc">
+                                <a href="/2017/06/13/2016-2017-year-in-review-being-new/">
+                                    <h2 class="title">
+                                       2016-2017 Year in Review: Being New                                    </h2>
+                                </a>
+                            </div>
+                        </li>
+                                            <li>
+                                                        <div class="featured-desc">
+                                <a href="/2017/04/07/trello-for-class-organization/">
+                                    <h2 class="title">
+                                       Trello for Class Organization                                    </h2>
+                                </a>
+                            </div>
+                        </li>
+                                            <li>
+                                                        <div class="featured-desc">
+                                <a href="/2017/01/26/exploring-dan-meyers-boat-dock-with-peardeck/">
+                                    <h2 class="title">
+                                       Exploring Dan Meyer&#8217;s Boat Dock with PearDeck                                    </h2>
+                                </a>
+                            </div>
+                        </li>
+                                    </ul>
+            </div> <!-- .related-post-block -->
+        
+<div id="comments" class="comments-area">
+
+			<h2 class="comments-title">
+			5 thoughts on &ldquo;<span>Testing expected values using Geogebra</span>&rdquo;		</h2>
+<!-- .comments-title -->
+
+		
+		<ol class="comment-list">
+					<li id="comment-34" class="pingback even thread-even depth-1">
+			<div class="comment-body">
+				Pingback: <a href="http://blog.mrmeyer.com/?p=12128" rel="external nofollow ugc" class="url">dy/dan &raquo; Blog Archive &raquo; When Is Video Valuable?</a> 			</div>
+		</li>
+<!-- #comment-## -->
+		<li id="comment-35" class="comment odd alt thread-odd thread-alt depth-1 parent">
+			<article id="div-comment-35" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="https://secure.gravatar.com/avatar/b96658dc22d823e78f004fc3ec971bfe?s=32&#038;d=mm&#038;r=g" srcset="https://secure.gravatar.com/avatar/b96658dc22d823e78f004fc3ec971bfe?s=64&#038;d=mm&#038;r=g 2x" class="avatar avatar-32 photo" height="32" width="32" loading="lazy">						<b class="fn"><a href="http://www.withoutgeometry.com/" rel="external nofollow ugc" class="url">Avery</a></b> <span class="says">says:</span>					</div>
+<!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="/2011/11/29/testing-expected-values-using-geogebra/#comment-35"><time datetime="2011-11-29T21:05:02+08:00">November 29, 2011 at 9:05 pm</time></a>					</div>
+<!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>Sweet! Thanks for doing this. A few technical questions and then one comment&#8230;<br>
+Did you have every student download this file and do this at their own desk (assuming you are 1:1)? How did you migrate the &#8220;points&#8221; from the students to the overhead?</p>
+<p>and a comment&#8230;<br>
+Instead of describing the angle you stopped at, I might describe the ratio of the circumference you stopped at since (I think) this more easily leads to the idea of weighted averages.</p>
+				</div>
+<!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="/2011/11/29/testing-expected-values-using-geogebra/?replytocom=35#respond" data-commentid="35" data-postid="295" data-belowelement="div-comment-35" data-respondelement="respond" data-replyto="Reply to Avery" aria-label="Reply to Avery">Reply</a></div>			</article><!-- .comment-body -->
+		<ol class="children">
+		<li id="comment-36" class="comment even depth-2">
+			<article id="div-comment-36" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="https://secure.gravatar.com/avatar/509d79173df4009f0620939f5069f8be?s=32&#038;d=mm&#038;r=g" srcset="https://secure.gravatar.com/avatar/509d79173df4009f0620939f5069f8be?s=64&#038;d=mm&#038;r=g 2x" class="avatar avatar-32 photo" height="32" width="32" loading="lazy">						<b class="fn"><a href="http://gealgerobophysiculus.wordpress.com/" rel="external nofollow ugc" class="url">Evan Weinberg</a></b> <span class="says">says:</span>					</div>
+<!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="/2011/11/29/testing-expected-values-using-geogebra/#comment-36"><time datetime="2011-11-30T00:06:51+08:00">November 30, 2011 at 12:06 am</time></a>					</div>
+<!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>Hey Avery,</p>
+<p>When I first quizzed the first group of students, it was with the original sketch on my own computer. I just asked them to tell me when they wanted me to stop the purple region from growing. I then manually entered the results into the spreadsheet view and displayed the list of points. With the geometry students they all ran the sketch on their computer and then shouted out their numbers. It would be just as easy (I imagine) to have a group of people in a todaysmeet.com and enter their answers. A student volunteer could then enter the values into a spreadsheet that automatically plots the points.</p>
+<p>After getting a comment similar to yours about the angle from another person during school, I changed the number to showing percentage instead of angle &#8211; it absolutely made a big difference. At the time I chose to display the angle, it was for ease of gathering data. The sketch wasn&#8217;t really an interactive activity that would be used for an individual student to really explore the concept. In the later version I posted at <a href="http://bit.ly/rDARUH" rel="nofollow ugc">http://bit.ly/rDARUH</a> it is meant for students to explore a bit more, and that includes the percentage of purple rather than the angle.</p>
+<p>Thanks for the comments &#8211; I love arbitrarily assigning myself Geogebra challenges. Dan tends to be a great source of those&#8230;.</p>
+				</div>
+<!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="/2011/11/29/testing-expected-values-using-geogebra/?replytocom=36#respond" data-commentid="36" data-postid="295" data-belowelement="div-comment-36" data-respondelement="respond" data-replyto="Reply to Evan Weinberg" aria-label="Reply to Evan Weinberg">Reply</a></div>			</article><!-- .comment-body -->
+		</li>
+<!-- #comment-## -->
+</ol>
+<!-- .children -->
+</li>
+<!-- #comment-## -->
+		<li id="comment-37" class="comment odd alt thread-even depth-1">
+			<article id="div-comment-37" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="https://secure.gravatar.com/avatar/16d79eeef18d0d745f2a2201ffc35b58?s=32&#038;d=mm&#038;r=g" srcset="https://secure.gravatar.com/avatar/16d79eeef18d0d745f2a2201ffc35b58?s=64&#038;d=mm&#038;r=g 2x" class="avatar avatar-32 photo" height="32" width="32" loading="lazy">						<b class="fn"><a href="http://mrvaudrey.wordpress.org/" rel="external nofollow ugc" class="url">Mr. Vaudrey</a></b> <span class="says">says:</span>					</div>
+<!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="/2011/11/29/testing-expected-values-using-geogebra/#comment-37"><time datetime="2011-12-15T17:11:41+08:00">December 15, 2011 at 5:11 pm</time></a>					</div>
+<!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>The excitement of the job, indeed!</p>
+				</div>
+<!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="/2011/11/29/testing-expected-values-using-geogebra/?replytocom=37#respond" data-commentid="37" data-postid="295" data-belowelement="div-comment-37" data-respondelement="respond" data-replyto="Reply to Mr. Vaudrey" aria-label="Reply to Mr. Vaudrey">Reply</a></div>			</article><!-- .comment-body -->
+		</li>
+<!-- #comment-## -->
+		<li id="comment-38" class="comment even thread-odd thread-alt depth-1">
+			<article id="div-comment-38" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="https://secure.gravatar.com/avatar/4c82f5fade425b19317812889edc1243?s=32&#038;d=mm&#038;r=g" srcset="https://secure.gravatar.com/avatar/4c82f5fade425b19317812889edc1243?s=64&#038;d=mm&#038;r=g 2x" class="avatar avatar-32 photo" height="32" width="32" loading="lazy">						<b class="fn">Pete</b> <span class="says">says:</span>					</div>
+<!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="/2011/11/29/testing-expected-values-using-geogebra/#comment-38"><time datetime="2012-03-13T20:15:30+08:00">March 13, 2012 at 8:15 pm</time></a>					</div>
+<!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>Interesting tae on the student versus math teacher view of the problem.  It get&#8217;s into prospect theory versus the expected value models for predicting human choices.  The students were evaluating a win of $100 as rougly equal to a win of $200, versus a more painful &#8220;loss&#8221;  &#8211; there is some basis for both of these in Kahnemann and Traversky&#8217;s work, mainly the loss aversion.</p>
+				</div>
+<!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="/2011/11/29/testing-expected-values-using-geogebra/?replytocom=38#respond" data-commentid="38" data-postid="295" data-belowelement="div-comment-38" data-respondelement="respond" data-replyto="Reply to Pete" aria-label="Reply to Pete">Reply</a></div>			</article><!-- .comment-body -->
+		</li>
+<!-- #comment-## -->
+		</ol>
+<!-- .comment-list -->
+
+			<div id="respond" class="comment-respond">
+		<h3 id="reply-title" class="comment-reply-title">Leave a Reply <small><a rel="nofollow" id="cancel-comment-reply-link" href="/2011/11/29/testing-expected-values-using-geogebra/#respond" style="display:none;">Cancel reply</a></small>
+</h3>
+<form action="https13.229.58.164/wp-comments-post.php" method="post" id="commentform" class="comment-form" novalidate>
+<p class="comment-notes"><span id="email-notes">Your email address will not be published.</span> Required fields are marked <span class="required">*</span></p>
+<p class="comment-form-comment"><label for="comment">Comment</label> <textarea id="comment" name="comment" cols="45" rows="8" maxlength="65525" required="required"></textarea></p>
+<p class="comment-form-author"><label for="author">Name <span class="required">*</span></label> <input id="author" name="author" type="text" value="" size="30" maxlength="245" required="required"></p>
+<p class="comment-form-email"><label for="email">Email <span class="required">*</span></label> <input id="email" name="email" type="email" value="" size="30" maxlength="100" aria-describedby="email-notes" required="required"></p>
+<p class="comment-form-url"><label for="url">Website</label> <input id="url" name="url" type="url" value="" size="30" maxlength="200"></p>
+<p class="comment-form-cookies-consent"><input id="wp-comment-cookies-consent" name="wp-comment-cookies-consent" type="checkbox" value="yes"> <label for="wp-comment-cookies-consent">Save my name, email, and website in this browser for the next time I comment.</label></p>
+<p class="form-submit"><input name="submit" type="submit" id="submit" class="submit" value="Post Comment"> <input type="hidden" name="comment_post_ID" value="295" id="comment_post_ID">
+<input type="hidden" name="comment_parent" id="comment_parent" value="0">
+</p>
+<p style="display: none;"><input type="hidden" id="akismet_comment_nonce" name="akismet_comment_nonce" value="e45aafca3c"></p>
+<p style="display: none;"><input type="hidden" id="ak_js" name="ak_js" value="85"></p>
+</form>	</div>
+<!-- #respond -->
+	
+</div>
+<!-- #comments -->
+
+		</main><!-- #main -->
+	</div>
+<!-- #primary -->
+
+
+<aside id="secondary" class="widget-area" role="complementary">
+	<section id="categories-2" class="widget widget_categories"><h2 class="widget-title">Categories</h2>
+			<ul>
+					<li class="cat-item cat-item-2">
+<a href="/category/algebra-2/">algebra 2</a>
+</li>
+	<li class="cat-item cat-item-3">
+<a href="/category/array/">Array</a>
+</li>
+	<li class="cat-item cat-item-4">
+<a href="/category/calculus/">calculus</a>
+</li>
+	<li class="cat-item cat-item-5">
+<a href="/category/computational-thinking-2/">computational-thinking</a>
+</li>
+	<li class="cat-item cat-item-6">
+<a href="/category/geogebra/">geogebra</a>
+</li>
+	<li class="cat-item cat-item-7">
+<a href="/category/geometry/">geometry</a>
+</li>
+	<li class="cat-item cat-item-8">
+<a href="/category/ib/">IB</a>
+</li>
+	<li class="cat-item cat-item-9">
+<a href="/category/physics/">physics</a>
+</li>
+	<li class="cat-item cat-item-10">
+<a href="/category/precalculus/">precalculus</a>
+</li>
+	<li class="cat-item cat-item-11">
+<a href="/category/programming/">programming</a>
+</li>
+	<li class="cat-item cat-item-12">
+<a href="/category/reflection/">reflection</a>
+</li>
+	<li class="cat-item cat-item-13">
+<a href="/category/robotics/">robotics</a>
+</li>
+	<li class="cat-item cat-item-14">
+<a href="/category/standards-based-grading/">standards based grading</a>
+</li>
+	<li class="cat-item cat-item-15">
+<a href="/category/studentwork/">studentwork</a>
+</li>
+	<li class="cat-item cat-item-16">
+<a href="/category/teaching-philosophy/">teaching philosophy</a>
+</li>
+	<li class="cat-item cat-item-17">
+<a href="/category/teaching-stories/">teaching stories</a>
+</li>
+	<li class="cat-item cat-item-1">
+<a href="/category/uncategorized/">Uncategorized</a>
+</li>
+	<li class="cat-item cat-item-18">
+<a href="/category/year-in-review/">year-in-review</a>
+</li>
+			</ul>
+
+			</section><section id="meta-2" class="widget widget_meta"><h2 class="widget-title">Meta</h2>
+		<ul>
+						<li><a href="/wp-login.php">Log in</a></li>
+			<li><a href="/feed/">Entries feed</a></li>
+			<li><a href="/comments/feed/">Comments feed</a></li>
+
+			<li><a href="https://wordpress.org/">WordPress.org</a></li>
+		</ul>
+
+		</section></aside><!-- #secondary -->
+
+	</div>
+<!-- #content -->
+
+<footer id="colophon" class="site-footer">
+    		<div class="site-info">
+        			<span class="copy-right-text">All Right Reserved 2018</span>
+						<div class="powered-text">
+				<a href="https://wordpress.org/">Proudly powered by WordPress</a>
+				<span class="sep"> | </span>
+				Theme: Drift Blog by <a href="http://www.candidthemes.com/">Candid Themes</a>.			</div>
+			        <a id="toTop" class="go-to-top" href="#" title="Go to Top">
+            <i class="fa fa-angle-double-up"></i>
+        </a>
+    		</div>
+<!-- .site-info -->
+	</footer><!-- #colophon -->
+</div>
+<!-- #page -->
+
+<script type="text/javascript" src="/wp-content/themes/drift-blog/js/drift-blog-custom.js?ver=20151215" id="drift-blog-custom-js"></script>
+<script type="text/javascript" src="/wp-content/themes/gist/candidthemes/assets/js/gist-custom.js?ver=20151215" id="gist-custom-js"></script>
+<script type="text/javascript" src="/wp-content/themes/gist/candidthemes/assets/js/theia-sticky-sidebar.js?ver=20151215" id="theia-sticky-sidebar-js"></script>
+<script type="text/javascript" src="/wp-content/themes/gist/js/navigation.js?ver=20151215" id="gist-navigation-js"></script>
+<script type="text/javascript" src="/wp-content/themes/gist/js/skip-link-focus-fix.js?ver=20151215" id="gist-skip-link-focus-fix-js"></script>
+<script type="text/javascript" src="/wp-includes/js/comment-reply.min.js?ver=5.7.6" id="comment-reply-js"></script>
+<script type="text/javascript" src="/wp-includes/js/wp-embed.min.js?ver=5.7.6" id="wp-embed-js"></script>
+<script async="async" type="text/javascript" src="/wp-content/plugins/akismet/_inc/form.js?ver=4.1.7" id="akismet-form-js"></script>
+<script type="text/javascript" src="https://stats.wp.com/e-202219.js" async="async" defer></script>
+<script type="text/javascript">
+	_stq = window._stq || [];
+	_stq.push([ 'view', {v:'ext',j:'1:8.6.2',blog:'180381780',post:'295',tz:'8',srv:'evanweinberg.com'} ]);
+	_stq.push([ 'clickTrackerInit', '180381780', '295' ]);
+</script>
+
+
+</body>
+</html>

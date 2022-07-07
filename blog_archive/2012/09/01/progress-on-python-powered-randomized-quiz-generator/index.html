@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="profile" href="https://gmpg.org/xfn/11">
+
+    <title>Progress on Python-Powered randomized quiz generator</title>
+<meta name="robots" content="max-image-preview:large">
+<link rel="dns-prefetch">
+<link rel="dns-prefetch" href="//fonts.googleapis.com">
+<link rel="dns-prefetch" href="//s.w.org">
+<link rel="alternate" type="application/rss+xml" title=" &raquo; Feed" href="/feed/">
+<link rel="alternate" type="application/rss+xml" title=" &raquo; Comments Feed" href="/comments/feed/">
+<link rel="alternate" type="application/rss+xml" title=" &raquo; Progress on Python-Powered randomized quiz generator Comments Feed" href="/2012/09/01/progress-on-python-powered-randomized-quiz-generator/feed/">
+		<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/svg\/","svgExt":".svg","source":{"concatemoji":"https13.229.58.164\/wp-includes\/js\/wp-emoji-release.min.js?ver=5.7.6"}};
+			!function(e,a,t){var n,r,o,i=a.createElement("canvas"),p=i.getContext&&i.getContext("2d");function s(e,t){var a=String.fromCharCode;p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,e),0,0);e=i.toDataURL();return p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,t),0,0),e===i.toDataURL()}function c(e){var t=a.createElement("script");t.src=e,t.defer=t.type="text/javascript",a.getElementsByTagName("head")[0].appendChild(t)}for(o=Array("flag","emoji"),t.supports={everything:!0,everythingExceptFlag:!0},r=0;r<o.length;r++)t.supports[o[r]]=function(e){if(!p||!p.fillText)return!1;switch(p.textBaseline="top",p.font="600 32px Arial",e){case"flag":return s([127987,65039,8205,9895,65039],[127987,65039,8203,9895,65039])?!1:!s([55356,56826,55356,56819],[55356,56826,8203,55356,56819])&&!s([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]);case"emoji":return!s([55357,56424,8205,55356,57212],[55357,56424,8203,55356,57212])}return!1}(o[r]),t.supports.everything=t.supports.everything&&t.supports[o[r]],"flag"!==o[r]&&(t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&t.supports[o[r]]);t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&!t.supports.flag,t.DOMReady=!1,t.readyCallback=function(){t.DOMReady=!0},t.supports.everything||(n=function(){t.readyCallback()},a.addEventListener?(a.addEventListener("DOMContentLoaded",n,!1),e.addEventListener("load",n,!1)):(e.attachEvent("onload",n),a.attachEvent("onreadystatechange",function(){"complete"===a.readyState&&t.readyCallback()})),(n=t.source||{}).concatemoji?c(n.concatemoji):n.wpemoji&&n.twemoji&&(c(n.twemoji),c(n.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+		<style type="text/css">img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}</style>
+	<link rel="stylesheet" id="wp-block-library-css" href="/wp-includes/css/dist/block-library/style.min.css?ver=5.7.6" type="text/css" media="all">
+<style id="wp-block-library-inline-css" type="text/css">.has-text-align-justify{text-align:justify;}</style>
+<link rel="stylesheet" id="wp-block-library-theme-css" href="/wp-includes/css/dist/block-library/theme.min.css?ver=5.7.6" type="text/css" media="all">
+<link rel="stylesheet" id="gist-style-css" href="/wp-content/themes/gist/style.css?ver=5.7.6" type="text/css" media="all">
+<style id="gist-style-inline-css" type="text/css">{ clip: rect(1px, 1px, 1px, 1px); height: 1px; position: absolute; overflow: hidden; width: 1px; }
+body { font-family: Open Sans; }body { font-size: 16px; }body { line-height : 2; }.breadcrumbs span.breadcrumb, .nav-links a, .search-form input[type=submit], #toTop, .candid-pagination .page-numbers.current, .candid-pagination .page-numbers:hover  { background : #ca9b52; }.search-form input.search-field, .sticky .p-15, .related-post-entries li, .candid-pagination .page-numbers { border-color : #ca9b52; }.error-404 h1, .no-results h1, a, a:visited, .related-post-entries .title:hover, .entry-title a:hover, .featured-post-title a:hover, .entry-meta.entry-category a,.widget li a:hover, .widget h1 a:hover, .widget h2 a:hover, .widget h3 a:hover, .site-title a, .site-title a:visited, .main-navigation ul li a:hover { color : #ca9b52; }.btn-primary { border: 2px solid #ca9b52;}</style>
+<link rel="stylesheet" id="drift-blog-style-css" href="/wp-content/themes/drift-blog/style.css?ver=5.7.6" type="text/css" media="all">
+<link rel="stylesheet" id="drift-blog-google-fonts-css" href="//fonts.googleapis.com/css?family=Playfair+Display&#038;ver=5.7.6" type="text/css" media="all">
+<link rel="stylesheet" id="gist-googleapis-css" href="//fonts.googleapis.com/css?family=Open+Sans&#038;ver=5.7.6" type="text/css" media="all">
+<link rel="stylesheet" id="gist-google-fonts-css" href="//fonts.googleapis.com/css?family=Oswald&#038;ver=5.7.6" type="text/css" media="all">
+<link rel="stylesheet" id="font-awesome-css" href="/wp-content/themes/gist/candidthemes/assets/framework/Font-Awesome/css/font-awesome.min.css?ver=4.7.0" type="text/css" media="all">
+<link rel="stylesheet" id="jetpack_css-css" href="/wp-content/plugins/jetpack/css/jetpack.css?ver=8.6.2" type="text/css" media="all">
+<script type="text/javascript" src="/wp-includes/js/jquery/jquery.min.js?ver=3.5.1" id="jquery-core-js"></script>
+<script type="text/javascript" src="/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.3.2" id="jquery-migrate-js"></script>
+<link rel="https://api.w.org/" href="/wp-json/">
+<link rel="alternate" type="application/json" href="/wp-json/wp/v2/posts/733">
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="/wp-includes/wlwmanifest.xml"> 
+<meta name="generator" content="WordPress 5.7.6">
+<link rel="canonical" href="/2012/09/01/progress-on-python-powered-randomized-quiz-generator/">
+<link rel="shortlink" href="/?p=733">
+<link rel="alternate" type="application/json+oembed" href="/wp-json/oembed/1.0/embed?url=https%3A%2F%2F%2F2012%2F09%2F01%2Fprogress-on-python-powered-randomized-quiz-generator%2F">
+<link rel="alternate" type="text/xml+oembed" href="/wp-json/oembed/1.0/embed?url=https%3A%2F%2F%2F2012%2F09%2F01%2Fprogress-on-python-powered-randomized-quiz-generator%2F&#038;format=xml">
+<style type="text/css">img#wpstats{display:none}</style>
+<link rel="pingback" href="/xmlrpc.php">		<style type="text/css" id="wp-custom-css">.custom-logo{
+	height:300px;
+	width:300px
+	
+}</style>
+		</head>
+
+<body data-rsssl="1" class="post-template-default single single-post postid-733 single-format-standard wp-custom-logo wp-embed-responsive ct-sticky-sidebar right-sidebar">
+    <div id="page" class="site container-main">
+        <a class="skip-link screen-reader-text" href="#content">Skip to content</a>
+
+        <header id="masthead" class="site-header" role="banner">
+            <div class="top-menu-container-inner container-inner">
+                    <div id="mainnav-wrap" class="clear">
+                        <div class="top-header-social">
+                            
+                            <button class="top-menu-toggle"><i class="fa fa-bars"></i></button>
+                        </div>
+
+                        <nav id="top-site-navigation" class="main-navigation" role="navigation">
+                            <div class="menu-pages-container"><ul id="top-menu" class="top-menu nav_menu">
+<li id="menu-item-2781" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-2781"><a href="/">Home</a></li>
+<li id="menu-item-2782" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2782"><a href="/about/">About Evan Weinberg</a></li>
+</ul></div>                        </nav>
+                            <!-- #site-navigation -->
+                    </div>
+                </div>
+                    <!-- .top-menu-container-inner -->
+            <div class="site-branding">
+                <div class="container-inner">
+                    <a href="/" class="custom-logo-link" rel="home"><img width="1000" height="1000" src="/wp-content/uploads/2018/10/for.next_.001.jpeg" class="custom-logo" alt="" srcset="/wp-content/uploads/2018/10/for.next_.001.jpeg 1000w, /wp-content/uploads/2018/10/for.next_.001-300x300.jpeg 300w, /wp-content/uploads/2018/10/for.next_.001-150x150.jpeg 150w, /wp-content/uploads/2018/10/for.next_.001-768x768.jpeg 768w" sizes="(max-width: 1000px) 100vw, 1000px"></a>                            <p class="site-title"><a href="/" rel="home"></a></p>
+                                                           <p class="site-description">iteration, making, building, and coding in education</p>
+                                                </div>
+                </div>
+                <!-- .site-branding -->
+
+                <div class="container-inner">
+                    <div id="mainnav-wrap">
+                        <nav id="site-navigation" class="main-navigation" role="navigation">
+                            <button class="menu-toggle" aria-controls="primary-menu" aria-expanded="false"><i class="fa fa-bars"></i></button>
+                                                            </nav>
+                            <!-- #site-navigation -->
+                        </div>
+                    </div>
+                    <!-- .container-inner -->
+                </header>
+                <!-- #masthead -->
+                <div class="header-image-block">
+                                    </div>
+
+                <div id="content" class="site-content container-inner p-t-15">
+	<div id="primary" class="content-area">
+		<main id="main" class="site-main">
+			<div class="breadcrumbs">
+                            </div>
+		
+<article id="post-733" class="post-733 post type-post status-publish format-standard hentry category-computational-thinking-2 category-programming tag-python tag-quiz tag-random tag-reassessment tag-web-application">
+    <div class="p-15 left-image">
+        <div class="ct-featured-image">
+                    </div>
+        <div class="entry-content">
+            <header class="entry-header">
+                <h1 class="entry-title">Progress on Python-Powered randomized quiz generator</h1>    </header>
+    <!-- .entry-header -->
+    <p>One of the projects floating around in my head since the end of last year is creating an easy to use tool that will automatically generate questions for students to test their skills either on their own or while in class. My first attempt at this was during a unit in Geometry on translations, my first attempt at implementing standards based grading. I was taking a <a href="http://www.udacity.com/overview/Course/cs253/CourseRev/apr2012">Udacity course </a> on web applications and realized that if I could write a quiz generator online, it would be the easiest way to give students a sense of how they were doing without needing me to be part of the process. </p>
+<p>As most people doing reassessments tend to be, I was a bit overwhelmed with the paperwork side of things, especially because many of the students just wanted to know if they were right or not. I had made some Python programs to generate quiz questions one by one and decided to try to adapt it to the web application so students could input their answers to questions that had different numbers every time. I had tried to use other options such as <a href="http://www.polleverywhere.com/">PollEverywhere</a>, <a href="http://socrative.com/">Socrative</a> to at least collect the data and check it as right/wrong (which would have been good enough for a start in terms of collecting data, but left out the randomization part). The problem with these is that I believe they are hosted in the US and are incredibly slow without a VPN. I needed a solution that was fast, and if I could add the randomization, that would be even better. I decided to try to adapt my quiz generator to a Google App Engine hosted web application.</p>
+<p>Needless to say (at least for me) this was not an easy task. I had a loose understanding of how to manage GET and POST requests and use cookies to store random values used. The biggest challenge came from checking answers on the server side. For someone figuring out Python concept as he goes, it involved a lot of fists on the keyboard at the time. My attempt is posted <a href="https://gealgerobophysiculus.appspot.com/">here</a>. There were tons of bugs (and still are) but I at least got up the nerve to try it in class. The morning I was excited to premiere it, I also found out another interestingly infuriating nugget of info: Google App Engine is blocked in China.</p>
+<p>I gave up at the time, as it was almost summer. I was interested in helping out with the development of the <a href="http://database2.globalphysicsdept.org/public/">Physics Problem Database</a> project during the summer, but opportunities for sitting down and coding while on a whirlwind tour of the US seeing friends and family weren&#8217;t that numerous. It&#8217;s amazing to see how <a href="http://quantumprogress.wordpress.com/">John</a>,<a href="http://arundquist.wordpress.com/"> Andy</a>, and others have gotten the database site together and doing functionally cool things in a short amount of time. I spent some time over the summer learning PHP and MYSQL, but was pulled back into Python when I saw the capabilities of <a href="http://webpy.org/"> webpy </a> and <a href="http://www.web2py.com/">web2py</a> to do applications. I see a lot of features and possibility there, but fitting my ideas to that framework is beyond what I know how to do and what I have been able to figure out during my time prepping and starting school. That will come later.</p>
+<p>I keep coming back to the fact that randomization needs to be built into the program interface from the beginning. I want students that need to practice to be able to do so with different problems each time, because that frees them from needing me to be there to either generate them myself or prevent them from creating impossible problems. I want the reassessment process to be as simple as possible, and for the lowest level skills, they don&#8217;t necessarily need me to be testing them in person. That&#8217;s what in person interviews and conversations (including those through <a href="http://main.blueharvestfeedback.com/">BlueHarvest</a>) are all about. I won&#8217;t rely on a tool like this to check proficiency, but it&#8217;s a start for giving students a tool that will get them thinking along those lines.</p>
+<p>I&#8217;ve had the structure for how to do this in my head for a while, and I started sketching out what it would be in a new Python program last week. This morning, after learning a bit more about the newer <a href="http://docs.python.org/py3k/library/string.html#formatexamples">string formatting options in Python</a> that offer more options than basic string substitution, I hunkered down and put together what is at least a workable version of what I want to do. </p>
+<p>Please visit <a href="https://gist.github.com/3564547">here to see the code</a>, and <a href="http://repl.it/Chw">here to give it a shot on repl.it</a>. </p>
+<p>The basic structure is that every question can use either random integers, an irrational decimal value, or signed integers in its text. With all of the messiness of methods to generate and replace the random numbers inside the Question class, it is fairly easy to generate questions with random values and answers. I admit that the formatting stinks, but the structure is there. I could theoretically make some questions for students this way that could be used on Monday, but I probably won&#8217;t just yet. I think a nap is in order.</p>
+<p>Next steps:</p>
+<ul>
+<li>I need to work on the answer checking algorithm. At the moment it just compares an entered decimal answer to being within a certain tolerance of the calculated answer. My plan is to expand the Question definition to include another input variable for question type. Single numerical answers are one question type, Coordinates are another, and symbolic equations or expressions are yet another one I&#8217;d like to include. Based on the question type, the answer method in the Question class can be adjusted.</li>
+<li>As an extension to this, I&#8217;d like to include <a href="http://code.google.com/p/sympy/">sympy</a> as part of this for making both question generation and answer checking. It has the ability to show that two symbolic expressions are equal to each other, among many other really nice capabilities. This will let me generate all sorts of nice Calculus and algebraic manipulation questions without too much difficulty. </li>
+<li>I&#8217;d like to be able to format things nicely for algebraic questions, and possibly generate graphical questions as well. </li>
+<li>The ultimate goal is to then get this nicely embedded as a web application. As I mentioned before, there is too much going on in the web2py framework for me to really get how to do this, but I think this is something I can do with a bit of help from the right sources.</li>
+</ul>
+<p>I&#8217;m having a ball learning all of this, and to know that it will eventually make for a nice learning tool that students will benefit from using is a nice incentive for doing it. </p>
+
+    <footer class="entry-footer">
+        </footer>
+<!-- .entry-footer -->
+</div>
+<!-- .entry-content -->
+</div>
+<!-- .p-15 -->
+</article><!-- #post-733 -->
+
+	<nav class="navigation post-navigation" role="navigation" aria-label="Posts">
+		<h2 class="screen-reader-text">Post navigation</h2>
+		<div class="nav-links">
+<div class="nav-previous"><a href="/2012/08/31/winning-the-battle-with-python-programming/" rel="prev">Winning the battle over Python programming</a></div>
+<div class="nav-next"><a href="/2012/09/02/a-sample-of-my-direct-instruction-videos/" rel="next">A sample of my direct instruction videos.</a></div>
+</div>
+	</nav>            <div class="related-pots-block">
+                <h2 class="widget-title">
+                    Related Posts                </h2>
+                <ul class="related-post-entries clear">
+                                            <li>
+                                                        <div class="featured-desc">
+                                <a href="/2017/05/03/probability-spreadsheets-and-the-citizen-database/">
+                                    <h2 class="title">
+                                       Probability, Spreadsheets, and the Citizen Database                                    </h2>
+                                </a>
+                            </div>
+                        </li>
+                                            <li>
+                                                        <div class="featured-desc">
+                                <a href="/2017/04/21/making-groups-a-genetic-algorithm-experiment/">
+                                    <h2 class="title">
+                                       Making Groups &#8211; A Genetic Algorithm Experiment                                    </h2>
+                                </a>
+                            </div>
+                        </li>
+                                            <li>
+                                                        <div class="featured-desc">
+                                <a href="/2017/03/31/generating-the-mandelbrot-set-with-peardeck/">
+                                    <h2 class="title">
+                                       Generating the Mandelbrot Set with PearDeck                                    </h2>
+                                </a>
+                            </div>
+                        </li>
+                                    </ul>
+            </div> <!-- .related-post-block -->
+        
+<div id="comments" class="comments-area">
+
+			<h2 class="comments-title">
+			2 thoughts on &ldquo;<span>Progress on Python-Powered randomized quiz generator</span>&rdquo;		</h2>
+<!-- .comments-title -->
+
+		
+		<ol class="comment-list">
+					<li id="comment-113" class="comment even thread-even depth-1 parent">
+			<article id="div-comment-113" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="https://secure.gravatar.com/avatar/28327ee7e25ebba9ed88b727c78ff227?s=32&#038;d=mm&#038;r=g" srcset="https://secure.gravatar.com/avatar/28327ee7e25ebba9ed88b727c78ff227?s=64&#038;d=mm&#038;r=g 2x" class="avatar avatar-32 photo" height="32" width="32" loading="lazy">						<b class="fn"><a href="http://IntersectPai.blogspot.ca/" rel="external nofollow ugc" class="url">Jim P</a></b> <span class="says">says:</span>					</div>
+<!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="/2012/09/01/progress-on-python-powered-randomized-quiz-generator/#comment-113"><time datetime="2012-09-01T13:34:14+08:00">September 1, 2012 at 1:34 pm</time></a>					</div>
+<!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>awesome idea!  I&#8217;ve tried doing something similar with excel, but it was far too restricting in terms of what I needed from it.  I would love to learn how this works, but my programming ability is close to non-existent&#8230;</p>
+<p>I tried going on this website to see if I can learn how to use what you wrote:<br>
+<a href="http://repl.it/Chw" rel="nofollow ugc">http://repl.it/Chw</a><br>
+but I didn&#8217;t even understand what I could do on it!</p>
+<p>If you could offer some instructions, I would love to be a beta tester!</p>
+<p>Thanks!</p>
+				</div>
+<!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="/2012/09/01/progress-on-python-powered-randomized-quiz-generator/?replytocom=113#respond" data-commentid="113" data-postid="733" data-belowelement="div-comment-113" data-respondelement="respond" data-replyto="Reply to Jim P" aria-label="Reply to Jim P">Reply</a></div>			</article><!-- .comment-body -->
+		<ol class="children">
+		<li id="comment-114" class="comment odd alt depth-2">
+			<article id="div-comment-114" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="https://secure.gravatar.com/avatar/509d79173df4009f0620939f5069f8be?s=32&#038;d=mm&#038;r=g" srcset="https://secure.gravatar.com/avatar/509d79173df4009f0620939f5069f8be?s=64&#038;d=mm&#038;r=g 2x" class="avatar avatar-32 photo" height="32" width="32" loading="lazy">						<b class="fn"><a href="http://gealgerobophysiculus.wordpress.com/" rel="external nofollow ugc" class="url">Evan Weinberg</a></b> <span class="says">says:</span>					</div>
+<!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="/2012/09/01/progress-on-python-powered-randomized-quiz-generator/#comment-114"><time datetime="2012-09-03T13:16:10+08:00">September 3, 2012 at 1:16 pm</time></a>					</div>
+<!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>Hi Jim,</p>
+<p>If you click on the &#8216;play&#8217; button, you should see the questions pop up one by one. I&#8217;ve made some changes since the weekend based on some comments, new things I&#8217;ve learned to do, and suggestions from readers and students. Check out the questions and let me know what you think.</p>
+<p>Thanks!</p>
+<p>Evan</p>
+				</div>
+<!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="/2012/09/01/progress-on-python-powered-randomized-quiz-generator/?replytocom=114#respond" data-commentid="114" data-postid="733" data-belowelement="div-comment-114" data-respondelement="respond" data-replyto="Reply to Evan Weinberg" aria-label="Reply to Evan Weinberg">Reply</a></div>			</article><!-- .comment-body -->
+		</li>
+<!-- #comment-## -->
+</ol>
+<!-- .children -->
+</li>
+<!-- #comment-## -->
+		</ol>
+<!-- .comment-list -->
+
+			<div id="respond" class="comment-respond">
+		<h3 id="reply-title" class="comment-reply-title">Leave a Reply <small><a rel="nofollow" id="cancel-comment-reply-link" href="/2012/09/01/progress-on-python-powered-randomized-quiz-generator/#respond" style="display:none;">Cancel reply</a></small>
+</h3>
+<form action="https13.229.58.164/wp-comments-post.php" method="post" id="commentform" class="comment-form" novalidate>
+<p class="comment-notes"><span id="email-notes">Your email address will not be published.</span> Required fields are marked <span class="required">*</span></p>
+<p class="comment-form-comment"><label for="comment">Comment</label> <textarea id="comment" name="comment" cols="45" rows="8" maxlength="65525" required="required"></textarea></p>
+<p class="comment-form-author"><label for="author">Name <span class="required">*</span></label> <input id="author" name="author" type="text" value="" size="30" maxlength="245" required="required"></p>
+<p class="comment-form-email"><label for="email">Email <span class="required">*</span></label> <input id="email" name="email" type="email" value="" size="30" maxlength="100" aria-describedby="email-notes" required="required"></p>
+<p class="comment-form-url"><label for="url">Website</label> <input id="url" name="url" type="url" value="" size="30" maxlength="200"></p>
+<p class="comment-form-cookies-consent"><input id="wp-comment-cookies-consent" name="wp-comment-cookies-consent" type="checkbox" value="yes"> <label for="wp-comment-cookies-consent">Save my name, email, and website in this browser for the next time I comment.</label></p>
+<p class="form-submit"><input name="submit" type="submit" id="submit" class="submit" value="Post Comment"> <input type="hidden" name="comment_post_ID" value="733" id="comment_post_ID">
+<input type="hidden" name="comment_parent" id="comment_parent" value="0">
+</p>
+<p style="display: none;"><input type="hidden" id="akismet_comment_nonce" name="akismet_comment_nonce" value="233cfab8b8"></p>
+<p style="display: none;"><input type="hidden" id="ak_js" name="ak_js" value="145"></p>
+</form>	</div>
+<!-- #respond -->
+	
+</div>
+<!-- #comments -->
+
+		</main><!-- #main -->
+	</div>
+<!-- #primary -->
+
+
+<aside id="secondary" class="widget-area" role="complementary">
+	<section id="categories-2" class="widget widget_categories"><h2 class="widget-title">Categories</h2>
+			<ul>
+					<li class="cat-item cat-item-2">
+<a href="/category/algebra-2/">algebra 2</a>
+</li>
+	<li class="cat-item cat-item-3">
+<a href="/category/array/">Array</a>
+</li>
+	<li class="cat-item cat-item-4">
+<a href="/category/calculus/">calculus</a>
+</li>
+	<li class="cat-item cat-item-5">
+<a href="/category/computational-thinking-2/">computational-thinking</a>
+</li>
+	<li class="cat-item cat-item-6">
+<a href="/category/geogebra/">geogebra</a>
+</li>
+	<li class="cat-item cat-item-7">
+<a href="/category/geometry/">geometry</a>
+</li>
+	<li class="cat-item cat-item-8">
+<a href="/category/ib/">IB</a>
+</li>
+	<li class="cat-item cat-item-9">
+<a href="/category/physics/">physics</a>
+</li>
+	<li class="cat-item cat-item-10">
+<a href="/category/precalculus/">precalculus</a>
+</li>
+	<li class="cat-item cat-item-11">
+<a href="/category/programming/">programming</a>
+</li>
+	<li class="cat-item cat-item-12">
+<a href="/category/reflection/">reflection</a>
+</li>
+	<li class="cat-item cat-item-13">
+<a href="/category/robotics/">robotics</a>
+</li>
+	<li class="cat-item cat-item-14">
+<a href="/category/standards-based-grading/">standards based grading</a>
+</li>
+	<li class="cat-item cat-item-15">
+<a href="/category/studentwork/">studentwork</a>
+</li>
+	<li class="cat-item cat-item-16">
+<a href="/category/teaching-philosophy/">teaching philosophy</a>
+</li>
+	<li class="cat-item cat-item-17">
+<a href="/category/teaching-stories/">teaching stories</a>
+</li>
+	<li class="cat-item cat-item-1">
+<a href="/category/uncategorized/">Uncategorized</a>
+</li>
+	<li class="cat-item cat-item-18">
+<a href="/category/year-in-review/">year-in-review</a>
+</li>
+			</ul>
+
+			</section><section id="meta-2" class="widget widget_meta"><h2 class="widget-title">Meta</h2>
+		<ul>
+						<li><a href="/wp-login.php">Log in</a></li>
+			<li><a href="/feed/">Entries feed</a></li>
+			<li><a href="/comments/feed/">Comments feed</a></li>
+
+			<li><a href="https://wordpress.org/">WordPress.org</a></li>
+		</ul>
+
+		</section></aside><!-- #secondary -->
+
+	</div>
+<!-- #content -->
+
+<footer id="colophon" class="site-footer">
+    		<div class="site-info">
+        			<span class="copy-right-text">All Right Reserved 2018</span>
+						<div class="powered-text">
+				<a href="https://wordpress.org/">Proudly powered by WordPress</a>
+				<span class="sep"> | </span>
+				Theme: Drift Blog by <a href="http://www.candidthemes.com/">Candid Themes</a>.			</div>
+			        <a id="toTop" class="go-to-top" href="#" title="Go to Top">
+            <i class="fa fa-angle-double-up"></i>
+        </a>
+    		</div>
+<!-- .site-info -->
+	</footer><!-- #colophon -->
+</div>
+<!-- #page -->
+
+<script type="text/javascript" src="/wp-content/themes/drift-blog/js/drift-blog-custom.js?ver=20151215" id="drift-blog-custom-js"></script>
+<script type="text/javascript" src="/wp-content/themes/gist/candidthemes/assets/js/gist-custom.js?ver=20151215" id="gist-custom-js"></script>
+<script type="text/javascript" src="/wp-content/themes/gist/candidthemes/assets/js/theia-sticky-sidebar.js?ver=20151215" id="theia-sticky-sidebar-js"></script>
+<script type="text/javascript" src="/wp-content/themes/gist/js/navigation.js?ver=20151215" id="gist-navigation-js"></script>
+<script type="text/javascript" src="/wp-content/themes/gist/js/skip-link-focus-fix.js?ver=20151215" id="gist-skip-link-focus-fix-js"></script>
+<script type="text/javascript" src="/wp-includes/js/comment-reply.min.js?ver=5.7.6" id="comment-reply-js"></script>
+<script type="text/javascript" src="/wp-includes/js/wp-embed.min.js?ver=5.7.6" id="wp-embed-js"></script>
+<script async="async" type="text/javascript" src="/wp-content/plugins/akismet/_inc/form.js?ver=4.1.7" id="akismet-form-js"></script>
+<script type="text/javascript" src="https://stats.wp.com/e-202219.js" async="async" defer></script>
+<script type="text/javascript">
+	_stq = window._stq || [];
+	_stq.push([ 'view', {v:'ext',j:'1:8.6.2',blog:'180381780',post:'733',tz:'8',srv:'evanweinberg.com'} ]);
+	_stq.push([ 'clickTrackerInit', '180381780', '733' ]);
+</script>
+
+
+</body>
+</html>

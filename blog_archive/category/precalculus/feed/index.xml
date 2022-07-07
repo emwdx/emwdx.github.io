@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	
+	xmlns:georss="http://www.georss.org/georss"
+	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+	>
+
+<channel>
+	<title>precalculus</title>
+	<atom:link href="/category/precalculus/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>iteration, making, building, and coding in education</description>
+	<lastBuildDate>Sat, 24 Jun 2017 16:08:26 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.7.6</generator>
+<site xmlns="com-wordpress:feed-additions:1">180381780</site>	<item>
+		<title>2016 &#8211; 2017 Year In Review: PreCalculus</title>
+		<link>/2017/06/25/2016-2017-year-in-review-precalculus/</link>
+					<comments>/2017/06/25/2016-2017-year-in-review-precalculus/#comments</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Sat, 24 Jun 2017 16:08:26 +0000</pubDate>
+				<category><![CDATA[precalculus]]></category>
+		<category><![CDATA[Uncategorized]]></category>
+		<category><![CDATA[year-in-review]]></category>
+		<category><![CDATA[year in review]]></category>
+		<guid isPermaLink="false">/?p=2750</guid>
+
+					<description><![CDATA[Overview This was the first time I taught a true PreCalculus course in six years. At my current school, the course serves the following functions: Preparing tenth grade students for IB mathematics SL or HL in their 11th grade year. Many of these students were strong 9th grade students that]]></description>
+										<content:encoded><![CDATA[<h2> Overview</h2>
+<p>This was the first time I taught a true PreCalculus course in six years. At my current school, the course serves the following functions:</p>
+<ul>
+<li>Preparing tenth grade students for IB mathematics SL or HL in their 11th grade year. Many of these students were strong 9th grade students that were not yet eligible to enter the IB program since this must begin in grade eleven.</li>
+<li>Giving students the skills they need to be successful in Advanced Placement Calculus in their junior or senior year. </li>
+<li>Providing students interested in taking the SAT II in mathematics some guidance in the topics that are covered by that exam.</li>
+</ul>
+<p>For some students, this is also the final mathematics course taken in high school. I decided to design the course to extend knowledge in Algebra 2, continue developing problem solving skills, do a bit more movement into abstraction of mathematical ideas, and provide a baseline for further work in mathematics. I cut some topics that I used to think were essential to the course, but did not properly serve the many different pathways that students can follow in our school. Like Algebra 2, this course can be the swiss army knife course that &#8220;covers&#8221; a lot so that students have been exposed to topics before they really need to learn them in higher level math courses. I always think that approach waters down much of the content and the <u>potential</u> for a course like this. What tools are going to be the most useful to the broadest group of students for developing their fluency, understanding, and communication of mathematical ideas? I designed my course to answer that question.</p>
+<p>I also found that this course tended to be the one in which I experimented the most with pedagogy, class structure, new tools, and assessment. </p>
+<p>The learning standards I used for the course can be found here:<br />
+<a href="https://docs.google.com/spreadsheets/d/1tqZeoIZmVjK8aYTDPsza1y2I3Xx5vXazTrnOVi-iF4k/edit?usp=sharing">PreCalculus 2016-2017 Learning Standards</a></p>
+<h2> What worked:</h2>
+<ul>
+<li>I did some assessments using <a href="https://numbas.mathcentre.ac.uk/">Numbas</a>, Google Forms, and the Moodle built-in quizzes to aid with grading and question generation. I liked the concept, but some of the execution is still rough around the edges. None of these did exactly what I was looking for, though I think they could each be hacked into a form that does. I might be too much of a perfectionist to ever be happy here.</li>
+<li>For the trigonometry units, I offered computer programming challenges that were associated with each learning standard. Some students chose to use their spreadsheet or Python skills to write small programs to solve these challenges. It was not a large number of students, but those that decided to take these on reported that they liked the opportunity to think differently about what they were learning.</li>
+<li>I explicitly also taught using spreadsheet functions to develop student&#8217;s computational thinking skills. This required designing some problems that were just too tedious to solve by hand. This was fun.</li>
+<li>Differentiation in this course was a challenge, but I was happy with some of the systems I used to manage it. As I have found is common since moving abroad, many students are computationally well developed, but not <i>conceptually</i> so. Students would learn tricks in after school academy that they would try to use in my course, often in inappropriate situations. I found a nice balance between problems that started low on the ladder of abstraction, and those that worked higher. All homework assignments for the course in Semester 2 were divided into Level 1, Level 2, and Level 3 questions so that students could decide what would be most useful for them.</li>
+<li>I did some self-paced lessons with students in groups using a range of resources, from <a href="http://www.khanacademy.org/">Khan Academy </a>to <a href="https://openstax.org/">OpenStax</a>. Students reported that they generally liked when I structured class this way, though there were requests for more direct instruction among some of the students, as I described in mu <a href="/2017/06/19/2016-2017-year-in-review-surveys/">previous post about the survey results</a>. </li>
+<li>There was really no time rush in this course since after my decision to cut out vectors, polar equations, linear systems, and some other assorted topics that really don&#8217;t show up again except in Mathematics HL or Calculus BC where it&#8217;s worth seeing the topic again anyway. Some students also gave very positive feedback regarding the final unit on probability. I took my time with things there. Some of this was out of necessity when I was out sick for ten days, but there were many times when I thought about stepping up the challenge faster than I really needed to. </li>
+</ul>
+<h2> What needs work:</h2>
+<ul>
+<li>I wrote about <a href="/2017/04/19/an-experiment-swapping-numerical-grades-for-skill-levels-and-emoji/">how I did the conic sections unit with no-numerical grades &#8211; just comments in the grade book </a>. The decision to do that was based on a number of factors. The downside was that when I switched back to numerical grades for the final unit, the grade calculation for the entire quarter was based only on those grades, and not on the conic sections unit at all. The conic sections unit did appear on the final exam, but for the most part, there wasn&#8217;t any other consequence for students that did not reassess on the unit.</li>
+<li>Students did not generally like <a href="/2017/04/07/trello-for-class-organization/">when I used Trello</a>. They liked the concept of breaking up lessons into pieces and tasks. They did not like the forced timelines and the extra step of the virtual Trello board for keeping track of things. <a href="https://medium.com/newboco/why-physical-scrum-boards-and-clothespins-work-b17d69b3fd12">This Medium article makes me wonder</a> about doing this in an analog form if I try it in the future. I also could make an effort to instill the spirit of Scrum early on so that it&#8217;s less novel, and more the way things are in my classroom.</li>
+<li>I should have done a lot more assessment at the beginning of units to see what students knew and didn&#8217;t know. It sounds like the student experiences in the different Algebra 2 courses leading to PreCalculus were quite different, which led to a range of success levels throughout. Actually, I should probably be doing this more often for <u>all</u> my courses.</li>
+<li>Students could create their own small reference sheet for every exam. I did this because I didn&#8217;t want students memorizing things like double angle identities and formulas for series. The reason this needs work is that some students are still too reliant on having this resource available to ever reach any level of procedural fluency. I know what students need to be fluent later on in the more advanced courses, sure, but I am not convinced that memorization is the way to get there. Timed drills don&#8217;t seem to do it either. This challenge is compounded by the fact that not all students <u>need</u> that level of fluency for future courses, so what role does memorization here play? I have <a href="/2012/04/17/topic-for-mathchat-do-we-need-students-to-reach-automaticity/">struggled with this</a> in every year of my fourteen year career, and I don&#8217;t think it&#8217;s getting resolved anytime soon. This is especially the case when Daniel Willingham, who generally makes great points that I agree with, writes articles<a href="https://www.nytimes.com/2017/05/19/opinion/sunday/you-still-need-your-brain.html?_r=0"> like this one</a>.</li>
+</ul>
+<h2>Conclusion</h2>
+<p>This course was fun on many levels. I like being there to push students to think more abstractly as they form the foundation of skills that will lead to success in higher levels of mathematics. I like also crafting exercises and explorations that engage and equip the students that are finishing their mathematics careers. We should be able to meet the needs of both groups in one classroom at this stage. </p>
+<p>I frequently reminded myself of the big picture by reading through <a href="http://infinitesums.com/precal/">Jonathan Claydon&#8217;s posts on his own Precalc</a> course development over the years. If you haven&#8217;t checked him out, you should. It&#8217;s also entertaining to pester him about a resource he posted a few years ago and hear him explain how much things have changed since then. </p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2017/06/25/2016-2017-year-in-review-precalculus/feed/</wfw:commentRss>
+			<slash:comments>2</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">2750</post-id>	</item>
+		<item>
+		<title>Probability, Spreadsheets, and the Citizen Database</title>
+		<link>/2017/05/03/probability-spreadsheets-and-the-citizen-database/</link>
+					<comments>/2017/05/03/probability-spreadsheets-and-the-citizen-database/#respond</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Wed, 03 May 2017 15:14:56 +0000</pubDate>
+				<category><![CDATA[computational-thinking]]></category>
+		<category><![CDATA[precalculus]]></category>
+		<guid isPermaLink="false">/?p=2708</guid>
+
+					<description><![CDATA[I&#8217;ve grown tired of the standard probability questions involving numbers of red, blue, and green marbles. Decks of cards are culturally biased and require a lot of background information to get in the game, as I wrote about a while ago. It seems that if there&#8217;s any place where computational]]></description>
+										<content:encoded><![CDATA[<p>I&#8217;ve grown tired of the standard probability questions involving numbers of red, blue, and green marbles. Decks of cards are culturally biased and require a lot of background information to get in the game, <a href="/2012/06/15/the-perils-of-playing-cards-and-probability-what-do-you-assume-your-students-know/">as I wrote about a while ago</a>. It seems that if there&#8217;s any place where computational thinking should come into play, it&#8217;s with probability and statistics. There are lots of open data sets out there, but few of them are (1) easy to parse for what a student might be looking for and (2) are in a form that allows students to easily make queries.</p>
+<p>If you know of some that you&#8217;ve used successfully with classes, by all means let me know.</p>
+<p>A couple of years ago, I built a web programming exercise to use to teach students about database queries. Spreadsheets are a lot more accessible though, so I re-wrote it to generate a giant spreadsheet of data for my Precalculus students to dig into as part of a unit on counting principle, probability, and statistics. I call it the Citizen Database, and you can access it <a href="https://docs.google.com/spreadsheets/d/1DnQfXxTqbO5y3qF7E8yRq2_E1PWQ_rEfA1qtDTDgoPk/edit?usp=sharing">here</a>.</p>
+<p>I wanted a set of data that could prompt all sorts of questions that could <u>only</u> be answered easily with a spreadsheet counting command. The citizens in the database can be described as follows:</p>
+<ul>
+<li style="font-weight: 400;"><span style="font-weight: 400;">Each citizen belongs to one of twelve districts, numbered 1 &#8211; 12.</span></li>
+<li style="font-weight: 400;"><span style="font-weight: 400;">Citizens are male or female.</span></li>
+<li style="font-weight: 400;"><span style="font-weight: 400;">Citizens have their ages recorded in the database. Citizens 18 and below are considered </span><b>minors</b><span style="font-weight: 400;">. Citizens older than 18 and younger than 70 are </span><b>adults. </b><span style="font-weight: 400;">All citizens aged 70 and above are called </span><b>seniors</b><span style="font-weight: 400;">.</span></li>
+<li style="font-weight: 400;"><span style="font-weight: 400;">Citizens each prefer one of the two sports teams: the Crusaders or the Orbiters.</span></li>
+<li style="font-weight: 400;"><span style="font-weight: 400;">If a citizen is above the age of 18, they can vote for Mayor. There are two families that always run for mayor: the Crenshaw family and the Trymenaark family.</span></li>
+<li style="font-weight: 400;"><span style="font-weight: 400;">Each citizen lives in either a home, apartment, villa, or mansion.</span></li>
+<li style="font-weight: 400;"><span style="font-weight: 400;">A citizen above the age of 18 also uses some type of vehicle for transportation. They may rent a car, own a car, have a limousine, or take a helicopter.</span></li>
+</ul>
+<p>I wrote another document showing how to do queries on a spreadsheet of data using some commands <a href="https://docs.google.com/document/d/18wV5KsiZ5-jYqGlF6Mbr1oDwaE6UO08qSj3FNgbfh64/edit?usp=sharing">here</a>. My students asked for some more help on creating queries using the COUNTIFS command on Google Sheets, so I also created the video below.</p>
+<p><iframe loading="lazy" src="https://www.youtube.com/embed/12j5c2hC4vc" width="560" height="315" frameborder="0" allowfullscreen="allowfullscreen"></iframe></p>
+<p>The fun thing has been seeing students acknowledge the fact that answering these questions would be a really poor use of the human brain, particularly given how quickly the computer comes up with an answer. One student went so far as to call this side-trip into spreadsheet usage &#8220;really actually useful&#8221;, a comment which I decided only to appreciate.</p>
+<p>Programming in Javascript, Python, Swift, whatever is great, but it takes a while to get to the point where you can do something that is actually impressive. Spreadsheets are an easy way in to computational thinking, and they are already installed on most student (and teacher) computers. We should be using them more frequently than we probably are in our practice.</p>
+<p>If you are interested in how I generated the database, you can check out the code here at CodePen:</p>
+<p class="codepen" data-height="265" data-theme-id="0" data-slug-hash="wdaXxV" data-default-tab="result" data-user="emwdx" data-embed-version="2" data-pen-title="CitizenDatabaseCreator">See the Pen <a href="http://codepen.io/emwdx/pen/wdaXxV/">CitizenDatabaseCreator</a> by Evan Weinberg (<a href="http://codepen.io/emwdx">@emwdx</a>) on <a href="http://codepen.io/">CodePen</a>.</p>
+<p><script async src="https://production-assets.codepen.io/assets/embed/ei.js"></script></p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2017/05/03/probability-spreadsheets-and-the-citizen-database/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">2708</post-id>	</item>
+		<item>
+		<title>An Experiment: Swapping Numerical Grades for Skill-Levels and Emoji</title>
+		<link>/2017/04/19/an-experiment-swapping-numerical-grades-for-skill-levels-and-emoji/</link>
+					<comments>/2017/04/19/an-experiment-swapping-numerical-grades-for-skill-levels-and-emoji/#respond</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Wed, 19 Apr 2017 04:54:13 +0000</pubDate>
+				<category><![CDATA[precalculus]]></category>
+		<category><![CDATA[studentwork]]></category>
+		<category><![CDATA[teaching philosophy]]></category>
+		<category><![CDATA[Uncategorized]]></category>
+		<category><![CDATA[emoji grading]]></category>
+		<category><![CDATA[numerical grades]]></category>
+		<guid isPermaLink="false">/?p=2693</guid>
+
+					<description><![CDATA[I decided to try something different for my pre-Calculus class for the past three weeks. There was a mix of factors that led me to do this when I did: The quarter ended one week, with spring break beginning at the end of the next. Not a great time to]]></description>
+										<content:encoded><![CDATA[<p>I decided to try something different for my pre-Calculus class for the past three weeks. There was a mix of factors that led me to do this when I did:</p>
+<ul>
+<li>The quarter ended one week, with spring break beginning at the end of the next. Not a great time to start a full unit.</li>
+<li>I knew I wanted to include some conic sections content in the course since it appears on the SAT II, and since the graphs appear in IB and AP questions. Some familiarity might be useful. In addition, <a href="http://www.corestandards.org/Math/Content/HSG/GPE/A/3/">conic sections also appear as plus standards</a> within CCSS.</li>
+<li>The topic provides a really interesting opportunity to connect the worlds of geometry and algebra. Much of this connection, historically, is wrapped up in algebraic derivations. I wanted to use technology to do much of the heavy lifting here.</li>
+<li>Students were exhibiting pretty high levels of stress around school in general, and I wanted to provide a bit of a break from that.</li>
+<li>We are not in a hurry in this class.</li>
+</ul>
+<p>Before I share the details of what I did, I have to share the other side to this. A long time ago, I was intrigued by the conversation started around the Twitter hashtag #emojigrading, a conversational fire stoked by <a href="https://twitter.com/theipodteacher">Jon Smith</a>, among many others. I like the idea of using emoji to communicate, particularly given my frustrations over the past year on how communication of grades as numbers distort their meaning and imply precision that doesn&#8217;t exist. Emoji can be used communicate quickly, but can&#8217;t be averaged.</p>
+<p>I was also very pleased to find out that PowerSchool comments can contain emoji, and will display them correctly based on the operating system being used.</p>
+<p>So here&#8217;s the idea I pitched to students:</p>
+<ul>
+<li>Unit 7 standards on conic sections would not be assessed with numerical grades, ever. As a result, these grades would not affect their numerical average.</li>
+<li>We would still have standards quizzes and a unit exam, but instead of grades of 6, 8, and 10, there would be some other designation that students could help select. I would grade the quizzes and give feedback during the class, as with the rest of the units this year.</li>
+<li>Questions related to Unit 7 would still appear on the final exam for the semester, where scores will be point based.</li>
+</ul>
+<p>I also let students submit some examples of an appropriate scale. Here&#8217;s what I settled on based on their recommendations:<br />
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2017/04/Screen-Shot-2017-04-19-at-10.58.05-AM.png"><img loading="lazy" class="alignnone size-medium wp-image-2696" src="http://blog.evanweinberg.org/wp-content/uploads/2017/04/Screen-Shot-2017-04-19-at-10.58.05-AM-300x32.png" alt="" width="300" height="32" srcset="/wp-content/uploads/2017/04/Screen-Shot-2017-04-19-at-10.58.05-AM-300x32.png 300w, /wp-content/uploads/2017/04/Screen-Shot-2017-04-19-at-10.58.05-AM-1024x109.png 1024w, /wp-content/uploads/2017/04/Screen-Shot-2017-04-19-at-10.58.05-AM-768x82.png 768w, /wp-content/uploads/2017/04/Screen-Shot-2017-04-19-at-10.58.05-AM-1200x127.png 1200w, /wp-content/uploads/2017/04/Screen-Shot-2017-04-19-at-10.58.05-AM.png 1526w" sizes="(max-width: 300px) 100vw, 300px" /></a></p>
+<p>I also asked them for their feedback before this all began. Here&#8217;s what they said:</p>
+<ul>
+<li>Positive Feedback:
+<ul>
+<li>Fourteen students made some mention of a reduction in stress or pressure. Some also mentioned the benefits of the grade being less specific being a good thing.</li>
+<li>Three students talked about being able to focus more on learning as a result. Note that since I already use a standards based grading system, my students are pretty aware of how much I value learning being reflected in the grade book.</li>
+</ul>
+</li>
+<li>Constructive Feedback:
+<ul>
+<li>Students were concerned about their own motivation about studying or reassessing knowing that the grades would not be part of the numerical average.</li>
+<li>Some students were concerned about not having knowledge about where they are relative to the boundaries of the grades. <i>Note: I don&#8217;t see this by itself as a bad thing, but perhaps as the start of a different conversation. Instead of how to raise my grade, it becomes how I develop the skills needed to reach a higher level.</i></li>
+<li>There were also mentions of &#8216;objectivity&#8217; and how I would measure their performance relative to standards. I explained during class that I would probably do what I always do: calculate scores on individual standards, and use those scores to inform my decisions on standards levels. I was careful to explain that I wasn&#8217;t going to change how I generate the standards scores (which students have previously agreed are fair) but how I communicate them.</li>
+</ul>
+</li>
+</ul>
+<p>I asked an additional question about what their parents would think about the change. My plan was to send out an email to all parents informing them of the specifics of the change, and I wanted students to think proactively about how their parents would respond. Their response in general: &#8220;They won&#8217;t care much.&#8221; This was surprising to me.</p>
+<p>So I proceeded with the unit. I used a mix of direct instruction, some Trello style lists of tasks from textbooks, websites, and Desmos, and lots of circulating and helping students individually where they needed it. I tried to keep the only major change to this unit to be the communication of the scores through the grade book using the emoji and verbal designation of beginner, intermediate, expert. As I also said earlier, I gave skills quizzes throughout.</p>
+<p>The unit exam was a series of medium level questions that I wanted to use to gauge where students were when everything was together. As with my other units, I gave a review class after the spring break where students could work on their own and in groups, asking questions where they needed it. Anecdotally, the class was as focused and productive as for any other unit this year.</p>
+<p>I was able to ask one group some questions about this after their unit test, and here&#8217;s how they responded:</p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2017/04/Screen-Shot-2017-04-19-at-11.36.21-AM.png"><img loading="lazy" class="alignnone wp-image-2697 size-large" src="http://blog.evanweinberg.org/wp-content/uploads/2017/04/Screen-Shot-2017-04-19-at-11.36.21-AM-1024x303.png" alt="" width="604" height="179" srcset="/wp-content/uploads/2017/04/Screen-Shot-2017-04-19-at-11.36.21-AM-1024x303.png 1024w, /wp-content/uploads/2017/04/Screen-Shot-2017-04-19-at-11.36.21-AM-300x89.png 300w, /wp-content/uploads/2017/04/Screen-Shot-2017-04-19-at-11.36.21-AM-768x227.png 768w, /wp-content/uploads/2017/04/Screen-Shot-2017-04-19-at-11.36.21-AM-1536x454.png 1536w, /wp-content/uploads/2017/04/Screen-Shot-2017-04-19-at-11.36.21-AM-2048x605.png 2048w, /wp-content/uploads/2017/04/Screen-Shot-2017-04-19-at-11.36.21-AM-1200x355.png 1200w, /wp-content/uploads/2017/04/Screen-Shot-2017-04-19-at-11.36.21-AM-1980x585.png 1980w" sizes="(max-width: 604px) 100vw, 604px" /></a></p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2017/04/Screen-Shot-2017-04-19-at-11.36.10-AM.png"><img loading="lazy" class="alignnone wp-image-2698 size-large" src="http://blog.evanweinberg.org/wp-content/uploads/2017/04/Screen-Shot-2017-04-19-at-11.36.10-AM-1024x300.png" alt="" width="604" height="177" srcset="/wp-content/uploads/2017/04/Screen-Shot-2017-04-19-at-11.36.10-AM-1024x300.png 1024w, /wp-content/uploads/2017/04/Screen-Shot-2017-04-19-at-11.36.10-AM-300x88.png 300w, /wp-content/uploads/2017/04/Screen-Shot-2017-04-19-at-11.36.10-AM-768x225.png 768w, /wp-content/uploads/2017/04/Screen-Shot-2017-04-19-at-11.36.10-AM-1536x449.png 1536w, /wp-content/uploads/2017/04/Screen-Shot-2017-04-19-at-11.36.10-AM-2048x599.png 2048w, /wp-content/uploads/2017/04/Screen-Shot-2017-04-19-at-11.36.10-AM-1200x351.png 1200w, /wp-content/uploads/2017/04/Screen-Shot-2017-04-19-at-11.36.10-AM-1980x579.png 1980w" sizes="(max-width: 604px) 100vw, 604px" /></a></p>
+<p>The fact that the stress level was the same, if not less, was good to see. The effort level did drop in the case of a couple of students here, but for the most part, there isn&#8217;t any major change. This class as a whole values working independently, so I&#8217;m not surprised that none reported working <u>harder</u> during this unit.</p>
+<p>I also asked them to give me general feedback about the no-numerical-grades policy. Some of them deleted their responses before I could take a look, but here&#8217;s some of what they shared:</p>
+<ul>
+<ul>
+<li>Three students confirmed a lower stress level. One student explained that since there was no numerical grade, she &#8220;&#8230;couldn&#8217;t force/motivate [her]self to study.&#8221;</li>
+<li>Five students said the change made little to no difference to them. One student summed it up nicely: &#8220;It wasn&#8217;t much different than the numerical grades, but it definitely wasn&#8217;t worse.&#8221;</li>
+<li>One student said this: &#8220;The emojis seemed abstract so I wasn&#8217;t as sure of where I was within the unit compared to numbers.&#8221; This is one of a couple of the students that had concerns about knowing how to move from one level to the next, so the unit didn&#8217;t change this particular student&#8217;s mind.</li>
+</ul>
+</ul>
+<p>&nbsp;</p>
+<ul>
+<li>This was a really thought-provoking exercise. A move away from numerical grades is a compelling proposition, but a frequent argument against it is that grades motivate students. By no means have I disproven this fact in the results of my small case study. If a move like this can have a minimal effect on motivation, and students get the feedback they need to improve, it offers an opportunity for considering similar experiments in my other classes.
+<p>There are a couple questions I still have on this. Will students choose to reassess on the learning standards from unit 7, given that they won&#8217;t change the numerical average when we return to numerical grades for unit 8? The second involves the longer term retention of this material. How will students do on these questions when they appear on the final exam?</p>
+<p>I&#8217;ll return to this when I have more answers.</li>
+</ul>
+<p>&nbsp;</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2017/04/19/an-experiment-swapping-numerical-grades-for-skill-levels-and-emoji/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">2693</post-id>	</item>
+		<item>
+		<title>Trello for Class Organization</title>
+		<link>/2017/04/07/trello-for-class-organization/</link>
+					<comments>/2017/04/07/trello-for-class-organization/#comments</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Fri, 07 Apr 2017 10:35:27 +0000</pubDate>
+				<category><![CDATA[precalculus]]></category>
+		<category><![CDATA[teaching stories]]></category>
+		<category><![CDATA[eduscrum]]></category>
+		<category><![CDATA[trello]]></category>
+		<guid isPermaLink="false">/?p=2688</guid>
+
+					<description><![CDATA[Our school hosted the Vietnam Technology Conference this past February. (Yes, I&#8217;m just getting around to talking about it. Don&#8217;t judge.) One of the sessions I attended was about agile development in education, specifically as a way to organize the classroom into a room of independently functioning teams that are]]></description>
+										<content:encoded><![CDATA[<p>Our school hosted the <a href="http://2017.vietnamtechconference.org/">Vietnam Technology Conference</a> this past February. </p>
+<p>(Yes, I&#8217;m just getting around to talking about it. Don&#8217;t judge.)</p>
+<p>One of the sessions I attended was about <a href="https://en.wikipedia.org/wiki/Agile_software_development">agile development</a> in education, specifically as a way to organize the classroom into a room of independently functioning teams that are all trying to reach the goal of learning content. The full details on the philosophy can be found at <a href="http://eduscrum.com/">http://eduscrum.com/</a>. I most certainly am <u>not</u> following the full implementation described there.</p>
+<p>My interest was piqued by the possibility of using <a href="http://trello.com/">a Trello board</a> to organize tasks for my classroom. I always make a digital handout for each class that consists of a series of tasks, links, problems, and chunks of information. Within the class block, I weave these together in a mix of direct instruction, group tasks, PearDeck activities, Desmos explorations, and so on. I advise students not to just do every problem on my handouts from start to finish because there is an order to my madness. I have a plan for students to go through the different activities, but I don&#8217;t always clearly indicate that plan on these handouts. </p>
+<p>This is where Trello came in. For my past two units in PreCalculus, I broke up the tasks on my digital handout into tasks on a Trello board. This consists of a list of tasks, and then three columns labeled &#8216;to-do&#8217;, &#8216;in progress&#8217;, and &#8216;completed&#8217;. </p>
+<p><a href="http://ec2-13-229-58-164.ap-southeast-1.compute.amazonaws.com/wp-content/uploads/2017/04/Screen-Shot-2017-04-07-at-5.08.19-PM.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2017/04/Screen-Shot-2017-04-07-at-5.08.19-PM-1024x550.png" alt="" width="604" height="324" class="alignnone size-large wp-image-2689" srcset="/wp-content/uploads/2017/04/Screen-Shot-2017-04-07-at-5.08.19-PM-1024x550.png 1024w, /wp-content/uploads/2017/04/Screen-Shot-2017-04-07-at-5.08.19-PM-300x161.png 300w, /wp-content/uploads/2017/04/Screen-Shot-2017-04-07-at-5.08.19-PM-768x413.png 768w, /wp-content/uploads/2017/04/Screen-Shot-2017-04-07-at-5.08.19-PM-1536x825.png 1536w, /wp-content/uploads/2017/04/Screen-Shot-2017-04-07-at-5.08.19-PM-2048x1100.png 2048w, /wp-content/uploads/2017/04/Screen-Shot-2017-04-07-at-5.08.19-PM-1200x645.png 1200w, /wp-content/uploads/2017/04/Screen-Shot-2017-04-07-at-5.08.19-PM-1980x1064.png 1980w" sizes="(max-width: 604px) 100vw, 604px" /></a></p>
+<p>I put students in groups, and then shared <a href="https://trello.com/b/OiDb9QSC/precalculus-unit-6">this Trello board here with them.</a> Their group needed to make a Trello board for their group, and then copy the day&#8217;s tasks onto their group&#8217;s board. I told students how long a &#8216;sprint&#8217; (an agile development term) was going to be, and the group would decide which tasks they would collectively (or individually) do during that time. They moved these tasks into the appropriate column of the board. As I continued to use the system, I realized that I could color code tasks according to the learning standards, and identify them according to the day of class. This helped students to understand the context of individual tasks later on.</p>
+<p>The thing I liked the most about this experiment was that it actually enabled students to take charge of what they were doing during the lesson. I sometimes said that I was going to go over a concept at a particular time during the class block, and that teams could pay attention or not depending on their needs. This could be replaced by videos of this direct instruction to allow for more asynchronous learning for the students that weren&#8217;t ready at that time. There were some great conversations between students about what they did and didn&#8217;t understand. I could circulate and interject when I saw the need.</p>
+<p>This put me in the position of curating interesting and productive tasks related to the course content, which is a lot more fun than planning a lecture. The students also liked being able to talk to each other and work at their own pace. Here&#8217;s some feedback from the students:</p>
+<h4>What they liked: </h4>
+<blockquote>
+<ul>
+<li>&#8220;I think it was nice how I could do things by whatever pace I felt more comfortable with to an extent since we did things as a small group rather than as an entire class.&#8221;</li>
+<li>&#8220;It kept me working and thinking the whole class. It also helped me work out problems independently which helped my understanding.&#8221;</li>
+<li>&#8220;I liked the ability to keep track of all my work, as well  as knowing all the problems beforehand. I also like being able to have more time to discuss with friends to understand how we each came up with various solutions.&#8221;</li>
+</ul>
+</blockquote>
+<h4>What could be improved:</h4>
+<blockquote>
+<ul>
+<li>&#8220;Maybe I rather stick with traditional teaching methods. This is borderline self-taught and it&#8217;s not so much better with group of people that I don&#8217;t know well.&#8221;</li>
+<li>&#8220;I think it would be better to go through the theory and concepts of the standard first, meaning how to do a problem as a class before splitting into smaller groups for individual/team work.&#8221; </li>
+<li>&#8220;For future classes, I would also like informative videos to be included so that we can learn new topics this way.&#8221;</li>
+</ul>
+</blockquote>
+<p>This feedback made it easy to adjust for the next classes, and I continued to tweak in the next unit. The students really like the act of moving tasks between the different columns on the Trello board too. I really like the ease with which students can copy tasks, move them around, and plan their time independently. There are some good habits here that I&#8217;ll be thinking about expanding to other classes later this semester or for the next school year.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2017/04/07/trello-for-class-organization/feed/</wfw:commentRss>
+			<slash:comments>3</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">2688</post-id>	</item>
+	</channel>
+</rss>

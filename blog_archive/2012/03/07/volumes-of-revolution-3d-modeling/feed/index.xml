@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	
+	xmlns:georss="http://www.georss.org/georss"
+	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+	
+	>
+<channel>
+	<title>
+	Comments on: Volumes of Revolution &#038; 3D Modeling	</title>
+	<atom:link href="/2012/03/07/volumes-of-revolution-3d-modeling/feed/" rel="self" type="application/rss+xml" />
+	<link>/2012/03/07/volumes-of-revolution-3d-modeling/</link>
+	<description>iteration, making, building, and coding in education</description>
+	<lastBuildDate>Thu, 08 Mar 2012 19:31:52 +0000</lastBuildDate>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.7.6</generator>
+	<item>
+		<title>
+		By: Screencasting some calculus &#124; CAS Musings		</title>
+		<link>/2012/03/07/volumes-of-revolution-3d-modeling/#comment-55</link>
+
+		<dc:creator><![CDATA[Screencasting some calculus &#124; CAS Musings]]></dc:creator>
+		<pubDate>Thu, 08 Mar 2012 19:31:52 +0000</pubDate>
+		<guid isPermaLink="false">/?p=427#comment-55</guid>
+
+					<description><![CDATA[[...] an aside, colleague John Burk (@occam98) pointed me to a cool article, Volumes of Revolution &#038; 3D Modeling, that quite rightly identifies the most challenging part about volumes of revolutions for [...]]]></description>
+			<content:encoded><![CDATA[<p>[&#8230;] an aside, colleague John Burk (@occam98) pointed me to a cool article, Volumes of Revolution &amp; 3D Modeling, that quite rightly identifies the most challenging part about volumes of revolutions for [&#8230;]</p>
+]]></content:encoded>
+		
+			</item>
+	</channel>
+</rss>

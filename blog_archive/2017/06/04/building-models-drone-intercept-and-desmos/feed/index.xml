@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	
+	xmlns:georss="http://www.georss.org/georss"
+	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+	
+	>
+<channel>
+	<title>
+	Comments on: Building Models: Drone Intercept and Desmos	</title>
+	<atom:link href="/2017/06/04/building-models-drone-intercept-and-desmos/feed/" rel="self" type="application/rss+xml" />
+	<link>/2017/06/04/building-models-drone-intercept-and-desmos/</link>
+	<description>iteration, making, building, and coding in education</description>
+	<lastBuildDate>Wed, 14 Jun 2017 07:02:05 +0000</lastBuildDate>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.7.6</generator>
+	<item>
+		<title>
+		By: Evan Weinberg		</title>
+		<link>/2017/06/04/building-models-drone-intercept-and-desmos/#comment-509</link>
+
+		<dc:creator><![CDATA[Evan Weinberg]]></dc:creator>
+		<pubDate>Wed, 14 Jun 2017 07:02:05 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2731#comment-509</guid>
+
+					<description><![CDATA[In reply to &lt;a href=&quot;/2017/06/04/building-models-drone-intercept-and-desmos/#comment-508&quot;&gt;John Burk&lt;/a&gt;.
+
+Thanks John. I suppose you could see my inability to leave well-enough alone as a flaw, but it&#039;s always fun to think about new ways to approach old ideas.]]></description>
+			<content:encoded><![CDATA[<p>In reply to <a href="/2017/06/04/building-models-drone-intercept-and-desmos/#comment-508">John Burk</a>.</p>
+<p>Thanks John. I suppose you could see my inability to leave well-enough alone as a flaw, but it&#8217;s always fun to think about new ways to approach old ideas.</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: John Burk		</title>
+		<link>/2017/06/04/building-models-drone-intercept-and-desmos/#comment-508</link>
+
+		<dc:creator><![CDATA[John Burk]]></dc:creator>
+		<pubDate>Sun, 04 Jun 2017 14:32:47 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2731#comment-508</guid>
+
+					<description><![CDATA[Evan,
+I love how you have iterated this activity a few times to make it both more interesting and more approachable. It&#039;s a great reminder to any teacher of that there&#039;s always room for improvement, even in activities we think are already &quot;good.&quot;]]></description>
+			<content:encoded><![CDATA[<p>Evan,<br />
+I love how you have iterated this activity a few times to make it both more interesting and more approachable. It&#8217;s a great reminder to any teacher of that there&#8217;s always room for improvement, even in activities we think are already &#8220;good.&#8221;</p>
+]]></content:encoded>
+		
+			</item>
+	</channel>
+</rss>

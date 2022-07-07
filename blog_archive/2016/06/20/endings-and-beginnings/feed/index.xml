@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	
+	xmlns:georss="http://www.georss.org/georss"
+	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+	
+	>
+<channel>
+	<title>
+	Comments on: Endings and Beginnings	</title>
+	<atom:link href="/2016/06/20/endings-and-beginnings/feed/" rel="self" type="application/rss+xml" />
+	<link>/2016/06/20/endings-and-beginnings/</link>
+	<description>iteration, making, building, and coding in education</description>
+	<lastBuildDate>Mon, 20 Jun 2016 17:26:43 +0000</lastBuildDate>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.7.6</generator>
+	<item>
+		<title>
+		By: Xavier		</title>
+		<link>/2016/06/20/endings-and-beginnings/#comment-477</link>
+
+		<dc:creator><![CDATA[Xavier]]></dc:creator>
+		<pubDate>Mon, 20 Jun 2016 17:26:43 +0000</pubDate>
+		<guid isPermaLink="false">/2016/06/20/endings-and-beginnings/#comment-477</guid>
+
+					<description><![CDATA[When did you start? When and why did you decide to move to China? Why do you decide to return?]]></description>
+			<content:encoded><![CDATA[<p>When did you start? When and why did you decide to move to China? Why do you decide to return?</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: Mary Bourassa		</title>
+		<link>/2016/06/20/endings-and-beginnings/#comment-476</link>
+
+		<dc:creator><![CDATA[Mary Bourassa]]></dc:creator>
+		<pubDate>Mon, 20 Jun 2016 13:10:02 +0000</pubDate>
+		<guid isPermaLink="false">/2016/06/20/endings-and-beginnings/#comment-476</guid>
+
+					<description><![CDATA[Thank you for sharing this post and your experiences overseas. Your ideas have helped not only your students, but mine also, and for that I thank you. I look forward to hearing about your next chapter.]]></description>
+			<content:encoded><![CDATA[<p>Thank you for sharing this post and your experiences overseas. Your ideas have helped not only your students, but mine also, and for that I thank you. I look forward to hearing about your next chapter.</p>
+]]></content:encoded>
+		
+			</item>
+	</channel>
+</rss>

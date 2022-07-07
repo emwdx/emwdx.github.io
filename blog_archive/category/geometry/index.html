@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="profile" href="https://gmpg.org/xfn/11">
+
+    <title>geometry</title>
+<meta name="robots" content="max-image-preview:large">
+<link rel="dns-prefetch">
+<link rel="dns-prefetch" href="//fonts.googleapis.com">
+<link rel="dns-prefetch" href="//s.w.org">
+<link rel="alternate" type="application/rss+xml" title=" &raquo; Feed" href="/feed/">
+<link rel="alternate" type="application/rss+xml" title=" &raquo; Comments Feed" href="/comments/feed/">
+<link rel="alternate" type="application/rss+xml" title=" &raquo; geometry Category Feed" href="/category/geometry/feed/">
+		<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/svg\/","svgExt":".svg","source":{"concatemoji":"https13.229.58.164\/wp-includes\/js\/wp-emoji-release.min.js?ver=5.7.6"}};
+			!function(e,a,t){var n,r,o,i=a.createElement("canvas"),p=i.getContext&&i.getContext("2d");function s(e,t){var a=String.fromCharCode;p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,e),0,0);e=i.toDataURL();return p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,t),0,0),e===i.toDataURL()}function c(e){var t=a.createElement("script");t.src=e,t.defer=t.type="text/javascript",a.getElementsByTagName("head")[0].appendChild(t)}for(o=Array("flag","emoji"),t.supports={everything:!0,everythingExceptFlag:!0},r=0;r<o.length;r++)t.supports[o[r]]=function(e){if(!p||!p.fillText)return!1;switch(p.textBaseline="top",p.font="600 32px Arial",e){case"flag":return s([127987,65039,8205,9895,65039],[127987,65039,8203,9895,65039])?!1:!s([55356,56826,55356,56819],[55356,56826,8203,55356,56819])&&!s([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]);case"emoji":return!s([55357,56424,8205,55356,57212],[55357,56424,8203,55356,57212])}return!1}(o[r]),t.supports.everything=t.supports.everything&&t.supports[o[r]],"flag"!==o[r]&&(t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&t.supports[o[r]]);t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&!t.supports.flag,t.DOMReady=!1,t.readyCallback=function(){t.DOMReady=!0},t.supports.everything||(n=function(){t.readyCallback()},a.addEventListener?(a.addEventListener("DOMContentLoaded",n,!1),e.addEventListener("load",n,!1)):(e.attachEvent("onload",n),a.attachEvent("onreadystatechange",function(){"complete"===a.readyState&&t.readyCallback()})),(n=t.source||{}).concatemoji?c(n.concatemoji):n.wpemoji&&n.twemoji&&(c(n.twemoji),c(n.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+		<style type="text/css">img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}</style>
+	<link rel="stylesheet" id="wp-block-library-css" href="/wp-includes/css/dist/block-library/style.min.css?ver=5.7.6" type="text/css" media="all">
+<style id="wp-block-library-inline-css" type="text/css">.has-text-align-justify{text-align:justify;}</style>
+<link rel="stylesheet" id="wp-block-library-theme-css" href="/wp-includes/css/dist/block-library/theme.min.css?ver=5.7.6" type="text/css" media="all">
+<link rel="stylesheet" id="gist-style-css" href="/wp-content/themes/gist/style.css?ver=5.7.6" type="text/css" media="all">
+<style id="gist-style-inline-css" type="text/css">{ clip: rect(1px, 1px, 1px, 1px); height: 1px; position: absolute; overflow: hidden; width: 1px; }
+body { font-family: Open Sans; }body { font-size: 16px; }body { line-height : 2; }.breadcrumbs span.breadcrumb, .nav-links a, .search-form input[type=submit], #toTop, .candid-pagination .page-numbers.current, .candid-pagination .page-numbers:hover  { background : #ca9b52; }.search-form input.search-field, .sticky .p-15, .related-post-entries li, .candid-pagination .page-numbers { border-color : #ca9b52; }.error-404 h1, .no-results h1, a, a:visited, .related-post-entries .title:hover, .entry-title a:hover, .featured-post-title a:hover, .entry-meta.entry-category a,.widget li a:hover, .widget h1 a:hover, .widget h2 a:hover, .widget h3 a:hover, .site-title a, .site-title a:visited, .main-navigation ul li a:hover { color : #ca9b52; }.btn-primary { border: 2px solid #ca9b52;}</style>
+<link rel="stylesheet" id="drift-blog-style-css" href="/wp-content/themes/drift-blog/style.css?ver=5.7.6" type="text/css" media="all">
+<link rel="stylesheet" id="drift-blog-google-fonts-css" href="//fonts.googleapis.com/css?family=Playfair+Display&#038;ver=5.7.6" type="text/css" media="all">
+<link rel="stylesheet" id="gist-googleapis-css" href="//fonts.googleapis.com/css?family=Open+Sans&#038;ver=5.7.6" type="text/css" media="all">
+<link rel="stylesheet" id="gist-google-fonts-css" href="//fonts.googleapis.com/css?family=Oswald&#038;ver=5.7.6" type="text/css" media="all">
+<link rel="stylesheet" id="font-awesome-css" href="/wp-content/themes/gist/candidthemes/assets/framework/Font-Awesome/css/font-awesome.min.css?ver=4.7.0" type="text/css" media="all">
+<link rel="stylesheet" id="jetpack_css-css" href="/wp-content/plugins/jetpack/css/jetpack.css?ver=8.6.2" type="text/css" media="all">
+<script type="text/javascript" src="/wp-includes/js/jquery/jquery.min.js?ver=3.5.1" id="jquery-core-js"></script>
+<script type="text/javascript" src="/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.3.2" id="jquery-migrate-js"></script>
+<link rel="https://api.w.org/" href="/wp-json/">
+<link rel="alternate" type="application/json" href="/wp-json/wp/v2/categories/7">
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="/wp-includes/wlwmanifest.xml"> 
+<meta name="generator" content="WordPress 5.7.6">
+<style type="text/css">img#wpstats{display:none}</style>		<style type="text/css" id="wp-custom-css">.custom-logo{
+	height:300px;
+	width:300px
+	
+}</style>
+		</head>
+
+<body data-rsssl="1" class="archive category category-geometry category-7 wp-custom-logo wp-embed-responsive hfeed ct-sticky-sidebar right-sidebar">
+    <div id="page" class="site container-main">
+        <a class="skip-link screen-reader-text" href="#content">Skip to content</a>
+
+        <header id="masthead" class="site-header" role="banner">
+            <div class="top-menu-container-inner container-inner">
+                    <div id="mainnav-wrap" class="clear">
+                        <div class="top-header-social">
+                            
+                            <button class="top-menu-toggle"><i class="fa fa-bars"></i></button>
+                        </div>
+
+                        <nav id="top-site-navigation" class="main-navigation" role="navigation">
+                            <div class="menu-pages-container"><ul id="top-menu" class="top-menu nav_menu">
+<li id="menu-item-2781" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-2781"><a href="/">Home</a></li>
+<li id="menu-item-2782" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2782"><a href="/about/">About Evan Weinberg</a></li>
+</ul></div>                        </nav>
+                            <!-- #site-navigation -->
+                    </div>
+                </div>
+                    <!-- .top-menu-container-inner -->
+            <div class="site-branding">
+                <div class="container-inner">
+                    <a href="/" class="custom-logo-link" rel="home"><img width="1000" height="1000" src="/wp-content/uploads/2018/10/for.next_.001.jpeg" class="custom-logo" alt="" srcset="/wp-content/uploads/2018/10/for.next_.001.jpeg 1000w, /wp-content/uploads/2018/10/for.next_.001-300x300.jpeg 300w, /wp-content/uploads/2018/10/for.next_.001-150x150.jpeg 150w, /wp-content/uploads/2018/10/for.next_.001-768x768.jpeg 768w" sizes="(max-width: 1000px) 100vw, 1000px"></a>                            <p class="site-title"><a href="/" rel="home"></a></p>
+                                                           <p class="site-description">iteration, making, building, and coding in education</p>
+                                                </div>
+                </div>
+                <!-- .site-branding -->
+
+                <div class="container-inner">
+                    <div id="mainnav-wrap">
+                        <nav id="site-navigation" class="main-navigation" role="navigation">
+                            <button class="menu-toggle" aria-controls="primary-menu" aria-expanded="false"><i class="fa fa-bars"></i></button>
+                                                            </nav>
+                            <!-- #site-navigation -->
+                        </div>
+                    </div>
+                    <!-- .container-inner -->
+                </header>
+                <!-- #masthead -->
+                <div class="header-image-block">
+                                    </div>
+
+                <div id="content" class="site-content container-inner p-t-15">
+	<div id="primary" class="content-area">
+		<main id="main" class="site-main">
+			<div class="breadcrumbs">
+                            </div>
+		
+			<header class="page-header">
+				<h1 class="page-title">Category: <span>geometry</span>
+</h1>			</header><!-- .page-header -->
+
+			
+<article id="post-2438" class="post-2438 post type-post status-publish format-standard hentry category-geometry category-reflection">
+    <div class="p-15 left-image">
+        <div class="ct-featured-image">
+                    </div>
+        <div class="entry-content">
+            <header class="entry-header">
+                <h2 class="entry-title"><a href="/2016/04/21/the-incredible-growing-bricks/" rel="bookmark">The Incredible Growing Bricks</a></h2>    </header>
+    <!-- .entry-header -->
+    <p>I put together this <a href="http://www.101qs.com/2902-the-incredible-growing-bricks">three-act activity</a> two years ago, and decided to include it in the playlist for this year&#8217;s Math 9 course. The students got right to work in figuring out the total mass of the three bricks together.</p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2016/04/Screen-Shot-2016-04-21-at-9.42.25-AM.png" rel="attachment wp-att-2439"><img loading="lazy" src="https://blog.evanweinberg.org/wp-content/uploads/2016/04/Screen-Shot-2016-04-21-at-9.42.25-AM-300x172.png" alt="Screen Shot 2016-04-21 at 9.42.25 AM" width="300" height="172" class="alignnone size-medium wp-image-2439" srcset="/wp-content/uploads/2016/04/Screen-Shot-2016-04-21-at-9.42.25-AM-300x172.png 300w, /wp-content/uploads/2016/04/Screen-Shot-2016-04-21-at-9.42.25-AM-768x440.png 768w, /wp-content/uploads/2016/04/Screen-Shot-2016-04-21-at-9.42.25-AM.png 954w" sizes="(max-width: 300px) 100vw, 300px"></a></p>
+<p>This time, I circulated the actual bricks among the students as they worked. I opted not to do this two years ago because I wanted to force them to use the dimensions in the image above to find their answers. The result was that some students chose to make the measurements themselves rather than use the image. This yielded some great interactions between students <i>asking</i> if the bricks were proportional to each other, and those <i>assuming</i> they were proportional. There were some excellent examples of strong explanations involving proportional reasoning among the student work, as well as typical examples of misconceptions, such as the mass being proportional to the scale factor between the sides.</p>
+<p>I also did something new with this modeling task and asked students to predict their <u>uncertainty</u>. Often times, students see that they were close to the actual answer revealed in the third act (but not exactly equal), and subsequently classify their answers as wrong. The uncertainties allow more flexibility in this regard. It also revealed some misunderstanding of the relationship between uncertainty and reporting answers that wasn&#8217;t unexpected: one student gave 16.895 grams, with an uncertainty of plus or minus 0.1 grams. This is a frequent issue in science classes, but not something I&#8217;ve addressed with mathematics students in the past.</p>
+
+    <footer class="entry-footer">
+        </footer>
+<!-- .entry-footer -->
+</div>
+<!-- .entry-content -->
+</div>
+<!-- .p-15 -->
+</article><!-- #post-2438 -->
+
+<article id="post-2395" class="post-2395 post type-post status-publish format-standard hentry category-computational-thinking-2 category-geometry">
+    <div class="p-15 left-image">
+        <div class="ct-featured-image">
+                    </div>
+        <div class="entry-content">
+            <header class="entry-header">
+                <h2 class="entry-title"><a href="/2016/02/24/boat-race-revisited/" rel="bookmark">Boat Race, Revisited</a></h2>    </header>
+    <!-- .entry-header -->
+    <p>A couple of years ago, I was impressed with Dan Meyer and Dave Major&#8217;s creation of Boat Race, an activity that involved navigating around buoys with some knowledge of bearings. I hoped to use his creation for my ninth graders two years ago, but Boat Race in its original form was zapped from the interwebs. At the time,  I did an analog version, which you can find here in PDF form:</p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2016/02/07-CW-Boat-Race.pdf" rel="">07 &#8211; CW &#8211; Boat Race</a></p>
+<p>&nbsp;</p>
+<p>This year, when looking at my materials in the revamped Math 9 course, I felt compelled to take a crack at my own digitization of this activity.  Here&#8217;s the result:</p>
+<p><a href="http://emwdx.github.io/boatrace/index.html" rel="attachment wp-att-2397"><img loading="lazy" class="alignnone wp-image-2397 size-large" src="https://blog.evanweinberg.org/wp-content/uploads/2016/02/Screen-Shot-2016-02-24-at-12.29.18-AM-1024x665.png" alt="Screen Shot 2016-02-24 at 12.29.18 AM" width="500" height="325" srcset="/wp-content/uploads/2016/02/Screen-Shot-2016-02-24-at-12.29.18-AM-1024x665.png 1024w, /wp-content/uploads/2016/02/Screen-Shot-2016-02-24-at-12.29.18-AM-300x195.png 300w, /wp-content/uploads/2016/02/Screen-Shot-2016-02-24-at-12.29.18-AM-768x499.png 768w, /wp-content/uploads/2016/02/Screen-Shot-2016-02-24-at-12.29.18-AM-1536x997.png 1536w, /wp-content/uploads/2016/02/Screen-Shot-2016-02-24-at-12.29.18-AM-2048x1330.png 2048w, /wp-content/uploads/2016/02/Screen-Shot-2016-02-24-at-12.29.18-AM-1200x779.png 1200w, /wp-content/uploads/2016/02/Screen-Shot-2016-02-24-at-12.29.18-AM-1980x1285.png 1980w" sizes="(max-width: 500px) 100vw, 500px"></a></p>
+<p>You can also visit the live site here and try it out yourself.</p>
+<p><a href="http://emwdx.github.io/boatrace/index.html">Boat Race</a></p>
+<p>The moving circle moves painfully slow by design. Students will (hopefully) be compelled to do a good job of calculating distances and angles accurately. I plan to give them the analog version on paper for planning purposes. Shortest time by the end of the class wins fame and glory.</p>
+
+    <footer class="entry-footer">
+        </footer>
+<!-- .entry-footer -->
+</div>
+<!-- .entry-content -->
+</div>
+<!-- .p-15 -->
+</article><!-- #post-2395 -->
+
+<article id="post-2390" class="post-2390 post type-post status-publish format-standard hentry category-geometry category-reflection category-teaching-philosophy tag-makeover tag-simplification">
+    <div class="p-15 left-image">
+        <div class="ct-featured-image">
+                    </div>
+        <div class="entry-content">
+            <header class="entry-header">
+                <h2 class="entry-title"><a href="/2016/02/21/an-easy-transformation-right-triangle-trigonometry/" rel="bookmark">An Easy Transformation: Right Triangle Trigonometry</a></h2>    </header>
+    <!-- .entry-header -->
+    <p>From Haese and Harris MYP 9:</p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2016/02/Screen-Shot-2016-02-21-at-5.07.33-PM.png" rel="attachment wp-att-2392"><img loading="lazy" class="alignnone size-large wp-image-2392" src="https://blog.evanweinberg.org/wp-content/uploads/2016/02/Screen-Shot-2016-02-21-at-5.07.33-PM-1024x251.png" alt="Screen Shot 2016-02-21 at 5.07.33 PM" width="500" height="123" srcset="/wp-content/uploads/2016/02/Screen-Shot-2016-02-21-at-5.07.33-PM-1024x251.png 1024w, /wp-content/uploads/2016/02/Screen-Shot-2016-02-21-at-5.07.33-PM-300x74.png 300w, /wp-content/uploads/2016/02/Screen-Shot-2016-02-21-at-5.07.33-PM-768x188.png 768w, /wp-content/uploads/2016/02/Screen-Shot-2016-02-21-at-5.07.33-PM.png 1110w" sizes="(max-width: 500px) 100vw, 500px"></a></p>
+<p>I was looking for problems to give my students as applications of the right angle trigonometry from our previous class. The problem is essentially equivalent to the basic questions requiring them to find an unknown side or angle &#8211; the work is all done for them. One of my standards is all about parsing a word problem for the information needed to answer it, and this question does not require students to do any parsing.</p>
+<p>I removed all of the measurements, and this problem became remarkably more demanding:</p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2016/02/Screen-Shot-2016-02-21-at-5.08.48-PM.png" rel="attachment wp-att-2393"><img loading="lazy" class="alignnone size-large wp-image-2393" src="https://blog.evanweinberg.org/wp-content/uploads/2016/02/Screen-Shot-2016-02-21-at-5.08.48-PM-1024x252.png" alt="Screen Shot 2016-02-21 at 5.08.48 PM" width="500" height="123" srcset="/wp-content/uploads/2016/02/Screen-Shot-2016-02-21-at-5.08.48-PM-1024x252.png 1024w, /wp-content/uploads/2016/02/Screen-Shot-2016-02-21-at-5.08.48-PM-300x74.png 300w, /wp-content/uploads/2016/02/Screen-Shot-2016-02-21-at-5.08.48-PM-768x189.png 768w, /wp-content/uploads/2016/02/Screen-Shot-2016-02-21-at-5.08.48-PM-1200x295.png 1200w, /wp-content/uploads/2016/02/Screen-Shot-2016-02-21-at-5.08.48-PM.png 1512w" sizes="(max-width: 500px) 100vw, 500px"></a></p>
+<p>This will certainly prompt more conversation than in its original form.</p>
+<p>It&#8217;s embarrassing how easy it was to make this change &#8211; I anticipate a nice payoff in class.</p>
+
+    <footer class="entry-footer">
+        </footer>
+<!-- .entry-footer -->
+</div>
+<!-- .entry-content -->
+</div>
+<!-- .p-15 -->
+</article><!-- #post-2390 -->
+
+<article id="post-1813" class="post-1813 post type-post status-publish format-standard hentry category-geometry category-teaching-stories">
+    <div class="p-15 left-image">
+        <div class="ct-featured-image">
+                    </div>
+        <div class="entry-content">
+            <header class="entry-header">
+                <h2 class="entry-title"><a href="/2014/03/08/ratios-proportions-day-one-antics/" rel="bookmark">Ratios &#038; Proportions &#8211; Day One Antics</a></h2>    </header>
+    <!-- .entry-header -->
+    <p>Yesterday was our first day into a unit on similarity with the ninth grade students. </p>
+<p>The issue that comes up every year is that students like to cross multiply, but are incredibly mechanical in their understanding of why they do so. They don&#8217;t like fractions that aren&#8217;t simplified, and can usually simplify them well. They bring up the fact that multiplication of numerator and denominator by the same number is equivalent to multiplying by one. They seem to have very little understanding of how this relates to units and unit conversions as well.</p>
+<p>I changed my approach this year to be much less review of how to solve proportions. I wanted to get at the aspects of measurement that are inherent to math problems involving similarity. I wanted to get them to ask themselves a bit more about why they took the steps they took in solving proportions in the process. </p>
+<p>I started with a couple simple problems in the warm-up. Here was one:<br>
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2014/03/Screen-Shot-2014-03-08-at-2.16.05-PM.png"><img loading="lazy" src="https://blog.evanweinberg.org/wp-content/uploads/2014/03/Screen-Shot-2014-03-08-at-2.16.05-PM-300x51.png" alt="Screen Shot 2014-03-08 at 2.16.05 PM" width="300" height="51" class="alignnone size-medium wp-image-1814" srcset="/wp-content/uploads/2014/03/Screen-Shot-2014-03-08-at-2.16.05-PM-300x51.png 300w, /wp-content/uploads/2014/03/Screen-Shot-2014-03-08-at-2.16.05-PM.png 537w" sizes="(max-width: 300px) 100vw, 300px"></a></p>
+<p>I took pictures of two students&#8217; work, put them side by side, and asked the class which one they thought was a better answer to the question:<br>
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2014/03/Screen-Shot-2014-03-08-at-2.17.40-PM.png"><img loading="lazy" src="https://blog.evanweinberg.org/wp-content/uploads/2014/03/Screen-Shot-2014-03-08-at-2.17.40-PM-300x171.png" alt="Screen Shot 2014-03-08 at 2.17.40 PM" width="300" height="171" class="alignnone size-medium wp-image-1815" srcset="/wp-content/uploads/2014/03/Screen-Shot-2014-03-08-at-2.17.40-PM-300x171.png 300w, /wp-content/uploads/2014/03/Screen-Shot-2014-03-08-at-2.17.40-PM-768x439.png 768w, /wp-content/uploads/2014/03/Screen-Shot-2014-03-08-at-2.17.40-PM.png 880w" sizes="(max-width: 300px) 100vw, 300px"></a></p>
+<p>The resulting vote and conversation was especially spirited, particularly for a class that normally rejects whole class discussion. We talked about the ideas of approximate and exact answers, a couple of students pointing out that substitution of the approximate answers would result in a false statement in the equation. </p>
+<p>After this, I showed them another picture and asked if the LEGO pieces in this picture would go together:<br>
+ <a href="http://blog.evanweinberg.org/wp-content/uploads/2014/03/Screen-Shot-2014-03-08-at-2.30.59-PM.png"><img loading="lazy" src="https://blog.evanweinberg.org/wp-content/uploads/2014/03/Screen-Shot-2014-03-08-at-2.30.59-PM-300x211.png" alt="Screen Shot 2014-03-08 at 2.30.59 PM" width="300" height="211" class="alignnone size-medium wp-image-1816"></a></p>
+<p>Every hand went up.</p>
+<p>I then showed them the bricks, which I had made on our school&#8217;s new 3D printer:<br>
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2014/03/Screen-Shot-2014-03-08-at-2.33.47-PM.png"><img loading="lazy" src="https://blog.evanweinberg.org/wp-content/uploads/2014/03/Screen-Shot-2014-03-08-at-2.33.47-PM-300x144.png" alt="Screen Shot 2014-03-08 at 2.33.47 PM" width="300" height="144" class="alignnone size-medium wp-image-1817" srcset="/wp-content/uploads/2014/03/Screen-Shot-2014-03-08-at-2.33.47-PM-300x144.png 300w, /wp-content/uploads/2014/03/Screen-Shot-2014-03-08-at-2.33.47-PM.png 706w" sizes="(max-width: 300px) 100vw, 300px"></a></p>
+<p>Pause for groans. Some key things were said in response to my &#8216;playing dumb&#8217; question of why the two bricks won&#8217;t fit together. One student even directly said that they looked similar to each other, but that they weren&#8217;t the same size. I wanted them to have in the back of the heads that I was going to be pushing them to always think about figure with the same shape, different size.</p>
+<p>We then made it to the second task of the warm-up activity. I asked them to estimate (and subsequently measure) the ratio of one of my heads in this image to the next:<br>
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2014/03/Screen-Shot-2014-03-08-at-2.45.32-PM.png"><img loading="lazy" src="https://blog.evanweinberg.org/wp-content/uploads/2014/03/Screen-Shot-2014-03-08-at-2.45.32-PM-300x176.png" alt="Screen Shot 2014-03-08 at 2.45.32 PM" width="300" height="176" class="alignnone size-medium wp-image-1818" srcset="/wp-content/uploads/2014/03/Screen-Shot-2014-03-08-at-2.45.32-PM-300x176.png 300w, /wp-content/uploads/2014/03/Screen-Shot-2014-03-08-at-2.45.32-PM-1024x602.png 1024w, /wp-content/uploads/2014/03/Screen-Shot-2014-03-08-at-2.45.32-PM-768x452.png 768w, /wp-content/uploads/2014/03/Screen-Shot-2014-03-08-at-2.45.32-PM.png 1059w" sizes="(max-width: 300px) 100vw, 300px"></a></p>
+<p>I developed the following points:</p>
+<ul>
+<li>When communicating ratios to another person, begin explicit and clear about order is extremely important.</li>
+<li>Despite the different units, these ratios are all communicating the same relationship from one head to the next. This relationship is even more obvious when we write the ratio as a fraction instead of using the colon notation.  </li>
+<li>The approximate values of this fraction are all roughly the same. We don&#8217;t need to convert units either for this to happen &#8211; the units divide themselves out in the fraction. </li>
+</ul>
+<p>I went on to define a proportion and reviewed the idea of cross products. They were a bit surprised when I showed them that cross products were equal for equivalent fractions. Part of this was because they saw me equate 2/5 and 4/10 and immediately said they were equal because one simplified into the other. I gave them 2/5 and 354453764/886359410 and they were a bit more willing to see that cross products can be a slicker way to check equality.</p>
+<p>One more point that I made was that a proportion with a variable in it was really a question. If we are saying two fractions are equal to each other, and one (or more) of the fractions has a variable, what does that mean about the value of the variable? It led to a bit more conversation about the reasons for cross multiplication as a method of solving proportions, and I was satisfying then leaving students to work through some more review problems on their own.</p>
+<p>The final piece we talked about whole group was this open ended question:<br>
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2014/03/Screen-Shot-2014-03-08-at-3.02.00-PM.png"><img loading="lazy" src="https://blog.evanweinberg.org/wp-content/uploads/2014/03/Screen-Shot-2014-03-08-at-3.02.00-PM.png" alt="Screen Shot 2014-03-08 at 3.02.00 PM" width="602" height="600" class="alignnone size-full wp-image-1819" srcset="/wp-content/uploads/2014/03/Screen-Shot-2014-03-08-at-3.02.00-PM.png 602w, /wp-content/uploads/2014/03/Screen-Shot-2014-03-08-at-3.02.00-PM-300x300.png 300w, /wp-content/uploads/2014/03/Screen-Shot-2014-03-08-at-3.02.00-PM-150x150.png 150w" sizes="(max-width: 602px) 100vw, 602px"></a></p>
+<p>They were able to come up with some, but struggled to make ratios that were more than simple multiples. This was surprising, as their mental calculation skills are generally quite strong. As shown in the example, I gave them one way to see how to come up with an arbitrary set of lengths that fit the requirement.</p>
+<p>I then showed them this question:<br>
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2014/03/Screen-Shot-2014-03-08-at-3.05.31-PM.png"><img loading="lazy" src="https://blog.evanweinberg.org/wp-content/uploads/2014/03/Screen-Shot-2014-03-08-at-3.05.31-PM.png" alt="Screen Shot 2014-03-08 at 3.05.31 PM" width="558" height="598" class="alignnone size-full wp-image-1820" srcset="/wp-content/uploads/2014/03/Screen-Shot-2014-03-08-at-3.05.31-PM.png 558w, /wp-content/uploads/2014/03/Screen-Shot-2014-03-08-at-3.05.31-PM-280x300.png 280w" sizes="(max-width: 558px) 100vw, 558px"></a></p>
+<p>Some of the students realized (and explained eloquently) that they could divide the length by 7 and find the length of a single &#8216;unit&#8217;, and then multiple that unit by 3 or 4 to get the length. Explanations for why this worked didn&#8217;t really materialize. I introduced the algebraic approach, and students saw it as an explanation, but seemed to be fine with just remembering it as a method rather than as a rationale. </p>
+<p>The more that I teach proportions and similarity, the more I feel compelled to have students ground the concepts in measurements. Making measurements, especially by hand, is not something they typically do on a day-to-day basis, so there&#8217;s a bit of a novelty factor there. These conversations about measurements, units, and fractions were authentic &#8211; there was a need to talk about these ideas in the context I established, and the students did a great job of feeling and then filling that need during the class. Nothing we did was a particularly real world task though. What made this real was my attempts to first frame the skills that we needed to review in the context of a need for those skills. I try to do this often, and I&#8217;d like to mark this as a success story.</p>
+
+    <footer class="entry-footer">
+        </footer>
+<!-- .entry-footer -->
+</div>
+<!-- .entry-content -->
+</div>
+<!-- .p-15 -->
+</article><!-- #post-1813 -->
+
+<article id="post-1779" class="post-1779 post type-post status-publish format-standard hentry category-computational-thinking-2 category-geometry tag-proofs tag-spreadsheet tag-two-column">
+    <div class="p-15 left-image">
+        <div class="ct-featured-image">
+                    </div>
+        <div class="entry-content">
+            <header class="entry-header">
+                <h2 class="entry-title"><a href="/2013/11/10/proofs-in-geometry-the-modification-continues/" rel="bookmark">Proofs in Geometry &#8211; The Modification Continues&#8230;</a></h2>    </header>
+    <!-- .entry-header -->
+    <p>Two statements of interest to me:</p>
+<ul>
+<li>I get more consistent daily hits on my blog for teaching geometry proofs than anything else. <em>Shiver.</em>
+</li>
+<li>Dan Meyer&#8217;s <a href="http://blog.mrmeyer.com/?p=17964">recent post on proofs in Geometry</a> gets to the heart of what bothers me about teaching proofs at all. <em>Double shiver.</em>
+</li>
+</ul>
+<p>These statements have made me think about my approach in doing proofs with students in my 9th grade course, which has previously been a geometry course, but is morphing into something slightly different in anticipation of our move to the IB program. I like the concept of teaching proofs because I force students to confront the idea that there&#8217;s a difference between things they know must be true, might be true, and will never be true. I started the unit asking the class the following questions:</p>
+<ul>
+<li>Will the sun rise tomorrow?</li>
+<li>Will student A <em>always</em> be older than her younger sister?</li>
+<li>Will the boys volleyball team win the tournament this weekend></li>
+</ul>
+<p>The clear difference between these questions was also clear to my students. The word &#8216;obviously&#8217; came up at least once, as expected.</p>
+<p>The idea of proving something that is obvious is certainly an exercise of questionable purpose, mostly because it confines student thinking in the mould of classroom mathematics. As geometry teachers, we do this as a scaffold to help students learn to write proofs of concepts that are not so obvious. The downside is the inherent lack of perplexity in this process, as Dan points out in his post. The rules of math that students routinely apply to solve textbook or routine problems already fit in this &#8216;obvious&#8217; category either from tradition (&#8216;I&#8217;ve done this since, like, forever&#8217;) or from obedience (&#8216;My teacher/textbook says this is true, and that&#8217;s good enough for me.&#8217;)</p>
+<p>I usually go to Geogebra to have students discover certain properties to be true, or give a quick numerical example showing why two angles supplementary to the same angle are congruent. They get this, but have a sense of detachment when I then ask them to prove it using the properties we reviewed in previous lessons. It seems to be very much related to what <a href="http://function-of-time.blogspot.com/">Kate Nowak</a> pointed out in her comment to Dan&#8217;s post. Geometry software or numerical examples show something to be so obvious that proof isn&#8217;t necessary, so why circle back to then use the rules of mathematics to prove it to be true? </p>
+<p>I had an idea this afternoon that I plan to try tomorrow to close this gap.<br>
+I wrote earlier about <a href="/2013/09/06/computational-thinking-and-algebraic-expressions/">using spreadsheets with students </a> to take some of the abstraction out of translating algebraic expressions. Making calculations with variables in the way a spreadsheet does shows very clearly the concept of variables, and also doing arithmetic with them. My idea here is to use a spreadsheet this way:</p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2013/11/Screen-Shot-2013-11-10-at-5.35.43-PM.png"><img loading="lazy" src="https://blog.evanweinberg.org/wp-content/uploads/2013/11/Screen-Shot-2013-11-10-at-5.35.43-PM-300x138.png" alt="Screen Shot 2013-11-10 at 5.35.43 PM" width="300" height="138" class="alignnone size-large wp-image-1780" srcset="/wp-content/uploads/2013/11/Screen-Shot-2013-11-10-at-5.35.43-PM-300x138.png 300w, /wp-content/uploads/2013/11/Screen-Shot-2013-11-10-at-5.35.43-PM-768x354.png 768w, /wp-content/uploads/2013/11/Screen-Shot-2013-11-10-at-5.35.43-PM.png 839w" sizes="(max-width: 300px) 100vw, 300px"></a></p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2013/11/Screen-Shot-2013-11-10-at-5.37.39-PM.png"><img loading="lazy" src="https://blog.evanweinberg.org/wp-content/uploads/2013/11/Screen-Shot-2013-11-10-at-5.37.39-PM-1024x370.png" alt="Screen Shot 2013-11-10 at 5.37.39 PM" width="500" height="180" class="alignnone size-large wp-image-1782"></a></p>
+<p>My students know that they should be able to change what is in the black cells, and enter formulas in the red cells so that they change based on what is in the black cells only. In doing this, they will be using their algebraic rules and geometric definitions to complete a formula. This hits the concrete examples I mentioned above &#8211; a 25 degree angle complementary to an angle will always be congruent to a 25 degree angle complementary to that same angle. It also uses the properties (definition of a complementary angle, subtraction property of equality, definition of congruence) to suggest the relationship between those angles using the language and structure of proof, which comes next in class.</p>
+<p>Here is the spreadsheet file I&#8217;ve put together:<br>
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2013/11/02-SPR-Congruent-Angles.xlsx">02 &#8211; SPR &#8211; Congruent Angles</a></p>
+<p>I plan to have them complete the empty cells in this spreadsheet and then move on to filling in some reasons for steps of more formal proofs of these theorems afterwards, as I have done previously. I&#8217;d like to think that doing this will make it a little more clear how the observations students have relate to the properties they then use to prove the theorems.</p>
+<p>I&#8217;d love you to hack away at my idea with feedback in the comments.</p>
+
+    <footer class="entry-footer">
+        </footer>
+<!-- .entry-footer -->
+</div>
+<!-- .entry-content -->
+</div>
+<!-- .p-15 -->
+</article><!-- #post-1779 -->
+
+<article id="post-1735" class="post-1735 post type-post status-publish format-standard hentry category-computational-thinking-2 category-geometry category-programming tag-console tag-javascript tag-programming">
+    <div class="p-15 left-image">
+        <div class="ct-featured-image">
+                    </div>
+        <div class="entry-content">
+            <header class="entry-header">
+                <h2 class="entry-title"><a href="/2013/09/03/algebra-and-programming-a-peek-ahead/" rel="bookmark">Algebra and Programming &#8211; A Peek Ahead</a></h2>    </header>
+    <!-- .entry-header -->
+    <p>I&#8217;m starting a new unit reviewing algebraic skills tomorrow. My students have most certainly moved through evaluating algebraic expressions, solving linear equations, and combining like terms before. Much of tomorrow&#8217;s class will involve me drifting between students working on this to get an idea of their skill level &#8211; certainly not a developmental lesson on these ideas unless I really see the need.</p>
+<p>My question is on making these concepts new. The thing that comes to mind most immediately is using this as an opportunity to get students started on concepts of computational thinking. Students have seen the concepts of variables, substitution, and evaluation, but I think (and hope) that the ideas of using a computer to do these things is new enough to whet their appetites to potentially learn more.</p>
+<p>What does the computer do well? (Compute). </p>
+<p>What must we do to get it to do so? (Communicate to the computer correctly what we want to compute.)</p>
+<p>After having my students do some algebraic evaluation on their own, I&#8217;m having them watch this short video:<br>
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2013/09/M9-U2D1.1-Web-Browser-Math-Hacking.mp4">M9 U2D1.1 &#8211; Web Browser &#038; Math Hacking</a></p>
+<blockquote>
+<h4>Side Note:</h4>
+<p>Now that I see I can increase the font size in Chrome for the console, or zoom in using Camtasia, I can make the code much more visible than it is now. Work for the morning.
+</p>
+</blockquote>
+<p>I can&#8217;t see an easier way to get students into a programming environment than this. Everyone has a web browser, and Safari and Chrome both give access to a Javascript console without too much work. There are websites like <a href="http://www.codeacademy.com/">Code Academy</a> that have a similar environment on their front page, but this method barely even requires accessing a web page.</p>
+<p>I&#8217;ve had students install <a href="http://www.python.org/">Python</a> on their computers before, and it works well enough as long as there aren&#8217;t any operating system related hiccups. (IDLE does not run so well on OSX 10.5). I just like that this Javascript environment is hiding on student computers without having to do <u>anything</u>. </p>
+<p>Other thoughts:</p>
+<ul>
+<li>We have to tell the computer explicitly that 2x is 2*x. This is a fact that often gets glossed over when students haven&#8217;t seen it for a while.</li>
+<li>Javascript doesn&#8217;t have an easy to access exponent symbol like Python or other languages do. To enter x<sup>3</sup>, you have to either type x*x*x (reinforcing the idea of the exponent for the <b>win</b>) or Math.pow(x,3) which is too abstract to even consider using with students.</li>
+<li>Selling programming as a fast and easily accessible calculator isn&#8217;t a compelling pitch &#8211; I completely get that. At this point though, I&#8217;m not trying to sell the computer as the way to do things. My students all have computers with them in their classes. If making them unafraid to do something that feels a bit &#8216;under the hood&#8217; might lead them to know what else is possible (which is a pitch that is coming really soon), I&#8217;m happy with this.</li>
+</ul>
+
+    <footer class="entry-footer">
+        </footer>
+<!-- .entry-footer -->
+</div>
+<!-- .entry-content -->
+</div>
+<!-- .p-15 -->
+</article><!-- #post-1735 -->
+
+<article id="post-1530" class="post-1530 post type-post status-publish format-standard hentry category-algebra-2 category-calculus category-geometry category-physics category-reflection category-teaching-philosophy category-uncategorized tag-learning-standards tag-sbg tag-year-in-review">
+    <div class="p-15 left-image">
+        <div class="ct-featured-image">
+                    </div>
+        <div class="entry-content">
+            <header class="entry-header">
+                <h2 class="entry-title"><a href="/2013/06/26/2012-2013-year-in-review-learning-standards/" rel="bookmark">2012-2013 Year In Review – Learning Standards</a></h2>    </header>
+    <!-- .entry-header -->
+    <p>This is the second post reflecting on this past year and I what I did with my students.</p>
+<p>My first post is located <a href="/2013/06/24/2012-2013-year-in-review-standards-based-grading/">here</a>. I wrote about this year being the first time I went with standards based grading. One of the most important aspects of this process was creating the learning standards that focused the work of each unit.</p>
+<h3>What did I do?</h3>
+<p>I set out to create learning standards for each unit of my courses: Geometry, Advanced Algebra (not my title &#8211; this was an Algebra 2 sans trig), Calculus, and Physics. While I wanted to be able to do this for the entire semester at the beginning of the semester, I ended up doing it unit by unit due to time constraints. The content of my courses didn&#8217;t change relative to what I had done in previous years though, so it was more of a matter of deciding what themes existed in the content that could be distilled into standards. This involved some combination of concepts into one to prevent the situation of having too many. In some ways, this was a neat exercise to see that two separate concepts really weren&#8217;t that different. For example, seeing absolute value equations and inequalities as the same standard led to both a presentation and an assessment process that emphasized the common application of the absolute value definition to both situations.</p>
+<h3>What worked:</h3>
+<ul>
+<li>
+<em>The most powerful payoff in creating the standards came at the end of the semester.</em> Students were used to referring to the standards and knew that they were the first place to look for what they needed to study. Students would often ask for a review sheet for the entire semester. Having the standards document available made it easy to ask the students to find problems relating to each standard. This enabled them to then make their own review sheet and ask directed questions related to the standards they did not understand.</li>
+<li>
+<em>The standards focus on what students should be able to do.</em> I tried to keep this focus so that students could simultaneously recognize the connection between the content (definitions, theorems, problem types) and what I would ask them to do with that content. My courses don&#8217;t involve much recall of facts and instead focus on applying concepts in a number of different situations. The standards helped me show that I valued this application.</li>
+<li>
+<em>Writing problems and assessing students was always in the context of the standards.</em> I could give big picture, open-ended problems that required a bit more synthesis on the part of students than before. I could require that students write, read, and look up information needed for a problem and be creative in their presentation as they felt was appropriate. My focus was on seeing how well their work presented and demonstrated proficiency on these standards. They got experience and got feedback on their work (misspelling words in student videos was one) but my focus was on their understanding.</li>
+<li>
+<em>The number standards per unit was limited to 4-6 each&#8230;eventually.</em> I quickly realized that 7 was on the edge of being too many, but had trouble cutting them down in some cases. In particular, I had trouble doing this with the differentiation unit in Calculus. To make it so that the unit wasn&#8217;t any more important than the others, each standard for that unit was weighted 80%, a fact that turned out not to be very important to students.</li>
+</ul>
+<h3>What needs work:</h3>
+<ul>
+<li>
+<em>The vocabulary of the standards needs to be more precise and clearly communicated.</em> I tried (and didn&#8217;t always succeed) to make it possible for a student to read a standard and understand what they had to be able to do. I realize now, looking back over them all, that I use certain words over and over again but have never specifically said what it means. What does it mean to &#8216;apply&#8217; a concept? What about &#8216;relate&#8217; a definition? These explanations don&#8217;t need to be in the standards themselves, but it is important that they be somewhere and be explained in some way so students can better understand them.</li>
+<li>
+<em>Example problems and references for each standard would be helpful in communicating their content.</em> I wrote about this in my last post. Students generally understood the standards, but wanted specific problems that they were <u>sure</u> related to a particular standard.</li>
+<li>
+<em>Some of the specific content needs to be adjusted.</em> This was my first year being much more deliberate in following the Modeling Physics curriculum. I haven&#8217;t, unfortunately, been able to attend a training workshop that would probably help me understand how to implement the curriculum more effectively. The unbalanced force unit was crammed in at the end of the first semester and worked through in a fairly superficial way. Not good, Weinberg.</li>
+<li>
+<em>Standards for non-content related skills need to be worked in to the scheme.</em> I wanted to have some standards for year or semester long skills standards. For example, unit 5 in Geometry included a standard (not listed in my document below) on creating a presenting a multimedia proof. This was to provide students opportunities to learn to create a video in which they clearly communicate the steps and content of a geometric proof. They could create their video, submit it to me, and get feedback to make it better over time. I also would love to include some programming or computational thinking standards as well that students can work on long term. These standards need to be communicated and cultivated over a long period of time. They will otherwise be just like the others in terms of the rush at the end of the semester. I&#8217;ll think about these this summer.</li>
+</ul>
+<p>You can see my standards in this Google document:<br>
+<a href="https://docs.google.com/spreadsheet/ccc?key=0ApQ316G8u4SUdHpGRnJCQWpQbG0tN2liNlEzNUs2dEE&amp;usp=sharing">2012-2013 &#8211; Learning Standards</a></p>
+<p>I&#8217;d love to hear your comments on these standards or on the post &#8211; comment away please!</p>
+
+    <footer class="entry-footer">
+        </footer>
+<!-- .entry-footer -->
+</div>
+<!-- .entry-content -->
+</div>
+<!-- .p-15 -->
+</article><!-- #post-1530 -->
+
+<article id="post-1390" class="post-1390 post type-post status-publish format-standard hentry category-geometry category-reflection tag-similar-triangles">
+    <div class="p-15 left-image">
+        <div class="ct-featured-image">
+                    </div>
+        <div class="entry-content">
+            <header class="entry-header">
+                <h2 class="entry-title"><a href="/2013/05/03/assessing-assessment-over-time-similar-triangles-modeling/" rel="bookmark">Assessing assessment over time &#8211; similar triangles &#038; modeling</a></h2>    </header>
+    <!-- .entry-header -->
+    <p>I&#8217;ve kept a question on my similar triangles unit exam over the past three years. While the spirit has generally been the same, I&#8217;ve tweaked it to address what seems most important about this kind of task:<br>
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2013/05/Screen-Shot-2013-04-30-at-3.27.28-PM.png"><img loading="lazy" src="https://blog.evanweinberg.org/wp-content/uploads/2013/05/Screen-Shot-2013-04-30-at-3.27.28-PM-300x286.png" alt="Screen Shot 2013-04-30 at 3.27.28 PM" width="300" height="286" class="alignnone size-medium wp-image-1391"></a></p>
+<p>My students are generally pretty solid when it comes to seeing a proportion in a triangle and solving for an unknown side. A picture of a tree with a shadow and a triangle already drawn on it is not a modeling task &#8211; it is a similar triangles task. The following two elements of the similar triangles modeling concept seem most important to me in the long run:</p>
+<ul>
+<li>Certain conditions make it possible to use similar triangles to make measurements. These conditions <u>are</u> the same conditions that make two triangles similar. I want my students to be able to use their knowledge of similarity theorems and postulates to complete the statement: &#8220;These triangles in the diagram I drew are similar because&#8230;&#8221; </li>
+<li>Seeing similar triangles in a situation is a learned skill. Dan Meyer<a href="http://blog.mrmeyer.com/?p=12620"> presented on this</a> a year ago, and emphasized that a traditional approach rushes the abstraction of this concept without building a need for it. The heavy lifting for students is seeing the triangles, not solving the proportions.</li>
+</ul>
+<p>If I can train students to see triangles around them (difficult), wonder if they are similar (more difficult), and then have confidence in knowing they can/can&#8217;t use them to find unknown measurements, I&#8217;ve done what I set out to do here. What still seems to be missing in this year&#8217;s version is the question of whether or not they actually are similar, or <i>under what conditions</i> are they similar. I assessed this elsewhere on the test, but it is so important to the concept of mathematical modeling as a lifestyle that I wish I had included it here.</p>
+
+    <footer class="entry-footer">
+        </footer>
+<!-- .entry-footer -->
+</div>
+<!-- .entry-content -->
+</div>
+<!-- .p-15 -->
+</article><!-- #post-1390 -->
+
+<article id="post-1372" class="post-1372 post type-post status-publish format-standard hentry category-geometry category-reflection category-uncategorized tag-devices tag-intuition tag-ratio tag-similarity">
+    <div class="p-15 left-image">
+        <div class="ct-featured-image">
+                    </div>
+        <div class="entry-content">
+            <header class="entry-header">
+                <h2 class="entry-title"><a href="/2013/04/10/building-a-need-for-math-similar-polygons-mobile-devices/" rel="bookmark">Building a need for math &#8211; similar polygons &#038; mobile devices</a></h2>    </header>
+    <!-- .entry-header -->
+    <p>The focus of some of my out-of-classroom obsessions right now is on building the need for mathematical tools. I&#8217;m digging into the fact that many people do well on a daily basis without doing what they think is mathematical thinking. That&#8217;s not even my claim &#8211; it&#8217;s a fact. It&#8217;s why people also claim the irrelevance of math because what they see as math (school math) almost never enters the scene in one&#8217;s day-to-day interactions with the world.</p>
+<p>The human brain is pretty darn good at estimating size or shape or eyeballing when it is safe to cross the street &#8211; there&#8217;s no arithmetic computation there, so one could argue that there&#8217;s no math either. The group of people feeling this way includes many adults, and a good number of my own students.</p>
+<p>What interests me these days is spending time with them hovering around the boundary of the capabilities of the brain to do this sort of reasoning. What if the gut can&#8217;t do a good enough job of answering a question? This is when measurement, arithmetic, and other skills usually deemed mathematical come into play. </p>
+<p>We spend a lot of time looking at our electronic devices. I posed this question to my Geometry and Algebra 2 classes on Monday:<br>
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2013/04/screen-shot-2013-04-10-at-2-45-41-pm.png"><img loading="lazy" src="https://blog.evanweinberg.org/wp-content/uploads/2013/04/screen-shot-2013-04-10-at-2-45-41-pm.png" alt="Screen Shot 2013-04-10 at 2.45.41 PM" width="500" height="296" class="alignright size-full wp-image-1373" srcset="/wp-content/uploads/2013/04/screen-shot-2013-04-10-at-2-45-41-pm.png 841w, /wp-content/uploads/2013/04/screen-shot-2013-04-10-at-2-45-41-pm-300x178.png 300w, /wp-content/uploads/2013/04/screen-shot-2013-04-10-at-2-45-41-pm-768x455.png 768w" sizes="(max-width: 500px) 100vw, 500px"></a></p>
+<p>The votes were five for A, 5 for B, and 14 for C. There was some pretty solid debate about why they felt one way or another. They made sure to note that the corners of the phone were not portrayed accurately, but aside from that, they immediately saw that additional information was needed.</p>
+<p>Some students took the image and made measurements in Geogebra. Some measured an actual 4S. Others used the engineering drawing I posted on the class blog. I had them post a quick explanation of their answers on their personal math blogs as part of the homework. The results revealed their reasoning which was often right on. It also showed some examples of flawed reasoning that I didn&#8217;t expect &#8211; something I now know I need to address in a future class.</p>
+<p>At the end of class today when I had the Geometry class vote again, the results were a bit more consistent:<br>
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2013/04/screen-shot-2013-04-10-at-3-56-40-pm.png"><img loading="lazy" src="https://blog.evanweinberg.org/wp-content/uploads/2013/04/screen-shot-2013-04-10-at-3-56-40-pm.png?w=300" alt="Screen Shot 2013-04-10 at 3.56.40 PM" width="300" height="162" class="alignright size-medium wp-image-1375" srcset="/wp-content/uploads/2013/04/screen-shot-2013-04-10-at-3-56-40-pm.png 838w, /wp-content/uploads/2013/04/screen-shot-2013-04-10-at-3-56-40-pm-300x162.png 300w, /wp-content/uploads/2013/04/screen-shot-2013-04-10-at-3-56-40-pm-768x415.png 768w" sizes="(max-width: 300px) 100vw, 300px"></a></p>
+<p>The students know these devices. Even those that don&#8217;t have them know what they look like. It required them to make measurements and some calculations to know which was correct. The need for the mathematics was built in to the activity. It was so simple to get them to make a guess in the beginning based on their intuition, and then figure out what they needed to do, measure, or calculate to confirm their intuition through the idea of similarity. As another chance at understanding this sort of task, I ended today&#8217;s class with a similar challenge:</p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2013/04/screen-shot-2013-04-10-at-4-04-31-pm.png"><img loading="lazy" src="https://blog.evanweinberg.org/wp-content/uploads/2013/04/screen-shot-2013-04-10-at-4-04-31-pm.png?w=500" alt="Screen Shot 2013-04-10 at 4.04.31 PM" width="500" height="132" class="alignright size-large wp-image-1376" srcset="/wp-content/uploads/2013/04/screen-shot-2013-04-10-at-4-04-31-pm.png 867w, /wp-content/uploads/2013/04/screen-shot-2013-04-10-at-4-04-31-pm-300x79.png 300w, /wp-content/uploads/2013/04/screen-shot-2013-04-10-at-4-04-31-pm-768x203.png 768w" sizes="(max-width: 500px) 100vw, 500px"></a></p>
+<p>My students spend much of their time staring at a Macbook screen that is dimensioned slightly off from standard television screen. (8:5 vs. 4:3). They do see the Smartboard in the classroom that has this shape, and I know they have seen it before. I am curious to see what happens.</p>
+
+    <footer class="entry-footer">
+        </footer>
+<!-- .entry-footer -->
+</div>
+<!-- .entry-content -->
+</div>
+<!-- .p-15 -->
+</article><!-- #post-1372 -->
+
+<article id="post-976" class="post-976 post type-post status-publish format-standard hentry category-geogebra category-geometry category-reflection tag-clear-instructions tag-exploration tag-parallelograms tag-video tag-written-instructions">
+    <div class="p-15 left-image">
+        <div class="ct-featured-image">
+                    </div>
+        <div class="entry-content">
+            <header class="entry-header">
+                <h2 class="entry-title"><a href="/2013/02/27/the-post-where-i-remind-myself-that-written-instructions-for-computer-tasks-stink/" rel="bookmark">The post where I remind myself that written instructions for computer tasks stink.</a></h2>    </header>
+    <!-- .entry-header -->
+    <p>It&#8217;s not so much that I can&#8217;t follow written instructions. I&#8217;m human and I miss steps occasionally, but with everything written down, it&#8217;s easy to retrace steps and figure out where I went wrong if I did miss something. The big issue is that written instructions are not the best way to show someone how to do something. Text is good for some specific things, but defining steps for completing a task on a computer is not one of them.</p>
+<p>Today I showed my students the following video at the start of class.<br>
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2013/02/geo-u6d2-1-constructing-parallelogram-in-geogebra.mp4">GEO-U6D2.1-Constructing Parallelogram in Geogebra</a></p>
+<p>I also gave them this image on the handout, which I wrote last year, but students only marginally followed:<br>
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2013/02/screen-shot-2013-02-27-at-5-53-31-pm.png"><img loading="lazy" class="aligncenter size-full wp-image-978" alt="Screen Shot 2013-02-27 at 5.53.31 PM" src="https://blog.evanweinberg.org/wp-content/uploads/2013/02/screen-shot-2013-02-27-at-5-53-31-pm.png" width="500" height="264" srcset="/wp-content/uploads/2013/02/screen-shot-2013-02-27-at-5-53-31-pm.png 996w, /wp-content/uploads/2013/02/screen-shot-2013-02-27-at-5-53-31-pm-300x159.png 300w, /wp-content/uploads/2013/02/screen-shot-2013-02-27-at-5-53-31-pm-768x406.png 768w" sizes="(max-width: 500px) 100vw, 500px"></a></p>
+<p>It was remarkable how this simple change to delivery made the whole class really fun to manage today.</p>
+<ul>
+<li>Students saw exactly what I wanted them to produce, and how to produce it.</li>
+<li>The arrows in the video identified one of the vocabulary words from previous lessons as it appeared on screen.</li>
+<li>My ESOL students were keeping up (if not outpacing) the rest of the class.</li>
+<li>The black boxes introduced both the ideas of what I wanted them to investigate using Geogebra, and simultaneously teased them to make their own guesses about what was hidden. They had theories immediately, and they knew that I wanted them to figure out what was hidden through the activity described in the video. Compare this to the awkwardness of doing so through text, where they have to guess both what I am looking for, and what it might look like. You could easily argue this is on the wrong side of abstraction.</li>
+<li>I spent the class going around monitoring progress and having conversations. Not a word of whole-class direct instruction for the fifty minutes of class that followed showing the video. Some students I directed to algebraic exercises to apply their observations. Others I encouraged to start proofs of their theorems. Easy differentiation for the different levels of students in the room.</li>
+</ul>
+<p>Considering how long I sometimes spend writing unambiguous instructions for an exploration, and then the heartbreak involved when I inevitably leave out a crucial element, I could easily be convinced not to try anymore.</p>
+<p>One student on a survey last year critiqued my use of Geogebra explorations saying that it wasn&#8217;t always clear what the goal was, even when I wrote it on the paper. These exploratory tasks are different enough and more demanding than sitting and watching example problems, and require a bit more selling for students to buy into them being productive and useful. These tasks need to quickly define themselves,<a href="http://blog.mrmeyer.com/?p=12141"> and as Dan Meyer suggests</a>, get out of the way so that discovery and learning happens as soon as possible.</p>
+<p>Today was a perfect example of how much I have repeatedly shot myself in the foot during previous lessons trying to establish a valid context for these tasks through written instructions. The gimmick of hiding information from students is not the point &#8211; yes there was some novelty factor here that may have led to them getting straight to work as they did today. This was all about clear communication of objectives and process, and <em>that</em> was the real power of what transpired today.</p>
+
+    <footer class="entry-footer">
+        </footer>
+<!-- .entry-footer -->
+</div>
+<!-- .entry-content -->
+</div>
+<!-- .p-15 -->
+</article><!-- #post-976 -->
+<div class="candid-pagination">
+<span aria-current="page" class="page-numbers current">1</span>
+<a class="page-numbers" href="/category/geometry/page/2/">2</a>
+<a class="page-numbers" href="/category/geometry/page/3/">3</a>
+<a class="next page-numbers" href="/category/geometry/page/2/">Next &raquo;</a>
+</div>
+		</main><!-- #main -->
+	</div>
+<!-- #primary -->
+
+
+<aside id="secondary" class="widget-area" role="complementary">
+	<section id="categories-2" class="widget widget_categories"><h2 class="widget-title">Categories</h2>
+			<ul>
+					<li class="cat-item cat-item-2">
+<a href="/category/algebra-2/">algebra 2</a>
+</li>
+	<li class="cat-item cat-item-3">
+<a href="/category/array/">Array</a>
+</li>
+	<li class="cat-item cat-item-4">
+<a href="/category/calculus/">calculus</a>
+</li>
+	<li class="cat-item cat-item-5">
+<a href="/category/computational-thinking-2/">computational-thinking</a>
+</li>
+	<li class="cat-item cat-item-6">
+<a href="/category/geogebra/">geogebra</a>
+</li>
+	<li class="cat-item cat-item-7 current-cat">
+<a aria-current="page" href="/category/geometry/">geometry</a>
+</li>
+	<li class="cat-item cat-item-8">
+<a href="/category/ib/">IB</a>
+</li>
+	<li class="cat-item cat-item-9">
+<a href="/category/physics/">physics</a>
+</li>
+	<li class="cat-item cat-item-10">
+<a href="/category/precalculus/">precalculus</a>
+</li>
+	<li class="cat-item cat-item-11">
+<a href="/category/programming/">programming</a>
+</li>
+	<li class="cat-item cat-item-12">
+<a href="/category/reflection/">reflection</a>
+</li>
+	<li class="cat-item cat-item-13">
+<a href="/category/robotics/">robotics</a>
+</li>
+	<li class="cat-item cat-item-14">
+<a href="/category/standards-based-grading/">standards based grading</a>
+</li>
+	<li class="cat-item cat-item-15">
+<a href="/category/studentwork/">studentwork</a>
+</li>
+	<li class="cat-item cat-item-16">
+<a href="/category/teaching-philosophy/">teaching philosophy</a>
+</li>
+	<li class="cat-item cat-item-17">
+<a href="/category/teaching-stories/">teaching stories</a>
+</li>
+	<li class="cat-item cat-item-1">
+<a href="/category/uncategorized/">Uncategorized</a>
+</li>
+	<li class="cat-item cat-item-18">
+<a href="/category/year-in-review/">year-in-review</a>
+</li>
+			</ul>
+
+			</section><section id="meta-2" class="widget widget_meta"><h2 class="widget-title">Meta</h2>
+		<ul>
+						<li><a href="/wp-login.php">Log in</a></li>
+			<li><a href="/feed/">Entries feed</a></li>
+			<li><a href="/comments/feed/">Comments feed</a></li>
+
+			<li><a href="https://wordpress.org/">WordPress.org</a></li>
+		</ul>
+
+		</section></aside><!-- #secondary -->
+
+	</div>
+<!-- #content -->
+
+<footer id="colophon" class="site-footer">
+    		<div class="site-info">
+        			<span class="copy-right-text">All Right Reserved 2018</span>
+						<div class="powered-text">
+				<a href="https://wordpress.org/">Proudly powered by WordPress</a>
+				<span class="sep"> | </span>
+				Theme: Drift Blog by <a href="http://www.candidthemes.com/">Candid Themes</a>.			</div>
+			        <a id="toTop" class="go-to-top" href="#" title="Go to Top">
+            <i class="fa fa-angle-double-up"></i>
+        </a>
+    		</div>
+<!-- .site-info -->
+	</footer><!-- #colophon -->
+</div>
+<!-- #page -->
+
+<script type="text/javascript" src="/wp-content/themes/drift-blog/js/drift-blog-custom.js?ver=20151215" id="drift-blog-custom-js"></script>
+<script type="text/javascript" src="/wp-content/themes/gist/candidthemes/assets/js/gist-custom.js?ver=20151215" id="gist-custom-js"></script>
+<script type="text/javascript" src="/wp-content/themes/gist/candidthemes/assets/js/theia-sticky-sidebar.js?ver=20151215" id="theia-sticky-sidebar-js"></script>
+<script type="text/javascript" src="/wp-content/themes/gist/js/navigation.js?ver=20151215" id="gist-navigation-js"></script>
+<script type="text/javascript" src="/wp-content/themes/gist/js/skip-link-focus-fix.js?ver=20151215" id="gist-skip-link-focus-fix-js"></script>
+<script type="text/javascript" src="/wp-includes/js/wp-embed.min.js?ver=5.7.6" id="wp-embed-js"></script>
+<script type="text/javascript" src="https://stats.wp.com/e-202219.js" async="async" defer></script>
+<script type="text/javascript">
+	_stq = window._stq || [];
+	_stq.push([ 'view', {v:'ext',j:'1:8.6.2',blog:'180381780',post:'0',tz:'8',srv:'evanweinberg.com'} ]);
+	_stq.push([ 'clickTrackerInit', '180381780', '0' ]);
+</script>
+
+
+</body>
+</html>

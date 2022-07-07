@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="profile" href="https://gmpg.org/xfn/11">
+
+    <title>The Nature of Variables for Students vs. Programmers</title>
+<meta name="robots" content="max-image-preview:large">
+<link rel="dns-prefetch">
+<link rel="dns-prefetch" href="//fonts.googleapis.com">
+<link rel="dns-prefetch" href="//s.w.org">
+<link rel="alternate" type="application/rss+xml" title=" &raquo; Feed" href="/feed/">
+<link rel="alternate" type="application/rss+xml" title=" &raquo; Comments Feed" href="/comments/feed/">
+<link rel="alternate" type="application/rss+xml" title=" &raquo; The Nature of Variables for Students vs. Programmers Comments Feed" href="/2014/07/25/the-nature-of-variables-for-students-vs-programmers/feed/">
+		<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/svg\/","svgExt":".svg","source":{"concatemoji":"https13.229.58.164\/wp-includes\/js\/wp-emoji-release.min.js?ver=5.7.6"}};
+			!function(e,a,t){var n,r,o,i=a.createElement("canvas"),p=i.getContext&&i.getContext("2d");function s(e,t){var a=String.fromCharCode;p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,e),0,0);e=i.toDataURL();return p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,t),0,0),e===i.toDataURL()}function c(e){var t=a.createElement("script");t.src=e,t.defer=t.type="text/javascript",a.getElementsByTagName("head")[0].appendChild(t)}for(o=Array("flag","emoji"),t.supports={everything:!0,everythingExceptFlag:!0},r=0;r<o.length;r++)t.supports[o[r]]=function(e){if(!p||!p.fillText)return!1;switch(p.textBaseline="top",p.font="600 32px Arial",e){case"flag":return s([127987,65039,8205,9895,65039],[127987,65039,8203,9895,65039])?!1:!s([55356,56826,55356,56819],[55356,56826,8203,55356,56819])&&!s([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]);case"emoji":return!s([55357,56424,8205,55356,57212],[55357,56424,8203,55356,57212])}return!1}(o[r]),t.supports.everything=t.supports.everything&&t.supports[o[r]],"flag"!==o[r]&&(t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&t.supports[o[r]]);t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&!t.supports.flag,t.DOMReady=!1,t.readyCallback=function(){t.DOMReady=!0},t.supports.everything||(n=function(){t.readyCallback()},a.addEventListener?(a.addEventListener("DOMContentLoaded",n,!1),e.addEventListener("load",n,!1)):(e.attachEvent("onload",n),a.attachEvent("onreadystatechange",function(){"complete"===a.readyState&&t.readyCallback()})),(n=t.source||{}).concatemoji?c(n.concatemoji):n.wpemoji&&n.twemoji&&(c(n.twemoji),c(n.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+		<style type="text/css">img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}</style>
+	<link rel="stylesheet" id="wp-block-library-css" href="/wp-includes/css/dist/block-library/style.min.css?ver=5.7.6" type="text/css" media="all">
+<style id="wp-block-library-inline-css" type="text/css">.has-text-align-justify{text-align:justify;}</style>
+<link rel="stylesheet" id="wp-block-library-theme-css" href="/wp-includes/css/dist/block-library/theme.min.css?ver=5.7.6" type="text/css" media="all">
+<link rel="stylesheet" id="gist-style-css" href="/wp-content/themes/gist/style.css?ver=5.7.6" type="text/css" media="all">
+<style id="gist-style-inline-css" type="text/css">{ clip: rect(1px, 1px, 1px, 1px); height: 1px; position: absolute; overflow: hidden; width: 1px; }
+body { font-family: Open Sans; }body { font-size: 16px; }body { line-height : 2; }.breadcrumbs span.breadcrumb, .nav-links a, .search-form input[type=submit], #toTop, .candid-pagination .page-numbers.current, .candid-pagination .page-numbers:hover  { background : #ca9b52; }.search-form input.search-field, .sticky .p-15, .related-post-entries li, .candid-pagination .page-numbers { border-color : #ca9b52; }.error-404 h1, .no-results h1, a, a:visited, .related-post-entries .title:hover, .entry-title a:hover, .featured-post-title a:hover, .entry-meta.entry-category a,.widget li a:hover, .widget h1 a:hover, .widget h2 a:hover, .widget h3 a:hover, .site-title a, .site-title a:visited, .main-navigation ul li a:hover { color : #ca9b52; }.btn-primary { border: 2px solid #ca9b52;}</style>
+<link rel="stylesheet" id="drift-blog-style-css" href="/wp-content/themes/drift-blog/style.css?ver=5.7.6" type="text/css" media="all">
+<link rel="stylesheet" id="drift-blog-google-fonts-css" href="//fonts.googleapis.com/css?family=Playfair+Display&#038;ver=5.7.6" type="text/css" media="all">
+<link rel="stylesheet" id="gist-googleapis-css" href="//fonts.googleapis.com/css?family=Open+Sans&#038;ver=5.7.6" type="text/css" media="all">
+<link rel="stylesheet" id="gist-google-fonts-css" href="//fonts.googleapis.com/css?family=Oswald&#038;ver=5.7.6" type="text/css" media="all">
+<link rel="stylesheet" id="font-awesome-css" href="/wp-content/themes/gist/candidthemes/assets/framework/Font-Awesome/css/font-awesome.min.css?ver=4.7.0" type="text/css" media="all">
+<link rel="stylesheet" id="jetpack_css-css" href="/wp-content/plugins/jetpack/css/jetpack.css?ver=8.6.2" type="text/css" media="all">
+<script type="text/javascript" src="/wp-includes/js/jquery/jquery.min.js?ver=3.5.1" id="jquery-core-js"></script>
+<script type="text/javascript" src="/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.3.2" id="jquery-migrate-js"></script>
+<link rel="https://api.w.org/" href="/wp-json/">
+<link rel="alternate" type="application/json" href="/wp-json/wp/v2/posts/1909">
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="/wp-includes/wlwmanifest.xml"> 
+<meta name="generator" content="WordPress 5.7.6">
+<link rel="canonical" href="/2014/07/25/the-nature-of-variables-for-students-vs-programmers/">
+<link rel="shortlink" href="/?p=1909">
+<link rel="alternate" type="application/json+oembed" href="/wp-json/oembed/1.0/embed?url=https%3A%2F%2F%2F2014%2F07%2F25%2Fthe-nature-of-variables-for-students-vs-programmers%2F">
+<link rel="alternate" type="text/xml+oembed" href="/wp-json/oembed/1.0/embed?url=https%3A%2F%2F%2F2014%2F07%2F25%2Fthe-nature-of-variables-for-students-vs-programmers%2F&#038;format=xml">
+<style type="text/css">img#wpstats{display:none}</style>
+<link rel="pingback" href="/xmlrpc.php">		<style type="text/css" id="wp-custom-css">.custom-logo{
+	height:300px;
+	width:300px
+	
+}</style>
+		</head>
+
+<body data-rsssl="1" class="post-template-default single single-post postid-1909 single-format-standard wp-custom-logo wp-embed-responsive ct-sticky-sidebar right-sidebar">
+    <div id="page" class="site container-main">
+        <a class="skip-link screen-reader-text" href="#content">Skip to content</a>
+
+        <header id="masthead" class="site-header" role="banner">
+            <div class="top-menu-container-inner container-inner">
+                    <div id="mainnav-wrap" class="clear">
+                        <div class="top-header-social">
+                            
+                            <button class="top-menu-toggle"><i class="fa fa-bars"></i></button>
+                        </div>
+
+                        <nav id="top-site-navigation" class="main-navigation" role="navigation">
+                            <div class="menu-pages-container"><ul id="top-menu" class="top-menu nav_menu">
+<li id="menu-item-2781" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-2781"><a href="/">Home</a></li>
+<li id="menu-item-2782" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2782"><a href="/about/">About Evan Weinberg</a></li>
+</ul></div>                        </nav>
+                            <!-- #site-navigation -->
+                    </div>
+                </div>
+                    <!-- .top-menu-container-inner -->
+            <div class="site-branding">
+                <div class="container-inner">
+                    <a href="/" class="custom-logo-link" rel="home"><img width="1000" height="1000" src="/wp-content/uploads/2018/10/for.next_.001.jpeg" class="custom-logo" alt="" srcset="/wp-content/uploads/2018/10/for.next_.001.jpeg 1000w, /wp-content/uploads/2018/10/for.next_.001-300x300.jpeg 300w, /wp-content/uploads/2018/10/for.next_.001-150x150.jpeg 150w, /wp-content/uploads/2018/10/for.next_.001-768x768.jpeg 768w" sizes="(max-width: 1000px) 100vw, 1000px"></a>                            <p class="site-title"><a href="/" rel="home"></a></p>
+                                                           <p class="site-description">iteration, making, building, and coding in education</p>
+                                                </div>
+                </div>
+                <!-- .site-branding -->
+
+                <div class="container-inner">
+                    <div id="mainnav-wrap">
+                        <nav id="site-navigation" class="main-navigation" role="navigation">
+                            <button class="menu-toggle" aria-controls="primary-menu" aria-expanded="false"><i class="fa fa-bars"></i></button>
+                                                            </nav>
+                            <!-- #site-navigation -->
+                        </div>
+                    </div>
+                    <!-- .container-inner -->
+                </header>
+                <!-- #masthead -->
+                <div class="header-image-block">
+                                    </div>
+
+                <div id="content" class="site-content container-inner p-t-15">
+	<div id="primary" class="content-area">
+		<main id="main" class="site-main">
+			<div class="breadcrumbs">
+                            </div>
+		
+<article id="post-1909" class="post-1909 post type-post status-publish format-standard hentry category-computational-thinking-2 category-geogebra tag-abstraction tag-programming tag-variables">
+    <div class="p-15 left-image">
+        <div class="ct-featured-image">
+                    </div>
+        <div class="entry-content">
+            <header class="entry-header">
+                <h1 class="entry-title">The Nature of Variables for Students vs. Programmers</h1>    </header>
+    <!-- .entry-header -->
+    <p>Dan Meyer has provoked us again with <a href="http://blog.mrmeyer.com/2014/makeover-these-tragic-write-an-expression-problems/">this post questioning the meaning of variables</a> in programming compared with how they exist in the minds of our students. </p>
+<p>I previously <a href="/2013/09/06/computational-thinking-and-algebraic-expressions/">wrote about something I tried at the beginning of last year</a> with my students that probed this question a bit. My contention then was that writing expressions is something that occurs with students only in math class world, and that it is an inherently non-interactive process. The spirit of what variables do is something with which students have familiarity. It&#8217;s the abstraction of the mathematical representation that pushes that familiarity away from them.</p>
+<p>I&#8217;m going to use a different expression problem since the one in Dan&#8217;s post doesn&#8217;t do it for me.</p>
+<blockquote>
+<h3>Dan estimates that around 3/4 of any group of people drink soda.</h3>
+</blockquote>
+<p>I&#8217;d start with this activity that students would be able to answer:<br>
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2014/07/Screen-Shot-2014-07-24-at-7.01.57-PM.png"><img loading="lazy" src="https://blog.evanweinberg.org/wp-content/uploads/2014/07/Screen-Shot-2014-07-24-at-7.01.57-PM.png" alt="Screen Shot 2014-07-24 at 7.01.57 PM" width="746" height="367" class="alignnone size-full wp-image-1910" srcset="/wp-content/uploads/2014/07/Screen-Shot-2014-07-24-at-7.01.57-PM.png 746w, /wp-content/uploads/2014/07/Screen-Shot-2014-07-24-at-7.01.57-PM-300x148.png 300w" sizes="(max-width: 746px) 100vw, 746px"></a></p>
+<p>Students could each click on the people go through the process of figuring out how many in each group drink soda according to Dan&#8217;s estimate, and would record the number in each group. The third group serves to construct a bit of controversy for discussion purposes. In doing this four times, students are presumably going through a similar process each time. </p>
+<p>Mathematics serves to create structure for this repetition, but on its own, is not necessarily in the realm of what our students would do to manage this repetition. Programming provides a way to bridge this gap using the same idea of variables that exists in the mathematical realm, and here is where the value sits for this discussion.</p>
+<p>In the post I mentioned previously, I said that I briefly showed students how to type expressions into a spreadsheet and play around with inputs and outputs so that they match concrete values. In a non 1:1 laptop classroom, I might start with this:</p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2014/07/Screen-Shot-2014-07-24-at-7.22.34-PM.png"><img loading="lazy" src="https://blog.evanweinberg.org/wp-content/uploads/2014/07/Screen-Shot-2014-07-24-at-7.22.34-PM.png" alt="Screen Shot 2014-07-24 at 7.22.34 PM" width="710" height="214" class="alignnone size-full wp-image-1912" srcset="/wp-content/uploads/2014/07/Screen-Shot-2014-07-24-at-7.22.34-PM.png 710w, /wp-content/uploads/2014/07/Screen-Shot-2014-07-24-at-7.22.34-PM-300x90.png 300w" sizes="(max-width: 710px) 100vw, 710px"></a></p>
+<p>A calculation links the outputs to the inputs in each of these tables. Students have concrete values sitting in front of them, so they will notice that each of these tables must be making the wrong calculations, even though they each have one correct value. Here, we have the computer making the same calculation each time, but these calculations do not work in each case. This is the wrong <em>model</em> to match our data. The computer is doing exactly what we are telling it to do, but the model is wrong.</p>
+<p>How do we fix this, class? Obviously we use a different computational model. I might have students decide in a group what calculation I need to do to correctly reproduce the values from the exercise, and elicit those suggestions from them. </p>
+<p>Once we establish this correct model, this calculation we are making is common to every set of data. We can show that this calculation makes an interesting prediction of 7.5 people liking soda in the group of 10. We can use this calculation to predict how many people in a group of 28 drink soda (and in a 1:1 classroom, I&#8217;d have them go through this entire programming process themselves.)</p>
+<p>I might now generate a table hundreds of entries long and ask whether there is a better way to represent the set of all possible answers to this question. The table will work, but it is tedious. We need a better way. How do we do this? Here is where variables come in.</p>
+<p>Programmers use variables because they want to build a program that produces a correct output for <em>every</em> possible input that might be used to solve a given problem or design. Mathematicians also want to have the same level of universality, and have a syntax and structure that allows for <u>efficient</u> communication of that universality. Computers are really good at calculating. The human brain is really good at managing the abstraction of designing those calculations. This, ultimately, is what we want students to be able to do, but they often get lost in <u>both</u> the design stage and the calculation stage, especially because these get divorced from the actual problem students are trying to solve.</p>
+<p>If we can have students spend more time in the design stage and get feedback on whether their calculations are correct, that&#8217;s the sweet spot for making the jump to using mathematical variables.</p>
+
+    <footer class="entry-footer">
+        </footer>
+<!-- .entry-footer -->
+</div>
+<!-- .entry-content -->
+</div>
+<!-- .p-15 -->
+</article><!-- #post-1909 -->
+
+	<nav class="navigation post-navigation" role="navigation" aria-label="Posts">
+		<h2 class="screen-reader-text">Post navigation</h2>
+		<div class="nav-links">
+<div class="nav-previous"><a href="/2014/07/23/standards-based-grading-year-two-year-in-review/" rel="prev">Standards Based Grading, Year Two (Year-In-Review)</a></div>
+<div class="nav-next"><a href="/2014/08/14/picassos-bull-not-just-for-design-thinking/" rel="next">Picasso&#8217;s Bull &#8211; Not Just for Design Thinking</a></div>
+</div>
+	</nav>            <div class="related-pots-block">
+                <h2 class="widget-title">
+                    Related Posts                </h2>
+                <ul class="related-post-entries clear">
+                                            <li>
+                                                        <div class="featured-desc">
+                                <a href="/2017/05/03/probability-spreadsheets-and-the-citizen-database/">
+                                    <h2 class="title">
+                                       Probability, Spreadsheets, and the Citizen Database                                    </h2>
+                                </a>
+                            </div>
+                        </li>
+                                            <li>
+                                                        <div class="featured-desc">
+                                <a href="/2017/04/21/making-groups-a-genetic-algorithm-experiment/">
+                                    <h2 class="title">
+                                       Making Groups &#8211; A Genetic Algorithm Experiment                                    </h2>
+                                </a>
+                            </div>
+                        </li>
+                                            <li>
+                                                        <div class="featured-desc">
+                                <a href="/2017/03/31/generating-the-mandelbrot-set-with-peardeck/">
+                                    <h2 class="title">
+                                       Generating the Mandelbrot Set with PearDeck                                    </h2>
+                                </a>
+                            </div>
+                        </li>
+                                    </ul>
+            </div> <!-- .related-post-block -->
+        
+<div id="comments" class="comments-area">
+
+			<h2 class="comments-title">
+			3 thoughts on &ldquo;<span>The Nature of Variables for Students vs. Programmers</span>&rdquo;		</h2>
+<!-- .comments-title -->
+
+		
+		<ol class="comment-list">
+					<li id="comment-301" class="comment even thread-even depth-1 parent">
+			<article id="div-comment-301" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="https://secure.gravatar.com/avatar/503d9159f90c04a325c71b5dc0c45caf?s=32&#038;d=mm&#038;r=g" srcset="https://secure.gravatar.com/avatar/503d9159f90c04a325c71b5dc0c45caf?s=64&#038;d=mm&#038;r=g 2x" class="avatar avatar-32 photo" height="32" width="32" loading="lazy">						<b class="fn"><a href="http://the30thvoice.wordpress.com/" rel="external nofollow ugc" class="url">Cleargrace</a></b> <span class="says">says:</span>					</div>
+<!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="/2014/07/25/the-nature-of-variables-for-students-vs-programmers/#comment-301"><time datetime="2014-07-25T09:59:10+08:00">July 25, 2014 at 9:59 am</time></a>					</div>
+<!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>So you&#8217;re saying: let the students work with the problem/question and come up with solutions, then present a series of solutions from a calculator, some wrong and some right, explore the calculations made by the program (that you put in beforehand) and correct those. Then create a whole list of answers for the question, and then ask students to identify a universal equation that would suffice to provide every answer to the question. (Let me know if I have missed anything). I like this idea because it feels more like a connection is being made between the equation/variable and the question when it becomes necessary.<br>
+I am teaching Alg II this year. I can use this! I also like the use of spreadsheets. We are not 1:1, but we are BYOD. I want my students to utilize some of the tech tools, and spreadsheets should be a familiar way to begin (I say should &#8211; who knows what they have used in other classes!) good blog!</p>
+				</div>
+<!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="/2014/07/25/the-nature-of-variables-for-students-vs-programmers/?replytocom=301#respond" data-commentid="301" data-postid="1909" data-belowelement="div-comment-301" data-respondelement="respond" data-replyto="Reply to Cleargrace" aria-label="Reply to Cleargrace">Reply</a></div>			</article><!-- .comment-body -->
+		<ol class="children">
+		<li id="comment-303" class="comment byuser comment-author-user bypostauthor odd alt depth-2">
+			<article id="div-comment-303" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="https://secure.gravatar.com/avatar/b58996c504c5638798eb6b511e6f49af?s=32&#038;d=mm&#038;r=g" srcset="https://secure.gravatar.com/avatar/b58996c504c5638798eb6b511e6f49af?s=64&#038;d=mm&#038;r=g 2x" class="avatar avatar-32 photo" height="32" width="32" loading="lazy">						<b class="fn"><a href="/" rel="external nofollow ugc" class="url">Evan Weinberg</a></b> <span class="says">says:</span>					</div>
+<!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="/2014/07/25/the-nature-of-variables-for-students-vs-programmers/#comment-303"><time datetime="2014-07-26T02:38:52+08:00">July 26, 2014 at 2:38 am</time></a>					</div>
+<!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>You are close in your description &#8211; I&#8217;d get away from even asking them for solutions, and instead ask them to come up with concrete answers to the questions posed using conversational language rather than mathematical. Then, as we repeat the process with different concrete examples, the mathematical tools become more useful to manage the repetition. The end product is the algebraic expression. </p>
+<p>Spreadsheets are definitely a low barrier of entry tool here. Students have seen them before, have presumably used them to make graphs for science (which carries its own issues), and seem to catch on pretty quickly.</p>
+				</div>
+<!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="/2014/07/25/the-nature-of-variables-for-students-vs-programmers/?replytocom=303#respond" data-commentid="303" data-postid="1909" data-belowelement="div-comment-303" data-respondelement="respond" data-replyto="Reply to Evan Weinberg" aria-label="Reply to Evan Weinberg">Reply</a></div>			</article><!-- .comment-body -->
+		</li>
+<!-- #comment-## -->
+</ol>
+<!-- .children -->
+</li>
+<!-- #comment-## -->
+		<li id="comment-302" class="pingback even thread-odd thread-alt depth-1">
+			<div class="comment-body">
+				Pingback: <a href="http://blog.mrmeyer.com/2014/makeover-these-tragic-write-an-expression-problems/" rel="external nofollow ugc" class="url">dy/dan &raquo; Blog Archive &raquo; [Makeover] These Tragic &#8220;Write An Expression&#8221; Problems</a> 			</div>
+		</li>
+<!-- #comment-## -->
+		</ol>
+<!-- .comment-list -->
+
+			<div id="respond" class="comment-respond">
+		<h3 id="reply-title" class="comment-reply-title">Leave a Reply <small><a rel="nofollow" id="cancel-comment-reply-link" href="/2014/07/25/the-nature-of-variables-for-students-vs-programmers/#respond" style="display:none;">Cancel reply</a></small>
+</h3>
+<form action="https13.229.58.164/wp-comments-post.php" method="post" id="commentform" class="comment-form" novalidate>
+<p class="comment-notes"><span id="email-notes">Your email address will not be published.</span> Required fields are marked <span class="required">*</span></p>
+<p class="comment-form-comment"><label for="comment">Comment</label> <textarea id="comment" name="comment" cols="45" rows="8" maxlength="65525" required="required"></textarea></p>
+<p class="comment-form-author"><label for="author">Name <span class="required">*</span></label> <input id="author" name="author" type="text" value="" size="30" maxlength="245" required="required"></p>
+<p class="comment-form-email"><label for="email">Email <span class="required">*</span></label> <input id="email" name="email" type="email" value="" size="30" maxlength="100" aria-describedby="email-notes" required="required"></p>
+<p class="comment-form-url"><label for="url">Website</label> <input id="url" name="url" type="url" value="" size="30" maxlength="200"></p>
+<p class="comment-form-cookies-consent"><input id="wp-comment-cookies-consent" name="wp-comment-cookies-consent" type="checkbox" value="yes"> <label for="wp-comment-cookies-consent">Save my name, email, and website in this browser for the next time I comment.</label></p>
+<p class="form-submit"><input name="submit" type="submit" id="submit" class="submit" value="Post Comment"> <input type="hidden" name="comment_post_ID" value="1909" id="comment_post_ID">
+<input type="hidden" name="comment_parent" id="comment_parent" value="0">
+</p>
+<p style="display: none;"><input type="hidden" id="akismet_comment_nonce" name="akismet_comment_nonce" value="47f4239838"></p>
+<p style="display: none;"><input type="hidden" id="ak_js" name="ak_js" value="153"></p>
+</form>	</div>
+<!-- #respond -->
+	
+</div>
+<!-- #comments -->
+
+		</main><!-- #main -->
+	</div>
+<!-- #primary -->
+
+
+<aside id="secondary" class="widget-area" role="complementary">
+	<section id="categories-2" class="widget widget_categories"><h2 class="widget-title">Categories</h2>
+			<ul>
+					<li class="cat-item cat-item-2">
+<a href="/category/algebra-2/">algebra 2</a>
+</li>
+	<li class="cat-item cat-item-3">
+<a href="/category/array/">Array</a>
+</li>
+	<li class="cat-item cat-item-4">
+<a href="/category/calculus/">calculus</a>
+</li>
+	<li class="cat-item cat-item-5">
+<a href="/category/computational-thinking-2/">computational-thinking</a>
+</li>
+	<li class="cat-item cat-item-6">
+<a href="/category/geogebra/">geogebra</a>
+</li>
+	<li class="cat-item cat-item-7">
+<a href="/category/geometry/">geometry</a>
+</li>
+	<li class="cat-item cat-item-8">
+<a href="/category/ib/">IB</a>
+</li>
+	<li class="cat-item cat-item-9">
+<a href="/category/physics/">physics</a>
+</li>
+	<li class="cat-item cat-item-10">
+<a href="/category/precalculus/">precalculus</a>
+</li>
+	<li class="cat-item cat-item-11">
+<a href="/category/programming/">programming</a>
+</li>
+	<li class="cat-item cat-item-12">
+<a href="/category/reflection/">reflection</a>
+</li>
+	<li class="cat-item cat-item-13">
+<a href="/category/robotics/">robotics</a>
+</li>
+	<li class="cat-item cat-item-14">
+<a href="/category/standards-based-grading/">standards based grading</a>
+</li>
+	<li class="cat-item cat-item-15">
+<a href="/category/studentwork/">studentwork</a>
+</li>
+	<li class="cat-item cat-item-16">
+<a href="/category/teaching-philosophy/">teaching philosophy</a>
+</li>
+	<li class="cat-item cat-item-17">
+<a href="/category/teaching-stories/">teaching stories</a>
+</li>
+	<li class="cat-item cat-item-1">
+<a href="/category/uncategorized/">Uncategorized</a>
+</li>
+	<li class="cat-item cat-item-18">
+<a href="/category/year-in-review/">year-in-review</a>
+</li>
+			</ul>
+
+			</section><section id="meta-2" class="widget widget_meta"><h2 class="widget-title">Meta</h2>
+		<ul>
+						<li><a href="/wp-login.php">Log in</a></li>
+			<li><a href="/feed/">Entries feed</a></li>
+			<li><a href="/comments/feed/">Comments feed</a></li>
+
+			<li><a href="https://wordpress.org/">WordPress.org</a></li>
+		</ul>
+
+		</section></aside><!-- #secondary -->
+
+	</div>
+<!-- #content -->
+
+<footer id="colophon" class="site-footer">
+    		<div class="site-info">
+        			<span class="copy-right-text">All Right Reserved 2018</span>
+						<div class="powered-text">
+				<a href="https://wordpress.org/">Proudly powered by WordPress</a>
+				<span class="sep"> | </span>
+				Theme: Drift Blog by <a href="http://www.candidthemes.com/">Candid Themes</a>.			</div>
+			        <a id="toTop" class="go-to-top" href="#" title="Go to Top">
+            <i class="fa fa-angle-double-up"></i>
+        </a>
+    		</div>
+<!-- .site-info -->
+	</footer><!-- #colophon -->
+</div>
+<!-- #page -->
+
+<script type="text/javascript" src="/wp-content/themes/drift-blog/js/drift-blog-custom.js?ver=20151215" id="drift-blog-custom-js"></script>
+<script type="text/javascript" src="/wp-content/themes/gist/candidthemes/assets/js/gist-custom.js?ver=20151215" id="gist-custom-js"></script>
+<script type="text/javascript" src="/wp-content/themes/gist/candidthemes/assets/js/theia-sticky-sidebar.js?ver=20151215" id="theia-sticky-sidebar-js"></script>
+<script type="text/javascript" src="/wp-content/themes/gist/js/navigation.js?ver=20151215" id="gist-navigation-js"></script>
+<script type="text/javascript" src="/wp-content/themes/gist/js/skip-link-focus-fix.js?ver=20151215" id="gist-skip-link-focus-fix-js"></script>
+<script type="text/javascript" src="/wp-includes/js/comment-reply.min.js?ver=5.7.6" id="comment-reply-js"></script>
+<script type="text/javascript" src="/wp-includes/js/wp-embed.min.js?ver=5.7.6" id="wp-embed-js"></script>
+<script async="async" type="text/javascript" src="/wp-content/plugins/akismet/_inc/form.js?ver=4.1.7" id="akismet-form-js"></script>
+<script type="text/javascript" src="https://stats.wp.com/e-202219.js" async="async" defer></script>
+<script type="text/javascript">
+	_stq = window._stq || [];
+	_stq.push([ 'view', {v:'ext',j:'1:8.6.2',blog:'180381780',post:'1909',tz:'8',srv:'evanweinberg.com'} ]);
+	_stq.push([ 'clickTrackerInit', '180381780', '1909' ]);
+</script>
+
+
+</body>
+</html>

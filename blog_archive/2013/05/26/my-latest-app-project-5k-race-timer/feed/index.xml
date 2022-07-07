@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	
+	xmlns:georss="http://www.georss.org/georss"
+	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+	
+	>
+<channel>
+	<title>
+	Comments on: My latest app project: 5K Race Timer	</title>
+	<atom:link href="/2013/05/26/my-latest-app-project-5k-race-timer/feed/" rel="self" type="application/rss+xml" />
+	<link>/2013/05/26/my-latest-app-project-5k-race-timer/</link>
+	<description>iteration, making, building, and coding in education</description>
+	<lastBuildDate>Sun, 16 Jun 2013 12:38:06 +0000</lastBuildDate>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.7.6</generator>
+	<item>
+		<title>
+		By: Evan Weinberg		</title>
+		<link>/2013/05/26/my-latest-app-project-5k-race-timer/#comment-216</link>
+
+		<dc:creator><![CDATA[Evan Weinberg]]></dc:creator>
+		<pubDate>Sun, 16 Jun 2013 12:38:06 +0000</pubDate>
+		<guid isPermaLink="false">/?p=1500#comment-216</guid>
+
+					<description><![CDATA[Hi Mina,
+
+This is awesome - thanks for sharing. I knew I couldn&#039;t be the first to have done something like this. We did exactly what you describe - multiple mobile devices sending data to a server through wireless. The issue we had was communication between the six students - they called out the runners they were putting into the system, but didn&#039;t realize that they had called out the same runner until it was too late. It&#039;s clear you&#039;ve worked that one out on your team.
+
+I&#039;ll be sure to recommend your app to anyone that asks about the program. Good luck with the release of the app!]]></description>
+			<content:encoded><![CDATA[<p>Hi Mina,</p>
+<p>This is awesome &#8211; thanks for sharing. I knew I couldn&#8217;t be the first to have done something like this. We did exactly what you describe &#8211; multiple mobile devices sending data to a server through wireless. The issue we had was communication between the six students &#8211; they called out the runners they were putting into the system, but didn&#8217;t realize that they had called out the same runner until it was too late. It&#8217;s clear you&#8217;ve worked that one out on your team.</p>
+<p>I&#8217;ll be sure to recommend your app to anyone that asks about the program. Good luck with the release of the app!</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: Mina		</title>
+		<link>/2013/05/26/my-latest-app-project-5k-race-timer/#comment-215</link>
+
+		<dc:creator><![CDATA[Mina]]></dc:creator>
+		<pubDate>Sat, 15 Jun 2013 19:47:24 +0000</pubDate>
+		<guid isPermaLink="false">/?p=1500#comment-215</guid>
+
+					<description><![CDATA[Great job Evan, 
+I am a runner as well and my running club was suffering from the exact same problem. So being a computer developer,  I developed a iphone/ipad app, RaceTimingApp, you can find it at www.racetimingapp.com. This is a mobile race timer software. I solved the simultaneous bib entry problem you were talking about by running the app on multiple iphone devices and sending data to a server. We used it 4 times in our races so far and it worked like a charm. Each time we had two people with the iphones and the apps entering the data and we did not miss a single runner. We also implemented a feature to enter the race day registries. We usually get 30-40 people to register on the race day. The app will be available in the app store in two weeks. If anyone is interested, please email me at hooysum@gmail.com]]></description>
+			<content:encoded><![CDATA[<p>Great job Evan,<br />
+I am a runner as well and my running club was suffering from the exact same problem. So being a computer developer,  I developed a iphone/ipad app, RaceTimingApp, you can find it at <a href="http://www.racetimingapp.com/" rel="nofollow ugc">http://www.racetimingapp.com/</a>. This is a mobile race timer software. I solved the simultaneous bib entry problem you were talking about by running the app on multiple iphone devices and sending data to a server. We used it 4 times in our races so far and it worked like a charm. Each time we had two people with the iphones and the apps entering the data and we did not miss a single runner. We also implemented a feature to enter the race day registries. We usually get 30-40 people to register on the race day. The app will be available in the app store in two weeks. If anyone is interested, please email me at <a href="mailto:hooysum@gmail.com">hooysum@gmail.com</a></p>
+]]></content:encoded>
+		
+			</item>
+	</channel>
+</rss>

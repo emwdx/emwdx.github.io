@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	
+	xmlns:georss="http://www.georss.org/georss"
+	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+	
+	>
+<channel>
+	<title>
+	Comments on: Boat Race, Revisited	</title>
+	<atom:link href="/2016/02/24/boat-race-revisited/feed/" rel="self" type="application/rss+xml" />
+	<link>/2016/02/24/boat-race-revisited/</link>
+	<description>iteration, making, building, and coding in education</description>
+	<lastBuildDate>Mon, 29 Feb 2016 23:47:28 +0000</lastBuildDate>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.7.6</generator>
+	<item>
+		<title>
+		By: Evan Weinberg		</title>
+		<link>/2016/02/24/boat-race-revisited/#comment-436</link>
+
+		<dc:creator><![CDATA[Evan Weinberg]]></dc:creator>
+		<pubDate>Mon, 29 Feb 2016 23:47:28 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2395#comment-436</guid>
+
+					<description><![CDATA[In reply to &lt;a href=&quot;/2016/02/24/boat-race-revisited/#comment-435&quot;&gt;Xavier&lt;/a&gt;.
+
+Two main reasons:
+&lt;ul&gt;
+&lt;li&gt;These projects are a lot more fun if you can collect data, store it, and display it in some way. Meteor makes it really easy to do this.&lt;/li&gt;
+&lt;li&gt;Sharing what I create through running on a web page is a lot easier to share than a Python script, which requires installation of Python or the knowledge of how to access it another way (through a terminal, or an in-browser code site). It isn&#039;t that difficult to get code in another language running, but it&#039;s an extra step that makes the difference between someone checking out my work or not. Everyone has a web browser, which means everyone can run Javascript.&lt;/li&gt;
+&lt;/ul&gt;]]></description>
+			<content:encoded><![CDATA[<p>In reply to <a href="/2016/02/24/boat-race-revisited/#comment-435">Xavier</a>.</p>
+<p>Two main reasons:</p>
+<ul>
+<li>These projects are a lot more fun if you can collect data, store it, and display it in some way. Meteor makes it really easy to do this.</li>
+<li>Sharing what I create through running on a web page is a lot easier to share than a Python script, which requires installation of Python or the knowledge of how to access it another way (through a terminal, or an in-browser code site). It isn&#8217;t that difficult to get code in another language running, but it&#8217;s an extra step that makes the difference between someone checking out my work or not. Everyone has a web browser, which means everyone can run Javascript.</li>
+</ul>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: Xavier		</title>
+		<link>/2016/02/24/boat-race-revisited/#comment-435</link>
+
+		<dc:creator><![CDATA[Xavier]]></dc:creator>
+		<pubDate>Mon, 29 Feb 2016 19:51:00 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2395#comment-435</guid>
+
+					<description><![CDATA[In reply to &lt;a href=&quot;/2016/02/24/boat-race-revisited/#comment-434&quot;&gt;Evan Weinberg&lt;/a&gt;.
+
+Thanks, Evan, for sharing your reason. I hope you publish the post soon. On the other hand, why did you need javascript? The only what I realize is to put dynamic fields (which grow with data)]]></description>
+			<content:encoded><![CDATA[<p>In reply to <a href="/2016/02/24/boat-race-revisited/#comment-434">Evan Weinberg</a>.</p>
+<p>Thanks, Evan, for sharing your reason. I hope you publish the post soon. On the other hand, why did you need javascript? The only what I realize is to put dynamic fields (which grow with data)</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: Evan Weinberg		</title>
+		<link>/2016/02/24/boat-race-revisited/#comment-434</link>
+
+		<dc:creator><![CDATA[Evan Weinberg]]></dc:creator>
+		<pubDate>Mon, 29 Feb 2016 13:38:34 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2395#comment-434</guid>
+
+					<description><![CDATA[In reply to &lt;a href=&quot;/2016/02/24/boat-race-revisited/#comment-433&quot;&gt;Xavier&lt;/a&gt;.
+
+Hi Xavier,
+
+I think it might be time for another blog post detailing my reasons for going full Meteor. Those reasons are even stronger now than they were when I first started moving that way 2+ years ago, which seems a bit weird in retrospect now that my coding skills have developed a bit more. The short story is that I got tired of managing two different languages - Python in the back (where I also used Bottle) and Javascript in the front. Meteor lets the entire stack be written in Javascript, which lends itself to a much smoother development experience.]]></description>
+			<content:encoded><![CDATA[<p>In reply to <a href="/2016/02/24/boat-race-revisited/#comment-433">Xavier</a>.</p>
+<p>Hi Xavier,</p>
+<p>I think it might be time for another blog post detailing my reasons for going full Meteor. Those reasons are even stronger now than they were when I first started moving that way 2+ years ago, which seems a bit weird in retrospect now that my coding skills have developed a bit more. The short story is that I got tired of managing two different languages &#8211; Python in the back (where I also used Bottle) and Javascript in the front. Meteor lets the entire stack be written in Javascript, which lends itself to a much smoother development experience.</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: Xavier		</title>
+		<link>/2016/02/24/boat-race-revisited/#comment-433</link>
+
+		<dc:creator><![CDATA[Xavier]]></dc:creator>
+		<pubDate>Fri, 26 Feb 2016 08:20:43 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2395#comment-433</guid>
+
+					<description><![CDATA[Thanks, Evan, for sharing the source. A question: why do you choose Meteor and not other frameworks? I had experiences with flask and bottle (python).
+
+On the other hand, I have seen you have used very much the web frameworks for making class: reservation of exams, etc. Can you please tell us a little bit more about where and how to use these tools and what are their benefits?
+
+Thanks,]]></description>
+			<content:encoded><![CDATA[<p>Thanks, Evan, for sharing the source. A question: why do you choose Meteor and not other frameworks? I had experiences with flask and bottle (python).</p>
+<p>On the other hand, I have seen you have used very much the web frameworks for making class: reservation of exams, etc. Can you please tell us a little bit more about where and how to use these tools and what are their benefits?</p>
+<p>Thanks,</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: Evan Weinberg		</title>
+		<link>/2016/02/24/boat-race-revisited/#comment-432</link>
+
+		<dc:creator><![CDATA[Evan Weinberg]]></dc:creator>
+		<pubDate>Wed, 24 Feb 2016 14:09:59 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2395#comment-432</guid>
+
+					<description><![CDATA[In reply to &lt;a href=&quot;/2016/02/24/boat-race-revisited/#comment-431&quot;&gt;Xavier&lt;/a&gt;.
+
+Check out http://www.github.com/emwdx/boatrace/ for all the code. Pure JavaScript with Raphael JS for images/drawing. Meteor Blaze for HTML templating.]]></description>
+			<content:encoded><![CDATA[<p>In reply to <a href="/2016/02/24/boat-race-revisited/#comment-431">Xavier</a>.</p>
+<p>Check out <a href="http://www.github.com/emwdx/boatrace/" rel="nofollow ugc">http://www.github.com/emwdx/boatrace/</a> for all the code. Pure JavaScript with Raphael JS for images/drawing. Meteor Blaze for HTML templating.</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: Xavier		</title>
+		<link>/2016/02/24/boat-race-revisited/#comment-431</link>
+
+		<dc:creator><![CDATA[Xavier]]></dc:creator>
+		<pubDate>Wed, 24 Feb 2016 08:46:58 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2395#comment-431</guid>
+
+					<description><![CDATA[Wow! Great activity. How did you do it? Is there a source of that? I&#039;m interested in the programming stuff...
+
+Thanks for sharing]]></description>
+			<content:encoded><![CDATA[<p>Wow! Great activity. How did you do it? Is there a source of that? I&#8217;m interested in the programming stuff&#8230;</p>
+<p>Thanks for sharing</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: Evan Weinberg		</title>
+		<link>/2016/02/24/boat-race-revisited/#comment-430</link>
+
+		<dc:creator><![CDATA[Evan Weinberg]]></dc:creator>
+		<pubDate>Wed, 24 Feb 2016 02:38:45 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2395#comment-430</guid>
+
+					<description><![CDATA[In reply to &lt;a href=&quot;/2016/02/24/boat-race-revisited/#comment-429&quot;&gt;Phil&lt;/a&gt;.
+
+Thanks for the heads up, Phil. Apparently Chrome and Firefox don&#039;t like TIF image files. I&#039;ve replaced it with a JPG and it seems to be working better.]]></description>
+			<content:encoded><![CDATA[<p>In reply to <a href="/2016/02/24/boat-race-revisited/#comment-429">Phil</a>.</p>
+<p>Thanks for the heads up, Phil. Apparently Chrome and Firefox don&#8217;t like TIF image files. I&#8217;ve replaced it with a JPG and it seems to be working better.</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: Phil		</title>
+		<link>/2016/02/24/boat-race-revisited/#comment-429</link>
+
+		<dc:creator><![CDATA[Phil]]></dc:creator>
+		<pubDate>Tue, 23 Feb 2016 17:30:48 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2395#comment-429</guid>
+
+					<description><![CDATA[Looks interesting but the image doesn&#039;t load for me in Firefox and in Chrome it appears to be super zoomed in and blurry.]]></description>
+			<content:encoded><![CDATA[<p>Looks interesting but the image doesn&#8217;t load for me in Firefox and in Chrome it appears to be super zoomed in and blurry.</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: Dan Meyer		</title>
+		<link>/2016/02/24/boat-race-revisited/#comment-428</link>
+
+		<dc:creator><![CDATA[Dan Meyer]]></dc:creator>
+		<pubDate>Tue, 23 Feb 2016 17:25:16 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2395#comment-428</guid>
+
+					<description><![CDATA[Super fun. Glad you resurrected it.]]></description>
+			<content:encoded><![CDATA[<p>Super fun. Glad you resurrected it.</p>
+]]></content:encoded>
+		
+			</item>
+	</channel>
+</rss>

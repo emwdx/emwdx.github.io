@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	
+	xmlns:georss="http://www.georss.org/georss"
+	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+	
+	>
+<channel>
+	<title>
+	Comments on: My Reassessment Queue	</title>
+	<atom:link href="/2017/03/16/my-reassessment-queue/feed/" rel="self" type="application/rss+xml" />
+	<link>/2017/03/16/my-reassessment-queue/</link>
+	<description>iteration, making, building, and coding in education</description>
+	<lastBuildDate>Fri, 31 Mar 2017 02:58:18 +0000</lastBuildDate>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.7.6</generator>
+	<item>
+		<title>
+		By: Evan Weinberg		</title>
+		<link>/2017/03/16/my-reassessment-queue/#comment-496</link>
+
+		<dc:creator><![CDATA[Evan Weinberg]]></dc:creator>
+		<pubDate>Fri, 31 Mar 2017 02:58:18 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2678#comment-496</guid>
+
+					<description><![CDATA[In reply to &lt;a href=&quot;/2017/03/16/my-reassessment-queue/#comment-495&quot;&gt;Dan Meyer&lt;/a&gt;.
+
+Most people have crafted their own solutions in some way - many of them are analog. As I say here, despite the work I&#039;ve put into this digital solution, it&#039;s still messy and time consuming. I still expect to look at everyone&#039;s papers because I value the assessment information I get from them. The time that takes is non-negligible. It&#039;s also something I&#039;m not willing to outsource to a computer at this point.]]></description>
+			<content:encoded><![CDATA[<p>In reply to <a href="/2017/03/16/my-reassessment-queue/#comment-495">Dan Meyer</a>.</p>
+<p>Most people have crafted their own solutions in some way &#8211; many of them are analog. As I say here, despite the work I&#8217;ve put into this digital solution, it&#8217;s still messy and time consuming. I still expect to look at everyone&#8217;s papers because I value the assessment information I get from them. The time that takes is non-negligible. It&#8217;s also something I&#8217;m not willing to outsource to a computer at this point.</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: Dan Meyer		</title>
+		<link>/2017/03/16/my-reassessment-queue/#comment-495</link>
+
+		<dc:creator><![CDATA[Dan Meyer]]></dc:creator>
+		<pubDate>Thu, 23 Mar 2017 04:46:22 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2678#comment-495</guid>
+
+					<description><![CDATA[While I came down hard on personalized learning last week, this is the sort of problem that really demands &lt;em&gt;some&lt;/em&gt; kind of personalization solution. It&#039;s just unreasonably hard for a single teacher to give every student a &lt;em&gt;good&lt;/em&gt; assessment on an arbitrary topic at an arbitrary time. I don&#039;t like most of the solutions I&#039;ve seen so far, but this needs one.]]></description>
+			<content:encoded><![CDATA[<p>While I came down hard on personalized learning last week, this is the sort of problem that really demands <em>some</em> kind of personalization solution. It&#8217;s just unreasonably hard for a single teacher to give every student a <em>good</em> assessment on an arbitrary topic at an arbitrary time. I don&#8217;t like most of the solutions I&#8217;ve seen so far, but this needs one.</p>
+]]></content:encoded>
+		
+			</item>
+	</channel>
+</rss>

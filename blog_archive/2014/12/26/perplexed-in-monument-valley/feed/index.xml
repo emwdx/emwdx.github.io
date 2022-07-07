@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	
+	xmlns:georss="http://www.georss.org/georss"
+	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+	
+	>
+<channel>
+	<title>
+	Comments on: Perplexed in Monument Valley	</title>
+	<atom:link href="/2014/12/26/perplexed-in-monument-valley/feed/" rel="self" type="application/rss+xml" />
+	<link>/2014/12/26/perplexed-in-monument-valley/</link>
+	<description>iteration, making, building, and coding in education</description>
+	<lastBuildDate>Fri, 26 Dec 2014 19:09:08 +0000</lastBuildDate>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.7.6</generator>
+	<item>
+		<title>
+		By: mrenlow		</title>
+		<link>/2014/12/26/perplexed-in-monument-valley/#comment-361</link>
+
+		<dc:creator><![CDATA[mrenlow]]></dc:creator>
+		<pubDate>Fri, 26 Dec 2014 19:09:08 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2029#comment-361</guid>
+
+					<description><![CDATA[Incredible game. Also, the design is simple enough that even my four-year-old daughter can meet with a fair amount of success (with prompts from Dad).]]></description>
+			<content:encoded><![CDATA[<p>Incredible game. Also, the design is simple enough that even my four-year-old daughter can meet with a fair amount of success (with prompts from Dad).</p>
+]]></content:encoded>
+		
+			</item>
+	</channel>
+</rss>

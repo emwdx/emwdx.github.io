@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	
+	xmlns:georss="http://www.georss.org/georss"
+	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+	
+	>
+<channel>
+	<title>
+	Comments on: Climbing Mount Tai &#8211; #wcydwt edition	</title>
+	<atom:link href="/2011/09/27/climbing-mount-tai-wcydwt-edition/feed/" rel="self" type="application/rss+xml" />
+	<link>/2011/09/27/climbing-mount-tai-wcydwt-edition/</link>
+	<description>iteration, making, building, and coding in education</description>
+	<lastBuildDate>Wed, 28 Sep 2011 17:41:26 +0000</lastBuildDate>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.7.6</generator>
+	<item>
+		<title>
+		By: barbara depesa		</title>
+		<link>/2011/09/27/climbing-mount-tai-wcydwt-edition/#comment-23</link>
+
+		<dc:creator><![CDATA[barbara depesa]]></dc:creator>
+		<pubDate>Wed, 28 Sep 2011 17:41:26 +0000</pubDate>
+		<guid isPermaLink="false">https://gealgerobophysiculus.wordpress.com/2011/09/27/climbing-mount-tai-wcydwt-edition/#comment-23</guid>
+
+					<description><![CDATA[I love your new website Evan. Qufu sounds great. I cannot wait to see more photos.]]></description>
+			<content:encoded><![CDATA[<p>I love your new website Evan. Qufu sounds great. I cannot wait to see more photos.</p>
+]]></content:encoded>
+		
+			</item>
+	</channel>
+</rss>

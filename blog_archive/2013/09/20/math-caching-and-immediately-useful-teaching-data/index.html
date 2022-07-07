@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="profile" href="https://gmpg.org/xfn/11">
+
+    <title>Math Caching and Immediately Useful Teaching Data</title>
+<meta name="robots" content="max-image-preview:large">
+<link rel="dns-prefetch">
+<link rel="dns-prefetch" href="//fonts.googleapis.com">
+<link rel="dns-prefetch" href="//s.w.org">
+<link rel="alternate" type="application/rss+xml" title=" &raquo; Feed" href="/feed/">
+<link rel="alternate" type="application/rss+xml" title=" &raquo; Comments Feed" href="/comments/feed/">
+<link rel="alternate" type="application/rss+xml" title=" &raquo; Math Caching and Immediately Useful Teaching Data Comments Feed" href="/2013/09/20/math-caching-and-immediately-useful-teaching-data/feed/">
+		<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/svg\/","svgExt":".svg","source":{"concatemoji":"https13.229.58.164\/wp-includes\/js\/wp-emoji-release.min.js?ver=5.7.6"}};
+			!function(e,a,t){var n,r,o,i=a.createElement("canvas"),p=i.getContext&&i.getContext("2d");function s(e,t){var a=String.fromCharCode;p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,e),0,0);e=i.toDataURL();return p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,t),0,0),e===i.toDataURL()}function c(e){var t=a.createElement("script");t.src=e,t.defer=t.type="text/javascript",a.getElementsByTagName("head")[0].appendChild(t)}for(o=Array("flag","emoji"),t.supports={everything:!0,everythingExceptFlag:!0},r=0;r<o.length;r++)t.supports[o[r]]=function(e){if(!p||!p.fillText)return!1;switch(p.textBaseline="top",p.font="600 32px Arial",e){case"flag":return s([127987,65039,8205,9895,65039],[127987,65039,8203,9895,65039])?!1:!s([55356,56826,55356,56819],[55356,56826,8203,55356,56819])&&!s([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]);case"emoji":return!s([55357,56424,8205,55356,57212],[55357,56424,8203,55356,57212])}return!1}(o[r]),t.supports.everything=t.supports.everything&&t.supports[o[r]],"flag"!==o[r]&&(t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&t.supports[o[r]]);t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&!t.supports.flag,t.DOMReady=!1,t.readyCallback=function(){t.DOMReady=!0},t.supports.everything||(n=function(){t.readyCallback()},a.addEventListener?(a.addEventListener("DOMContentLoaded",n,!1),e.addEventListener("load",n,!1)):(e.attachEvent("onload",n),a.attachEvent("onreadystatechange",function(){"complete"===a.readyState&&t.readyCallback()})),(n=t.source||{}).concatemoji?c(n.concatemoji):n.wpemoji&&n.twemoji&&(c(n.twemoji),c(n.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+		<style type="text/css">img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}</style>
+	<link rel="stylesheet" id="wp-block-library-css" href="/wp-includes/css/dist/block-library/style.min.css?ver=5.7.6" type="text/css" media="all">
+<style id="wp-block-library-inline-css" type="text/css">.has-text-align-justify{text-align:justify;}</style>
+<link rel="stylesheet" id="wp-block-library-theme-css" href="/wp-includes/css/dist/block-library/theme.min.css?ver=5.7.6" type="text/css" media="all">
+<link rel="stylesheet" id="gist-style-css" href="/wp-content/themes/gist/style.css?ver=5.7.6" type="text/css" media="all">
+<style id="gist-style-inline-css" type="text/css">{ clip: rect(1px, 1px, 1px, 1px); height: 1px; position: absolute; overflow: hidden; width: 1px; }
+body { font-family: Open Sans; }body { font-size: 16px; }body { line-height : 2; }.breadcrumbs span.breadcrumb, .nav-links a, .search-form input[type=submit], #toTop, .candid-pagination .page-numbers.current, .candid-pagination .page-numbers:hover  { background : #ca9b52; }.search-form input.search-field, .sticky .p-15, .related-post-entries li, .candid-pagination .page-numbers { border-color : #ca9b52; }.error-404 h1, .no-results h1, a, a:visited, .related-post-entries .title:hover, .entry-title a:hover, .featured-post-title a:hover, .entry-meta.entry-category a,.widget li a:hover, .widget h1 a:hover, .widget h2 a:hover, .widget h3 a:hover, .site-title a, .site-title a:visited, .main-navigation ul li a:hover { color : #ca9b52; }.btn-primary { border: 2px solid #ca9b52;}</style>
+<link rel="stylesheet" id="drift-blog-style-css" href="/wp-content/themes/drift-blog/style.css?ver=5.7.6" type="text/css" media="all">
+<link rel="stylesheet" id="drift-blog-google-fonts-css" href="//fonts.googleapis.com/css?family=Playfair+Display&#038;ver=5.7.6" type="text/css" media="all">
+<link rel="stylesheet" id="gist-googleapis-css" href="//fonts.googleapis.com/css?family=Open+Sans&#038;ver=5.7.6" type="text/css" media="all">
+<link rel="stylesheet" id="gist-google-fonts-css" href="//fonts.googleapis.com/css?family=Oswald&#038;ver=5.7.6" type="text/css" media="all">
+<link rel="stylesheet" id="font-awesome-css" href="/wp-content/themes/gist/candidthemes/assets/framework/Font-Awesome/css/font-awesome.min.css?ver=4.7.0" type="text/css" media="all">
+<link rel="stylesheet" id="jetpack_css-css" href="/wp-content/plugins/jetpack/css/jetpack.css?ver=8.6.2" type="text/css" media="all">
+<script type="text/javascript" src="/wp-includes/js/jquery/jquery.min.js?ver=3.5.1" id="jquery-core-js"></script>
+<script type="text/javascript" src="/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.3.2" id="jquery-migrate-js"></script>
+<link rel="https://api.w.org/" href="/wp-json/">
+<link rel="alternate" type="application/json" href="/wp-json/wp/v2/posts/1746">
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="/wp-includes/wlwmanifest.xml"> 
+<meta name="generator" content="WordPress 5.7.6">
+<link rel="canonical" href="/2013/09/20/math-caching-and-immediately-useful-teaching-data/">
+<link rel="shortlink" href="/?p=1746">
+<link rel="alternate" type="application/json+oembed" href="/wp-json/oembed/1.0/embed?url=https%3A%2F%2F%2F2013%2F09%2F20%2Fmath-caching-and-immediately-useful-teaching-data%2F">
+<link rel="alternate" type="text/xml+oembed" href="/wp-json/oembed/1.0/embed?url=https%3A%2F%2F%2F2013%2F09%2F20%2Fmath-caching-and-immediately-useful-teaching-data%2F&#038;format=xml">
+<style type="text/css">img#wpstats{display:none}</style>
+<link rel="pingback" href="/xmlrpc.php">		<style type="text/css" id="wp-custom-css">.custom-logo{
+	height:300px;
+	width:300px
+	
+}</style>
+		</head>
+
+<body data-rsssl="1" class="post-template-default single single-post postid-1746 single-format-standard wp-custom-logo wp-embed-responsive ct-sticky-sidebar right-sidebar">
+    <div id="page" class="site container-main">
+        <a class="skip-link screen-reader-text" href="#content">Skip to content</a>
+
+        <header id="masthead" class="site-header" role="banner">
+            <div class="top-menu-container-inner container-inner">
+                    <div id="mainnav-wrap" class="clear">
+                        <div class="top-header-social">
+                            
+                            <button class="top-menu-toggle"><i class="fa fa-bars"></i></button>
+                        </div>
+
+                        <nav id="top-site-navigation" class="main-navigation" role="navigation">
+                            <div class="menu-pages-container"><ul id="top-menu" class="top-menu nav_menu">
+<li id="menu-item-2781" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-2781"><a href="/">Home</a></li>
+<li id="menu-item-2782" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2782"><a href="/about/">About Evan Weinberg</a></li>
+</ul></div>                        </nav>
+                            <!-- #site-navigation -->
+                    </div>
+                </div>
+                    <!-- .top-menu-container-inner -->
+            <div class="site-branding">
+                <div class="container-inner">
+                    <a href="/" class="custom-logo-link" rel="home"><img width="1000" height="1000" src="/wp-content/uploads/2018/10/for.next_.001.jpeg" class="custom-logo" alt="" srcset="/wp-content/uploads/2018/10/for.next_.001.jpeg 1000w, /wp-content/uploads/2018/10/for.next_.001-300x300.jpeg 300w, /wp-content/uploads/2018/10/for.next_.001-150x150.jpeg 150w, /wp-content/uploads/2018/10/for.next_.001-768x768.jpeg 768w" sizes="(max-width: 1000px) 100vw, 1000px"></a>                            <p class="site-title"><a href="/" rel="home"></a></p>
+                                                           <p class="site-description">iteration, making, building, and coding in education</p>
+                                                </div>
+                </div>
+                <!-- .site-branding -->
+
+                <div class="container-inner">
+                    <div id="mainnav-wrap">
+                        <nav id="site-navigation" class="main-navigation" role="navigation">
+                            <button class="menu-toggle" aria-controls="primary-menu" aria-expanded="false"><i class="fa fa-bars"></i></button>
+                                                            </nav>
+                            <!-- #site-navigation -->
+                        </div>
+                    </div>
+                    <!-- .container-inner -->
+                </header>
+                <!-- #masthead -->
+                <div class="header-image-block">
+                                    </div>
+
+                <div id="content" class="site-content container-inner p-t-15">
+	<div id="primary" class="content-area">
+		<main id="main" class="site-main">
+			<div class="breadcrumbs">
+                            </div>
+		
+<article id="post-1746" class="post-1746 post type-post status-publish format-standard hentry category-computational-thinking-2 category-studentwork category-teaching-stories tag-collecting-work tag-math-cache tag-python tag-student-work">
+    <div class="p-15 left-image">
+        <div class="ct-featured-image">
+                    </div>
+        <div class="entry-content">
+            <header class="entry-header">
+                <h1 class="entry-title">Math Caching and Immediately Useful Teaching Data</h1>    </header>
+    <!-- .entry-header -->
+    <p>Last July, <a href="http://www.youtube.com/watch?v=ylUzk3q5SS8">I posted a video</a> in which I showed how to create a local, customized version of the Math Caching activity that can be found <a href="http://mathbits.com/caching/opencache1.html">here</a>.</p>
+<p>I was inspired to revisit the idea last weekend reading <a href="http://blog.mrmeyer.com/?p=17265">Dan Meyer&#8217;s post about teacher dashboards</a>. The part that got me thinking, and that stoked the fire that has been going in my head for a while, is identifying the information that is most useful to teachers. There are common errors that an experienced teacher knows to expect, but a new teacher may not recognize is common until it is too late. Getting a measure of wrong answers, and more importantly, the origin of those wrong answers, is where we ideally should be making the most of the technology in our (and the students&#8217;) hands. Anything that streamlines the process of getting a teacher to see the details of what students are doing incorrectly (and not just that they are getting something wrong) is valuable. The <u>only</u> way I get this information is by looking at student work. I need to get my hands on student responses as quickly as I can to make sense of what they are thinking.</p>
+<p>As we were closing in on the end of an algebra review unit with the ninth graders this week, I realized that the math cache concept was good and fun and at a minimum was a remastering of the review sheet for a one-to-one laptop classroom. I came up with a number of questions and loaded it into the Python program. When one of my Calculus students stopped in to chat, and I showed her what I had put together, I told her that I was thinking of adding a step where students had to upload a screenshot of their written work in addition to entering their answer into the location box. She stared at me and said blankly: &#8216;You absolutely have to do that. They&#8217;ll cheat otherwise.&#8217; </p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2013/09/Screen-Shot-2013-09-20-at-11.23.26-PM.png"><img loading="lazy" src="https://blog.evanweinberg.org/wp-content/uploads/2013/09/Screen-Shot-2013-09-20-at-11.23.26-PM-300x95.png" alt="Screen Shot 2013-09-20 at 11.23.26 PM" width="300" height="95" class="alignnone size-medium wp-image-1747" srcset="/wp-content/uploads/2013/09/Screen-Shot-2013-09-20-at-11.23.26-PM-300x95.png 300w, /wp-content/uploads/2013/09/Screen-Shot-2013-09-20-at-11.23.26-PM-768x244.png 768w, /wp-content/uploads/2013/09/Screen-Shot-2013-09-20-at-11.23.26-PM.png 1002w" sizes="(max-width: 300px) 100vw, 300px"></a></p>
+<p>While I was a bit more optimistic, I&#8217;m glad that I took the extra time to add an upload button on the page. I configured the program so that each image that was uploaded was also labeled with the answer that the student entered into the box. This way, given that I knew what the correct answers were, I knew which images I might want to look at to know what students were getting wrong. </p>
+<p>This was pure gold.</p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2013/09/Screen-Shot-2013-09-20-at-11.30.23-PM.png"><img loading="lazy" src="https://blog.evanweinberg.org/wp-content/uploads/2013/09/Screen-Shot-2013-09-20-at-11.30.23-PM.png" alt="Screen Shot 2013-09-20 at 11.30.23 PM" width="1182" height="515" class="alignnone size-full wp-image-1748" srcset="/wp-content/uploads/2013/09/Screen-Shot-2013-09-20-at-11.30.23-PM.png 1182w, /wp-content/uploads/2013/09/Screen-Shot-2013-09-20-at-11.30.23-PM-300x131.png 300w, /wp-content/uploads/2013/09/Screen-Shot-2013-09-20-at-11.30.23-PM-1024x446.png 1024w, /wp-content/uploads/2013/09/Screen-Shot-2013-09-20-at-11.30.23-PM-768x335.png 768w" sizes="(max-width: 1182px) 100vw, 1182px"></a></p>
+<p>Material like this was quickly filling up the image directory, and I watched it happening. I immediately knew which students I needed to have a conversation with. The answers ranged from &#8216;no solution&#8217; to &#8216;identity&#8217; to &#8216;x = 0&#8217; and I instantly had material to start a conversation with the class. Furthermore, I didn&#8217;t need to throw out the tragically predictable &#8216;who wants to share their work&#8217; to a class of students that don&#8217;t tend to want to share for all sorts of valid reasons. I didn&#8217;t have to cold call a student to reluctantly show what he or she did for the problem. I had their work and could hand pick what I wanted to share with the class while maintaining their anonymity. We could quickly look at multiple students&#8217; work and talk about the positive aspects of each one, while highlighting ways to make it even better.</p>
+<p>In this problem, we had a fantastic discussion about communicating both reasoning and process:</p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2013/09/Screen-Shot-2013-09-20-at-11.43.02-PM.png"><img loading="lazy" src="https://blog.evanweinberg.org/wp-content/uploads/2013/09/Screen-Shot-2013-09-20-at-11.43.02-PM-300x114.png" alt="Screen Shot 2013-09-20 at 11.43.02 PM" width="300" height="114" class="alignnone size-medium wp-image-1749"></a></p>
+<p>The next step that I&#8217;d like to make is to have this process of seeing all of the responses be even more transparent. I&#8217;d like to see student work popping up in a gallery that I can browse and choose certain responses to share with the class. Another option to pursue is to get students seeing the responses of their peers and offer advice. </p>
+<p>Automatic grading certainly makes the job of answering the right/wrong question much easier. Sometimes a student does need to know whether an answer is correct or not. Given all the ways that a student could game the system (some students did discuss using Wolfram Alpha during the activity) the informative part on the teaching and assessment end is seeing the work itself. This is also an easy source of material for discussion with other teachers about student work (such as with Michael Pershan&#8217;s <a href="http://mathmistakes.org/">Math Mistakes</a>). </p>
+<p>I was blown away with how my crude hack to add this feature this morning made the class period a much richer opportunity to get students sharing and talking about their work. Now I&#8217;m excited to work on the next iteration of this idea. </p>
+
+    <footer class="entry-footer">
+        </footer>
+<!-- .entry-footer -->
+</div>
+<!-- .entry-content -->
+</div>
+<!-- .p-15 -->
+</article><!-- #post-1746 -->
+
+	<nav class="navigation post-navigation" role="navigation" aria-label="Posts">
+		<h2 class="screen-reader-text">Post navigation</h2>
+		<div class="nav-links">
+<div class="nav-previous"><a href="/2013/09/06/computational-thinking-and-algebraic-expressions/" rel="prev">Computational Thinking and Algebraic Expressions</a></div>
+<div class="nav-next"><a href="/2013/09/25/intermediate-value-theorem-elevators/" rel="next">Intermediate Value Theorem &#038; Elevators</a></div>
+</div>
+	</nav>            <div class="related-pots-block">
+                <h2 class="widget-title">
+                    Related Posts                </h2>
+                <ul class="related-post-entries clear">
+                                            <li>
+                                                        <div class="featured-desc">
+                                <a href="/2017/05/03/probability-spreadsheets-and-the-citizen-database/">
+                                    <h2 class="title">
+                                       Probability, Spreadsheets, and the Citizen Database                                    </h2>
+                                </a>
+                            </div>
+                        </li>
+                                            <li>
+                                                        <div class="featured-desc">
+                                <a href="/2017/04/21/making-groups-a-genetic-algorithm-experiment/">
+                                    <h2 class="title">
+                                       Making Groups &#8211; A Genetic Algorithm Experiment                                    </h2>
+                                </a>
+                            </div>
+                        </li>
+                                            <li>
+                                                        <div class="featured-desc">
+                                <a href="/2017/04/19/an-experiment-swapping-numerical-grades-for-skill-levels-and-emoji/">
+                                    <h2 class="title">
+                                       An Experiment: Swapping Numerical Grades for Skill-Levels and Emoji                                    </h2>
+                                </a>
+                            </div>
+                        </li>
+                                    </ul>
+            </div> <!-- .related-post-block -->
+        
+<div id="comments" class="comments-area">
+
+			<h2 class="comments-title">
+			18 thoughts on &ldquo;<span>Math Caching and Immediately Useful Teaching Data</span>&rdquo;		</h2>
+<!-- .comments-title -->
+
+		
+		<ol class="comment-list">
+					<li id="comment-250" class="comment even thread-even depth-1 parent">
+			<article id="div-comment-250" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="https://secure.gravatar.com/avatar/dd070611266bdc59be278adf92eb329e?s=32&#038;d=mm&#038;r=g" srcset="https://secure.gravatar.com/avatar/dd070611266bdc59be278adf92eb329e?s=64&#038;d=mm&#038;r=g 2x" class="avatar avatar-32 photo" height="32" width="32" loading="lazy">						<b class="fn"><a href="http://blog.mrmeyer.com/" rel="external nofollow ugc" class="url">Dan Meyer</a></b> <span class="says">says:</span>					</div>
+<!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="/2013/09/20/math-caching-and-immediately-useful-teaching-data/#comment-250"><time datetime="2013-09-22T11:23:58+08:00">September 22, 2013 at 11:23 am</time></a>					</div>
+<!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>This is dope as hell, Evan. Two follow ups:</p>
+<p>One, what 1:1 tech are your students using?</p>
+<p>Two, what do you mean by this:</p>
+<p>&#8220;The next step that I’d like to make is to have this process of seeing all of the responses be even more transparent.&#8221;</p>
+				</div>
+<!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="/2013/09/20/math-caching-and-immediately-useful-teaching-data/?replytocom=250#respond" data-commentid="250" data-postid="1746" data-belowelement="div-comment-250" data-respondelement="respond" data-replyto="Reply to Dan Meyer" aria-label="Reply to Dan Meyer">Reply</a></div>			</article><!-- .comment-body -->
+		<ol class="children">
+		<li id="comment-251" class="comment byuser comment-author-user bypostauthor odd alt depth-2 parent">
+			<article id="div-comment-251" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="https://secure.gravatar.com/avatar/b58996c504c5638798eb6b511e6f49af?s=32&#038;d=mm&#038;r=g" srcset="https://secure.gravatar.com/avatar/b58996c504c5638798eb6b511e6f49af?s=64&#038;d=mm&#038;r=g 2x" class="avatar avatar-32 photo" height="32" width="32" loading="lazy">						<b class="fn"><a href="/" rel="external nofollow ugc" class="url">Evan Weinberg</a></b> <span class="says">says:</span>					</div>
+<!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="/2013/09/20/math-caching-and-immediately-useful-teaching-data/#comment-251"><time datetime="2013-09-22T14:08:57+08:00">September 22, 2013 at 2:08 pm</time></a>					</div>
+<!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>Hey Dan, thanks for the comment!</p>
+<p>My students all have Macbooks of one species or another.</p>
+<p>That comment is about the fact that at the moment, looking at student responses involves browsing through images in a directory. Given the way I threw this together, this system was good enough for the moment during class.</p>
+<p>I want to get rid of that intermediate step. As a teacher, I want to see all the student responses on a single page, flag the ones I want to show the class, and then have a nice full screen slide show that flips through those flagged images one by one. I might also want the option to automatically generate an images with all of the flagged images visible simultaneously.</p>
+<p>In short, I&#8217;m being greedy. I&#8217;ve taken a lot out of the process of gathering work and I think I can make it even smoother. In one step, I want to aggregate, filter, and then display student work. I think I see how I might do this in code, but some other projects might push that to a bit later on this month.</p>
+				</div>
+<!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="/2013/09/20/math-caching-and-immediately-useful-teaching-data/?replytocom=251#respond" data-commentid="251" data-postid="1746" data-belowelement="div-comment-251" data-respondelement="respond" data-replyto="Reply to Evan Weinberg" aria-label="Reply to Evan Weinberg">Reply</a></div>			</article><!-- .comment-body -->
+		<ol class="children">
+		<li id="comment-254" class="comment even depth-3 parent">
+			<article id="div-comment-254" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="https://secure.gravatar.com/avatar/15a1e4e72c1516126890ab619400d270?s=32&#038;d=mm&#038;r=g" srcset="https://secure.gravatar.com/avatar/15a1e4e72c1516126890ab619400d270?s=64&#038;d=mm&#038;r=g 2x" class="avatar avatar-32 photo" height="32" width="32" loading="lazy">						<b class="fn"><a href="http://blog.davemajor.net/" rel="external nofollow ugc" class="url">Dave Major</a></b> <span class="says">says:</span>					</div>
+<!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="/2013/09/20/math-caching-and-immediately-useful-teaching-data/#comment-254"><time datetime="2013-10-02T18:16:23+08:00">October 2, 2013 at 6:16 pm</time></a>					</div>
+<!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>Some slick work here Evan. This is something that I toyed around with, but never quite worked out exactly what I wanted.</p>
+				</div>
+<!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="/2013/09/20/math-caching-and-immediately-useful-teaching-data/?replytocom=254#respond" data-commentid="254" data-postid="1746" data-belowelement="div-comment-254" data-respondelement="respond" data-replyto="Reply to Dave Major" aria-label="Reply to Dave Major">Reply</a></div>			</article><!-- .comment-body -->
+		<ol class="children">
+		<li id="comment-257" class="comment byuser comment-author-user bypostauthor odd alt depth-4">
+			<article id="div-comment-257" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="https://secure.gravatar.com/avatar/b58996c504c5638798eb6b511e6f49af?s=32&#038;d=mm&#038;r=g" srcset="https://secure.gravatar.com/avatar/b58996c504c5638798eb6b511e6f49af?s=64&#038;d=mm&#038;r=g 2x" class="avatar avatar-32 photo" height="32" width="32" loading="lazy">						<b class="fn"><a href="/" rel="external nofollow ugc" class="url">Evan Weinberg</a></b> <span class="says">says:</span>					</div>
+<!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="/2013/09/20/math-caching-and-immediately-useful-teaching-data/#comment-257"><time datetime="2013-10-03T00:27:39+08:00">October 3, 2013 at 12:27 am</time></a>					</div>
+<!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>Thanks Dave &#8211; are you referring to the question/chat app from last spring? That was great stuff. I&#8217;d love to have a gallery of responses to highlight and share with the class once it has all been collected &#8211; yours had that feature. This was just a quick hack that I now see has to be included in a more elegant way in my classroom apps in the future.</p>
+				</div>
+<!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="/2013/09/20/math-caching-and-immediately-useful-teaching-data/?replytocom=257#respond" data-commentid="257" data-postid="1746" data-belowelement="div-comment-257" data-respondelement="respond" data-replyto="Reply to Evan Weinberg" aria-label="Reply to Evan Weinberg">Reply</a></div>			</article><!-- .comment-body -->
+		</li>
+<!-- #comment-## -->
+</ol>
+<!-- .children -->
+</li>
+<!-- #comment-## -->
+</ol>
+<!-- .children -->
+</li>
+<!-- #comment-## -->
+</ol>
+<!-- .children -->
+</li>
+<!-- #comment-## -->
+		<li id="comment-252" class="pingback even thread-odd thread-alt depth-1">
+			<div class="comment-body">
+				Pingback: <a href="http://blog.mrmeyer.com/?p=17951" rel="external nofollow ugc" class="url">dy/dan &raquo; Blog Archive &raquo; [Future Text] Math Cache</a> 			</div>
+		</li>
+<!-- #comment-## -->
+		<li id="comment-253" class="comment odd alt thread-even depth-1 parent">
+			<article id="div-comment-253" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="https://secure.gravatar.com/avatar/53d3207481dcdfa1f3597ab29bdb9373?s=32&#038;d=mm&#038;r=g" srcset="https://secure.gravatar.com/avatar/53d3207481dcdfa1f3597ab29bdb9373?s=64&#038;d=mm&#038;r=g 2x" class="avatar avatar-32 photo" height="32" width="32" loading="lazy">						<b class="fn"><a href="http://twitter.com/normabgordon" rel="external nofollow ugc" class="url">Norma Gordon (@normabgordon)</a></b> <span class="says">says:</span>					</div>
+<!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="/2013/09/20/math-caching-and-immediately-useful-teaching-data/#comment-253"><time datetime="2013-10-02T14:45:10+08:00">October 2, 2013 at 2:45 pm</time></a>					</div>
+<!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>I believe (but have not tried) you can upload images in Polleverywhere.com responses?</p>
+				</div>
+<!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="/2013/09/20/math-caching-and-immediately-useful-teaching-data/?replytocom=253#respond" data-commentid="253" data-postid="1746" data-belowelement="div-comment-253" data-respondelement="respond" data-replyto="Reply to Norma Gordon (@normabgordon)" aria-label="Reply to Norma Gordon (@normabgordon)">Reply</a></div>			</article><!-- .comment-body -->
+		<ol class="children">
+		<li id="comment-258" class="comment byuser comment-author-user bypostauthor even depth-2">
+			<article id="div-comment-258" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="https://secure.gravatar.com/avatar/b58996c504c5638798eb6b511e6f49af?s=32&#038;d=mm&#038;r=g" srcset="https://secure.gravatar.com/avatar/b58996c504c5638798eb6b511e6f49af?s=64&#038;d=mm&#038;r=g 2x" class="avatar avatar-32 photo" height="32" width="32" loading="lazy">						<b class="fn"><a href="/" rel="external nofollow ugc" class="url">Evan Weinberg</a></b> <span class="says">says:</span>					</div>
+<!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="/2013/09/20/math-caching-and-immediately-useful-teaching-data/#comment-258"><time datetime="2013-10-03T00:30:41+08:00">October 3, 2013 at 12:30 am</time></a>					</div>
+<!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>I tried it once &#8211; the speed issues running this (and socrative.com) from China make it unusable. It&#8217;s possible this is also a China Great Firewall issue given other things that have been blocked.</p>
+<p>There are tons of tools out there that have features that do this sort of thing, but the blocking requires that I come up with my own local solutions.</p>
+				</div>
+<!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="/2013/09/20/math-caching-and-immediately-useful-teaching-data/?replytocom=258#respond" data-commentid="258" data-postid="1746" data-belowelement="div-comment-258" data-respondelement="respond" data-replyto="Reply to Evan Weinberg" aria-label="Reply to Evan Weinberg">Reply</a></div>			</article><!-- .comment-body -->
+		</li>
+<!-- #comment-## -->
+</ol>
+<!-- .children -->
+</li>
+<!-- #comment-## -->
+		<li id="comment-255" class="comment odd alt thread-odd thread-alt depth-1 parent">
+			<article id="div-comment-255" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="https://secure.gravatar.com/avatar/76a611fa36cc2de54ffc6eb04de624b9?s=32&#038;d=mm&#038;r=g" srcset="https://secure.gravatar.com/avatar/76a611fa36cc2de54ffc6eb04de624b9?s=64&#038;d=mm&#038;r=g 2x" class="avatar avatar-32 photo" height="32" width="32" loading="lazy">						<b class="fn">Colleen</b> <span class="says">says:</span>					</div>
+<!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="/2013/09/20/math-caching-and-immediately-useful-teaching-data/#comment-255"><time datetime="2013-10-02T20:42:57+08:00">October 2, 2013 at 8:42 pm</time></a>					</div>
+<!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>I hate to be ignorant but how are your students capturing their images? Are they just using the camera on the computer?</p>
+				</div>
+<!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="/2013/09/20/math-caching-and-immediately-useful-teaching-data/?replytocom=255#respond" data-commentid="255" data-postid="1746" data-belowelement="div-comment-255" data-respondelement="respond" data-replyto="Reply to Colleen" aria-label="Reply to Colleen">Reply</a></div>			</article><!-- .comment-body -->
+		<ol class="children">
+		<li id="comment-256" class="comment byuser comment-author-user bypostauthor even depth-2">
+			<article id="div-comment-256" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="https://secure.gravatar.com/avatar/b58996c504c5638798eb6b511e6f49af?s=32&#038;d=mm&#038;r=g" srcset="https://secure.gravatar.com/avatar/b58996c504c5638798eb6b511e6f49af?s=64&#038;d=mm&#038;r=g 2x" class="avatar avatar-32 photo" height="32" width="32" loading="lazy">						<b class="fn"><a href="/" rel="external nofollow ugc" class="url">Evan Weinberg</a></b> <span class="says">says:</span>					</div>
+<!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="/2013/09/20/math-caching-and-immediately-useful-teaching-data/#comment-256"><time datetime="2013-10-03T00:24:11+08:00">October 3, 2013 at 12:24 am</time></a>					</div>
+<!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>Yeah, just using their built in laptop camera. Not ideal in terms of image quality, does the job. Since this is just a locally hosted web app, they could just as easily upload from their phones through a browser, which I might insist upon moving forward.</p>
+				</div>
+<!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="/2013/09/20/math-caching-and-immediately-useful-teaching-data/?replytocom=256#respond" data-commentid="256" data-postid="1746" data-belowelement="div-comment-256" data-respondelement="respond" data-replyto="Reply to Evan Weinberg" aria-label="Reply to Evan Weinberg">Reply</a></div>			</article><!-- .comment-body -->
+		</li>
+<!-- #comment-## -->
+</ol>
+<!-- .children -->
+</li>
+<!-- #comment-## -->
+		<li id="comment-259" class="comment odd alt thread-even depth-1 parent">
+			<article id="div-comment-259" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="https://secure.gravatar.com/avatar/f226693634f9bb1c717f8977cbcbe21b?s=32&#038;d=mm&#038;r=g" srcset="https://secure.gravatar.com/avatar/f226693634f9bb1c717f8977cbcbe21b?s=64&#038;d=mm&#038;r=g 2x" class="avatar avatar-32 photo" height="32" width="32" loading="lazy">						<b class="fn"><a href="http://gravatar.com/geraghts" rel="external nofollow ugc" class="url">Sean</a></b> <span class="says">says:</span>					</div>
+<!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="/2013/09/20/math-caching-and-immediately-useful-teaching-data/#comment-259"><time datetime="2013-10-03T02:09:56+08:00">October 3, 2013 at 2:09 am</time></a>					</div>
+<!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>Hi Evan, thanks for this. Great.</p>
+<p>&#8220;The only way I get this information is by looking at student work.&#8221;</p>
+<p>1. &#8220;The only way.&#8221; I wonder: could you have predicted that some kids would have said zero, some identity, and so on? Or was it a complete surprise? Trying to process how to anticipate student misconceptions and more efficiently expose them. </p>
+<p>2. There&#8217;s &#8220;my favorite no,&#8221; which seems to get at what you&#8217;re writing about here? </p>
+<p><a href="http://www.youtube.com/watch?v=Rulmok_9HVs" rel="nofollow ugc">http://www.youtube.com/watch?v=Rulmok_9HVs</a></p>
+				</div>
+<!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="/2013/09/20/math-caching-and-immediately-useful-teaching-data/?replytocom=259#respond" data-commentid="259" data-postid="1746" data-belowelement="div-comment-259" data-respondelement="respond" data-replyto="Reply to Sean" aria-label="Reply to Sean">Reply</a></div>			</article><!-- .comment-body -->
+		<ol class="children">
+		<li id="comment-264" class="comment byuser comment-author-user bypostauthor even depth-2">
+			<article id="div-comment-264" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="https://secure.gravatar.com/avatar/b58996c504c5638798eb6b511e6f49af?s=32&#038;d=mm&#038;r=g" srcset="https://secure.gravatar.com/avatar/b58996c504c5638798eb6b511e6f49af?s=64&#038;d=mm&#038;r=g 2x" class="avatar avatar-32 photo" height="32" width="32" loading="lazy">						<b class="fn"><a href="/" rel="external nofollow ugc" class="url">Evan Weinberg</a></b> <span class="says">says:</span>					</div>
+<!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="/2013/09/20/math-caching-and-immediately-useful-teaching-data/#comment-264"><time datetime="2013-10-05T14:04:39+08:00">October 5, 2013 at 2:04 pm</time></a>					</div>
+<!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>Hi Sean,</p>
+<p>It certainly isn&#8217;t the only way &#8211; I&#8217;ve seen students working on algebra long enough to know that I&#8217;d get all three responses(identity, no solution, x = 0). There&#8217;s something great about showing these things in work that was generated in the room, during the class period though. I&#8217;ve done the whole &#8216;I&#8217;ve seen this mistake before&#8217; thing where I put up the mistake and ask students to respond and explain what&#8217;s wrong with it, but it never seems to hit the crowd as well as work that came from the students themselves.</p>
+<p>As for &#8216;My favorite no&#8217;, I had never heard about it until I very recently. I knew my idea wasn&#8217;t original. I&#8217;m glad to know there&#8217;s a great name (and online following) for that activity already out there. I&#8217;ll definitely include this fully formed activity in future classes. </p>
+<p>Thanks for your comments!</p>
+				</div>
+<!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="/2013/09/20/math-caching-and-immediately-useful-teaching-data/?replytocom=264#respond" data-commentid="264" data-postid="1746" data-belowelement="div-comment-264" data-respondelement="respond" data-replyto="Reply to Evan Weinberg" aria-label="Reply to Evan Weinberg">Reply</a></div>			</article><!-- .comment-body -->
+		</li>
+<!-- #comment-## -->
+</ol>
+<!-- .children -->
+</li>
+<!-- #comment-## -->
+		<li id="comment-260" class="comment odd alt thread-odd thread-alt depth-1 parent">
+			<article id="div-comment-260" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="https://secure.gravatar.com/avatar/fe547022903f6d41bb5f01f7bf769c64?s=32&#038;d=mm&#038;r=g" srcset="https://secure.gravatar.com/avatar/fe547022903f6d41bb5f01f7bf769c64?s=64&#038;d=mm&#038;r=g 2x" class="avatar avatar-32 photo" height="32" width="32" loading="lazy">						<b class="fn">mrrajewich</b> <span class="says">says:</span>					</div>
+<!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="/2013/09/20/math-caching-and-immediately-useful-teaching-data/#comment-260"><time datetime="2013-10-03T03:19:11+08:00">October 3, 2013 at 3:19 am</time></a>					</div>
+<!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>I was intrigued by your idea as I have been trying something similar to gather the data of my student&#8217;s work as they complete a quiz or exam.  My method is to use a duplex scanner that students put their work into, press the button, and it is scanned into dropbox folder.  I can review work electronically as it is completed by the students or later if I wish.</p>
+				</div>
+<!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="/2013/09/20/math-caching-and-immediately-useful-teaching-data/?replytocom=260#respond" data-commentid="260" data-postid="1746" data-belowelement="div-comment-260" data-respondelement="respond" data-replyto="Reply to mrrajewich" aria-label="Reply to mrrajewich">Reply</a></div>			</article><!-- .comment-body -->
+		<ol class="children">
+		<li id="comment-263" class="comment byuser comment-author-user bypostauthor even depth-2">
+			<article id="div-comment-263" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="https://secure.gravatar.com/avatar/b58996c504c5638798eb6b511e6f49af?s=32&#038;d=mm&#038;r=g" srcset="https://secure.gravatar.com/avatar/b58996c504c5638798eb6b511e6f49af?s=64&#038;d=mm&#038;r=g 2x" class="avatar avatar-32 photo" height="32" width="32" loading="lazy">						<b class="fn"><a href="/" rel="external nofollow ugc" class="url">Evan Weinberg</a></b> <span class="says">says:</span>					</div>
+<!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="/2013/09/20/math-caching-and-immediately-useful-teaching-data/#comment-263"><time datetime="2013-10-05T13:57:39+08:00">October 5, 2013 at 1:57 pm</time></a>					</div>
+<!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>Hi,</p>
+<p>I like this, but it&#8217;s too time consuming for me with one scanner. For individual students sending me their work outside of class, a single scanner works just fine. When I&#8217;m trying to look for good stuff to show the class though, having them all send simultaneously reduces that dead time of waiting or lining up at the scanner to submit their work.</p>
+<p>Thanks for sharing.</p>
+				</div>
+<!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="/2013/09/20/math-caching-and-immediately-useful-teaching-data/?replytocom=263#respond" data-commentid="263" data-postid="1746" data-belowelement="div-comment-263" data-respondelement="respond" data-replyto="Reply to Evan Weinberg" aria-label="Reply to Evan Weinberg">Reply</a></div>			</article><!-- .comment-body -->
+		</li>
+<!-- #comment-## -->
+</ol>
+<!-- .children -->
+</li>
+<!-- #comment-## -->
+		<li id="comment-261" class="comment odd alt thread-even depth-1 parent">
+			<article id="div-comment-261" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="https://secure.gravatar.com/avatar/a80f5e8b4708c2ff402cd20e826638a8?s=32&#038;d=mm&#038;r=g" srcset="https://secure.gravatar.com/avatar/a80f5e8b4708c2ff402cd20e826638a8?s=64&#038;d=mm&#038;r=g 2x" class="avatar avatar-32 photo" height="32" width="32" loading="lazy">						<b class="fn">Shannon</b> <span class="says">says:</span>					</div>
+<!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="/2013/09/20/math-caching-and-immediately-useful-teaching-data/#comment-261"><time datetime="2013-10-03T17:54:45+08:00">October 3, 2013 at 5:54 pm</time></a>					</div>
+<!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>Evan, I really like this and was wondering if there was a way to have students send pictures of their work simply from a worksheet instead of the online component or an online assignment from Edmodo, for example. I would like to start collecting their work on the fly even before I get so technological with them. FYI our district is going 1 to 1 with ipads in 2 weeks.</p>
+				</div>
+<!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="/2013/09/20/math-caching-and-immediately-useful-teaching-data/?replytocom=261#respond" data-commentid="261" data-postid="1746" data-belowelement="div-comment-261" data-respondelement="respond" data-replyto="Reply to Shannon" aria-label="Reply to Shannon">Reply</a></div>			</article><!-- .comment-body -->
+		<ol class="children">
+		<li id="comment-262" class="comment byuser comment-author-user bypostauthor even depth-2">
+			<article id="div-comment-262" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="https://secure.gravatar.com/avatar/b58996c504c5638798eb6b511e6f49af?s=32&#038;d=mm&#038;r=g" srcset="https://secure.gravatar.com/avatar/b58996c504c5638798eb6b511e6f49af?s=64&#038;d=mm&#038;r=g 2x" class="avatar avatar-32 photo" height="32" width="32" loading="lazy">						<b class="fn"><a href="/" rel="external nofollow ugc" class="url">Evan Weinberg</a></b> <span class="says">says:</span>					</div>
+<!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="/2013/09/20/math-caching-and-immediately-useful-teaching-data/#comment-262"><time datetime="2013-10-05T13:56:16+08:00">October 5, 2013 at 1:56 pm</time></a>					</div>
+<!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>Hi Shannon,</p>
+<p>I had students snap pictures of their work in their own notebooks, so there&#8217;s no reason you couldn&#8217;t have them submit from a worksheet that you provide. There are apps on iPad that help do this &#8211; check out Cathy Yenca&#8217;s post about nearpod here: <a href="http://www.mathycathy.com/blog/2013/01/so-simple-get-every-kid-to-the-board-with-nearpod/" rel="nofollow ugc">here.</a> There are others. I use my own programs primarily because many of the other online solutions work slowly when accessing them from China. There is other stuff available. Let me know how it goes for you.</p>
+				</div>
+<!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="/2013/09/20/math-caching-and-immediately-useful-teaching-data/?replytocom=262#respond" data-commentid="262" data-postid="1746" data-belowelement="div-comment-262" data-respondelement="respond" data-replyto="Reply to Evan Weinberg" aria-label="Reply to Evan Weinberg">Reply</a></div>			</article><!-- .comment-body -->
+		</li>
+<!-- #comment-## -->
+</ol>
+<!-- .children -->
+</li>
+<!-- #comment-## -->
+		<li id="comment-265" class="comment odd alt thread-odd thread-alt depth-1">
+			<article id="div-comment-265" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="https://secure.gravatar.com/avatar/8d1a1159934f25c7e647cf677db699c2?s=32&#038;d=mm&#038;r=g" srcset="https://secure.gravatar.com/avatar/8d1a1159934f25c7e647cf677db699c2?s=64&#038;d=mm&#038;r=g 2x" class="avatar avatar-32 photo" height="32" width="32" loading="lazy">						<b class="fn">matthewmatician</b> <span class="says">says:</span>					</div>
+<!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="/2013/09/20/math-caching-and-immediately-useful-teaching-data/#comment-265"><time datetime="2013-10-06T12:57:57+08:00">October 6, 2013 at 12:57 pm</time></a>					</div>
+<!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>Is the problem you have in the first graphic the one that goes with this student work?</p>
+				</div>
+<!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="/2013/09/20/math-caching-and-immediately-useful-teaching-data/?replytocom=265#respond" data-commentid="265" data-postid="1746" data-belowelement="div-comment-265" data-respondelement="respond" data-replyto="Reply to matthewmatician" aria-label="Reply to matthewmatician">Reply</a></div>			</article><!-- .comment-body -->
+		</li>
+<!-- #comment-## -->
+		<li id="comment-266" class="comment even thread-even depth-1 parent">
+			<article id="div-comment-266" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="https://secure.gravatar.com/avatar/8d1a1159934f25c7e647cf677db699c2?s=32&#038;d=mm&#038;r=g" srcset="https://secure.gravatar.com/avatar/8d1a1159934f25c7e647cf677db699c2?s=64&#038;d=mm&#038;r=g 2x" class="avatar avatar-32 photo" height="32" width="32" loading="lazy">						<b class="fn">matthewmatician</b> <span class="says">says:</span>					</div>
+<!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="/2013/09/20/math-caching-and-immediately-useful-teaching-data/#comment-266"><time datetime="2013-10-06T13:07:10+08:00">October 6, 2013 at 1:07 pm</time></a>					</div>
+<!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>Oops, I guess I am referring to the second graphic&#8230;Looks like the problem from the first graphic is the one that is supposed to go with the student work in the second?</p>
+				</div>
+<!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="/2013/09/20/math-caching-and-immediately-useful-teaching-data/?replytocom=266#respond" data-commentid="266" data-postid="1746" data-belowelement="div-comment-266" data-respondelement="respond" data-replyto="Reply to matthewmatician" aria-label="Reply to matthewmatician">Reply</a></div>			</article><!-- .comment-body -->
+		<ol class="children">
+		<li id="comment-267" class="comment byuser comment-author-user bypostauthor odd alt depth-2">
+			<article id="div-comment-267" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="https://secure.gravatar.com/avatar/b58996c504c5638798eb6b511e6f49af?s=32&#038;d=mm&#038;r=g" srcset="https://secure.gravatar.com/avatar/b58996c504c5638798eb6b511e6f49af?s=64&#038;d=mm&#038;r=g 2x" class="avatar avatar-32 photo" height="32" width="32" loading="lazy">						<b class="fn"><a href="/" rel="external nofollow ugc" class="url">Evan Weinberg</a></b> <span class="says">says:</span>					</div>
+<!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="/2013/09/20/math-caching-and-immediately-useful-teaching-data/#comment-267"><time datetime="2013-10-07T13:07:34+08:00">October 7, 2013 at 1:07 pm</time></a>					</div>
+<!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>Hi Matthew (which I can only assume is your name from your awesome name there),</p>
+<p>Are you referring to the graphic on my page or Dan&#8217;s? The question on adding polynomials doesn&#8217;t have any student examples up on my post. The student work in the two images in the post was given in response to the question just above it in the image.</p>
+				</div>
+<!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="/2013/09/20/math-caching-and-immediately-useful-teaching-data/?replytocom=267#respond" data-commentid="267" data-postid="1746" data-belowelement="div-comment-267" data-respondelement="respond" data-replyto="Reply to Evan Weinberg" aria-label="Reply to Evan Weinberg">Reply</a></div>			</article><!-- .comment-body -->
+		</li>
+<!-- #comment-## -->
+</ol>
+<!-- .children -->
+</li>
+<!-- #comment-## -->
+		</ol>
+<!-- .comment-list -->
+
+			<div id="respond" class="comment-respond">
+		<h3 id="reply-title" class="comment-reply-title">Leave a Reply <small><a rel="nofollow" id="cancel-comment-reply-link" href="/2013/09/20/math-caching-and-immediately-useful-teaching-data/#respond" style="display:none;">Cancel reply</a></small>
+</h3>
+<form action="https13.229.58.164/wp-comments-post.php" method="post" id="commentform" class="comment-form" novalidate>
+<p class="comment-notes"><span id="email-notes">Your email address will not be published.</span> Required fields are marked <span class="required">*</span></p>
+<p class="comment-form-comment"><label for="comment">Comment</label> <textarea id="comment" name="comment" cols="45" rows="8" maxlength="65525" required="required"></textarea></p>
+<p class="comment-form-author"><label for="author">Name <span class="required">*</span></label> <input id="author" name="author" type="text" value="" size="30" maxlength="245" required="required"></p>
+<p class="comment-form-email"><label for="email">Email <span class="required">*</span></label> <input id="email" name="email" type="email" value="" size="30" maxlength="100" aria-describedby="email-notes" required="required"></p>
+<p class="comment-form-url"><label for="url">Website</label> <input id="url" name="url" type="url" value="" size="30" maxlength="200"></p>
+<p class="comment-form-cookies-consent"><input id="wp-comment-cookies-consent" name="wp-comment-cookies-consent" type="checkbox" value="yes"> <label for="wp-comment-cookies-consent">Save my name, email, and website in this browser for the next time I comment.</label></p>
+<p class="form-submit"><input name="submit" type="submit" id="submit" class="submit" value="Post Comment"> <input type="hidden" name="comment_post_ID" value="1746" id="comment_post_ID">
+<input type="hidden" name="comment_parent" id="comment_parent" value="0">
+</p>
+<p style="display: none;"><input type="hidden" id="akismet_comment_nonce" name="akismet_comment_nonce" value="87bdb7cc08"></p>
+<p style="display: none;"><input type="hidden" id="ak_js" name="ak_js" value="108"></p>
+</form>	</div>
+<!-- #respond -->
+	
+</div>
+<!-- #comments -->
+
+		</main><!-- #main -->
+	</div>
+<!-- #primary -->
+
+
+<aside id="secondary" class="widget-area" role="complementary">
+	<section id="categories-2" class="widget widget_categories"><h2 class="widget-title">Categories</h2>
+			<ul>
+					<li class="cat-item cat-item-2">
+<a href="/category/algebra-2/">algebra 2</a>
+</li>
+	<li class="cat-item cat-item-3">
+<a href="/category/array/">Array</a>
+</li>
+	<li class="cat-item cat-item-4">
+<a href="/category/calculus/">calculus</a>
+</li>
+	<li class="cat-item cat-item-5">
+<a href="/category/computational-thinking-2/">computational-thinking</a>
+</li>
+	<li class="cat-item cat-item-6">
+<a href="/category/geogebra/">geogebra</a>
+</li>
+	<li class="cat-item cat-item-7">
+<a href="/category/geometry/">geometry</a>
+</li>
+	<li class="cat-item cat-item-8">
+<a href="/category/ib/">IB</a>
+</li>
+	<li class="cat-item cat-item-9">
+<a href="/category/physics/">physics</a>
+</li>
+	<li class="cat-item cat-item-10">
+<a href="/category/precalculus/">precalculus</a>
+</li>
+	<li class="cat-item cat-item-11">
+<a href="/category/programming/">programming</a>
+</li>
+	<li class="cat-item cat-item-12">
+<a href="/category/reflection/">reflection</a>
+</li>
+	<li class="cat-item cat-item-13">
+<a href="/category/robotics/">robotics</a>
+</li>
+	<li class="cat-item cat-item-14">
+<a href="/category/standards-based-grading/">standards based grading</a>
+</li>
+	<li class="cat-item cat-item-15">
+<a href="/category/studentwork/">studentwork</a>
+</li>
+	<li class="cat-item cat-item-16">
+<a href="/category/teaching-philosophy/">teaching philosophy</a>
+</li>
+	<li class="cat-item cat-item-17">
+<a href="/category/teaching-stories/">teaching stories</a>
+</li>
+	<li class="cat-item cat-item-1">
+<a href="/category/uncategorized/">Uncategorized</a>
+</li>
+	<li class="cat-item cat-item-18">
+<a href="/category/year-in-review/">year-in-review</a>
+</li>
+			</ul>
+
+			</section><section id="meta-2" class="widget widget_meta"><h2 class="widget-title">Meta</h2>
+		<ul>
+						<li><a href="/wp-login.php">Log in</a></li>
+			<li><a href="/feed/">Entries feed</a></li>
+			<li><a href="/comments/feed/">Comments feed</a></li>
+
+			<li><a href="https://wordpress.org/">WordPress.org</a></li>
+		</ul>
+
+		</section></aside><!-- #secondary -->
+
+	</div>
+<!-- #content -->
+
+<footer id="colophon" class="site-footer">
+    		<div class="site-info">
+        			<span class="copy-right-text">All Right Reserved 2018</span>
+						<div class="powered-text">
+				<a href="https://wordpress.org/">Proudly powered by WordPress</a>
+				<span class="sep"> | </span>
+				Theme: Drift Blog by <a href="http://www.candidthemes.com/">Candid Themes</a>.			</div>
+			        <a id="toTop" class="go-to-top" href="#" title="Go to Top">
+            <i class="fa fa-angle-double-up"></i>
+        </a>
+    		</div>
+<!-- .site-info -->
+	</footer><!-- #colophon -->
+</div>
+<!-- #page -->
+
+<script type="text/javascript" src="/wp-content/themes/drift-blog/js/drift-blog-custom.js?ver=20151215" id="drift-blog-custom-js"></script>
+<script type="text/javascript" src="/wp-content/themes/gist/candidthemes/assets/js/gist-custom.js?ver=20151215" id="gist-custom-js"></script>
+<script type="text/javascript" src="/wp-content/themes/gist/candidthemes/assets/js/theia-sticky-sidebar.js?ver=20151215" id="theia-sticky-sidebar-js"></script>
+<script type="text/javascript" src="/wp-content/themes/gist/js/navigation.js?ver=20151215" id="gist-navigation-js"></script>
+<script type="text/javascript" src="/wp-content/themes/gist/js/skip-link-focus-fix.js?ver=20151215" id="gist-skip-link-focus-fix-js"></script>
+<script type="text/javascript" src="/wp-includes/js/comment-reply.min.js?ver=5.7.6" id="comment-reply-js"></script>
+<script type="text/javascript" src="/wp-includes/js/wp-embed.min.js?ver=5.7.6" id="wp-embed-js"></script>
+<script async="async" type="text/javascript" src="/wp-content/plugins/akismet/_inc/form.js?ver=4.1.7" id="akismet-form-js"></script>
+<script type="text/javascript" src="https://stats.wp.com/e-202219.js" async="async" defer></script>
+<script type="text/javascript">
+	_stq = window._stq || [];
+	_stq.push([ 'view', {v:'ext',j:'1:8.6.2',blog:'180381780',post:'1746',tz:'8',srv:'evanweinberg.com'} ]);
+	_stq.push([ 'clickTrackerInit', '180381780', '1746' ]);
+</script>
+
+
+</body>
+</html>

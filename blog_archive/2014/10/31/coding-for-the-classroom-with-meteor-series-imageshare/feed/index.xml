@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	
+	xmlns:georss="http://www.georss.org/georss"
+	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+	
+	>
+<channel>
+	<title>
+	Comments on: Coding for the Classroom with Meteor Series: ImageShare	</title>
+	<atom:link href="/2014/10/31/coding-for-the-classroom-with-meteor-series-imageshare/feed/" rel="self" type="application/rss+xml" />
+	<link>/2014/10/31/coding-for-the-classroom-with-meteor-series-imageshare/</link>
+	<description>iteration, making, building, and coding in education</description>
+	<lastBuildDate>Fri, 14 Nov 2014 09:04:55 +0000</lastBuildDate>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.7.6</generator>
+	<item>
+		<title>
+		By: Evan Weinberg		</title>
+		<link>/2014/10/31/coding-for-the-classroom-with-meteor-series-imageshare/#comment-330</link>
+
+		<dc:creator><![CDATA[Evan Weinberg]]></dc:creator>
+		<pubDate>Fri, 14 Nov 2014 09:04:55 +0000</pubDate>
+		<guid isPermaLink="false">/?p=1979#comment-330</guid>
+
+					<description><![CDATA[In reply to &lt;a href=&quot;/2014/10/31/coding-for-the-classroom-with-meteor-series-imageshare/#comment-324&quot;&gt;John Burk&lt;/a&gt;.
+
+Thanks John - let me know how it goes when you give it a  go.]]></description>
+			<content:encoded><![CDATA[<p>In reply to <a href="/2014/10/31/coding-for-the-classroom-with-meteor-series-imageshare/#comment-324">John Burk</a>.</p>
+<p>Thanks John &#8211; let me know how it goes when you give it a  go.</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: Evan Weinberg		</title>
+		<link>/2014/10/31/coding-for-the-classroom-with-meteor-series-imageshare/#comment-329</link>
+
+		<dc:creator><![CDATA[Evan Weinberg]]></dc:creator>
+		<pubDate>Fri, 14 Nov 2014 09:04:34 +0000</pubDate>
+		<guid isPermaLink="false">/?p=1979#comment-329</guid>
+
+					<description><![CDATA[In reply to &lt;a href=&quot;/2014/10/31/coding-for-the-classroom-with-meteor-series-imageshare/#comment-328&quot;&gt;Dan Meyer&lt;/a&gt;.
+
+Hi Dan,
+
+Luckily on Meteor, it&#039;s a single line: deploy XXXX.meteor.com where XXXX is the name of the URL you want your app to be located at. That&#039;s definitely another one of the perks to using it.
+
+The tutorial I made was to show how an individual teacher could put this together for his/her class or workshop. The idea there would be to use it on the local network, which would be quite fast given that it’s all in the same room, and isolated from the big, bad internet at large. Only people on the local network could upload, which probably would limit the material to the people in the room.
+
+If I were putting this together as a production site, on the other hand, I’d lock it down a lot more than I did in this tutorial. For example, people could easily submit anything they wanted up to the site, and it would be totally anonymous. There’s no logging of who is posting what. Furthermore, there is only one ‘room’ at the moment. I’d make it so that individual users could create rooms for themselves, accept images for different prompts, etc. A QR code would be a quick way to get mobile users to a particular room/url. 
+
+In short, there are lots of possibilities for making this happen on a general site, but not feasible for a tutorial that I wanted to keep under 30 minutes. I also figure there are other solutions out there (GDocs, for one) that might work for this. I could certainly be wrong there though. Many of my code creations are born because other options, particularly through sites based in the US, tend to be painfully slow going here in China.
+
+]]></description>
+			<content:encoded><![CDATA[<p>In reply to <a href="/2014/10/31/coding-for-the-classroom-with-meteor-series-imageshare/#comment-328">Dan Meyer</a>.</p>
+<p>Hi Dan,</p>
+<p>Luckily on Meteor, it&#8217;s a single line: deploy XXXX.meteor.com where XXXX is the name of the URL you want your app to be located at. That&#8217;s definitely another one of the perks to using it.</p>
+<p>The tutorial I made was to show how an individual teacher could put this together for his/her class or workshop. The idea there would be to use it on the local network, which would be quite fast given that it’s all in the same room, and isolated from the big, bad internet at large. Only people on the local network could upload, which probably would limit the material to the people in the room.</p>
+<p>If I were putting this together as a production site, on the other hand, I’d lock it down a lot more than I did in this tutorial. For example, people could easily submit anything they wanted up to the site, and it would be totally anonymous. There’s no logging of who is posting what. Furthermore, there is only one ‘room’ at the moment. I’d make it so that individual users could create rooms for themselves, accept images for different prompts, etc. A QR code would be a quick way to get mobile users to a particular room/url. </p>
+<p>In short, there are lots of possibilities for making this happen on a general site, but not feasible for a tutorial that I wanted to keep under 30 minutes. I also figure there are other solutions out there (GDocs, for one) that might work for this. I could certainly be wrong there though. Many of my code creations are born because other options, particularly through sites based in the US, tend to be painfully slow going here in China.</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: Dan Meyer		</title>
+		<link>/2014/10/31/coding-for-the-classroom-with-meteor-series-imageshare/#comment-328</link>
+
+		<dc:creator><![CDATA[Dan Meyer]]></dc:creator>
+		<pubDate>Thu, 13 Nov 2014 11:42:27 +0000</pubDate>
+		<guid isPermaLink="false">/?p=1979#comment-328</guid>
+
+					<description><![CDATA[In reply to &lt;a href=&quot;/2014/10/31/coding-for-the-classroom-with-meteor-series-imageshare/#comment-327&quot;&gt;bcphysics&lt;/a&gt;.
+
+Thanks for putting this together, Evan. I suppose my next question is similar to BC&#039;s here: how does one deploy onto the Internet as opposed to a local server?
+
+I guess a tutorial there would be pretty tough to do since the answer probably varies by the hosting service.]]></description>
+			<content:encoded><![CDATA[<p>In reply to <a href="/2014/10/31/coding-for-the-classroom-with-meteor-series-imageshare/#comment-327">bcphysics</a>.</p>
+<p>Thanks for putting this together, Evan. I suppose my next question is similar to BC&#8217;s here: how does one deploy onto the Internet as opposed to a local server?</p>
+<p>I guess a tutorial there would be pretty tough to do since the answer probably varies by the hosting service.</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: bcphysics		</title>
+		<link>/2014/10/31/coding-for-the-classroom-with-meteor-series-imageshare/#comment-327</link>
+
+		<dc:creator><![CDATA[bcphysics]]></dc:creator>
+		<pubDate>Tue, 04 Nov 2014 01:34:36 +0000</pubDate>
+		<guid isPermaLink="false">/?p=1979#comment-327</guid>
+
+					<description><![CDATA[In reply to &lt;a href=&quot;/2014/10/31/coding-for-the-classroom-with-meteor-series-imageshare/#comment-326&quot;&gt;Evan Weinberg&lt;/a&gt;.
+
+The apps I&#039;ve thought about would have to be on the Web. We don&#039;t have computers in the classroom. In fact, we only have computer access every 2nd day :(]]></description>
+			<content:encoded><![CDATA[<p>In reply to <a href="/2014/10/31/coding-for-the-classroom-with-meteor-series-imageshare/#comment-326">Evan Weinberg</a>.</p>
+<p>The apps I&#8217;ve thought about would have to be on the Web. We don&#8217;t have computers in the classroom. In fact, we only have computer access every 2nd day 🙁</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: Evan Weinberg		</title>
+		<link>/2014/10/31/coding-for-the-classroom-with-meteor-series-imageshare/#comment-326</link>
+
+		<dc:creator><![CDATA[Evan Weinberg]]></dc:creator>
+		<pubDate>Tue, 04 Nov 2014 01:29:47 +0000</pubDate>
+		<guid isPermaLink="false">/?p=1979#comment-326</guid>
+
+					<description><![CDATA[In reply to &lt;a href=&quot;/2014/10/31/coding-for-the-classroom-with-meteor-series-imageshare/#comment-325&quot;&gt;bcphysics&lt;/a&gt;.
+
+All I have is my laptop on the same wi-fi network as my students - no separate server. The moment I realized this was possible was the moment I suddenly had a lot less time on my hands, because I was always looking to make activities that effectively used this for good things in my classroom. I think this is a wireless router setting that is out of my control, but I haven&#039;t had an issue in different places (including hotel wifi networks) getting it to work.
+
+Meteor does allow you to easily deploy your app to the web though with a one line command, if you need it.]]></description>
+			<content:encoded><![CDATA[<p>In reply to <a href="/2014/10/31/coding-for-the-classroom-with-meteor-series-imageshare/#comment-325">bcphysics</a>.</p>
+<p>All I have is my laptop on the same wi-fi network as my students &#8211; no separate server. The moment I realized this was possible was the moment I suddenly had a lot less time on my hands, because I was always looking to make activities that effectively used this for good things in my classroom. I think this is a wireless router setting that is out of my control, but I haven&#8217;t had an issue in different places (including hotel wifi networks) getting it to work.</p>
+<p>Meteor does allow you to easily deploy your app to the web though with a one line command, if you need it.</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: bcphysics		</title>
+		<link>/2014/10/31/coding-for-the-classroom-with-meteor-series-imageshare/#comment-325</link>
+
+		<dc:creator><![CDATA[bcphysics]]></dc:creator>
+		<pubDate>Mon, 03 Nov 2014 03:15:15 +0000</pubDate>
+		<guid isPermaLink="false">/?p=1979#comment-325</guid>
+
+					<description><![CDATA[Evan, do you have your own server running in the classroom? Are you running a local network, or is it connected to the web?  This was the one stumbling block for me. Typical shared hosting won&#039;t allow a person to install meteor and I don&#039;t have my own server at school.]]></description>
+			<content:encoded><![CDATA[<p>Evan, do you have your own server running in the classroom? Are you running a local network, or is it connected to the web?  This was the one stumbling block for me. Typical shared hosting won&#8217;t allow a person to install meteor and I don&#8217;t have my own server at school.</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: John Burk		</title>
+		<link>/2014/10/31/coding-for-the-classroom-with-meteor-series-imageshare/#comment-324</link>
+
+		<dc:creator><![CDATA[John Burk]]></dc:creator>
+		<pubDate>Sun, 02 Nov 2014 01:14:52 +0000</pubDate>
+		<guid isPermaLink="false">/?p=1979#comment-324</guid>
+
+					<description><![CDATA[Evan, this is awesome. Thanks so much for doing this, and I can&#039;t wait to try this out.]]></description>
+			<content:encoded><![CDATA[<p>Evan, this is awesome. Thanks so much for doing this, and I can&#8217;t wait to try this out.</p>
+]]></content:encoded>
+		
+			</item>
+	</channel>
+</rss>

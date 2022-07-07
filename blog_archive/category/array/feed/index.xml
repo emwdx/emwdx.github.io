@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	
+	xmlns:georss="http://www.georss.org/georss"
+	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+	>
+
+<channel>
+	<title>Array</title>
+	<atom:link href="/category/array/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>iteration, making, building, and coding in education</description>
+	<lastBuildDate>Thu, 07 Apr 2016 01:19:05 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.7.6</generator>
+<site xmlns="com-wordpress:feed-additions:1">180381780</site>	<item>
+		<title>Trigonometric Graphs and the Box Method</title>
+		<link>/2016/04/07/trigonometric-graphs-and-the-box-method/</link>
+					<comments>/2016/04/07/trigonometric-graphs-and-the-box-method/#respond</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Thu, 07 Apr 2016 01:19:05 +0000</pubDate>
+				<category><![CDATA[Array]]></category>
+		<guid isPermaLink="false">/?p=2425</guid>
+
+					<description><![CDATA[Graphing trigonometric functions is a crucial skill, but there is a lot of reasoning involved in the process. I learned the method that follows from a colleague in my first years of teaching in the Bronx, and used it later on when I actually taught Algebra 2 and PreCalculus. Here&#8217;s]]></description>
+										<content:encoded><![CDATA[<p>Graphing trigonometric functions is a crucial skill, but there is a lot of reasoning involved in the process. I learned the method that follows from a colleague in my first years of teaching in the Bronx, and used it later on when I actually taught Algebra 2 and PreCalculus.</p>
+<p>Here&#8217;s an example for f(x) = 2 cos(2x) + 3:</p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2016/04/img_2552-3.jpg" rel="attachment wp-att-2431"><img loading="lazy" class="alignnone size-large wp-image-2431" src="http://blog.evanweinberg.org/wp-content/uploads/2016/04/img_2552-3-1024x824.jpg" alt="img_2552-3" width="584" height="470" srcset="/wp-content/uploads/2016/04/img_2552-3-1024x824.jpg 1024w, /wp-content/uploads/2016/04/img_2552-3-300x242.jpg 300w, /wp-content/uploads/2016/04/img_2552-3-768x618.jpg 768w, /wp-content/uploads/2016/04/img_2552-3-1536x1237.jpg 1536w, /wp-content/uploads/2016/04/img_2552-3-2048x1649.jpg 2048w, /wp-content/uploads/2016/04/img_2552-3-1200x966.jpg 1200w, /wp-content/uploads/2016/04/img_2552-3-1980x1594.jpg 1980w" sizes="(max-width: 584px) 100vw, 584px" /></a></p>
+<p>Students first (lightly) draw a box that is one period wide, twice the amplitude tall, and centered vertically on the midline of the sinusoid. The process of doing this isolates the reasoning about transformations of the function from the actual drawing of the graph, which also takes some skill. I usually ask students to state the period, amplitude, and average value anyway, but this method implicitly requires them to find these quantities anyway. We use the language of the amplitude, period, and average value to describe this box and the transformations  of the parent function.</p>
+<p>Once the box is in the right place, then we can focus on the graphing details. Is it a cosine or sine? How does the graph of each fit into the box we have drawn? Where does the curve cross the midline? This conversation is separate from the location and dimension conversations, and this is a good thing. The shape of the curve merits a separate line of reasoning, and encouraging that separation through this method reduces the cognitive demand along the way. I have also seen that keeping this shape conversation separate has reduced the quantity of the pointy sawtooth graphs that students inevitably produce.</p>
+<p>I have considered doing this for other parent functions, but haven&#8217;t been convinced of the potential payoff yet compared with the perfect fit thus far of the trigonometric family of functions. Thoughts?</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2016/04/07/trigonometric-graphs-and-the-box-method/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">2425</post-id>	</item>
+		<item>
+		<title>Rethinking Class Notes with OneNote</title>
+		<link>/2015/08/30/rethinking-class-notes-with-onenote/</link>
+					<comments>/2015/08/30/rethinking-class-notes-with-onenote/#comments</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Sun, 30 Aug 2015 07:11:59 +0000</pubDate>
+				<category><![CDATA[Array]]></category>
+		<guid isPermaLink="false">/?p=2280</guid>
+
+					<description><![CDATA[tl;dr Rather than being the source of all of the notes for each class, I&#8217;m having students contribute to a OneNote Class Notebook. Two students per class are responsible for making sure that the class warm-up, practice problems, content and discussions, and questions are all updated on a page within]]></description>
+										<content:encoded><![CDATA[<h4>tl;dr</h4>
+<p>Rather than being the source of all of the notes for each class, I&#8217;m having students contribute to a OneNote Class Notebook. Two students per class are responsible for making sure that the class warm-up, practice problems, content and discussions, and questions are all updated on a page within a notebook. Since the pages are all editable by all students, this will lead to a collaborative document that represents all of the work we will have done by the end of the year.</p>
+<hr>
+<p>I had an interactive whiteboard in my various classrooms for eight years straight. Three years ago, I gave mine up for a number of reasons. In its place, I chose a projector, tablet, and stylus, which let me move around the room. The goal was the same &#8211; create electronic versions of the written work I (and students) did in class beyond the duration of a single class period.</p>
+<p>Electronic class notes, at least in theory, solved a number of problems. Students that were absent didn&#8217;t need to borrow notebooks from a friend to know what they missed. Students that might not be quick at writing down notes from the board could copy those notes later. This also served as a record of what <u>actually</u> transpired in class, which I have found useful for planning purposes later on the year, as well as in future years.</p>
+<p>Unfortunately, students rarely take advantage of these capabilities. Students nowadays don&#8217;t tend to copy notes from class that they miss since they are available otherwise &#8211; the benefit of muscle memory that comes from writing down the important parts is one of the obvious losses. Problems that get written down are not connected to each other because I don&#8217;t necessarily do this in what I write in the notes. The handouts I make are small enough to be taped/glued into their notebooks, which means students shouldn&#8217;t have to copy over the problems. When I tell them to do these problems in their notebooks, some students try to do them on the small sheet, even though there is limited space. Students do try the problems from the class on their own by looking at the class handout, which is important, but they don&#8217;t tend to take the time to write down the definitions or concepts that they will need to remember for later. Much of this we develop as a class after doing problems, so the benefit of that social capital in the room does not pass to those that miss class.</p>
+<p>I also admit there is an inconsistency in what I ask students to do with those notes. Students ask me to wait for them to copy solutions to problems during class before moving on. My response is to ask them to do that outside of class since I want to spend time during class doing problems, not copying. I see this as a reasonable goal, but given that students don&#8217;t tend to correct their notes outside of class, I doubt that students actually do so after I suggest it.</p>
+<p>I&#8217;ve also thought about looking into interactive notebooks, but am nudged away from them for two reasons. One is the initial time investment required. I understand the idea that once the notebooks have been created, they can be used in future periods or iterations of the class with minor tweaking. I&#8217;ve only taught the same course in a row a few times, however, and never with multiple sections. This has never seemed like a worthy investment in the quality of learning it enables.</p>
+<p>The bigger reason &#8211; and the reason that wants me to get away from creating notebooks all together, not just interactive &#8211; is that interactive notebooks consist of me being the source of virtually everything students record in their notebook. Yes, they fill in the blanks and provide examples, but they can&#8217;t move forward unless I provide them the structure. To some extent I provide that structure with anything I do in the classroom, but this seems to be a step backwards in helping my students understand how to structure learning on their own.</p>
+<p>By the end of second semester last year, I pledged to come up with an alternative to the class notes I had been creating for students. I had sworn off Google Drive and Google Docs due to China blockage issues and a lack of a viable VPN solution or all of my students. I have seen a lot of creative use of student crowd-sourced resources that got away from a single source of teacher-created notes. When I first met <a href="http://adifference.blogspot.hk/">Darren Kuropatwa</a> a few years ago at the <a href="http://learning2.org/">Learning 2.011</a> conference, he described creating a structure like this through class blogs. While we had a WordPress server at our school, I never liked the interface as a way to easily get the sort of interaction that I wanted about the class, so I didn&#8217;t move forward on making it happen then, or for the past, um, four years.</p>
+<p>When our school made the move to Office 365 last year, however, I found that OneNote, and specifically, their Class Notebooks option, made a pretty clear path toward what I pictured for this resource. I&#8217;ve based my redesign of how class notes fit in to my instruction through this structure.</p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2015/08/Screen-Shot-2015-08-30-at-2.36.32-PM.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2015/08/Screen-Shot-2015-08-30-at-2.36.32-PM-1024x611.png" alt="Screen Shot 2015-08-30 at 2.36.32 PM" width="500" height="298" class="alignnone size-large wp-image-2283" srcset="/wp-content/uploads/2015/08/Screen-Shot-2015-08-30-at-2.36.32-PM-1024x611.png 1024w, /wp-content/uploads/2015/08/Screen-Shot-2015-08-30-at-2.36.32-PM-300x179.png 300w, /wp-content/uploads/2015/08/Screen-Shot-2015-08-30-at-2.36.32-PM-768x458.png 768w, /wp-content/uploads/2015/08/Screen-Shot-2015-08-30-at-2.36.32-PM-1536x917.png 1536w, /wp-content/uploads/2015/08/Screen-Shot-2015-08-30-at-2.36.32-PM-1200x716.png 1200w, /wp-content/uploads/2015/08/Screen-Shot-2015-08-30-at-2.36.32-PM-1980x1182.png 1980w, /wp-content/uploads/2015/08/Screen-Shot-2015-08-30-at-2.36.32-PM.png 1994w" sizes="(max-width: 500px) 100vw, 500px" /></a></p>
+<p>For those that don&#8217;t know, a OneNote notebook can consist of multiple sections (which I&#8217;m labeling Unit 1, Unit 2, etc), and each section consists of multiple pages (which I&#8217;m labeling Day 1, Day 2, and so on.) In addition, the Class Notebook (which is specifically offered to school that adopt Office 365) offers  three distinct sections:</p>
+<ul>
+<li>A content library, in which teachers can read, edit, and view pages, and students can view, but not edit.</li>
+<li>A collaboration space, in which both teachers and students have read/write/view access to pages and sections.</li>
+<li>An individual section for each student, visible and editable by both the teacher and the individual student, but students can&#8217;t view each other&#8217;s individual sections.</li>
+</ul>
+<p>Through either the browser or a native application, students get real time view and edit capability of any notebook that is shared with the class. This means we have the potential for a truly class authored resource for each group of students, which is ridiculously cool.</p>
+<p>To be clear, we&#8217;re been working on the roll out of some new computer policies at our school, so I&#8217;ve had to figure out what students do and don&#8217;t have access to before creating expectations that can be assessed. Now that students have figured out how to get to the notebooks, here is my plan for students taking charge of the class notebook.</p>
+<p>Each class will have two students selected to manage the day&#8217;s notebook page. By the next class, the page for that day&#8217;s class should contain:</p>
+<ul>
+<li>Warm-Up and solutions</li>
+<li>definitions and explanations of concepts discussed during class</li>
+<li>4 – 6 practice problems and solutions</li>
+<li>class handouts</li>
+<li>questions or ideas that we didn’t get to during class</li>
+</ul>
+<p>Grading for this element of the course is binary (Meets/Does Not Meet Expectations) but is also ongoing throughout the semester, so I can give students feedback on their day&#8217;s notes and ask for it to be updated/improved.</p>
+<p>Since we&#8217;ve had a few days of class before students are getting control of the notebook, I&#8217;ve made the notes at the beginning so students can see what I&#8217;m looking for. Students have also suggested that they could add links to resources they find online that they find helpful, and I&#8217;m all for this. I&#8217;m sure that we will come up with more features as time goes by.</p>
+<p>I&#8217;m just at the beginning of this, but the comments from students make it sound like they are, at least somewhat, into giving this a try. I know I&#8217;m going to be sharing things that the class puts together at the front of the room &#8211; that&#8217;s why I have a projector and the resources to do so, and those will continue to be in the notes. I&#8217;m hoping that by giving students more ownership of this entity by having all of us create it together. This doesn&#8217;t necessarily change how students are using <u>their</u> notebooks in class, but I think that might be something that happens as a direct consequence of shifting emphasis to an online notebook.</p>
+<p>I&#8217;m giving this a try, and as with anything I try, I&#8217;ll do my best to share how it develops here. I&#8217;m pretty excited to see what it becomes over time.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2015/08/30/rethinking-class-notes-with-onenote/feed/</wfw:commentRss>
+			<slash:comments>4</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">2280</post-id>	</item>
+	</channel>
+</rss>

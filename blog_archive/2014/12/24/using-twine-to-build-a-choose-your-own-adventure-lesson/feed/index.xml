@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	
+	xmlns:georss="http://www.georss.org/georss"
+	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+	
+	>
+<channel>
+	<title>
+	Comments on: Using Twine to Build a Choose Your Own Adventure Lesson	</title>
+	<atom:link href="/2014/12/24/using-twine-to-build-a-choose-your-own-adventure-lesson/feed/" rel="self" type="application/rss+xml" />
+	<link>/2014/12/24/using-twine-to-build-a-choose-your-own-adventure-lesson/</link>
+	<description>iteration, making, building, and coding in education</description>
+	<lastBuildDate>Fri, 02 Jan 2015 21:49:03 +0000</lastBuildDate>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.7.6</generator>
+	<item>
+		<title>
+		By: Evan Weinberg		</title>
+		<link>/2014/12/24/using-twine-to-build-a-choose-your-own-adventure-lesson/#comment-360</link>
+
+		<dc:creator><![CDATA[Evan Weinberg]]></dc:creator>
+		<pubDate>Fri, 02 Jan 2015 21:49:03 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2024#comment-360</guid>
+
+					<description><![CDATA[In reply to &lt;a href=&quot;/2014/12/24/using-twine-to-build-a-choose-your-own-adventure-lesson/#comment-358&quot;&gt;mrowen&lt;/a&gt;.
+
+I haven&#039;t, but I&#039;m adding it to the list. Thanks!]]></description>
+			<content:encoded><![CDATA[<p>In reply to <a href="/2014/12/24/using-twine-to-build-a-choose-your-own-adventure-lesson/#comment-358">mrowen</a>.</p>
+<p>I haven&#8217;t, but I&#8217;m adding it to the list. Thanks!</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: goldenoj		</title>
+		<link>/2014/12/24/using-twine-to-build-a-choose-your-own-adventure-lesson/#comment-359</link>
+
+		<dc:creator><![CDATA[goldenoj]]></dc:creator>
+		<pubDate>Tue, 30 Dec 2014 17:36:18 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2024#comment-359</guid>
+
+					<description><![CDATA[Here&#039;s my try at a math twine. I&#039;d really love any feedback: http://twinery.org/2/#stories/311e9a3a-69d3-ee67-6f51-33ba43314dfc/play
+
+It was a bit labor intensive, but mostly because I wanted pictures. I wound up loading them to photobucket and using the  tag.]]></description>
+			<content:encoded><![CDATA[<p>Here&#8217;s my try at a math twine. I&#8217;d really love any feedback: <a href="http://twinery.org/2/#stories/311e9a3a-69d3-ee67-6f51-33ba43314dfc/play" rel="nofollow ugc">http://twinery.org/2/#stories/311e9a3a-69d3-ee67-6f51-33ba43314dfc/play</a></p>
+<p>It was a bit labor intensive, but mostly because I wanted pictures. I wound up loading them to photobucket and using the  tag.</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: mrowen		</title>
+		<link>/2014/12/24/using-twine-to-build-a-choose-your-own-adventure-lesson/#comment-357</link>
+
+		<dc:creator><![CDATA[mrowen]]></dc:creator>
+		<pubDate>Thu, 25 Dec 2014 15:44:59 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2024#comment-357</guid>
+
+					<description><![CDATA[In reply to &lt;a href=&quot;/2014/12/24/using-twine-to-build-a-choose-your-own-adventure-lesson/#comment-356&quot;&gt;Evan Weinberg&lt;/a&gt;.
+
+Have either of y&#039;all played with Oppia? It allows you to send a response based on any kind of input. I thought it had a lot of potential, but took way too long for me to build. I&#039;ve been wanting to do something like this though, so I&#039;m excited to try out Twine, thanks for sharing Evan!]]></description>
+			<content:encoded><![CDATA[<p>In reply to <a href="/2014/12/24/using-twine-to-build-a-choose-your-own-adventure-lesson/#comment-356">Evan Weinberg</a>.</p>
+<p>Have either of y&#8217;all played with Oppia? It allows you to send a response based on any kind of input. I thought it had a lot of potential, but took way too long for me to build. I&#8217;ve been wanting to do something like this though, so I&#8217;m excited to try out Twine, thanks for sharing Evan!</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: Evan Weinberg		</title>
+		<link>/2014/12/24/using-twine-to-build-a-choose-your-own-adventure-lesson/#comment-356</link>
+
+		<dc:creator><![CDATA[Evan Weinberg]]></dc:creator>
+		<pubDate>Wed, 24 Dec 2014 13:46:52 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2024#comment-356</guid>
+
+					<description><![CDATA[In reply to &lt;a href=&quot;/2014/12/24/using-twine-to-build-a-choose-your-own-adventure-lesson/#comment-355&quot;&gt;Andy &quot;SuperFly&quot; Rundquist&lt;/a&gt;.
+
+That&#039;s definitely a concern. Its easy to handle for compare tasks, but challenging otherwise.  Some JS might make it possible to show/hide links based on an entered numerical value. Combining a back end to collect data would also make this really powerful. ]]></description>
+			<content:encoded><![CDATA[<p>In reply to <a href="/2014/12/24/using-twine-to-build-a-choose-your-own-adventure-lesson/#comment-355">Andy &#8220;SuperFly&#8221; Rundquist</a>.</p>
+<p>That&#8217;s definitely a concern. Its easy to handle for compare tasks, but challenging otherwise.  Some JS might make it possible to show/hide links based on an entered numerical value. Combining a back end to collect data would also make this really powerful. </p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: Andy "SuperFly" Rundquist		</title>
+		<link>/2014/12/24/using-twine-to-build-a-choose-your-own-adventure-lesson/#comment-355</link>
+
+		<dc:creator><![CDATA[Andy "SuperFly" Rundquist]]></dc:creator>
+		<pubDate>Wed, 24 Dec 2014 13:39:27 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2024#comment-355</guid>
+
+					<description><![CDATA[Cool idea! The only struggle I have thinking about this is how to predict the types of mistakes students will make. That&#039;s, of course, the same problem with any sort of multiple choice approach. I wonder what it would take to make it handle any numeric response from the student?]]></description>
+			<content:encoded><![CDATA[<p>Cool idea! The only struggle I have thinking about this is how to predict the types of mistakes students will make. That&#8217;s, of course, the same problem with any sort of multiple choice approach. I wonder what it would take to make it handle any numeric response from the student?</p>
+]]></content:encoded>
+		
+			</item>
+	</channel>
+</rss>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	
+	xmlns:georss="http://www.georss.org/georss"
+	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+	
+	>
+<channel>
+	<title>
+	Comments on: Cell phone tracking, Processing, and computational thinking	</title>
+	<atom:link href="/2012/11/28/computational-thinking-cell-phone-location/feed/" rel="self" type="application/rss+xml" />
+	<link>/2012/11/28/computational-thinking-cell-phone-location/</link>
+	<description>iteration, making, building, and coding in education</description>
+	<lastBuildDate>Thu, 29 Nov 2012 13:49:12 +0000</lastBuildDate>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.7.6</generator>
+	<item>
+		<title>
+		By: Andy "SuperFly" Rundquist		</title>
+		<link>/2012/11/28/computational-thinking-cell-phone-location/#comment-151</link>
+
+		<dc:creator><![CDATA[Andy "SuperFly" Rundquist]]></dc:creator>
+		<pubDate>Thu, 29 Nov 2012 13:49:12 +0000</pubDate>
+		<guid isPermaLink="false">/?p=801#comment-151</guid>
+
+					<description><![CDATA[In reply to &lt;a href=&quot;/2012/11/28/computational-thinking-cell-phone-location/#comment-150&quot;&gt;Evan Weinberg&lt;/a&gt;.
+
+I agree with the advantages you talk about. However, sometimes I find that student totally understand the physics/math behind the brute force (though maybe the logistics is tough), when they can&#039;t seem to grasp the analytical approach. This seems especially true when there&#039;s some fancy math trick. The Brachistochrone problem comes to mind. In that, to do it analytically, you have to do a cute variable substitution. My students often say &quot;they wouldn&#039;t have thought of that.&quot;]]></description>
+			<content:encoded><![CDATA[<p>In reply to <a href="/2012/11/28/computational-thinking-cell-phone-location/#comment-150">Evan Weinberg</a>.</p>
+<p>I agree with the advantages you talk about. However, sometimes I find that student totally understand the physics/math behind the brute force (though maybe the logistics is tough), when they can&#8217;t seem to grasp the analytical approach. This seems especially true when there&#8217;s some fancy math trick. The Brachistochrone problem comes to mind. In that, to do it analytically, you have to do a cute variable substitution. My students often say &#8220;they wouldn&#8217;t have thought of that.&#8221;</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: Evan Weinberg		</title>
+		<link>/2012/11/28/computational-thinking-cell-phone-location/#comment-150</link>
+
+		<dc:creator><![CDATA[Evan Weinberg]]></dc:creator>
+		<pubDate>Thu, 29 Nov 2012 12:47:28 +0000</pubDate>
+		<guid isPermaLink="false">/?p=801#comment-150</guid>
+
+					<description><![CDATA[If the goal is to get an answer and do something with it, brute force is fine. I think it sits well with students because at some level they feel like they are getting away with something. In almost every case where an analytical method has an advantage (insight into the problem or generalization being the primary reasons this happens) it ends up winning out because the brute force method pales in comparison to the speed or elegance of the analytic solution.]]></description>
+			<content:encoded><![CDATA[<p>If the goal is to get an answer and do something with it, brute force is fine. I think it sits well with students because at some level they feel like they are getting away with something. In almost every case where an analytical method has an advantage (insight into the problem or generalization being the primary reasons this happens) it ends up winning out because the brute force method pales in comparison to the speed or elegance of the analytic solution.</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: Andy "SuperFly" Rundquist		</title>
+		<link>/2012/11/28/computational-thinking-cell-phone-location/#comment-149</link>
+
+		<dc:creator><![CDATA[Andy "SuperFly" Rundquist]]></dc:creator>
+		<pubDate>Wed, 28 Nov 2012 15:17:35 +0000</pubDate>
+		<guid isPermaLink="false">/?p=801#comment-149</guid>
+
+					<description><![CDATA[I love brute force approaches, especially if there&#039;s an analytical approach that you can compare to. Which do you think resonates better with the students?]]></description>
+			<content:encoded><![CDATA[<p>I love brute force approaches, especially if there&#8217;s an analytical approach that you can compare to. Which do you think resonates better with the students?</p>
+]]></content:encoded>
+		
+			</item>
+	</channel>
+</rss>

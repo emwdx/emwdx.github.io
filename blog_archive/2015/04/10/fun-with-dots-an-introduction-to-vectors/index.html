@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="profile" href="https://gmpg.org/xfn/11">
+
+    <title>Dot Circle &#8211; An Introduction to Vectors</title>
+<meta name="robots" content="max-image-preview:large">
+<link rel="dns-prefetch">
+<link rel="dns-prefetch" href="//fonts.googleapis.com">
+<link rel="dns-prefetch" href="//s.w.org">
+<link rel="alternate" type="application/rss+xml" title=" &raquo; Feed" href="/feed/">
+<link rel="alternate" type="application/rss+xml" title=" &raquo; Comments Feed" href="/comments/feed/">
+<link rel="alternate" type="application/rss+xml" title=" &raquo; Dot Circle &#8211; An Introduction to Vectors Comments Feed" href="/2015/04/10/fun-with-dots-an-introduction-to-vectors/feed/">
+		<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/svg\/","svgExt":".svg","source":{"concatemoji":"https13.229.58.164\/wp-includes\/js\/wp-emoji-release.min.js?ver=5.7.6"}};
+			!function(e,a,t){var n,r,o,i=a.createElement("canvas"),p=i.getContext&&i.getContext("2d");function s(e,t){var a=String.fromCharCode;p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,e),0,0);e=i.toDataURL();return p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,t),0,0),e===i.toDataURL()}function c(e){var t=a.createElement("script");t.src=e,t.defer=t.type="text/javascript",a.getElementsByTagName("head")[0].appendChild(t)}for(o=Array("flag","emoji"),t.supports={everything:!0,everythingExceptFlag:!0},r=0;r<o.length;r++)t.supports[o[r]]=function(e){if(!p||!p.fillText)return!1;switch(p.textBaseline="top",p.font="600 32px Arial",e){case"flag":return s([127987,65039,8205,9895,65039],[127987,65039,8203,9895,65039])?!1:!s([55356,56826,55356,56819],[55356,56826,8203,55356,56819])&&!s([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]);case"emoji":return!s([55357,56424,8205,55356,57212],[55357,56424,8203,55356,57212])}return!1}(o[r]),t.supports.everything=t.supports.everything&&t.supports[o[r]],"flag"!==o[r]&&(t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&t.supports[o[r]]);t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&!t.supports.flag,t.DOMReady=!1,t.readyCallback=function(){t.DOMReady=!0},t.supports.everything||(n=function(){t.readyCallback()},a.addEventListener?(a.addEventListener("DOMContentLoaded",n,!1),e.addEventListener("load",n,!1)):(e.attachEvent("onload",n),a.attachEvent("onreadystatechange",function(){"complete"===a.readyState&&t.readyCallback()})),(n=t.source||{}).concatemoji?c(n.concatemoji):n.wpemoji&&n.twemoji&&(c(n.twemoji),c(n.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+		<style type="text/css">img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}</style>
+	<link rel="stylesheet" id="wp-block-library-css" href="/wp-includes/css/dist/block-library/style.min.css?ver=5.7.6" type="text/css" media="all">
+<style id="wp-block-library-inline-css" type="text/css">.has-text-align-justify{text-align:justify;}</style>
+<link rel="stylesheet" id="wp-block-library-theme-css" href="/wp-includes/css/dist/block-library/theme.min.css?ver=5.7.6" type="text/css" media="all">
+<link rel="stylesheet" id="gist-style-css" href="/wp-content/themes/gist/style.css?ver=5.7.6" type="text/css" media="all">
+<style id="gist-style-inline-css" type="text/css">{ clip: rect(1px, 1px, 1px, 1px); height: 1px; position: absolute; overflow: hidden; width: 1px; }
+body { font-family: Open Sans; }body { font-size: 16px; }body { line-height : 2; }.breadcrumbs span.breadcrumb, .nav-links a, .search-form input[type=submit], #toTop, .candid-pagination .page-numbers.current, .candid-pagination .page-numbers:hover  { background : #ca9b52; }.search-form input.search-field, .sticky .p-15, .related-post-entries li, .candid-pagination .page-numbers { border-color : #ca9b52; }.error-404 h1, .no-results h1, a, a:visited, .related-post-entries .title:hover, .entry-title a:hover, .featured-post-title a:hover, .entry-meta.entry-category a,.widget li a:hover, .widget h1 a:hover, .widget h2 a:hover, .widget h3 a:hover, .site-title a, .site-title a:visited, .main-navigation ul li a:hover { color : #ca9b52; }.btn-primary { border: 2px solid #ca9b52;}</style>
+<link rel="stylesheet" id="drift-blog-style-css" href="/wp-content/themes/drift-blog/style.css?ver=5.7.6" type="text/css" media="all">
+<link rel="stylesheet" id="drift-blog-google-fonts-css" href="//fonts.googleapis.com/css?family=Playfair+Display&#038;ver=5.7.6" type="text/css" media="all">
+<link rel="stylesheet" id="gist-googleapis-css" href="//fonts.googleapis.com/css?family=Open+Sans&#038;ver=5.7.6" type="text/css" media="all">
+<link rel="stylesheet" id="gist-google-fonts-css" href="//fonts.googleapis.com/css?family=Oswald&#038;ver=5.7.6" type="text/css" media="all">
+<link rel="stylesheet" id="font-awesome-css" href="/wp-content/themes/gist/candidthemes/assets/framework/Font-Awesome/css/font-awesome.min.css?ver=4.7.0" type="text/css" media="all">
+<link rel="stylesheet" id="jetpack_css-css" href="/wp-content/plugins/jetpack/css/jetpack.css?ver=8.6.2" type="text/css" media="all">
+<script type="text/javascript" src="/wp-includes/js/jquery/jquery.min.js?ver=3.5.1" id="jquery-core-js"></script>
+<script type="text/javascript" src="/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.3.2" id="jquery-migrate-js"></script>
+<link rel="https://api.w.org/" href="/wp-json/">
+<link rel="alternate" type="application/json" href="/wp-json/wp/v2/posts/2136">
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="/wp-includes/wlwmanifest.xml"> 
+<meta name="generator" content="WordPress 5.7.6">
+<link rel="canonical" href="/2015/04/10/fun-with-dots-an-introduction-to-vectors/">
+<link rel="shortlink" href="/?p=2136">
+<link rel="alternate" type="application/json+oembed" href="/wp-json/oembed/1.0/embed?url=https%3A%2F%2F%2F2015%2F04%2F10%2Ffun-with-dots-an-introduction-to-vectors%2F">
+<link rel="alternate" type="text/xml+oembed" href="/wp-json/oembed/1.0/embed?url=https%3A%2F%2F%2F2015%2F04%2F10%2Ffun-with-dots-an-introduction-to-vectors%2F&#038;format=xml">
+<style type="text/css">img#wpstats{display:none}</style>
+<link rel="pingback" href="/xmlrpc.php">		<style type="text/css" id="wp-custom-css">.custom-logo{
+	height:300px;
+	width:300px
+	
+}</style>
+		</head>
+
+<body data-rsssl="1" class="post-template-default single single-post postid-2136 single-format-standard wp-custom-logo wp-embed-responsive ct-sticky-sidebar right-sidebar">
+    <div id="page" class="site container-main">
+        <a class="skip-link screen-reader-text" href="#content">Skip to content</a>
+
+        <header id="masthead" class="site-header" role="banner">
+            <div class="top-menu-container-inner container-inner">
+                    <div id="mainnav-wrap" class="clear">
+                        <div class="top-header-social">
+                            
+                            <button class="top-menu-toggle"><i class="fa fa-bars"></i></button>
+                        </div>
+
+                        <nav id="top-site-navigation" class="main-navigation" role="navigation">
+                            <div class="menu-pages-container"><ul id="top-menu" class="top-menu nav_menu">
+<li id="menu-item-2781" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-2781"><a href="/">Home</a></li>
+<li id="menu-item-2782" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2782"><a href="/about/">About Evan Weinberg</a></li>
+</ul></div>                        </nav>
+                            <!-- #site-navigation -->
+                    </div>
+                </div>
+                    <!-- .top-menu-container-inner -->
+            <div class="site-branding">
+                <div class="container-inner">
+                    <a href="/" class="custom-logo-link" rel="home"><img width="1000" height="1000" src="/wp-content/uploads/2018/10/for.next_.001.jpeg" class="custom-logo" alt="" srcset="/wp-content/uploads/2018/10/for.next_.001.jpeg 1000w, /wp-content/uploads/2018/10/for.next_.001-300x300.jpeg 300w, /wp-content/uploads/2018/10/for.next_.001-150x150.jpeg 150w, /wp-content/uploads/2018/10/for.next_.001-768x768.jpeg 768w" sizes="(max-width: 1000px) 100vw, 1000px"></a>                            <p class="site-title"><a href="/" rel="home"></a></p>
+                                                           <p class="site-description">iteration, making, building, and coding in education</p>
+                                                </div>
+                </div>
+                <!-- .site-branding -->
+
+                <div class="container-inner">
+                    <div id="mainnav-wrap">
+                        <nav id="site-navigation" class="main-navigation" role="navigation">
+                            <button class="menu-toggle" aria-controls="primary-menu" aria-expanded="false"><i class="fa fa-bars"></i></button>
+                                                            </nav>
+                            <!-- #site-navigation -->
+                        </div>
+                    </div>
+                    <!-- .container-inner -->
+                </header>
+                <!-- #masthead -->
+                <div class="header-image-block">
+                                    </div>
+
+                <div id="content" class="site-content container-inner p-t-15">
+	<div id="primary" class="content-area">
+		<main id="main" class="site-main">
+			<div class="breadcrumbs">
+                            </div>
+		
+<article id="post-2136" class="post-2136 post type-post status-publish format-standard has-post-thumbnail hentry category-ib category-teaching-philosophy category-teaching-stories tag-communicating-math tag-unit-systems tag-vectors tag-writing">
+    <div class="p-15 left-image">
+        <div class="ct-featured-image">
+            
+            <div class="post-thumbnail">
+                <img width="637" height="594" src="/wp-content/uploads/2015/04/Screen-Shot-2015-04-10-at-5.34.51-PM.png" class="attachment-gist-large-thumb size-gist-large-thumb wp-post-image" alt="" loading="lazy" srcset="/wp-content/uploads/2015/04/Screen-Shot-2015-04-10-at-5.34.51-PM.png 637w, /wp-content/uploads/2015/04/Screen-Shot-2015-04-10-at-5.34.51-PM-300x280.png 300w" sizes="(max-width: 637px) 100vw, 637px">            </div>
+<!-- .post-thumbnail -->
+
+                </div>
+        <div class="entry-content">
+            <header class="entry-header">
+                <h1 class="entry-title">Dot Circle &#8211; An Introduction to Vectors</h1>    </header>
+    <!-- .entry-header -->
+    <p>After learning from <a href="http://themathymurk.blogspot.com/">Jessica Murk</a> before our spring break about the idea of revising mathematical writing in class, I decided to try it as part of an introduction to the fourth topic in the IB Mathematics curriculum: vectors. The goal was to build a need for the information given by vectors and how they provide mathematical structure in a productive way.</p>
+<p>I started by adapting <a href="https://vimeo.com/86216890">Dan Meyer&#8217;s activity here</a> with a new set of dots. </p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2015/04/Screen-Shot-2015-04-07-at-7.56.06-AM.png"><img loading="lazy" src="https://blog.evanweinberg.org/wp-content/uploads/2015/04/Screen-Shot-2015-04-07-at-7.56.06-AM-300x288.png" alt="Screen Shot 2015-04-07 at 7.56.06 AM" width="300" height="288" class="alignnone size-medium wp-image-2137" srcset="/wp-content/uploads/2015/04/Screen-Shot-2015-04-07-at-7.56.06-AM-300x288.png 300w, /wp-content/uploads/2015/04/Screen-Shot-2015-04-07-at-7.56.06-AM.png 613w" sizes="(max-width: 300px) 100vw, 300px"></a></p>
+<p>I asked all students to pick one dot, and then asked a student to give the class instructions on which one they picked. They did a pretty good job with it, but there was quite a bit of ambiguity in their verbal descriptions, as I wanted. This is when I sprung Dan&#8217;s helpful second slide that made this process much easier:<br>
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2015/04/Screen-Shot-2015-04-07-at-7.59.47-AM.png"><img loading="lazy" src="https://blog.evanweinberg.org/wp-content/uploads/2015/04/Screen-Shot-2015-04-07-at-7.59.47-AM-300x296.png" alt="Screen Shot 2015-04-07 at 7.59.47 AM" width="300" height="296" class="alignnone size-medium wp-image-2138" srcset="/wp-content/uploads/2015/04/Screen-Shot-2015-04-07-at-7.59.47-AM-300x296.png 300w, /wp-content/uploads/2015/04/Screen-Shot-2015-04-07-at-7.59.47-AM.png 596w" sizes="(max-width: 300px) 100vw, 300px"></a></p>
+<p><b>Key Point #1: A common language or vocabulary makes it easy for us to communicate our ideas.  </b></p>
+<p>I then moved on to the next task. Students individually had to write directions for moving from the red dot to the blue dot. I gave them this one to start as a verbal task, but nobody was willing to take the bait after the last activity:<br>
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2015/04/Screen-Shot-2015-04-10-at-5.34.32-PM.png"><img loading="lazy" src="https://blog.evanweinberg.org/wp-content/uploads/2015/04/Screen-Shot-2015-04-10-at-5.34.32-PM.png" alt="Screen Shot 2015-04-10 at 5.34.32 PM" width="687" height="472" class="alignnone size-full wp-image-2148" srcset="/wp-content/uploads/2015/04/Screen-Shot-2015-04-10-at-5.34.32-PM.png 687w, /wp-content/uploads/2015/04/Screen-Shot-2015-04-10-at-5.34.32-PM-300x206.png 300w" sizes="(max-width: 687px) 100vw, 687px"></a></p>
+<p>Fair enough. </p>
+<p>I then gave one of the following images to each pairs of students, with nothing more than the same instruction to write directions from the red to the blue dot. </p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2015/04/Screen-Shot-2015-04-10-at-5.34.41-PM.png"><img loading="lazy" src="https://blog.evanweinberg.org/wp-content/uploads/2015/04/Screen-Shot-2015-04-10-at-5.34.41-PM-300x274.png" alt="Screen Shot 2015-04-10 at 5.34.41 PM" width="300" height="274" class="alignnone size-medium wp-image-2149" srcset="/wp-content/uploads/2015/04/Screen-Shot-2015-04-10-at-5.34.41-PM-300x274.png 300w, /wp-content/uploads/2015/04/Screen-Shot-2015-04-10-at-5.34.41-PM.png 649w" sizes="(max-width: 300px) 100vw, 300px"></a></p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2015/04/Screen-Shot-2015-04-10-at-5.34.51-PM.png"><img loading="lazy" src="https://blog.evanweinberg.org/wp-content/uploads/2015/04/Screen-Shot-2015-04-10-at-5.34.51-PM.png" alt="Screen Shot 2015-04-10 at 5.34.51 PM" width="637" height="594" class="alignnone size-full wp-image-2150" srcset="/wp-content/uploads/2015/04/Screen-Shot-2015-04-10-at-5.34.51-PM.png 637w, /wp-content/uploads/2015/04/Screen-Shot-2015-04-10-at-5.34.51-PM-300x280.png 300w" sizes="(max-width: 637px) 100vw, 637px"></a></p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2015/04/Screen-Shot-2015-04-10-at-5.34.56-PM.png"><img loading="lazy" src="https://blog.evanweinberg.org/wp-content/uploads/2015/04/Screen-Shot-2015-04-10-at-5.34.56-PM.png" alt="Screen Shot 2015-04-10 at 5.34.56 PM" width="637" height="601" class="alignnone size-full wp-image-2151" srcset="/wp-content/uploads/2015/04/Screen-Shot-2015-04-10-at-5.34.56-PM.png 637w, /wp-content/uploads/2015/04/Screen-Shot-2015-04-10-at-5.34.56-PM-300x283.png 300w" sizes="(max-width: 637px) 100vw, 637px"></a></p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2015/04/Screen-Shot-2015-04-10-at-5.35.02-PM.png"><img loading="lazy" src="https://blog.evanweinberg.org/wp-content/uploads/2015/04/Screen-Shot-2015-04-10-at-5.35.02-PM.png" alt="Screen Shot 2015-04-10 at 5.35.02 PM" width="641" height="568" class="alignnone size-full wp-image-2152" srcset="/wp-content/uploads/2015/04/Screen-Shot-2015-04-10-at-5.35.02-PM.png 641w, /wp-content/uploads/2015/04/Screen-Shot-2015-04-10-at-5.35.02-PM-300x266.png 300w" sizes="(max-width: 641px) 100vw, 641px"></a></p>
+<p>Here is a sampling:</p>
+<ul>
+<li>Move across 5 dots on the outermost layer counter-clockwise, with the blue dot at the bottom of paper (closest to you)</li>
+<li>Move 7 units to right, and move about (little less) 3 units up so that the blue dot is right on the vertical line</li>
+<li>Fin the dot that is directly opposite to the red dot that is across the diagram. Once there, move down one dot along the outermost layer of dots.</li>
+<li>Stay on the circle and move right for five units</li>
+<li>Move from coordinate $latex \frac{7 \pi}{6}$ to the coordinate of $latex 2 \pi$ on the unit circle.</li>
+</ul>
+<p>After putting the written descriptions next to the matching image, students then rotated from image to image, and applied <a href="http://themathymurk.blogspot.com/2014/09/where-do-i-put-p-introduction-to-peer.html">Jessica&#8217;s framework for students giving written feedback </a> for each description they saw.</p>
+<p>Here is some of the feedback they provided:<br>
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2015/04/Screen-Shot-2015-04-10-at-6.05.13-PM.png"><img loading="lazy" src="https://blog.evanweinberg.org/wp-content/uploads/2015/04/Screen-Shot-2015-04-10-at-6.05.13-PM-300x162.png" alt="Screen Shot 2015-04-10 at 6.05.13 PM" width="300" height="162" class="alignnone size-medium wp-image-2153" srcset="/wp-content/uploads/2015/04/Screen-Shot-2015-04-10-at-6.05.13-PM-300x162.png 300w, /wp-content/uploads/2015/04/Screen-Shot-2015-04-10-at-6.05.13-PM-768x416.png 768w, /wp-content/uploads/2015/04/Screen-Shot-2015-04-10-at-6.05.13-PM.png 931w" sizes="(max-width: 300px) 100vw, 300px"></a></p>
+<p>Then, without any input from me, I had students sit down and each write a new description. Just as Jessica promised, the descriptions were improved after students saw the work of others and focused on what it means to give specific and unambiguous directions.</p>
+<p>This is where I hijacked the results for my own purposes. I asked how the background information I gave helped in this task? They responded with:</p>
+<ul>
+<li>Grid/coordinate system in background of the dots</li>
+<li>Circle connecting dots &#8211; use directions and circles to explain how to move</li>
+<li>Connected all dots &#8211; move certain number of &#8216;units&#8217;</li>
+</ul>
+<p>One student also provided a useful statement that the best description was one that could not be misinterpreted. I identified the blue dot as (3,0), and asked if anyone could give coordinates for the red dot. Nobody could. One student asked where (0,0) was. I pointed to some other points as examples, and eventually a student identified the red dot as (3,8). Another said it could also be (3,-5). I pointed out that if I had asked students to plot (3,-5) at the beginning of the class, the answer would have been totally different.</p>
+<p>This all got us to think about what information is important about coordinates, what they tell us, and that if we agree on common units and a starting point, the rest can be interpreted from there. This was a perfect place to introduce the concept of unit vectors.</p>
+<p>We certainly spent some time wandering in the weeds, but this ended up being a really fun way to approach the new unit.</p>
+<p>If you are interested, here is the PDF containing all of the slides:<br>
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2015/04/Point-Circle.pdf">Point Circle</a></p>
+
+    <footer class="entry-footer">
+        </footer>
+<!-- .entry-footer -->
+</div>
+<!-- .entry-content -->
+</div>
+<!-- .p-15 -->
+</article><!-- #post-2136 -->
+
+	<nav class="navigation post-navigation" role="navigation" aria-label="Posts">
+		<h2 class="screen-reader-text">Post navigation</h2>
+		<div class="nav-links">
+<div class="nav-previous"><a href="/2015/04/10/formula-sheet-a-toolbox-or-takeout-menu/" rel="prev">Formula Sheet &#8211; A Toolbox or Takeout Menu?</a></div>
+<div class="nav-next"><a href="/2015/04/17/my-application-for-ade-2015/" rel="next">My Application for ADE 2015</a></div>
+</div>
+	</nav>            <div class="related-pots-block">
+                <h2 class="widget-title">
+                    Related Posts                </h2>
+                <ul class="related-post-entries clear">
+                                            <li>
+                                                        <div class="featured-desc">
+                                <a href="/2017/07/01/2016-2017-year-in-review-ib-mathematics-sl/">
+                                    <h2 class="title">
+                                       2016 &#8211; 2017 Year In Review: IB Mathematics SL                                    </h2>
+                                </a>
+                            </div>
+                        </li>
+                                            <li>
+                                                        <div class="featured-desc">
+                                <a href="/2017/06/05/too-many-reassessments-just-in-time-for-summer/">
+                                    <h2 class="title">
+                                       Too Many Reassessments, Just in Time for Summer                                    </h2>
+                                </a>
+                            </div>
+                        </li>
+                                            <li>
+                                                        <div class="featured-desc">
+                                <a href="/2017/05/19/assumptions-about-the-basics/">
+                                    <h2 class="title">
+                                       Assumptions About the Basics                                    </h2>
+                                </a>
+                            </div>
+                        </li>
+                                    </ul>
+            </div> <!-- .related-post-block -->
+        
+<div id="comments" class="comments-area">
+
+			<h2 class="comments-title">
+			1 thought on &ldquo;<span>Dot Circle &#8211; An Introduction to Vectors</span>&rdquo;		</h2>
+<!-- .comments-title -->
+
+		
+		<ol class="comment-list">
+					<li id="comment-365" class="comment even thread-even depth-1">
+			<article id="div-comment-365" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="https://secure.gravatar.com/avatar/a0b02914d7b38edeb864c2e646bd09a6?s=32&#038;d=mm&#038;r=g" srcset="https://secure.gravatar.com/avatar/a0b02914d7b38edeb864c2e646bd09a6?s=64&#038;d=mm&#038;r=g 2x" class="avatar avatar-32 photo" height="32" width="32" loading="lazy">						<b class="fn"><a href="http://themathymurk.blogspot.com/" rel="external nofollow ugc" class="url">Jessica</a></b> <span class="says">says:</span>					</div>
+<!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="/2015/04/10/fun-with-dots-an-introduction-to-vectors/#comment-365"><time datetime="2015-04-11T05:44:13+08:00">April 11, 2015 at 5:44 am</time></a>					</div>
+<!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>I love this!  &#8220;The best description was one that could not be misinterpreted.&#8221;  Brilliant!  I love seeing the use, impact, and effectiveness of the feedback!  Bravo, Evan!  Keep up the great work!</p>
+				</div>
+<!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="/2015/04/10/fun-with-dots-an-introduction-to-vectors/?replytocom=365#respond" data-commentid="365" data-postid="2136" data-belowelement="div-comment-365" data-respondelement="respond" data-replyto="Reply to Jessica" aria-label="Reply to Jessica">Reply</a></div>			</article><!-- .comment-body -->
+		</li>
+<!-- #comment-## -->
+		</ol>
+<!-- .comment-list -->
+
+			<div id="respond" class="comment-respond">
+		<h3 id="reply-title" class="comment-reply-title">Leave a Reply <small><a rel="nofollow" id="cancel-comment-reply-link" href="/2015/04/10/fun-with-dots-an-introduction-to-vectors/#respond" style="display:none;">Cancel reply</a></small>
+</h3>
+<form action="https13.229.58.164/wp-comments-post.php" method="post" id="commentform" class="comment-form" novalidate>
+<p class="comment-notes"><span id="email-notes">Your email address will not be published.</span> Required fields are marked <span class="required">*</span></p>
+<p class="comment-form-comment"><label for="comment">Comment</label> <textarea id="comment" name="comment" cols="45" rows="8" maxlength="65525" required="required"></textarea></p>
+<p class="comment-form-author"><label for="author">Name <span class="required">*</span></label> <input id="author" name="author" type="text" value="" size="30" maxlength="245" required="required"></p>
+<p class="comment-form-email"><label for="email">Email <span class="required">*</span></label> <input id="email" name="email" type="email" value="" size="30" maxlength="100" aria-describedby="email-notes" required="required"></p>
+<p class="comment-form-url"><label for="url">Website</label> <input id="url" name="url" type="url" value="" size="30" maxlength="200"></p>
+<p class="comment-form-cookies-consent"><input id="wp-comment-cookies-consent" name="wp-comment-cookies-consent" type="checkbox" value="yes"> <label for="wp-comment-cookies-consent">Save my name, email, and website in this browser for the next time I comment.</label></p>
+<p class="form-submit"><input name="submit" type="submit" id="submit" class="submit" value="Post Comment"> <input type="hidden" name="comment_post_ID" value="2136" id="comment_post_ID">
+<input type="hidden" name="comment_parent" id="comment_parent" value="0">
+</p>
+<p style="display: none;"><input type="hidden" id="akismet_comment_nonce" name="akismet_comment_nonce" value="47bfebb543"></p>
+<p style="display: none;"><input type="hidden" id="ak_js" name="ak_js" value="83"></p>
+</form>	</div>
+<!-- #respond -->
+	
+</div>
+<!-- #comments -->
+
+		</main><!-- #main -->
+	</div>
+<!-- #primary -->
+
+
+<aside id="secondary" class="widget-area" role="complementary">
+	<section id="categories-2" class="widget widget_categories"><h2 class="widget-title">Categories</h2>
+			<ul>
+					<li class="cat-item cat-item-2">
+<a href="/category/algebra-2/">algebra 2</a>
+</li>
+	<li class="cat-item cat-item-3">
+<a href="/category/array/">Array</a>
+</li>
+	<li class="cat-item cat-item-4">
+<a href="/category/calculus/">calculus</a>
+</li>
+	<li class="cat-item cat-item-5">
+<a href="/category/computational-thinking-2/">computational-thinking</a>
+</li>
+	<li class="cat-item cat-item-6">
+<a href="/category/geogebra/">geogebra</a>
+</li>
+	<li class="cat-item cat-item-7">
+<a href="/category/geometry/">geometry</a>
+</li>
+	<li class="cat-item cat-item-8">
+<a href="/category/ib/">IB</a>
+</li>
+	<li class="cat-item cat-item-9">
+<a href="/category/physics/">physics</a>
+</li>
+	<li class="cat-item cat-item-10">
+<a href="/category/precalculus/">precalculus</a>
+</li>
+	<li class="cat-item cat-item-11">
+<a href="/category/programming/">programming</a>
+</li>
+	<li class="cat-item cat-item-12">
+<a href="/category/reflection/">reflection</a>
+</li>
+	<li class="cat-item cat-item-13">
+<a href="/category/robotics/">robotics</a>
+</li>
+	<li class="cat-item cat-item-14">
+<a href="/category/standards-based-grading/">standards based grading</a>
+</li>
+	<li class="cat-item cat-item-15">
+<a href="/category/studentwork/">studentwork</a>
+</li>
+	<li class="cat-item cat-item-16">
+<a href="/category/teaching-philosophy/">teaching philosophy</a>
+</li>
+	<li class="cat-item cat-item-17">
+<a href="/category/teaching-stories/">teaching stories</a>
+</li>
+	<li class="cat-item cat-item-1">
+<a href="/category/uncategorized/">Uncategorized</a>
+</li>
+	<li class="cat-item cat-item-18">
+<a href="/category/year-in-review/">year-in-review</a>
+</li>
+			</ul>
+
+			</section><section id="meta-2" class="widget widget_meta"><h2 class="widget-title">Meta</h2>
+		<ul>
+						<li><a href="/wp-login.php">Log in</a></li>
+			<li><a href="/feed/">Entries feed</a></li>
+			<li><a href="/comments/feed/">Comments feed</a></li>
+
+			<li><a href="https://wordpress.org/">WordPress.org</a></li>
+		</ul>
+
+		</section></aside><!-- #secondary -->
+
+	</div>
+<!-- #content -->
+
+<footer id="colophon" class="site-footer">
+    		<div class="site-info">
+        			<span class="copy-right-text">All Right Reserved 2018</span>
+						<div class="powered-text">
+				<a href="https://wordpress.org/">Proudly powered by WordPress</a>
+				<span class="sep"> | </span>
+				Theme: Drift Blog by <a href="http://www.candidthemes.com/">Candid Themes</a>.			</div>
+			        <a id="toTop" class="go-to-top" href="#" title="Go to Top">
+            <i class="fa fa-angle-double-up"></i>
+        </a>
+    		</div>
+<!-- .site-info -->
+	</footer><!-- #colophon -->
+</div>
+<!-- #page -->
+
+<script type="text/javascript" src="/wp-content/themes/drift-blog/js/drift-blog-custom.js?ver=20151215" id="drift-blog-custom-js"></script>
+<script type="text/javascript" src="/wp-content/themes/gist/candidthemes/assets/js/gist-custom.js?ver=20151215" id="gist-custom-js"></script>
+<script type="text/javascript" src="/wp-content/themes/gist/candidthemes/assets/js/theia-sticky-sidebar.js?ver=20151215" id="theia-sticky-sidebar-js"></script>
+<script type="text/javascript" src="/wp-content/themes/gist/js/navigation.js?ver=20151215" id="gist-navigation-js"></script>
+<script type="text/javascript" src="/wp-content/themes/gist/js/skip-link-focus-fix.js?ver=20151215" id="gist-skip-link-focus-fix-js"></script>
+<script type="text/javascript" src="/wp-includes/js/comment-reply.min.js?ver=5.7.6" id="comment-reply-js"></script>
+<script type="text/javascript" src="/wp-includes/js/wp-embed.min.js?ver=5.7.6" id="wp-embed-js"></script>
+<script async="async" type="text/javascript" src="/wp-content/plugins/akismet/_inc/form.js?ver=4.1.7" id="akismet-form-js"></script>
+<script type="text/javascript" src="https://stats.wp.com/e-202219.js" async="async" defer></script>
+<script type="text/javascript">
+	_stq = window._stq || [];
+	_stq.push([ 'view', {v:'ext',j:'1:8.6.2',blog:'180381780',post:'2136',tz:'8',srv:'evanweinberg.com'} ]);
+	_stq.push([ 'clickTrackerInit', '180381780', '2136' ]);
+</script>
+
+
+</body>
+</html>

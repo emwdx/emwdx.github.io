@@ -1,0 +1,642 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	
+	xmlns:georss="http://www.georss.org/georss"
+	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+	>
+
+<channel>
+	<title>Uncategorized</title>
+	<atom:link href="/category/uncategorized/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>iteration, making, building, and coding in education</description>
+	<lastBuildDate>Wed, 31 Mar 2021 06:16:46 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.7.6</generator>
+<site xmlns="com-wordpress:feed-additions:1">180381780</site>	<item>
+		<title>App Development with Swift Playgrounds at Vietnam Tech Conference</title>
+		<link>/2021/03/31/app-development-with-swift-playgrounds-at-vietnam-tech-conference/</link>
+					<comments>/2021/03/31/app-development-with-swift-playgrounds-at-vietnam-tech-conference/#respond</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Wed, 31 Mar 2021 06:16:46 +0000</pubDate>
+				<category><![CDATA[Uncategorized]]></category>
+		<guid isPermaLink="false">/?p=2932</guid>
+
+					<description><![CDATA[I presented an hour long workshop on my work using Swift Playgrounds with my high school app development class as part of the Vietnam Tech Conference in February. In previous years, I used Xcode for the course. This year to see how far I could go using only Playgrounds. I]]></description>
+										<content:encoded><![CDATA[
+<p>I presented an hour long workshop on my work using Swift Playgrounds with my high school app development class as part of the <a href="https://2021.vietnamtechconference.org/">Vietnam Tech Conference</a> in February. </p>
+
+
+
+<figure class="wp-block-embed-youtube wp-block-embed is-type-video is-provider-youtube wp-embed-aspect-16-9 wp-has-aspect-ratio"><div class="wp-block-embed__wrapper">
+<iframe loading="lazy" title="App Development with Swift Playgrounds" width="640" height="360" src="https://www.youtube.com/embed/dHSBmES2xGM?start=520&#038;feature=oembed" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div></figure>
+
+
+
+<p>In previous years, I used Xcode for the course. This year to see how far I could go using only Playgrounds. I was impressed with how well it worked for giving my students feedback on their programming and letting them prototype apps using the <a href="https://developer.apple.com/xcode/swiftui/">SwiftUI</a> framework from Apple. They have made some really great stuff this year just within Playgrounds. </p>
+
+
+
+<figure class="wp-block-image"><img src="https://lh5.googleusercontent.com/aCCJttCTqMndqWykQzoJEf1t3hawAPRutqYXO7vkeDJ6fEXUtcMlqDg9qIdTt8f91Aa4HgkE0CgAeavIBb9JB8YB7-SGx0lHNH-xlk_uAHHZFJxVRwcZJGY02xhQxfXYU1hADpZ1sWU" alt=""/></figure>
+
+
+
+<p><img loading="lazy" width="787px;" height="508px;" src="https://lh4.googleusercontent.com/6jDSkgZ9MlJjQtbCPTj4iPBiHMNs4toY79hPZjZP7MKdaliWuO-5ke_3ts5h8OTcTkTByBHI_0r8Zz9l0Q05zEe54jMAGy1nXDBofuJxpNbzAAsCJYZyG5LnL0v-Mobo5DKKjfX4bWo"></p>
+
+
+
+<p>You can access resources from the presentation here:</p>
+
+
+
+<ul><li>Install Playgrounds for <a href="https://apps.apple.com/us/app/swift-playgrounds/id908519492">iPadOS</a> and <a href="https://apps.apple.com/us/app/swift-playgrounds/id1496833156?mt=12">macOS</a></li><li><a href="https://apps.apple.com/us/app/swift-playgrounds/id1496833156?mt=12">VTC2021 &#8211; Companion Playground Book</a> (unzip and open in Playgrounds)</li><li><a href="https://www.apple.com/education/k12/teaching-code/">Everyone Can Code curriculum</a></li><li><a href="https://www.apple.com/education/k12/teaching-code/">Develop in Swift Curriculum and Books</a> </li><li><a href="http://molly.is/writing/design-dash/">Design Dash from Molly Clare Wilson</a></li></ul>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2021/03/31/app-development-with-swift-playgrounds-at-vietnam-tech-conference/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">2932</post-id>	</item>
+		<item>
+		<title>Glowing for Halloween with CircuitPython State Machines</title>
+		<link>/2020/11/01/glowing-for-halloween-with-circuitpython-state-machines/</link>
+					<comments>/2020/11/01/glowing-for-halloween-with-circuitpython-state-machines/#respond</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Sun, 01 Nov 2020 09:16:23 +0000</pubDate>
+				<category><![CDATA[Uncategorized]]></category>
+		<category><![CDATA[3d printing]]></category>
+		<category><![CDATA[circuitpython]]></category>
+		<category><![CDATA[programming]]></category>
+		<guid isPermaLink="false">/?p=2920</guid>
+
+					<description><![CDATA[This year&#8217;s Halloween preparations were a coping mechanism. There is so much going on in the world that I cannot control, objectively more so than ever. Taking on good projects that involve making and coding is a good way to take back a sense of that control. Halloween has always]]></description>
+										<content:encoded><![CDATA[
+<p>This year&#8217;s Halloween preparations were a coping mechanism. There is so much going on in the world that I cannot control, objectively more so than ever. Taking on good projects that involve making and coding is a good way to take back a sense of that control. </p>
+
+
+
+<p>Halloween has always been an effective deadline for making things happen. I also have a history of making things that involve blinking LEDs for what I wear going out. My first such attempt <a href="https://www.youtube.com/watch?v=k_f3Uszgl1A">was an NYC Crosswalk sign thirteen years ago</a>. With my Advanced Automation learning to use state machines, I also wanted to give examples of how these work.</p>
+
+
+
+<p>Each of the projects below has links to the code. I teach my students to think about state machines in three steps:</p>
+
+
+
+<ul><li>what are the different states that the system should be in?</li><li>what changes to sensors, timers, or other system variables should trigger changes between states?</li><li>what system variables do you need to read, update, or keep track of during each loop for the system to function?</li></ul>
+
+
+
+<p>I&#8217;ve found that teaching state machines this way is getting students to write more organized code that is easier to debug because it is more modular than it would otherwise be. I might talk more about this approach in a later post. Right now, let&#8217;s talk about getting some circuit boards to light up for Halloween!</p>
+
+
+
+<p class="has-medium-font-size">Heart of Te Fiti from Moana</p>
+
+
+
+<p>My daughter wanted to dress like Moana this year. I knew the best way I could contribute to the costume was to build her a glowing version of the Heart of Te Fiti, the green stone that pushes forward the plot of the movie. I traced the image from this Instagram post to make an SVG that I could use in a 3D model:</p>
+
+
+
+<blockquote class="instagram-media" data-instgrm-captioned data-instgrm-permalink="https://www.instagram.com/p/BUUq0pmBIPc/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="13" style=" background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin: 1px; max-width:540px; min-width:326px; padding:0; width:99.375%; width:-webkit-calc(100% - 2px); width:calc(100% - 2px);"><div style="padding:16px;"> <a href="https://www.instagram.com/p/BUUq0pmBIPc/?utm_source=ig_embed&amp;utm_campaign=loading" style=" background:#FFFFFF; line-height:0; padding:0 0; text-align:center; text-decoration:none; width:100%;" target="_blank" rel="noopener noreferrer"> <div style=" display: flex; flex-direction: row; align-items: center;"> <div style="background-color: #F4F4F4; border-radius: 50%; flex-grow: 0; height: 40px; margin-right: 14px; width: 40px;"></div> <div style="display: flex; flex-direction: column; flex-grow: 1; justify-content: center;"> <div style=" background-color: #F4F4F4; border-radius: 4px; flex-grow: 0; height: 14px; margin-bottom: 6px; width: 100px;"></div> <div style=" background-color: #F4F4F4; border-radius: 4px; flex-grow: 0; height: 14px; width: 60px;"></div></div></div><div style="padding: 19% 0;"></div> <div style="display:block; height:50px; margin:0 auto 12px; width:50px;"><svg width="50px" height="50px" viewBox="0 0 60 60" version="1.1" xmlns="https://www.w3.org/2000/svg" xmlns:xlink="https://www.w3.org/1999/xlink"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g transform="translate(-511.000000, -20.000000)" fill="#000000"><g><path d="M556.869,30.41 C554.814,30.41 553.148,32.076 553.148,34.131 C553.148,36.186 554.814,37.852 556.869,37.852 C558.924,37.852 560.59,36.186 560.59,34.131 C560.59,32.076 558.924,30.41 556.869,30.41 M541,60.657 C535.114,60.657 530.342,55.887 530.342,50 C530.342,44.114 535.114,39.342 541,39.342 C546.887,39.342 551.658,44.114 551.658,50 C551.658,55.887 546.887,60.657 541,60.657 M541,33.886 C532.1,33.886 524.886,41.1 524.886,50 C524.886,58.899 532.1,66.113 541,66.113 C549.9,66.113 557.115,58.899 557.115,50 C557.115,41.1 549.9,33.886 541,33.886 M565.378,62.101 C565.244,65.022 564.756,66.606 564.346,67.663 C563.803,69.06 563.154,70.057 562.106,71.106 C561.058,72.155 560.06,72.803 558.662,73.347 C557.607,73.757 556.021,74.244 553.102,74.378 C549.944,74.521 548.997,74.552 541,74.552 C533.003,74.552 532.056,74.521 528.898,74.378 C525.979,74.244 524.393,73.757 523.338,73.347 C521.94,72.803 520.942,72.155 519.894,71.106 C518.846,70.057 518.197,69.06 517.654,67.663 C517.244,66.606 516.755,65.022 516.623,62.101 C516.479,58.943 516.448,57.996 516.448,50 C516.448,42.003 516.479,41.056 516.623,37.899 C516.755,34.978 517.244,33.391 517.654,32.338 C518.197,30.938 518.846,29.942 519.894,28.894 C520.942,27.846 521.94,27.196 523.338,26.654 C524.393,26.244 525.979,25.756 528.898,25.623 C532.057,25.479 533.004,25.448 541,25.448 C548.997,25.448 549.943,25.479 553.102,25.623 C556.021,25.756 557.607,26.244 558.662,26.654 C560.06,27.196 561.058,27.846 562.106,28.894 C563.154,29.942 563.803,30.938 564.346,32.338 C564.756,33.391 565.244,34.978 565.378,37.899 C565.522,41.056 565.552,42.003 565.552,50 C565.552,57.996 565.522,58.943 565.378,62.101 M570.82,37.631 C570.674,34.438 570.167,32.258 569.425,30.349 C568.659,28.377 567.633,26.702 565.965,25.035 C564.297,23.368 562.623,22.342 560.652,21.575 C558.743,20.834 556.562,20.326 553.369,20.18 C550.169,20.033 549.148,20 541,20 C532.853,20 531.831,20.033 528.631,20.18 C525.438,20.326 523.257,20.834 521.349,21.575 C519.376,22.342 517.703,23.368 516.035,25.035 C514.368,26.702 513.342,28.377 512.574,30.349 C511.834,32.258 511.326,34.438 511.181,37.631 C511.035,40.831 511,41.851 511,50 C511,58.147 511.035,59.17 511.181,62.369 C511.326,65.562 511.834,67.743 512.574,69.651 C513.342,71.625 514.368,73.296 516.035,74.965 C517.703,76.634 519.376,77.658 521.349,78.425 C523.257,79.167 525.438,79.673 528.631,79.82 C531.831,79.965 532.853,80.001 541,80.001 C549.148,80.001 550.169,79.965 553.369,79.82 C556.562,79.673 558.743,79.167 560.652,78.425 C562.623,77.658 564.297,76.634 565.965,74.965 C567.633,73.296 568.659,71.625 569.425,69.651 C570.167,67.743 570.674,65.562 570.82,62.369 C570.966,59.17 571,58.147 571,50 C571,41.851 570.966,40.831 570.82,37.631"></path></g></g></g></svg></div><div style="padding-top: 8px;"> <div style=" color:#3897f0; font-family:Arial,sans-serif; font-size:14px; font-style:normal; font-weight:550; line-height:18px;"> View this post on Instagram</div></div><div style="padding: 12.5% 0;"></div> <div style="display: flex; flex-direction: row; margin-bottom: 14px; align-items: center;"><div> <div style="background-color: #F4F4F4; border-radius: 50%; height: 12.5px; width: 12.5px; transform: translateX(0px) translateY(7px);"></div> <div style="background-color: #F4F4F4; height: 12.5px; transform: rotate(-45deg) translateX(3px) translateY(1px); width: 12.5px; flex-grow: 0; margin-right: 14px; margin-left: 2px;"></div> <div style="background-color: #F4F4F4; border-radius: 50%; height: 12.5px; width: 12.5px; transform: translateX(9px) translateY(-18px);"></div></div><div style="margin-left: 8px;"> <div style=" background-color: #F4F4F4; border-radius: 50%; flex-grow: 0; height: 20px; width: 20px;"></div> <div style=" width: 0; height: 0; border-top: 2px solid transparent; border-left: 6px solid #f4f4f4; border-bottom: 2px solid transparent; transform: translateX(16px) translateY(-4px) rotate(30deg)"></div></div><div style="margin-left: auto;"> <div style=" width: 0px; border-top: 8px solid #F4F4F4; border-right: 8px solid transparent; transform: translateY(16px);"></div> <div style=" background-color: #F4F4F4; flex-grow: 0; height: 12px; width: 16px; transform: translateY(-4px);"></div> <div style=" width: 0; height: 0; border-top: 8px solid #F4F4F4; border-left: 8px solid transparent; transform: translateY(-4px) translateX(8px);"></div></div></div></a> <p style=" margin:8px 0 0 0; padding:0 4px;"> <a href="https://www.instagram.com/p/BUUq0pmBIPc/?utm_source=ig_embed&amp;utm_campaign=loading" style=" color:#000; font-family:Arial,sans-serif; font-size:14px; font-style:normal; font-weight:normal; line-height:17px; text-decoration:none; word-wrap:break-word;" target="_blank" rel="noopener noreferrer"><img src="https://s.w.org/images/core/emoji/13.0.1/72x72/1f300.png" alt="🌀" class="wp-smiley" style="height: 1em; max-height: 1em;" />Made this giant Heart of Te Fiti for Flynn&#39;s Moana birthday. Thanks for all your advice @creationsbyhailey! <img src="https://s.w.org/images/core/emoji/13.0.1/72x72/1f413.png" alt="🐓" class="wp-smiley" style="height: 1em; max-height: 1em;" /><img src="https://s.w.org/images/core/emoji/13.0.1/72x72/1f334.png" alt="🌴" class="wp-smiley" style="height: 1em; max-height: 1em;" /><img src="https://s.w.org/images/core/emoji/13.0.1/72x72/1f437.png" alt="🐷" class="wp-smiley" style="height: 1em; max-height: 1em;" /> #disney #moana #heartoftefiti #tefiti #pua #heihei #maui</a></p> <p style=" color:#c9c8cd; font-family:Arial,sans-serif; font-size:14px; line-height:17px; margin-bottom:0; margin-top:8px; overflow:hidden; padding:8px 0 7px; text-align:center; text-overflow:ellipsis; white-space:nowrap;">A post shared by <a href="https://www.instagram.com/thecheekycupcake/?utm_source=ig_embed&amp;utm_campaign=loading" style=" color:#c9c8cd; font-family:Arial,sans-serif; font-size:14px; font-style:normal; font-weight:normal; line-height:17px;" target="_blank" rel="noopener noreferrer"> Molly</a> (@thecheekycupcake) on <time style=" font-family:Arial,sans-serif; font-size:14px; line-height:17px;" datetime="2017-05-20T17:43:08+00:00">May 20, 2017 at 10:43am PDT</time></p></div></blockquote> <script async src="//www.instagram.com/embed.js"></script>
+
+
+
+<p>I used <a href="https://cad.onshape.com/documents/70457db25f85dcf9a7704e4f/w/8548ed803fe1f7b1104b9c4f/e/1ae3968b3b1f4d91ebae21c0">Onshape to build several versions of a 3D model </a>of the heart that could hold an Adafruit Trinket Express to handle the glowing part. I also added a hole so that this could be used as a necklace after trick-or-treating. Here&#8217;s the final version:</p>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" width="800" height="800" src="/wp-content/uploads/2020/11/heart_3d_model.gif" alt="" class="wp-image-2922"/></figure>
+
+
+
+<p>I learned a lot about building a model to be 3D printed that press fits together. The back of the necklace presses in to the front with just enough friction that it stays together well enough for at least one night of a nearly five year old to run around with it. There is enough space for a 50 mAh LiPo battery to sit inside and power the necklace for a couple of hours.</p>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" width="509" height="394" src="/wp-content/uploads/2020/11/Screen-Shot-2020-11-01-at-4.14.32-PM.png" alt="" class="wp-image-2926" srcset="/wp-content/uploads/2020/11/Screen-Shot-2020-11-01-at-4.14.32-PM.png 509w, /wp-content/uploads/2020/11/Screen-Shot-2020-11-01-at-4.14.32-PM-300x232.png 300w" sizes="(max-width: 509px) 100vw, 509px" /></figure>
+
+
+
+<p>The heart in the movie glows a beautiful green. I wanted to add two variations on this steady glow. One is a slowly pulsating green light that is timed to pulse with relaxed breaths in and out. This uses the analog out pin of the Trinket. The other is a pulse resembling a heart beat, handled by the Dotstar pixel in the middle of the Trinket. In the final version, I added a random pause between heartbeats that makes this act like it is actually alive. I really like the effect of the final product:</p>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" width="800" height="800" src="/wp-content/uploads/2020/11/heart-flash.gif" alt="" class="wp-image-2925"/></figure>
+
+
+
+<p><a href="https://github.com/emwdx/heart_te_fiti">You can access the code and STL files at this Github Link</a>.</p>
+
+
+
+<p class="has-medium-font-size">Tony Stark Arc Reactor</p>
+
+
+
+<p>Finishing the heart necklace got me thinking about doing something similar for my own costume, but I was running out of time. I decided to go for an Infinity War version and <a href="https://www.thingiverse.com/thing:3625282">3D printed this model. </a></p>
+
+
+
+<p>Since I had a <a href="https://www.adafruit.com/product/4333">Circuit Playground Bluefruit</a>, the ring of Neopixels was perfect to use for powering the glowing effect. The Cyan color of red: 0, green: 255, blue: 255 was about right for the blue glow shown in the movie. </p>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" width="800" height="800" src="/wp-content/uploads/2020/11/arc_reactor.gif" alt="" class="wp-image-2923"/></figure>
+
+
+
+<p>In the version I wore during the day on Friday, the pulsating was really subtle and slow. I changed the code before heading out for the evening because I realized I wasn&#8217;t taking full advantage of the Bluetooth capabilities of the Circuit Playground Bluefruit. I added the ability to change the base color of the flash using the Bluefruit LE connect app. I also added some math to make the flashing move between the minimum brightness and the color values, but this led to some weird behavior that I didn&#8217;t get to smooth out. Speeding up the flash rate made it hard to see this happen, but this still bugs me. Here&#8217;s the final version:</p>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" width="800" height="800" src="/wp-content/uploads/2020/11/LE_connect.gif" alt="" class="wp-image-2924"/></figure>
+
+
+
+<p><a href="https://github.com/emwdx/arc-reactor-CPE-Bluefruit">You can access the code for both versions of the Arc Reactor here at Github.</a></p>
+
+
+
+<p>These were really fun projects, and got me to dig into some details of using CircuitPython in more creative ways than in the past. I&#8217;m excited to share more as I learn more.</p>
+
+
+
+<p> </p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2020/11/01/glowing-for-halloween-with-circuitpython-state-machines/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">2920</post-id>	</item>
+		<item>
+		<title>App Development / Distance Learning: SpriteKit</title>
+		<link>/2020/03/17/app-development-distance-learning-spritekit/</link>
+					<comments>/2020/03/17/app-development-distance-learning-spritekit/#respond</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Tue, 17 Mar 2020 06:00:03 +0000</pubDate>
+				<category><![CDATA[Uncategorized]]></category>
+		<guid isPermaLink="false">/?p=2895</guid>
+
+					<description><![CDATA[It has been far too long, my friends. In challenging times like these, it&#8217;s all the more important to help each other out. We have been running classes for students at home for the past six weeks here in Vietnam. I want to offer the activities I&#8217;ve been doing and]]></description>
+										<content:encoded><![CDATA[
+<p>It has been far too long, my friends. In challenging times like these, it&#8217;s all the more important to help each other out.</p>
+
+
+
+<p>We have been running classes for students at home for the past six weeks here in Vietnam. I want to offer the activities I&#8217;ve been doing and resources to you as you look for ideas to use with your own classes.</p>
+
+
+
+<p>The first is App Development. This course is meant to be an open workshop class where students learn to code using Swift and build projects in Xcode and Swift Playgrounds. Needless to say, doing this when we are not in the same room has been difficult. I am used to running around the classroom and helping students resolve issues. This is much more difficult when we are not in the same room.</p>
+
+
+
+<p>The most frequent mode of operation for class is the try-tweak-reflect cycle. I give students some code that does something, ask them to change something in the code, predict what will happen, and then reflect on the result. They do this a few times until they end up with something that is uniquely their own.</p>
+
+
+
+
+
+<p><h3>SpriteKit Activities</h3> SpriteKit is a library in iOS that lets you create games. The best way to do this right now is the Swift Playgrounds app <a href="https://www.apple.com/swift/playgrounds/">which is available for iPad and macOS</a>. There are lots of things you can have students do. Here are some of the ones I&#8217;ve done with students. Feel free to use any of it. The app itself has some phenomenal activities that are ready to hand to students and get them learning from the start. If you want a bit more directed learning related to SpriteKit, read on.</p>
+
+
+
+<div class="wp-block-group"><div class="wp-block-group__inner-container">
+<p>I created a video that walks my students from start to finish in creating a simple SpriteKit app that moves a block around the screen with a tap. This was recorded all in the iPad Swift Playgrounds app using the screen recording feature.</p>
+
+
+
+<p><a href="https://www.youtube.com/watch?v=C-_nXVQcxM8">SpriteKitStartToFinish</a> (YouTube)</p>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" width="1024" height="683" src="http://ec2-13-229-58-164.ap-southeast-1.compute.amazonaws.com/wp-content/uploads/2020/03/Screen-Shot-2020-03-17-at-10.18.01-AM-1024x683.png" alt="" class="wp-image-2897" srcset="/wp-content/uploads/2020/03/Screen-Shot-2020-03-17-at-10.18.01-AM-1024x683.png 1024w, /wp-content/uploads/2020/03/Screen-Shot-2020-03-17-at-10.18.01-AM-300x200.png 300w, /wp-content/uploads/2020/03/Screen-Shot-2020-03-17-at-10.18.01-AM-768x512.png 768w, /wp-content/uploads/2020/03/Screen-Shot-2020-03-17-at-10.18.01-AM-1536x1024.png 1536w, /wp-content/uploads/2020/03/Screen-Shot-2020-03-17-at-10.18.01-AM-1200x800.png 1200w, /wp-content/uploads/2020/03/Screen-Shot-2020-03-17-at-10.18.01-AM.png 1914w" sizes="(max-width: 1024px) 100vw, 1024px" /></figure>
+</div></div>
+
+
+
+<p>This next video led to something a bit more sophisticated with numbered circles falling and bouncing around. </p>
+
+
+
+<p><a href="https://www.youtube.com/watch?v=lIbrcRU25TY">AppDevelopment &#8211; Playing with Classes (YouTube)</a></p>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" width="352" height="360" src="http://ec2-13-229-58-164.ap-southeast-1.compute.amazonaws.com/wp-content/uploads/2020/03/numberedCircles.gif" alt="" class="wp-image-2899"/></figure>
+
+
+
+<p><a href="https://drive.google.com/open?id=156pDfDGGnIh58_TgNAoBARFMg0ptxWMS">You will want to start with this playground</a> downloaded to your computer to use in Swift Playgrounds or Xcode. </p>
+
+
+
+<p>After taking students through a few activities like this, I gave them a design challenge. Before we closed school, my plan was to have students build a game to spread awareness of an issue related to the UN sustainable development goals, or SDGs. Here is the description of the project I gave them. <a href="https://docs.google.com/document/d/e/2PACX-1vT14ukdaaRXdK7GPYoK9GyC6xK8DmIAVADUNSgg7WvoyPKTffVxhQoAu8SS50fXNErZ5x4XUP29AwXe/pub">(Link here)</a></p>
+
+
+
+<iframe src="https://docs.google.com/document/d/e/2PACX-1vT14ukdaaRXdK7GPYoK9GyC6xK8DmIAVADUNSgg7WvoyPKTffVxhQoAu8SS50fXNErZ5x4XUP29AwXe/pub?embedded=true"></iframe>
+
+
+
+<p>Students created some really neat stuff. It took a lot of remote debugging and <a href="https://remotedesktop.google.com/support/">use of Chrome remote desktop </a>in some cases to make this work, but it was worth it in the end. Here are some highlights of student work:</p>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" width="352" height="360" src="http://ec2-13-229-58-164.ap-southeast-1.compute.amazonaws.com/wp-content/uploads/2020/03/spritekitresults.gif" alt="" class="wp-image-2901"/></figure>
+
+
+
+<p>Write me if you have any questions on how you might use this yourself or with students. We are in this together.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2020/03/17/app-development-distance-learning-spritekit/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">2895</post-id>	</item>
+		<item>
+		<title>Color Following Robot &#8211; RVR, Adafruit Metro, Pixy2</title>
+		<link>/2020/01/21/color-following-robot-rvr-adafruit-metro-pixy2/</link>
+					<comments>/2020/01/21/color-following-robot-rvr-adafruit-metro-pixy2/#respond</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Tue, 21 Jan 2020 14:06:58 +0000</pubDate>
+				<category><![CDATA[Uncategorized]]></category>
+		<guid isPermaLink="false">/?p=2893</guid>
+
+					<description><![CDATA[One of the fundamental challenges in maker education right now is the reality that there are many different interesting tools available, but not all of them talk to each other. A notable change, however, is that many of them use open source software that makes it possible to understand how]]></description>
+										<content:encoded><![CDATA[
+<p>One of the fundamental challenges in maker education right now is the reality that there are many different interesting tools available, but not all of them talk to each other. A notable change, however, is that many of them use open source software that makes it possible to understand how each one works. All that remains is connecting the dots.</p>
+
+
+
+<p>About a year ago, I learned about the <a href="https://pixycam.com/pixy2/">Pixy2</a> camera platform. This is an impressive device that can easily learn colors and deliver coordinates of those colors in a camera image through a number of different protocols. The example code is primarily provided through a series of Arduino projects. After working through some Arduino projects with my robotics class a year ago, I decided that barebones Arduino isn&#8217;t the way to get students excited about programming microcontrollers. There are way too many semicolons, error-prone libraries, and finicky elements of the C++ language that get in the way of students being able to make things on their own. That said, the Pixy2 is incredibly versatile. It tracks colored blobs quickly and accurately.</p>
+
+
+
+<p>Over the past year, I&#8217;ve also spent time in the <a href="http://www.circuitpython.org/">CircuitPython</a> ecosystem. The <a href="http://www.adafruit.com/">Adafruit team</a> has done an amazing job of documenting their extensive line of boards (such as the <a href="https://www.adafruit.com/product/3505">Metro</a> and <a href="https://www.adafruit.com/product/3403">Feather Express</a> lines) and providing resources through CircuitPython to use these out of the box. </p>
+
+
+
+<p>The other release last October was the <a href="https://www.sphero.com/rvr">Sphero RVR</a> line. The first project I gave students a year ago was to build a motorized car using VEX motor controllers, a motorized <a href="https://nshopvn.com/product/khung-xe-robot-2-tang-4-banh/?utm_source=Google%20Shopping&amp;utm_campaign=GoogleMerchants-Feed&amp;utm_medium=cpc&amp;utm_term=273&amp;gclid=CjwKCAiA35rxBRAWEiwADqB371IEZvULaN1_HepzGJdMjQPwoOk0l7YvQv8hLX0y4l4k9JW1LUyCmBoCMPMQAvD_BwE">platform</a>, and an Arduino board. That was a lot more trouble than I expected, especially given that I wanted students to then use the cars they built with a Pixy2. That was a flimsy platform and I should have seen that from miles away. The Sphero RVR is packed with strong motors, a robust sensor assembly, and a solid hackable frame upon which other things can be mounted. This thing drives quickly and reliably, and that&#8217;s after only a few months of being available. Commands can be sent to it through a serial port to get it to drive. As of now, the API is limited to driving at a given heading and speed, raw motor power control, and flashing LEDs. </p>
+
+
+
+<p>I wanted to be able to demonstrate some concepts of control systems to my high school students. I also had a number of Pixy2 cameras available from my experiment last year. I also had decided that CircuitPython was the way to go for teaching students embedded microcontroller program using the Adafruit boards. It was time to combine these three resources to be able to build a colored object following robot.</p>
+
+
+
+<p>After a lot of experimentation, I eventually ended up with the code linked below. The Pixy2 code is a modification of <a href="https://github.com/RobertLucian/pixy2/blob/master/pixy2.py">Robert Lucian&#8217;s Python port of the API</a> for use with a Raspberry Pi (I think). I did some work to adapt it to use the CircuitPython I2C functions, though it is not the complete feature set. The <a href="https://github.com/sphero-inc/sphero-sdk-microbit-python">Sphero Python API</a> is made for use with a micro:bit and MicroPython, but I switched out the code for the MicroPython serial port with that of the CircuitPython serial port on a Metro board. I had to comment out parts of both the Pixy2 code and the Sphero code that I wasn&#8217;t using in order to get the code to fit on the Metro. I&#8217;m still not convinced that this was the problem as there appeared to be plenty of free memory available when I checked, but I had a number of MemoryErrors pop up without the code commented out.</p>
+
+
+
+<figure class="wp-block-embed-youtube wp-block-embed is-type-video is-provider-youtube wp-embed-aspect-16-9 wp-has-aspect-ratio"><div class="wp-block-embed__wrapper">
+<iframe loading="lazy" title="Pixy2, Sphero RVR, CircuitPython, Adafruit Metro" width="640" height="360" src="https://www.youtube.com/embed/KnrlNqOGwFc?feature=oembed" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div></figure>
+
+
+
+<p>Here is a <a href="https://github.com/emwdx/pixyRVRMetro">GitHub repository</a> with the code. </p>
+
+
+
+<p>I&#8217;m sure this isn&#8217;t as efficient as it could be, but I wanted to demonstrate the simplicity of using information from a camera as a way to build a control system for steering a robot. This is to help students understand a simple proportional algorithm as a control system. My hope is that students will apply this to autonomously steering a robot as part of this year&#8217;s <a href="https://www.youtube.com/watch?v=gmiYWTmFRVE">FIRST Robotics Competition game: Infinite Recharge.</a> </p>
+
+
+
+<p> </p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2020/01/21/color-following-robot-rvr-adafruit-metro-pixy2/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">2893</post-id>	</item>
+		<item>
+		<title>Google Calendar and Appointments</title>
+		<link>/2019/10/05/google-calendar-and-appointments/</link>
+					<comments>/2019/10/05/google-calendar-and-appointments/#respond</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Sat, 05 Oct 2019 01:26:57 +0000</pubDate>
+				<category><![CDATA[Uncategorized]]></category>
+		<category><![CDATA[teachers coding]]></category>
+		<guid isPermaLink="false">/?p=2887</guid>
+
+					<description><![CDATA[Like some of my favorite people, I’ve been playing around with Google Scripts in earnest this year to make my teaching work easier. I did this most recently with Google Calendar. You may or may not know that you can set up appointment slots on a calendar. This is really]]></description>
+										<content:encoded><![CDATA[
+<p>Like <a href="https://quantumprogress.wordpress.com/">some of my favorite people</a>, I’ve been playing around with Google Scripts in earnest this year to make my teaching work easier. I did this most recently with Google Calendar.</p>
+
+
+
+<p>You may or may not know that you can set up appointment slots on a calendar. This is really nice to for others to sign up for appointment times. Google provides a appointment sign up page, lets others book the slots out of those available, and moves booked slots onto your calendar. The only problem is that it requires that those booking appointments have a Google account and sign in. You can’t have a public appointments page that lets any non-Google user view and book a slot. For the purpose of setting up parent conferences, this is a no-go.</p>
+
+
+
+<p>You can, however, have a public calendar page that does not require sign-in. The closest way to implement the appointment function would be to show a bunch of appointment slots on that public calendar and have parents ask for the slot that works best through email. </p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" width="1024" height="156" src="http://ec2-13-229-58-164.ap-southeast-1.compute.amazonaws.com/wp-content/uploads/2019/10/Screen-Shot-2019-10-05-at-8.10.21-AM-1024x156.png" alt="" class="wp-image-2888" srcset="/wp-content/uploads/2019/10/Screen-Shot-2019-10-05-at-8.10.21-AM-1024x156.png 1024w, /wp-content/uploads/2019/10/Screen-Shot-2019-10-05-at-8.10.21-AM-300x46.png 300w, /wp-content/uploads/2019/10/Screen-Shot-2019-10-05-at-8.10.21-AM-768x117.png 768w, /wp-content/uploads/2019/10/Screen-Shot-2019-10-05-at-8.10.21-AM-1536x234.png 1536w, /wp-content/uploads/2019/10/Screen-Shot-2019-10-05-at-8.10.21-AM-2048x312.png 2048w, /wp-content/uploads/2019/10/Screen-Shot-2019-10-05-at-8.10.21-AM-1200x183.png 1200w, /wp-content/uploads/2019/10/Screen-Shot-2019-10-05-at-8.10.21-AM-1980x302.png 1980w" sizes="(max-width: 1024px) 100vw, 1024px" /></figure>
+
+
+
+<p>I wrote a script to make these slots. You enter the calendar ID, the start time for the window for appointment slots, the meeting length in minutes, and how many slots to make. The script does the rest. </p>
+
+
+
+<pre class="wp-block-code"><code>function addAppointmentSlotsToCalendar(){
+  
+ var parentCalendarID = "enterCalendarIDHere"
+ var parentCalendar = CalendarApp.getCalendarById(parentCalendarID);
+ var currentDate = "October 21 2019" 
+  var eventTitle = "Appointment Available"
+  var startTime = "8:30"
+  var duration = 15 //minutes
+  var numberOfSlots = 8
+  
+  
+  var startDateTime = new Date(currentDate + " " + startTime)
+  var endDateTime = new Date(startDateTime.getTime() + duration*60000)
+  
+  var currApptTimeDate = startDateTime
+  
+  for(var i = 0;i&lt;numberOfSlots;i++){
+    parentCalendar.createEvent(eventTitle, currApptTimeDate, endDateTime, {description: 'This appointment time is available for meeting with Mr. Weinberg.'})
+    currApptTimeDate = endDateTime
+    endDateTime = new Date(currApptTimeDate.getTime() + duration*60000)
+    
+  }
+
+}</code></pre>
+
+
+
+<p>I learned some important things that didn&#8217;t occur to me until parents started emailing me about the times.</p>
+
+
+
+<p>The calendar needs to not only be public, but the event details need to be visible. Otherwise, the public calendar shows all of the slots, but they appear as &#8216;busy&#8217;. This is in the calendar settings here:</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" width="1024" height="79" src="http://ec2-13-229-58-164.ap-southeast-1.compute.amazonaws.com/wp-content/uploads/2019/10/Screen-Shot-2019-10-05-at-8.11.51-AM-1024x79.png" alt="" class="wp-image-2889" srcset="/wp-content/uploads/2019/10/Screen-Shot-2019-10-05-at-8.11.51-AM-1024x79.png 1024w, /wp-content/uploads/2019/10/Screen-Shot-2019-10-05-at-8.11.51-AM-300x23.png 300w, /wp-content/uploads/2019/10/Screen-Shot-2019-10-05-at-8.11.51-AM-768x59.png 768w, /wp-content/uploads/2019/10/Screen-Shot-2019-10-05-at-8.11.51-AM-1536x118.png 1536w, /wp-content/uploads/2019/10/Screen-Shot-2019-10-05-at-8.11.51-AM-1200x92.png 1200w, /wp-content/uploads/2019/10/Screen-Shot-2019-10-05-at-8.11.51-AM.png 1564w" sizes="(max-width: 1024px) 100vw, 1024px" /></figure>
+
+
+
+<p>The really nice feature that I didn&#8217;t realize would work until I started receiving requests for times is filling appointments. All I need to do is change the calendar for the event from the public version to my personal one. This removes the slot from the public calendar and adds it to my own schedule.</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" width="778" height="778" src="http://ec2-13-229-58-164.ap-southeast-1.compute.amazonaws.com/wp-content/uploads/2019/10/appointment-slot-switch.gif" alt="" class="wp-image-2890"/></figure>
+
+
+
+<p>I&#8217;ve had some fun figuring out how to use automation like this to manage my work this year. There is a lot built into Google Scripts that makes repetitive processes much easier, particularly for the sorts of things that teachers do all the time. I encourage you to find something that you do that might be improved by a script like this and make it a personal challenge to figure out how to do it.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2019/10/05/google-calendar-and-appointments/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">2887</post-id>	</item>
+		<item>
+		<title>The Two Clocks</title>
+		<link>/2019/01/29/the-two-clocks/</link>
+					<comments>/2019/01/29/the-two-clocks/#respond</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Tue, 29 Jan 2019 14:21:47 +0000</pubDate>
+				<category><![CDATA[Uncategorized]]></category>
+		<guid isPermaLink="false">/?p=2865</guid>
+
+					<description><![CDATA[The biggest change to my educational philosophy in the past fifteen years can be summarized by two images. Image one: Image two: One instructional model insists on starting at the beginning and working right through to the end. You never have the complete picture until you&#8217;ve seen the process from]]></description>
+										<content:encoded><![CDATA[
+<p>The biggest change to my educational philosophy in the past fifteen years can be summarized by two images.</p>
+
+
+
+<p>Image one:</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" width="960" height="540" src="http://ec2-13-229-58-164.ap-southeast-1.compute.amazonaws.com/wp-content/uploads/2019/01/linear-clock.gif" alt="" class="wp-image-2867"/></figure>
+
+
+
+<p>Image two:</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" width="960" height="540" src="http://ec2-13-229-58-164.ap-southeast-1.compute.amazonaws.com/wp-content/uploads/2019/01/blur-clock.gif" alt="" class="wp-image-2866"/></figure>
+
+
+
+<p>One instructional model insists on starting at the beginning and working right through to the end. You never have the complete picture until you&#8217;ve seen the process from start to finish. Even if you think you know what you&#8217;re looking at when you&#8217;re halfway done, you aren&#8217;t really finished until you actually finish.</p>
+
+
+
+<p>The other starts with a wide, blurry view. Structures are clearly there, but are not easy to describe. Over time, that structure reveals smaller structures, which then yields more structure, and so on. You can stop when there is sufficient detail to answer your question, but more time leads to even greater clarity and understanding. </p>
+
+
+
+<p>One is part of our tradition. One is closer to how we learn outside of the walls of formal education. </p>
+
+
+
+<p>One has worked for a long time; but who has it actually worked for?</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2019/01/29/the-two-clocks/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">2865</post-id>	</item>
+		<item>
+		<title>On inefficiency</title>
+		<link>/2018/12/07/on-inefficiency/</link>
+					<comments>/2018/12/07/on-inefficiency/#respond</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Fri, 07 Dec 2018 07:22:31 +0000</pubDate>
+				<category><![CDATA[Uncategorized]]></category>
+		<category><![CDATA[design]]></category>
+		<category><![CDATA[engineering]]></category>
+		<category><![CDATA[learning]]></category>
+		<category><![CDATA[making]]></category>
+		<guid isPermaLink="false">/?p=2859</guid>
+
+					<description><![CDATA[In the robotics and engineering class and app development courses I teach, there are a lot of group projects. I design the projects to be big enough that a single student cannot do everything. That said, there are tasks though that a single person can do on his or her]]></description>
+										<content:encoded><![CDATA[
+<p>In the robotics and engineering class and app development courses I teach, there are a lot of group projects. I design the projects to be big enough that a single student cannot do everything. </p>
+
+
+
+<p>That said, there are tasks though that a single person can do on his or her own. I always bring up the constraints of time and ask students to frequently reflect on whether the group&#8217;s time is being used effectively. Three people all building a cardboard prototype for a rectangular box screams inefficiency to me. So does writing a project app from scratch when I have provided starter code to make things easier. </p>
+
+
+
+<p>From an assessment perspective, I want every student to take on every aspect of a project at some point during the semester. All of them should have a chance to write code, wire sensors together, do some fabrication, and test and develop the entire system. For a single project, things don&#8217;t always work that way. We need opportunities to specialize too. </p>
+
+
+
+<p>I often need to step back within a single project and remind myself: knowing when to focus on one element, when to shift to a new one, and when to zoom out and look at the big picture &#8211; this is a skill. This skill develops over time and comes only from experience. Even adults need to be reminded (or forced) to change their perspective to effectively reflect on a process. We also need to be given opportunities to focus on a single task, leaving all others aside.</p>
+
+
+
+<p> Designing, learning, and making are inherently inefficient because the path to the endpoint is uncertain. Building something new and learning something new, are not about efficiency though. Even when we are following someone else&#8217;s instructions to build a project, <em>we </em>might not have completed that project before. Thinking about efficiency is a useful reminder to make deliberate choices about our time. <br></p>
+
+
+
+<p>I asked a student about one of the classes this week. He wisely said &#8220;Mr. Weinberg, you should take the amount of time you think the project should take, multiply it by two, and then just relax. Give us time.&#8221;</p>
+
+
+
+<p>I often limit the time for projects because I want short design cycles. So far, the only thing that has accelerated progress is being up against a deadline. The learning that happens within that shortened time though is limited.  The rapid progress there is often because students have learned to use their materials. </p>
+
+
+
+<p>Learning those materials requires inefficiency to come before it. I need to let that happen. I need to relax there.</p>
+
+
+
+<figure class="wp-block-image"><img loading="lazy" width="1024" height="768" src="http://ec2-13-229-58-164.ap-southeast-1.compute.amazonaws.com/wp-content/uploads/2018/12/IMG_3595-1024x768.jpg" alt="" class="wp-image-2860" srcset="/wp-content/uploads/2018/12/IMG_3595-1024x768.jpg 1024w, /wp-content/uploads/2018/12/IMG_3595-300x225.jpg 300w, /wp-content/uploads/2018/12/IMG_3595-768x576.jpg 768w, /wp-content/uploads/2018/12/IMG_3595-1536x1152.jpg 1536w, /wp-content/uploads/2018/12/IMG_3595-2048x1536.jpg 2048w, /wp-content/uploads/2018/12/IMG_3595-1200x900.jpg 1200w, /wp-content/uploads/2018/12/IMG_3595-1980x1485.jpg 1980w" sizes="(max-width: 1024px) 100vw, 1024px" /></figure>
+
+
+
+<p></p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2018/12/07/on-inefficiency/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">2859</post-id>	</item>
+		<item>
+		<title>Structures and Habits</title>
+		<link>/2018/11/09/structures-and-habits/</link>
+					<comments>/2018/11/09/structures-and-habits/#respond</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Fri, 09 Nov 2018 07:41:24 +0000</pubDate>
+				<category><![CDATA[Uncategorized]]></category>
+		<guid isPermaLink="false">/?p=2855</guid>
+
+					<description><![CDATA[My courses this year are AP Calculus AB, Robotics and Engineering Technology, and App Development. Given a lot of the work I knew in advance I would be doing this year, I made the explicit decision not to change the Calculus course much from what I did last year. That]]></description>
+										<content:encoded><![CDATA[
+<p>My courses this year are AP Calculus AB, Robotics and Engineering Technology, and App Development. Given a lot of the work I knew in advance I would be doing this year, I made the explicit decision not to change the Calculus course much from what I did last year.</p>
+
+
+
+<p>That leaves Robotics and Engineering Technology and App Development. I wanted both of these courses to be:</p>
+
+
+
+<ul><li>individualized &#8211; students would not all necessarily be working on exactly the same task as others, nor at the same <em>level</em> as others.</li><li>paced by task and student learning goals, not a unit calendar</li><li>centered on the process of making and creating </li><li>limited in the amount of direct instruction required</li><li>assessed through documentation and communication of process, not skill level</li></ul>
+
+
+
+<p>There is one other critical design requirement that I want to mention. </p>
+
+
+
+<p>Almost every course I have taught over my fifteen years has typically followed a gradual release of control model. Students typically start the year by following my directions closely under a lot of structure in the beginning. Then as they understand my expectations and follow my rules, I give a bit more independence to students over time. By the end of the year, we would be a close knit community that knew how to learn together.</p>
+
+
+
+<p>I wanted this to be the reverse. </p>
+
+
+
+<p>On the first day of each class, I gave students some ideas for what I hoped each of us could celebrate by the end of the semester. I was honest in saying that I didn&#8217;t know exactly how we were going to get there.</p>
+
+
+
+<p>I did say that each project would be an opportunity for students to set some goals, figure out what was interesting to them in the course of completing the project, and make course corrections as they made progress. Short design cycles would be important to doing this. There was never going to be enough time or enough resources to do everything. Playing and brainstorming, research, testing, and evaluation would all lead to some difficult decisions to be made along the way. That, after all, is the engineering process.</p>
+
+
+
+<p>I decided that it was important to put this structure in place at the start, or I might just slip back into old habits. I admit after a few months of doing this that I&#8217;ve wavered at times, wondering if I&#8217;ve done the right thing. I&#8217;ve always come back to the fact that this feels like it is just what students need.</p>
+
+
+
+<h2></h2>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2018/11/09/structures-and-habits/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">2855</post-id>	</item>
+		<item>
+		<title>A New Chapter</title>
+		<link>/2018/10/18/a-new-chapter/</link>
+					<comments>/2018/10/18/a-new-chapter/#respond</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Thu, 18 Oct 2018 15:02:52 +0000</pubDate>
+				<category><![CDATA[Uncategorized]]></category>
+		<guid isPermaLink="false">/?p=2852</guid>
+
+					<description><![CDATA[I&#8217;m excited to share the redesign of my blog. The new site and name is to reflect my hope to focus on some different things moving forward in a shift in my role at school. Previously, you&#8217;ve known me as a teacher of mathematics, physics, web programming, robotics&#8230;in short, a]]></description>
+										<content:encoded><![CDATA[<p>I&#8217;m excited to share the redesign of my blog. The new site and name is to reflect my hope to focus on some different things moving forward in a shift in my role at school.</p>
+<p>Previously, you&#8217;ve known me as a teacher of mathematics, physics, web programming, robotics&#8230;in short, a teacher of lots of things. I&#8217;ve principally been a mathematics teacher through the first fifteen years of my career, and continue to do so by working again this year with students in AP Calculus AB. </p>
+<p>The big change is that I am coordinating the STEM program for the high school at SSIS. Thus far, I&#8217;ve designed a fabrication space for the high school and have reworked two classes to be based on the engineering design cycle. I&#8217;ll go more into detail on both of these courses in upcoming posts. I also spend my time attempting to model the making, design, and documentation process for students and colleagues. </p>
+<p>The guiding principle for the engineering classes is that making things is the best way to learn &#8211; probably no big surprise for those of you that know me. I&#8217;m an engineer by training and a tinkerer at heart. I&#8217;ve learned a lot through my own projects and want to help students experience this for themselves. So far, it is going very well.</p>
+<p>Stick around and I&#8217;ll tell you all about it.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2018/10/18/a-new-chapter/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">2852</post-id>	</item>
+		<item>
+		<title>The Computational Thinker&#8217;s Classroom &#8211; Workshop Video</title>
+		<link>/2018/07/16/the-computational-thinkers-classroom-workshop-video/</link>
+					<comments>/2018/07/16/the-computational-thinkers-classroom-workshop-video/#respond</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Mon, 16 Jul 2018 06:58:00 +0000</pubDate>
+				<category><![CDATA[Uncategorized]]></category>
+		<guid isPermaLink="false">/?p=2822</guid>
+
+					<description><![CDATA[I ran a workshop on computational thinking at the Vietnam Tech Conference this past March. My goal was to give teachers some new ways to think about classroom tasks and the deliberate use of computers to do what they are good at doing. The general vibe of my talk was]]></description>
+										<content:encoded><![CDATA[<p>I ran a workshop on computational thinking at the Vietnam Tech Conference this past March. My goal was to give teachers some new ways to think about classroom tasks and the deliberate use of computers to do what they are good at doing.</p>
+<p>The general vibe of my talk was consistent with what I&#8217;ve said here in the past. Some highlights:</p>
+<ul>
+<li>We should be using computers to do the tasks that computers do well. This frees us up to do those tasks for which we are well suited.</li>
+<li>Insisting on basic skills as the entry point for learning is an easy way to put students on the sidelines. Computers are often how we as professionals answer questions that are important or interesting to us. We should help students understand how to use them in the same way. </li>
+<li>Spreadsheets, databases, and visual models like Desmos and Geogebra are great entry points for computational thinking. You don&#8217;t have to be a coder, a mathematics or science teacher, or a technology expert to build these activities for your students.</li>
+<li></li>
+</ul>
+<p>The video is here:<br />
+<iframe loading="lazy" width="560" height="315" src="https://www.youtube.com/embed/ev1vHLFVhuY" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></p>
+<p>If you want to do the first three activities yourself and see other resources from my workshop, visit <a href="http://goo.gl/vsT2G6">goo.gl/vsT2G6</a>. There is a fourth activity on the page that is mentioned at around 24 minutes in the video that is linked there too.</p>
+<p>As always, I&#8217;d love to hear what you have to say.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2018/07/16/the-computational-thinkers-classroom-workshop-video/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">2822</post-id>	</item>
+	</channel>
+</rss>

@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="profile" href="https://gmpg.org/xfn/11">
+
+    <title>(Students) thinking like computer scientists</title>
+<meta name="robots" content="max-image-preview:large">
+<link rel="dns-prefetch">
+<link rel="dns-prefetch" href="//fonts.googleapis.com">
+<link rel="dns-prefetch" href="//s.w.org">
+<link rel="alternate" type="application/rss+xml" title=" &raquo; Feed" href="/feed/">
+<link rel="alternate" type="application/rss+xml" title=" &raquo; Comments Feed" href="/comments/feed/">
+<link rel="alternate" type="application/rss+xml" title=" &raquo; (Students) thinking like computer scientists Comments Feed" href="/2013/04/19/students-thinking-like-computer-scientists/feed/">
+		<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/svg\/","svgExt":".svg","source":{"concatemoji":"https13.229.58.164\/wp-includes\/js\/wp-emoji-release.min.js?ver=5.7.6"}};
+			!function(e,a,t){var n,r,o,i=a.createElement("canvas"),p=i.getContext&&i.getContext("2d");function s(e,t){var a=String.fromCharCode;p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,e),0,0);e=i.toDataURL();return p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,t),0,0),e===i.toDataURL()}function c(e){var t=a.createElement("script");t.src=e,t.defer=t.type="text/javascript",a.getElementsByTagName("head")[0].appendChild(t)}for(o=Array("flag","emoji"),t.supports={everything:!0,everythingExceptFlag:!0},r=0;r<o.length;r++)t.supports[o[r]]=function(e){if(!p||!p.fillText)return!1;switch(p.textBaseline="top",p.font="600 32px Arial",e){case"flag":return s([127987,65039,8205,9895,65039],[127987,65039,8203,9895,65039])?!1:!s([55356,56826,55356,56819],[55356,56826,8203,55356,56819])&&!s([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]);case"emoji":return!s([55357,56424,8205,55356,57212],[55357,56424,8203,55356,57212])}return!1}(o[r]),t.supports.everything=t.supports.everything&&t.supports[o[r]],"flag"!==o[r]&&(t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&t.supports[o[r]]);t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&!t.supports.flag,t.DOMReady=!1,t.readyCallback=function(){t.DOMReady=!0},t.supports.everything||(n=function(){t.readyCallback()},a.addEventListener?(a.addEventListener("DOMContentLoaded",n,!1),e.addEventListener("load",n,!1)):(e.attachEvent("onload",n),a.attachEvent("onreadystatechange",function(){"complete"===a.readyState&&t.readyCallback()})),(n=t.source||{}).concatemoji?c(n.concatemoji):n.wpemoji&&n.twemoji&&(c(n.twemoji),c(n.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+		<style type="text/css">img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}</style>
+	<link rel="stylesheet" id="wp-block-library-css" href="/wp-includes/css/dist/block-library/style.min.css?ver=5.7.6" type="text/css" media="all">
+<style id="wp-block-library-inline-css" type="text/css">.has-text-align-justify{text-align:justify;}</style>
+<link rel="stylesheet" id="wp-block-library-theme-css" href="/wp-includes/css/dist/block-library/theme.min.css?ver=5.7.6" type="text/css" media="all">
+<link rel="stylesheet" id="gist-style-css" href="/wp-content/themes/gist/style.css?ver=5.7.6" type="text/css" media="all">
+<style id="gist-style-inline-css" type="text/css">{ clip: rect(1px, 1px, 1px, 1px); height: 1px; position: absolute; overflow: hidden; width: 1px; }
+body { font-family: Open Sans; }body { font-size: 16px; }body { line-height : 2; }.breadcrumbs span.breadcrumb, .nav-links a, .search-form input[type=submit], #toTop, .candid-pagination .page-numbers.current, .candid-pagination .page-numbers:hover  { background : #ca9b52; }.search-form input.search-field, .sticky .p-15, .related-post-entries li, .candid-pagination .page-numbers { border-color : #ca9b52; }.error-404 h1, .no-results h1, a, a:visited, .related-post-entries .title:hover, .entry-title a:hover, .featured-post-title a:hover, .entry-meta.entry-category a,.widget li a:hover, .widget h1 a:hover, .widget h2 a:hover, .widget h3 a:hover, .site-title a, .site-title a:visited, .main-navigation ul li a:hover { color : #ca9b52; }.btn-primary { border: 2px solid #ca9b52;}</style>
+<link rel="stylesheet" id="drift-blog-style-css" href="/wp-content/themes/drift-blog/style.css?ver=5.7.6" type="text/css" media="all">
+<link rel="stylesheet" id="drift-blog-google-fonts-css" href="//fonts.googleapis.com/css?family=Playfair+Display&#038;ver=5.7.6" type="text/css" media="all">
+<link rel="stylesheet" id="gist-googleapis-css" href="//fonts.googleapis.com/css?family=Open+Sans&#038;ver=5.7.6" type="text/css" media="all">
+<link rel="stylesheet" id="gist-google-fonts-css" href="//fonts.googleapis.com/css?family=Oswald&#038;ver=5.7.6" type="text/css" media="all">
+<link rel="stylesheet" id="font-awesome-css" href="/wp-content/themes/gist/candidthemes/assets/framework/Font-Awesome/css/font-awesome.min.css?ver=4.7.0" type="text/css" media="all">
+<link rel="stylesheet" id="jetpack_css-css" href="/wp-content/plugins/jetpack/css/jetpack.css?ver=8.6.2" type="text/css" media="all">
+<script type="text/javascript" src="/wp-includes/js/jquery/jquery.min.js?ver=3.5.1" id="jquery-core-js"></script>
+<script type="text/javascript" src="/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.3.2" id="jquery-migrate-js"></script>
+<link rel="https://api.w.org/" href="/wp-json/">
+<link rel="alternate" type="application/json" href="/wp-json/wp/v2/posts/1378">
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="/wp-includes/wlwmanifest.xml"> 
+<meta name="generator" content="WordPress 5.7.6">
+<link rel="canonical" href="/2013/04/19/students-thinking-like-computer-scientists/">
+<link rel="shortlink" href="/?p=1378">
+<link rel="alternate" type="application/json+oembed" href="/wp-json/oembed/1.0/embed?url=https%3A%2F%2F%2F2013%2F04%2F19%2Fstudents-thinking-like-computer-scientists%2F">
+<link rel="alternate" type="text/xml+oembed" href="/wp-json/oembed/1.0/embed?url=https%3A%2F%2F%2F2013%2F04%2F19%2Fstudents-thinking-like-computer-scientists%2F&#038;format=xml">
+<style type="text/css">img#wpstats{display:none}</style>
+<link rel="pingback" href="/xmlrpc.php">		<style type="text/css" id="wp-custom-css">.custom-logo{
+	height:300px;
+	width:300px
+	
+}</style>
+		</head>
+
+<body data-rsssl="1" class="post-template-default single single-post postid-1378 single-format-standard wp-custom-logo wp-embed-responsive ct-sticky-sidebar right-sidebar">
+    <div id="page" class="site container-main">
+        <a class="skip-link screen-reader-text" href="#content">Skip to content</a>
+
+        <header id="masthead" class="site-header" role="banner">
+            <div class="top-menu-container-inner container-inner">
+                    <div id="mainnav-wrap" class="clear">
+                        <div class="top-header-social">
+                            
+                            <button class="top-menu-toggle"><i class="fa fa-bars"></i></button>
+                        </div>
+
+                        <nav id="top-site-navigation" class="main-navigation" role="navigation">
+                            <div class="menu-pages-container"><ul id="top-menu" class="top-menu nav_menu">
+<li id="menu-item-2781" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-2781"><a href="/">Home</a></li>
+<li id="menu-item-2782" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2782"><a href="/about/">About Evan Weinberg</a></li>
+</ul></div>                        </nav>
+                            <!-- #site-navigation -->
+                    </div>
+                </div>
+                    <!-- .top-menu-container-inner -->
+            <div class="site-branding">
+                <div class="container-inner">
+                    <a href="/" class="custom-logo-link" rel="home"><img width="1000" height="1000" src="/wp-content/uploads/2018/10/for.next_.001.jpeg" class="custom-logo" alt="" srcset="/wp-content/uploads/2018/10/for.next_.001.jpeg 1000w, /wp-content/uploads/2018/10/for.next_.001-300x300.jpeg 300w, /wp-content/uploads/2018/10/for.next_.001-150x150.jpeg 150w, /wp-content/uploads/2018/10/for.next_.001-768x768.jpeg 768w" sizes="(max-width: 1000px) 100vw, 1000px"></a>                            <p class="site-title"><a href="/" rel="home"></a></p>
+                                                           <p class="site-description">iteration, making, building, and coding in education</p>
+                                                </div>
+                </div>
+                <!-- .site-branding -->
+
+                <div class="container-inner">
+                    <div id="mainnav-wrap">
+                        <nav id="site-navigation" class="main-navigation" role="navigation">
+                            <button class="menu-toggle" aria-controls="primary-menu" aria-expanded="false"><i class="fa fa-bars"></i></button>
+                                                            </nav>
+                            <!-- #site-navigation -->
+                        </div>
+                    </div>
+                    <!-- .container-inner -->
+                </header>
+                <!-- #masthead -->
+                <div class="header-image-block">
+                                    </div>
+
+                <div id="content" class="site-content container-inner p-t-15">
+	<div id="primary" class="content-area">
+		<main id="main" class="site-main">
+			<div class="breadcrumbs">
+                            </div>
+		
+<article id="post-1378" class="post-1378 post type-post status-publish format-standard hentry category-computational-thinking-2 category-reflection category-teaching-stories">
+    <div class="p-15 left-image">
+        <div class="ct-featured-image">
+                    </div>
+        <div class="entry-content">
+            <header class="entry-header">
+                <h1 class="entry-title">(Students) thinking like computer scientists</h1>    </header>
+    <!-- .entry-header -->
+    <p>It generally isn&#8217;t too difficult to program a computer to do exactly what you want it to do. This requires, however, that you know exactly what you want it to do. In the course of doing this, you make certain assumptions because you think you know beforehand what you want. </p>
+<p>You set the thermostat to be 68º because you think that will be warm enough. Then when you realize that it isn&#8217;t, you continue to turn it up, then down, and eventually settle on a temperature. This process requires you as a human to constantly sense your environment, evaluate the conditions, and change an input such as the heat turning on or off to improve them. This is a continuous process that requires constant input. While the computer can maintain room temperature pretty effectively, deciding whether the temperature is a good one or not is something that cannot be done without human input.</p>
+<p>The difficulty is figuring out exactly what you want. I can&#8217;t necessarily say what temperature I want the house to be. I <em>can</em> easily say &#8216;I&#8217;m too warm&#8217; or &#8216;I&#8217;m too cold&#8217; at any given time. A really smart house would be able to take those simple inputs and figure out what temperature I want.</p>
+<p>I had an idea for a project for exploring this a couple of years ago. I could try to tell the computer using levels of red, green, and blue exactly what I thought would define something that looks &#8216;green&#8217; to me. In reality, that&#8217;s completely backwards. The way I recognize something as being green never has anything to do with RGB, or hue or saturation &#8211; I look at it and say &#8216;yes&#8217; or &#8216;no&#8217;. Given enough data points of what is and is not green, the computer should be able to find the pattern itself. </p>
+<p> With the things I&#8217;ve learned recently programming in Python, I was finally able to make this happen last night: a page with a randomly selected color presented on each load:<br>
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2013/04/screen-shot-2013-04-18-at-9-51-51-pm.png"><img loading="lazy" src="https://blog.evanweinberg.org/wp-content/uploads/2013/04/screen-shot-2013-04-18-at-9-51-51-pm.png?w=500" alt="Screen Shot 2013-04-18 at 9.51.51 PM" width="500" height="247" class="alignright size-large wp-image-1380" srcset="/wp-content/uploads/2013/04/screen-shot-2013-04-18-at-9-51-51-pm.png 823w, /wp-content/uploads/2013/04/screen-shot-2013-04-18-at-9-51-51-pm-300x149.png 300w, /wp-content/uploads/2013/04/screen-shot-2013-04-18-at-9-51-51-pm-768x381.png 768w" sizes="(max-width: 500px) 100vw, 500px"></a> </p>
+<p>Sharing the website on Twitter, Facebook, and email last night, I was able to get friends, family, and students hammering the website with their own perceptions of what green does and does not look like. When I woke up this morning, there were 1,500 responses. By the time I left for school, there were more then 3,000, and tonight when my home router finally went offline (as it tends to do frequently here) there were more than 5,000. That&#8217;s plenty of data points to use.</p>
+<p>I decided this was a perfect opportunity to get students finding their own patterns and rules for a classification problem like this. There was a clearly defined problem that was easy to communicate, and I had lots of real data data to use to check a theoretical rule against. I wrote a Python program that would take an arbitrary rule, apply it to the entire set of 3,000+ responses from the website, and compare its classifications of green/not green to that of the actual data set. A perfect rule for the data set would correctly predict the human data 100% of the time.</p>
+<p>I was really impressed with how quickly the students got into it. I first had them go to the website and classify a string of colors as green or not green &#8211; some of them were instantly entranced b the unexpected therapeutic effect of clicking the buttons in response to the colors. I soon convinced them to move forward to the more active role of trying to figure out their own patterns. I pushed them to the <a href="http://colorpicker.com/">http://www.colorpicker.com</a> website to choose several colors that clearly were green, and others that were not, and try to identify a rule that described the RGB values for the green ones.</p>
+<p>When they were ready, they started categorizing their examples and being explicit in the patterns they wanted to try. As they came up with their rules (e.g. green has the greatest level) we talked about writing that mathematically and symbolically &#8211; suddenly the students were quite naturally thinking about inequalities and how to write them correctly. (How often does that happen?) I showed them where I typed it into my Python script, and soon they were telling me what to type.</p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2013/04/rgbwork.jpg"><img loading="lazy" src="https://blog.evanweinberg.org/wp-content/uploads/2013/04/rgbwork.jpg" alt="rgbwork" width="492" height="496" class="alignright size-full wp-image-1381" srcset="/wp-content/uploads/2013/04/rgbwork.jpg 492w, /wp-content/uploads/2013/04/rgbwork-298x300.jpg 298w, /wp-content/uploads/2013/04/rgbwork-150x150.jpg 150w" sizes="(max-width: 492px) 100vw, 492px"></a></p>
+<p>In the end, they figured out that the <em>difference</em> of the green compared to each of the other colors was the important element, something that I hadn&#8217;t tried when I was playing with it on my own earlier in the day. They really got into it. We had a spirited discussion about whether G+40&gt;B or G&gt;B+40 is correct for comparing the levels of green and blue.</p>
+<p>In the end, their rule agreed with 93.1% of the human responses from the website, which beat my personal best of 92.66%. They clearly got a kick out of knowing that they had not only improved upon my answer, but that their logical thinking and mathematically defined rules did a good job of describing the thinking of thousands of people&#8217;s responses on this question. This was an abstract task, but they handled it beautifully, both a tribute to the simplicity of the task and to their own willingness to persist and figure it out. That&#8217;s <a href="http://blog.mrmeyer.com/?p=12141">perplexity </a>as it is supposed to be.</p>
+<p>Other notes:</p>
+<ul>
+<li>One of the most powerful applications of computers in the classroom is getting students hands on real data &#8211; gobs of it. There is a visible level of satisfaction when students can talk about what they have done with <em>thousands</em> of data points that have meaning that they understand.</li>
+<li>I happened upon the <a href="http://en.wikipedia.org/wiki/Perceptron">perceptron learning algorithm on Wikipedia</a> and was even more excited to find that the article included Python code for the algorithm. I tweaked it to work with my data and had it train using just the first 20 responses to the website. Applying this rule to the checking script I used with the students, it correctly predicted 88% of the human responses. That impresses me to no end.</li>
+<li>A relative suggested that I should have included a field on the front page for gender. While I think it may have cut down on the volume of responses, I am hitting myself for not thinking to do that sort of thing, just for analysis. </li>
+<li>A student also indicated that there were many interesting bits of data that could be collected this way that interested her. First on the list was color-blindness. What <em>does</em> someone that is color blind see? Is it possible to use this concept to collect data that might help answer this question? This was something that was genuinely interesting to this student, and I&#8217;m intrigued and excited by the level of interest she expressed in this.</li>
+<li>I plan to take a deeper look at this data soon enough &#8211; there are a lot of different aspects of it that interests me. Any suggestions?</li>
+<li>Anyone that can help me apply other learning algorithms to this data gets a beer on me when we can meet in person.</li>
+</ul>
+
+    <footer class="entry-footer">
+        </footer>
+<!-- .entry-footer -->
+</div>
+<!-- .entry-content -->
+</div>
+<!-- .p-15 -->
+</article><!-- #post-1378 -->
+
+	<nav class="navigation post-navigation" role="navigation" aria-label="Posts">
+		<h2 class="screen-reader-text">Post navigation</h2>
+		<div class="nav-links">
+<div class="nav-previous"><a href="/2013/04/10/building-a-need-for-math-similar-polygons-mobile-devices/" rel="prev">Building a need for math &#8211; similar polygons &#038; mobile devices</a></div>
+<div class="nav-next"><a href="/2013/04/30/assessing-assessment-over-time-similar-triangles-modeling-2/" rel="next">Assessing assessment over time &#8211; similar triangles &#038; modeling</a></div>
+</div>
+	</nav>            <div class="related-pots-block">
+                <h2 class="widget-title">
+                    Related Posts                </h2>
+                <ul class="related-post-entries clear">
+                                            <li>
+                                                        <div class="featured-desc">
+                                <a href="/2017/06/13/2016-2017-year-in-review-being-new/">
+                                    <h2 class="title">
+                                       2016-2017 Year in Review: Being New                                    </h2>
+                                </a>
+                            </div>
+                        </li>
+                                            <li>
+                                                        <div class="featured-desc">
+                                <a href="/2017/05/03/probability-spreadsheets-and-the-citizen-database/">
+                                    <h2 class="title">
+                                       Probability, Spreadsheets, and the Citizen Database                                    </h2>
+                                </a>
+                            </div>
+                        </li>
+                                            <li>
+                                                        <div class="featured-desc">
+                                <a href="/2017/04/21/making-groups-a-genetic-algorithm-experiment/">
+                                    <h2 class="title">
+                                       Making Groups &#8211; A Genetic Algorithm Experiment                                    </h2>
+                                </a>
+                            </div>
+                        </li>
+                                    </ul>
+            </div> <!-- .related-post-block -->
+        
+<div id="comments" class="comments-area">
+
+			<h2 class="comments-title">
+			7 thoughts on &ldquo;<span>(Students) thinking like computer scientists</span>&rdquo;		</h2>
+<!-- .comments-title -->
+
+		
+		<ol class="comment-list">
+					<li id="comment-191" class="pingback even thread-even depth-1">
+			<div class="comment-body">
+				Pingback: <a href="http://blog.mrmeyer.com/?p=17112" rel="external nofollow ugc" class="url">dy/dan &raquo; Blog Archive &raquo; Great Lessons: Evan Weinberg&#8217;s &#8220;Do You Know Blue?&#8221;</a> 			</div>
+		</li>
+<!-- #comment-## -->
+		<li id="comment-192" class="comment odd alt thread-odd thread-alt depth-1">
+			<article id="div-comment-192" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="https://secure.gravatar.com/avatar/dbb04d12e368280772dca96d0197a71e?s=32&#038;d=mm&#038;r=g" srcset="https://secure.gravatar.com/avatar/dbb04d12e368280772dca96d0197a71e?s=64&#038;d=mm&#038;r=g 2x" class="avatar avatar-32 photo" height="32" width="32" loading="lazy">						<b class="fn">Thanassis</b> <span class="says">says:</span>					</div>
+<!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="/2013/04/19/students-thinking-like-computer-scientists/#comment-192"><time datetime="2013-05-31T12:21:02+08:00">May 31, 2013 at 12:21 pm</time></a>					</div>
+<!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>Hi Evan, great idea indeed! I first found out about this from Dan&#8217;s website and I participated in the first round of the contest. When I realised that this was a real Machine Learning problem (with a complex/noisy target function) and a large number of &#8220;hidden&#8221; data points I was really excited! A few months ago I took Caltech&#8217;s online course &#8220;Learning From Data&#8221; which I really enjoyed (and worked hard for). &#8220;Do you know blue&#8221; was an excellent example to revisit some of the material and test my knowledge in a practical problem.<br>
+I run the perceptron algorithm too, regression with non-linear transforms, and even support vectors machines (SVM) with RBF kernel (probably all these sound like gibberish to you). The main problem was the few data points given (30 points/colours to quickly test your rule). With 30 points you cannot hope for much in machine learning. I tried to gather more points by doing the tests again, but after a few days I was getting the same blue points. So at the end I had 140 points/colours of which 44 where blue.<br>
+I run different non-linear regressions and even SVM. The best approach was regression with a cubic non-linear transform. It scored 2nd in the overall board and it seemed to come closer to 1st with more points added in the database. The SVM approach did not seem to work, as it was merely fitting the 140 points and would not generalize well to the overall database.<br>
+The first contest ended and then the site opened again after a few days. I decided to play a bit more with it. I saw that the original points/colours were kept. So I entered the same cubic rule and it scored slightly better than before. Then I thought I&#8217;d try something major. You have a page (/blueis) that you give all the colors in the database in little boxes, separated in two regions blue and not blue. I saved these regions as images and then wrote a program to parse them and get r,g,b, values for all the different colours. So now I have the entire database (4090 points at the time). Now I could run the algorithm on the entire database and see what are the best results I could get. This is not really machine learning, it is more like fitting 🙂<br>
+Curiously enough the cubic regression on the 4090 points works slightly worse than the cubic regression on the 140 points I initially had!<br>
+Then I noticed some things that made me scratch my head even more.<br>
+I tried a 4th degree plane to separate the blue from non blue, as I was expecting it would do better than cubic with 4090 points. It did. With my calculations it was giving me an accuracy of 93.4%. But when I applied the rule with your website I got 80%. I assumed 80% is what you get if your rule compute always false. So maybe my rule was not parsed/calculated correctly (it is a long rule afterall). I checked this assumption by entering an always-false rule (r=300) and noticed that although it was close, it was not identical.<br>
+Moreover I start noticing that accuracy scores were changing in the standings *without* the number of colours changing. The number of responses are changing, but I assume, that the colours in the database are already fixed, i.e, when a color enters the database, it does not appear in the test and it does not change its blueness value.<br>
+If you have thoughts on the last points I&#8217;d love to hear them.</p>
+				</div>
+<!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="/2013/04/19/students-thinking-like-computer-scientists/?replytocom=192#respond" data-commentid="192" data-postid="1378" data-belowelement="div-comment-192" data-respondelement="respond" data-replyto="Reply to Thanassis" aria-label="Reply to Thanassis">Reply</a></div>			</article><!-- .comment-body -->
+		</li>
+<!-- #comment-## -->
+		<li id="comment-193" class="comment even thread-even depth-1 parent">
+			<article id="div-comment-193" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="https://secure.gravatar.com/avatar/dbb04d12e368280772dca96d0197a71e?s=32&#038;d=mm&#038;r=g" srcset="https://secure.gravatar.com/avatar/dbb04d12e368280772dca96d0197a71e?s=64&#038;d=mm&#038;r=g 2x" class="avatar avatar-32 photo" height="32" width="32" loading="lazy">						<b class="fn">Thanassis</b> <span class="says">says:</span>					</div>
+<!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="/2013/04/19/students-thinking-like-computer-scientists/#comment-193"><time datetime="2013-05-31T13:28:33+08:00">May 31, 2013 at 1:28 pm</time></a>					</div>
+<!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>I found a mistake in my code, that explains the poor performance of the 4-degree plane. After correction, I should have seen 93.75%. Still the webpage give me 91.36%. My calculations are based on all 4304 colours currently in the database. Maybe there are rounding errors as many terms in my rule are very small (10^-9)</p>
+				</div>
+<!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="/2013/04/19/students-thinking-like-computer-scientists/?replytocom=193#respond" data-commentid="193" data-postid="1378" data-belowelement="div-comment-193" data-respondelement="respond" data-replyto="Reply to Thanassis" aria-label="Reply to Thanassis">Reply</a></div>			</article><!-- .comment-body -->
+		<ol class="children">
+		<li id="comment-194" class="comment odd alt depth-2 parent">
+			<article id="div-comment-194" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="https://secure.gravatar.com/avatar/509d79173df4009f0620939f5069f8be?s=32&#038;d=mm&#038;r=g" srcset="https://secure.gravatar.com/avatar/509d79173df4009f0620939f5069f8be?s=64&#038;d=mm&#038;r=g 2x" class="avatar avatar-32 photo" height="32" width="32" loading="lazy">						<b class="fn"><a href="http://gealgerobophysiculus.wordpress.com/" rel="external nofollow ugc" class="url">Evan Weinberg</a></b> <span class="says">says:</span>					</div>
+<!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="/2013/04/19/students-thinking-like-computer-scientists/#comment-194"><time datetime="2013-06-10T08:28:39+08:00">June 10, 2013 at 8:28 am</time></a>					</div>
+<!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>This is very cool &#8211; thanks for your comments, and I&#8217;m sorry about the delay in responding. We&#8217;re in the final stages of our school year here.</p>
+<p>Your steps in actually using the machine learning algorithms from the CS class are interesting to me here &#8211; I&#8217;d like to know the details. What programming language did you use? (PLEASE let it be python!) I find it fascinating that these algorithms can figure out patterns so well when there are multiple variables as in this case.</p>
+<p>If I understand Dave&#8217;s programming structure correctly, the colors are all voted on 10 times before being entered into the database. When your rule is tested, it is tested against the 10 rules you voted on, and ten other colors from the database. Once a color has been voted on 10 times, its blueness percentage shouldn&#8217;t change. The changes you see in the percentage are from new colors entering the database after receiving 10 votes.</p>
+<p>I&#8217;ll need some more time to sift through your process, but your analysis is exactly the sort of thing I want to learn more about. Binary classification is really cool, and I like the idea of being able to train a learning algorithm from saying yes/no based on a set of examples. Thanks for participating!</p>
+				</div>
+<!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="/2013/04/19/students-thinking-like-computer-scientists/?replytocom=194#respond" data-commentid="194" data-postid="1378" data-belowelement="div-comment-194" data-respondelement="respond" data-replyto="Reply to Evan Weinberg" aria-label="Reply to Evan Weinberg">Reply</a></div>			</article><!-- .comment-body -->
+		<ol class="children">
+		<li id="comment-195" class="comment even depth-3">
+			<article id="div-comment-195" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="https://secure.gravatar.com/avatar/dbb04d12e368280772dca96d0197a71e?s=32&#038;d=mm&#038;r=g" srcset="https://secure.gravatar.com/avatar/dbb04d12e368280772dca96d0197a71e?s=64&#038;d=mm&#038;r=g 2x" class="avatar avatar-32 photo" height="32" width="32" loading="lazy">						<b class="fn">Thanassis</b> <span class="says">says:</span>					</div>
+<!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="/2013/04/19/students-thinking-like-computer-scientists/#comment-195"><time datetime="2013-06-10T09:48:50+08:00">June 10, 2013 at 9:48 am</time></a>					</div>
+<!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>Yes, it&#8217;s python 🙂 But I am using a few libraries, like numpy and libsvm.<br>
+I would be glad to share my code. I am not sure how readable it is though 🙂<br>
+&#8220;Once a color has been voted on 10 times, its blueness percentage shouldn’t change. The changes you see in the percentage are from new colors entering the database after receiving 10 votes.&#8221;<br>
+Yes, this is/was my understanding too, but it does not seem to add up. The standings page give you the total number of colours in the database. I am claiming that the accuracy changed *without* the total number of colours changing.<br>
+Also there seem to be inaccuracies in the way the rules are evaluated, I left a comment at Dan&#8217;s blog (the last comment I believe).</p>
+				</div>
+<!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="/2013/04/19/students-thinking-like-computer-scientists/?replytocom=195#respond" data-commentid="195" data-postid="1378" data-belowelement="div-comment-195" data-respondelement="respond" data-replyto="Reply to Thanassis" aria-label="Reply to Thanassis">Reply</a></div>			</article><!-- .comment-body -->
+		</li>
+<!-- #comment-## -->
+</ol>
+<!-- .children -->
+</li>
+<!-- #comment-## -->
+</ol>
+<!-- .children -->
+</li>
+<!-- #comment-## -->
+		<li id="comment-196" class="comment odd alt thread-odd thread-alt depth-1">
+			<article id="div-comment-196" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="https://secure.gravatar.com/avatar/e3c7e77cb4845f99eb0518cf754d1b50?s=32&#038;d=mm&#038;r=g" srcset="https://secure.gravatar.com/avatar/e3c7e77cb4845f99eb0518cf754d1b50?s=64&#038;d=mm&#038;r=g 2x" class="avatar avatar-32 photo" height="32" width="32" loading="lazy">						<b class="fn">Bob</b> <span class="says">says:</span>					</div>
+<!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="/2013/04/19/students-thinking-like-computer-scientists/#comment-196"><time datetime="2013-06-22T06:05:39+08:00">June 22, 2013 at 6:05 am</time></a>					</div>
+<!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p><a href="http://blog.xkcd.com/2010/05/03/color-survey-results/" rel="nofollow ugc">http://blog.xkcd.com/2010/05/03/color-survey-results/</a><br>
+Something vaguely related.</p>
+				</div>
+<!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="/2013/04/19/students-thinking-like-computer-scientists/?replytocom=196#respond" data-commentid="196" data-postid="1378" data-belowelement="div-comment-196" data-respondelement="respond" data-replyto="Reply to Bob" aria-label="Reply to Bob">Reply</a></div>			</article><!-- .comment-body -->
+		</li>
+<!-- #comment-## -->
+		<li id="comment-197" class="pingback even thread-even depth-1">
+			<div class="comment-body">
+				Pingback: <a href="https://mathymcmatherson.wordpress.com/2015/06/23/do-you-know-blue/" rel="external nofollow ugc" class="url">Do You Know Blue? | Mathy McMatherson</a> 			</div>
+		</li>
+<!-- #comment-## -->
+		</ol>
+<!-- .comment-list -->
+
+			<div id="respond" class="comment-respond">
+		<h3 id="reply-title" class="comment-reply-title">Leave a Reply <small><a rel="nofollow" id="cancel-comment-reply-link" href="/2013/04/19/students-thinking-like-computer-scientists/#respond" style="display:none;">Cancel reply</a></small>
+</h3>
+<form action="https13.229.58.164/wp-comments-post.php" method="post" id="commentform" class="comment-form" novalidate>
+<p class="comment-notes"><span id="email-notes">Your email address will not be published.</span> Required fields are marked <span class="required">*</span></p>
+<p class="comment-form-comment"><label for="comment">Comment</label> <textarea id="comment" name="comment" cols="45" rows="8" maxlength="65525" required="required"></textarea></p>
+<p class="comment-form-author"><label for="author">Name <span class="required">*</span></label> <input id="author" name="author" type="text" value="" size="30" maxlength="245" required="required"></p>
+<p class="comment-form-email"><label for="email">Email <span class="required">*</span></label> <input id="email" name="email" type="email" value="" size="30" maxlength="100" aria-describedby="email-notes" required="required"></p>
+<p class="comment-form-url"><label for="url">Website</label> <input id="url" name="url" type="url" value="" size="30" maxlength="200"></p>
+<p class="comment-form-cookies-consent"><input id="wp-comment-cookies-consent" name="wp-comment-cookies-consent" type="checkbox" value="yes"> <label for="wp-comment-cookies-consent">Save my name, email, and website in this browser for the next time I comment.</label></p>
+<p class="form-submit"><input name="submit" type="submit" id="submit" class="submit" value="Post Comment"> <input type="hidden" name="comment_post_ID" value="1378" id="comment_post_ID">
+<input type="hidden" name="comment_parent" id="comment_parent" value="0">
+</p>
+<p style="display: none;"><input type="hidden" id="akismet_comment_nonce" name="akismet_comment_nonce" value="4440215fb7"></p>
+<p style="display: none;"><input type="hidden" id="ak_js" name="ak_js" value="214"></p>
+</form>	</div>
+<!-- #respond -->
+	
+</div>
+<!-- #comments -->
+
+		</main><!-- #main -->
+	</div>
+<!-- #primary -->
+
+
+<aside id="secondary" class="widget-area" role="complementary">
+	<section id="categories-2" class="widget widget_categories"><h2 class="widget-title">Categories</h2>
+			<ul>
+					<li class="cat-item cat-item-2">
+<a href="/category/algebra-2/">algebra 2</a>
+</li>
+	<li class="cat-item cat-item-3">
+<a href="/category/array/">Array</a>
+</li>
+	<li class="cat-item cat-item-4">
+<a href="/category/calculus/">calculus</a>
+</li>
+	<li class="cat-item cat-item-5">
+<a href="/category/computational-thinking-2/">computational-thinking</a>
+</li>
+	<li class="cat-item cat-item-6">
+<a href="/category/geogebra/">geogebra</a>
+</li>
+	<li class="cat-item cat-item-7">
+<a href="/category/geometry/">geometry</a>
+</li>
+	<li class="cat-item cat-item-8">
+<a href="/category/ib/">IB</a>
+</li>
+	<li class="cat-item cat-item-9">
+<a href="/category/physics/">physics</a>
+</li>
+	<li class="cat-item cat-item-10">
+<a href="/category/precalculus/">precalculus</a>
+</li>
+	<li class="cat-item cat-item-11">
+<a href="/category/programming/">programming</a>
+</li>
+	<li class="cat-item cat-item-12">
+<a href="/category/reflection/">reflection</a>
+</li>
+	<li class="cat-item cat-item-13">
+<a href="/category/robotics/">robotics</a>
+</li>
+	<li class="cat-item cat-item-14">
+<a href="/category/standards-based-grading/">standards based grading</a>
+</li>
+	<li class="cat-item cat-item-15">
+<a href="/category/studentwork/">studentwork</a>
+</li>
+	<li class="cat-item cat-item-16">
+<a href="/category/teaching-philosophy/">teaching philosophy</a>
+</li>
+	<li class="cat-item cat-item-17">
+<a href="/category/teaching-stories/">teaching stories</a>
+</li>
+	<li class="cat-item cat-item-1">
+<a href="/category/uncategorized/">Uncategorized</a>
+</li>
+	<li class="cat-item cat-item-18">
+<a href="/category/year-in-review/">year-in-review</a>
+</li>
+			</ul>
+
+			</section><section id="meta-2" class="widget widget_meta"><h2 class="widget-title">Meta</h2>
+		<ul>
+						<li><a href="/wp-login.php">Log in</a></li>
+			<li><a href="/feed/">Entries feed</a></li>
+			<li><a href="/comments/feed/">Comments feed</a></li>
+
+			<li><a href="https://wordpress.org/">WordPress.org</a></li>
+		</ul>
+
+		</section></aside><!-- #secondary -->
+
+	</div>
+<!-- #content -->
+
+<footer id="colophon" class="site-footer">
+    		<div class="site-info">
+        			<span class="copy-right-text">All Right Reserved 2018</span>
+						<div class="powered-text">
+				<a href="https://wordpress.org/">Proudly powered by WordPress</a>
+				<span class="sep"> | </span>
+				Theme: Drift Blog by <a href="http://www.candidthemes.com/">Candid Themes</a>.			</div>
+			        <a id="toTop" class="go-to-top" href="#" title="Go to Top">
+            <i class="fa fa-angle-double-up"></i>
+        </a>
+    		</div>
+<!-- .site-info -->
+	</footer><!-- #colophon -->
+</div>
+<!-- #page -->
+
+<script type="text/javascript" src="/wp-content/themes/drift-blog/js/drift-blog-custom.js?ver=20151215" id="drift-blog-custom-js"></script>
+<script type="text/javascript" src="/wp-content/themes/gist/candidthemes/assets/js/gist-custom.js?ver=20151215" id="gist-custom-js"></script>
+<script type="text/javascript" src="/wp-content/themes/gist/candidthemes/assets/js/theia-sticky-sidebar.js?ver=20151215" id="theia-sticky-sidebar-js"></script>
+<script type="text/javascript" src="/wp-content/themes/gist/js/navigation.js?ver=20151215" id="gist-navigation-js"></script>
+<script type="text/javascript" src="/wp-content/themes/gist/js/skip-link-focus-fix.js?ver=20151215" id="gist-skip-link-focus-fix-js"></script>
+<script type="text/javascript" src="/wp-includes/js/comment-reply.min.js?ver=5.7.6" id="comment-reply-js"></script>
+<script type="text/javascript" src="/wp-includes/js/wp-embed.min.js?ver=5.7.6" id="wp-embed-js"></script>
+<script async="async" type="text/javascript" src="/wp-content/plugins/akismet/_inc/form.js?ver=4.1.7" id="akismet-form-js"></script>
+<script type="text/javascript" src="https://stats.wp.com/e-202219.js" async="async" defer></script>
+<script type="text/javascript">
+	_stq = window._stq || [];
+	_stq.push([ 'view', {v:'ext',j:'1:8.6.2',blog:'180381780',post:'1378',tz:'8',srv:'evanweinberg.com'} ]);
+	_stq.push([ 'clickTrackerInit', '180381780', '1378' ]);
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	
+	xmlns:georss="http://www.georss.org/georss"
+	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+	
+	>
+<channel>
+	<title>
+	Comments on: The Nature of Variables for Students vs. Programmers	</title>
+	<atom:link href="/2014/07/25/the-nature-of-variables-for-students-vs-programmers/feed/" rel="self" type="application/rss+xml" />
+	<link>/2014/07/25/the-nature-of-variables-for-students-vs-programmers/</link>
+	<description>iteration, making, building, and coding in education</description>
+	<lastBuildDate>Sat, 26 Jul 2014 02:38:52 +0000</lastBuildDate>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.7.6</generator>
+	<item>
+		<title>
+		By: Evan Weinberg		</title>
+		<link>/2014/07/25/the-nature-of-variables-for-students-vs-programmers/#comment-303</link>
+
+		<dc:creator><![CDATA[Evan Weinberg]]></dc:creator>
+		<pubDate>Sat, 26 Jul 2014 02:38:52 +0000</pubDate>
+		<guid isPermaLink="false">/?p=1909#comment-303</guid>
+
+					<description><![CDATA[In reply to &lt;a href=&quot;/2014/07/25/the-nature-of-variables-for-students-vs-programmers/#comment-301&quot;&gt;Cleargrace&lt;/a&gt;.
+
+You are close in your description - I&#039;d get away from even asking them for solutions, and instead ask them to come up with concrete answers to the questions posed using conversational language rather than mathematical. Then, as we repeat the process with different concrete examples, the mathematical tools become more useful to manage the repetition. The end product is the algebraic expression. 
+
+Spreadsheets are definitely a low barrier of entry tool here. Students have seen them before, have presumably used them to make graphs for science (which carries its own issues), and seem to catch on pretty quickly.]]></description>
+			<content:encoded><![CDATA[<p>In reply to <a href="/2014/07/25/the-nature-of-variables-for-students-vs-programmers/#comment-301">Cleargrace</a>.</p>
+<p>You are close in your description &#8211; I&#8217;d get away from even asking them for solutions, and instead ask them to come up with concrete answers to the questions posed using conversational language rather than mathematical. Then, as we repeat the process with different concrete examples, the mathematical tools become more useful to manage the repetition. The end product is the algebraic expression. </p>
+<p>Spreadsheets are definitely a low barrier of entry tool here. Students have seen them before, have presumably used them to make graphs for science (which carries its own issues), and seem to catch on pretty quickly.</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: dy/dan &#187; Blog Archive &#187; [Makeover] These Tragic &#8220;Write An Expression&#8221; Problems		</title>
+		<link>/2014/07/25/the-nature-of-variables-for-students-vs-programmers/#comment-302</link>
+
+		<dc:creator><![CDATA[dy/dan &#187; Blog Archive &#187; [Makeover] These Tragic &#8220;Write An Expression&#8221; Problems]]></dc:creator>
+		<pubDate>Sat, 26 Jul 2014 02:22:02 +0000</pubDate>
+		<guid isPermaLink="false">/?p=1909#comment-302</guid>
+
+					<description><![CDATA[[&#8230;] Jul 25. I appreciate how Evan Weinberg has thought through this makeover (now and [&#8230;]]]></description>
+			<content:encoded><![CDATA[<p>[&#8230;] Jul 25. I appreciate how Evan Weinberg has thought through this makeover (now and [&#8230;]</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: Cleargrace		</title>
+		<link>/2014/07/25/the-nature-of-variables-for-students-vs-programmers/#comment-301</link>
+
+		<dc:creator><![CDATA[Cleargrace]]></dc:creator>
+		<pubDate>Fri, 25 Jul 2014 09:59:10 +0000</pubDate>
+		<guid isPermaLink="false">/?p=1909#comment-301</guid>
+
+					<description><![CDATA[So you&#039;re saying: let the students work with the problem/question and come up with solutions, then present a series of solutions from a calculator, some wrong and some right, explore the calculations made by the program (that you put in beforehand) and correct those. Then create a whole list of answers for the question, and then ask students to identify a universal equation that would suffice to provide every answer to the question. (Let me know if I have missed anything). I like this idea because it feels more like a connection is being made between the equation/variable and the question when it becomes necessary.
+I am teaching Alg II this year. I can use this! I also like the use of spreadsheets. We are not 1:1, but we are BYOD. I want my students to utilize some of the tech tools, and spreadsheets should be a familiar way to begin (I say should - who knows what they have used in other classes!) good blog!]]></description>
+			<content:encoded><![CDATA[<p>So you&#8217;re saying: let the students work with the problem/question and come up with solutions, then present a series of solutions from a calculator, some wrong and some right, explore the calculations made by the program (that you put in beforehand) and correct those. Then create a whole list of answers for the question, and then ask students to identify a universal equation that would suffice to provide every answer to the question. (Let me know if I have missed anything). I like this idea because it feels more like a connection is being made between the equation/variable and the question when it becomes necessary.<br />
+I am teaching Alg II this year. I can use this! I also like the use of spreadsheets. We are not 1:1, but we are BYOD. I want my students to utilize some of the tech tools, and spreadsheets should be a familiar way to begin (I say should &#8211; who knows what they have used in other classes!) good blog!</p>
+]]></content:encoded>
+		
+			</item>
+	</channel>
+</rss>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	
+	xmlns:georss="http://www.georss.org/georss"
+	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+	
+	>
+<channel>
+	<title>
+	Comments on: Teaching Proofs in Geometry &#8211; What I do.	</title>
+	<atom:link href="/2011/11/05/teaching-proofs-in-geometry-what-i-do/feed/" rel="self" type="application/rss+xml" />
+	<link>/2011/11/05/teaching-proofs-in-geometry-what-i-do/</link>
+	<description>iteration, making, building, and coding in education</description>
+	<lastBuildDate>Mon, 19 Nov 2012 12:18:46 +0000</lastBuildDate>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.7.6</generator>
+	<item>
+		<title>
+		By: Evan Weinberg		</title>
+		<link>/2011/11/05/teaching-proofs-in-geometry-what-i-do/#comment-26</link>
+
+		<dc:creator><![CDATA[Evan Weinberg]]></dc:creator>
+		<pubDate>Mon, 19 Nov 2012 12:18:46 +0000</pubDate>
+		<guid isPermaLink="false">/?p=188#comment-26</guid>
+
+					<description><![CDATA[In reply to &lt;a href=&quot;/2011/11/05/teaching-proofs-in-geometry-what-i-do/#comment-25&quot;&gt;Cathy Buck&lt;/a&gt;.
+
+Hi Cathy. Check out my more recent post on what I did this year. I have always left implicit the idea that proofs are a series of if-then statements that connect together, but this year I directly told them this during our first lesson on actually writing proofs. Check out how I did this at my recent post here: /2012/09/27/first-day-of-geometry-proofs-refining-my-process/
+
+In the beginning I&#039;ve found that students are helped by being given the reasons and filling in the justifications. This is good for becoming acquainted for properties of equality, congruence, and definitions. without students having to construct the entire structure on their own. As soon as possible though, I try to get them out of this habit, because the coolest proofs don&#039;t follow a rigid set of procedures. The sooner you can have them writing proofs and getting feedback on them, the better. I don&#039;t know about specific books - I always pick and choose from different ones. Thank you for visiting - I&#039;m eager to hear your ideas as well!]]></description>
+			<content:encoded><![CDATA[<p>In reply to <a href="/2011/11/05/teaching-proofs-in-geometry-what-i-do/#comment-25">Cathy Buck</a>.</p>
+<p>Hi Cathy. Check out my more recent post on what I did this year. I have always left implicit the idea that proofs are a series of if-then statements that connect together, but this year I directly told them this during our first lesson on actually writing proofs. Check out how I did this at my recent post here: <a href="/2012/09/27/first-day-of-geometry-proofs-refining-my-process/" rel="nofollow ugc">/2012/09/27/first-day-of-geometry-proofs-refining-my-process/</a></p>
+<p>In the beginning I&#8217;ve found that students are helped by being given the reasons and filling in the justifications. This is good for becoming acquainted for properties of equality, congruence, and definitions. without students having to construct the entire structure on their own. As soon as possible though, I try to get them out of this habit, because the coolest proofs don&#8217;t follow a rigid set of procedures. The sooner you can have them writing proofs and getting feedback on them, the better. I don&#8217;t know about specific books &#8211; I always pick and choose from different ones. Thank you for visiting &#8211; I&#8217;m eager to hear your ideas as well!</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		By: Cathy Buck		</title>
+		<link>/2011/11/05/teaching-proofs-in-geometry-what-i-do/#comment-25</link>
+
+		<dc:creator><![CDATA[Cathy Buck]]></dc:creator>
+		<pubDate>Mon, 19 Nov 2012 03:32:11 +0000</pubDate>
+		<guid isPermaLink="false">/?p=188#comment-25</guid>
+
+					<description><![CDATA[Hello.  I am a substitute teacher who has taken over for one who is out long term and I am trying to teach students proofs in geometry, among other topics.  I certainly like your above recommendations and wonder if you might have knowledge of a source book related to teaching proofs that can supplement my students.  Our book is not particularly helpful and the biggest problem our students have is the universal one... Where does one begin right after listing the givens.  I suggest drawing a diagram as well and just thinking of the road to travel in order to get to the &quot;to prove&quot; statement.  But my kids just seem to flounder.. and that of course leads to their giving up before starting.  Many kind thanks for being on the internet and being a resource.  Sincerely, Mrs Buck cathbuck@earthlink.net
+
+ps I am in the city of El Segundo, in CA.]]></description>
+			<content:encoded><![CDATA[<p>Hello.  I am a substitute teacher who has taken over for one who is out long term and I am trying to teach students proofs in geometry, among other topics.  I certainly like your above recommendations and wonder if you might have knowledge of a source book related to teaching proofs that can supplement my students.  Our book is not particularly helpful and the biggest problem our students have is the universal one&#8230; Where does one begin right after listing the givens.  I suggest drawing a diagram as well and just thinking of the road to travel in order to get to the &#8220;to prove&#8221; statement.  But my kids just seem to flounder.. and that of course leads to their giving up before starting.  Many kind thanks for being on the internet and being a resource.  Sincerely, Mrs Buck <a href="mailto:cathbuck@earthlink.net">cathbuck@earthlink.net</a></p>
+<p>ps I am in the city of El Segundo, in CA.</p>
+]]></content:encoded>
+		
+			</item>
+	</channel>
+</rss>

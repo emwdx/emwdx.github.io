@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	
+	xmlns:georss="http://www.georss.org/georss"
+	xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+	>
+
+<channel>
+	<title>algebra 2</title>
+	<atom:link href="/category/algebra-2/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>iteration, making, building, and coding in education</description>
+	<lastBuildDate>Wed, 02 Nov 2016 03:02:35 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.7.6</generator>
+<site xmlns="com-wordpress:feed-additions:1">180381780</site>	<item>
+		<title>Two Lane Road and Collaborative Data Collection</title>
+		<link>/2016/11/02/two-lane-road-and-collaborative-data-collection/</link>
+					<comments>/2016/11/02/two-lane-road-and-collaborative-data-collection/#respond</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Wed, 02 Nov 2016 03:02:35 +0000</pubDate>
+				<category><![CDATA[algebra 2]]></category>
+		<category><![CDATA[computational-thinking]]></category>
+		<category><![CDATA[3 acts]]></category>
+		<category><![CDATA[coding]]></category>
+		<category><![CDATA[desmos]]></category>
+		<category><![CDATA[teachers coding]]></category>
+		<guid isPermaLink="false">/?p=2561</guid>
+
+					<description><![CDATA[I love doing three act problems. This fact should surprise nobody that regularly reads my blog. In tasks that involve prediction or measurement from a range of sources, I see lots of tables of values made by students that stay in the notebook. I have always wanted to get that]]></description>
+										<content:encoded><![CDATA[<p>I love doing three act problems. This fact should surprise nobody that regularly reads my blog.</p>
+<p>In tasks that involve prediction or measurement from a range of sources, I see lots of tables of values made by students that stay in the notebook. I have always wanted to get that data in the hands of the rest of the students to use, or not use, as they see fit. In one of my previous iterations, I pasted the data into a shared Google spreadsheet that students could then paste into a Desmos graph, again, if they felt doing so would be helpful. This was incredibly rich source of material for conversations between students. Still, that extra step of having to paste from one collaborative document (Google) to a non-collaborative one (<a href="http://www.desmos.com/calculator">Desmos Calculator</a>) was one more step than I felt was needed.</p>
+<p>Of course, you&#8217;re now screaming at the screen. <i>&#8220;Calling out Desmos for being non-collaborative is entirely off base, Evan&#8221; </i>, you say. I agree to an extent. Their own activities share data collected by individual students, and on the teacher side, the Activity Builder does the same thing for letting teachers see student data all in one place. They do this incredibly well. Students also get to see each others answers when teachers let them. What doesn&#8217;t happen right now is students seeing each other&#8217;s graphs, tables, and lists of expressions. </p>
+<p>This, along with a desire to play with the Desmos API,  is why I created DataTogether (<a href="https://github.com/emwdx/groupData/">Github repository here</a>), a hacky way to make Desmos data collaborative.  The page is written in React, and uses Firebase to do the realtime data connection.</p>
+<p>Dan Meyer tweeted shortly after that these changes might be somewhere in the pipeline already:</p>
+<blockquote class="twitter-tweet" data-lang="en">
+<p lang="en" dir="ltr"><a href="https://twitter.com/emwdx">@emwdx</a> On the one hand, I admire your industry. On the other, I&#39;m mad that we make this so difficult. Promise to make this unnecessary soon.</p>
+<p>&mdash; Dan Meyer (@ddmeyer) <a href="https://twitter.com/ddmeyer/status/793455835590463488">November 1, 2016</a></p></blockquote>
+<p> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></p>
+<p>This is probably why I may not be adding a lot of code comments to my code in the near future.</p>
+<p>I did my <a href="http://www.101qs.com/2650-two-lane-road">Two Lane Road 3-act</a> with a small group of students this morning on account of tenth graders being out for the PSAT. After the standard Act 1 conversation, and a really great conversation about agreements between groups on collecting data from the video, the students began collecting data on the red and blue cars.</p>
+<p>The students were efficiently able to collect data together on separate computers after profuse apologies for the limitations of my code:</p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2016/11/Screen-Shot-2016-11-02-at-9.45.38-AM.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2016/11/Screen-Shot-2016-11-02-at-9.45.38-AM.png" alt="screen-shot-2016-11-02-at-9-45-38-am" width="883" height="468" class="alignnone size-full wp-image-2562" srcset="/wp-content/uploads/2016/11/Screen-Shot-2016-11-02-at-9.45.38-AM.png 883w, /wp-content/uploads/2016/11/Screen-Shot-2016-11-02-at-9.45.38-AM-300x159.png 300w, /wp-content/uploads/2016/11/Screen-Shot-2016-11-02-at-9.45.38-AM-768x407.png 768w" sizes="(max-width: 883px) 100vw, 883px" /></a></p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2016/11/Screen-Shot-2016-11-02-at-9.44.37-AM.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2016/11/Screen-Shot-2016-11-02-at-9.44.37-AM.png" alt="screen-shot-2016-11-02-at-9-44-37-am" width="500" height="266" class="alignnone size-large wp-image-2563" srcset="/wp-content/uploads/2016/11/Screen-Shot-2016-11-02-at-9.44.37-AM.png 878w, /wp-content/uploads/2016/11/Screen-Shot-2016-11-02-at-9.44.37-AM-300x160.png 300w, /wp-content/uploads/2016/11/Screen-Shot-2016-11-02-at-9.44.37-AM-768x408.png 768w" sizes="(max-width: 500px) 100vw, 500px" /></a> </p>
+<p>I then had each student use the tools within Desmos to construct a linear model from the data. The fact that two computers were looking at the same data, but in different Desmos windows, paid significant dividends when two students on the same team created their models in different ways. One student made a regression. Another created a line that went through one set of points perfectly, but missed another. Math class conversation gold right there.</p>
+<p>I exported both of their data through the console (code shown below) and pasted it into Desmos. I then put together a simulation of the red and blue car so that the teams could see what their car looked like in simulation.</p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2016/11/Screen-Shot-2016-11-02-at-9.56.22-AM.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2016/11/Screen-Shot-2016-11-02-at-9.56.22-AM-1024x484.png" alt="screen-shot-2016-11-02-at-9-56-22-am" width="500" height="236" class="alignnone size-large wp-image-2564" srcset="/wp-content/uploads/2016/11/Screen-Shot-2016-11-02-at-9.56.22-AM-1024x484.png 1024w, /wp-content/uploads/2016/11/Screen-Shot-2016-11-02-at-9.56.22-AM-300x142.png 300w, /wp-content/uploads/2016/11/Screen-Shot-2016-11-02-at-9.56.22-AM-768x363.png 768w, /wp-content/uploads/2016/11/Screen-Shot-2016-11-02-at-9.56.22-AM-1536x725.png 1536w, /wp-content/uploads/2016/11/Screen-Shot-2016-11-02-at-9.56.22-AM-2048x967.png 2048w, /wp-content/uploads/2016/11/Screen-Shot-2016-11-02-at-9.56.22-AM-1200x567.png 1200w, /wp-content/uploads/2016/11/Screen-Shot-2016-11-02-at-9.56.22-AM-1980x935.png 1980w" sizes="(max-width: 500px) 100vw, 500px" /></a></p>
+<p><a href="https://www.desmos.com/calculator/0pbxjlubiv">You can check out the Desmos graph here</a>.</p>
+<p>This allowed us to make a prediction directly off of their models that looked like the original video.</p>
+<p>We ran out of time in the end to do much more than sharing predictions and watching the third act, but I&#8217;m pretty pleased with how things went overall. My paper handouts with three printed color frames of the video went unused. I think </p>
+<hr>
+<p>A big shout-out of thanks to everyone for helping test the data collection tool I shared earlier. </p>
+<p>Here&#8217;s a screenshot of our age vs. teaching years data:<br />
+<a href="http://ec2-13-229-58-164.ap-southeast-1.compute.amazonaws.com/wp-content/uploads/2016/11/Screen-Shot-2016-11-02-at-10.00.41-AM.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2016/11/Screen-Shot-2016-11-02-at-10.00.41-AM-1024x541.png" alt="screen-shot-2016-11-02-at-10-00-41-am" width="500" height="264" class="alignnone size-large wp-image-2565" srcset="/wp-content/uploads/2016/11/Screen-Shot-2016-11-02-at-10.00.41-AM-1024x541.png 1024w, /wp-content/uploads/2016/11/Screen-Shot-2016-11-02-at-10.00.41-AM-300x159.png 300w, /wp-content/uploads/2016/11/Screen-Shot-2016-11-02-at-10.00.41-AM-768x406.png 768w, /wp-content/uploads/2016/11/Screen-Shot-2016-11-02-at-10.00.41-AM-1536x812.png 1536w, /wp-content/uploads/2016/11/Screen-Shot-2016-11-02-at-10.00.41-AM-1200x635.png 1200w, /wp-content/uploads/2016/11/Screen-Shot-2016-11-02-at-10.00.41-AM.png 1736w" sizes="(max-width: 500px) 100vw, 500px" /></a></p>
+<p>The data can be downloaded <a href="https://emwdx.github.io/groupData/index.html">from the DataTogether page</a>, loading data set 3DR9, and then by going to the console and entering the code below:</p>
+<p><code></p>
+<p>ptString = "";<br />
+myComponent.state.groupData.forEach(function(pt){ptString=ptString+pt.x+" \t "+pt.y+" \n "});</p>
+<p></code></p>
+<p>This string can then be pasted right into the <a href="http://www.desmos.com/calculator">Desmos</a> expression list if you want to play with it.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2016/11/02/two-lane-road-and-collaborative-data-collection/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">2561</post-id>	</item>
+		<item>
+		<title>A Small Change: Unit Circle &#038; Trigonometric Functions</title>
+		<link>/2015/04/22/a-small-change-unit-circle-trigonometric-functions/</link>
+					<comments>/2015/04/22/a-small-change-unit-circle-trigonometric-functions/#respond</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Wed, 22 Apr 2015 02:40:30 +0000</pubDate>
+				<category><![CDATA[algebra 2]]></category>
+		<category><![CDATA[teaching stories]]></category>
+		<category><![CDATA[coordinates]]></category>
+		<category><![CDATA[trigonometric ratios]]></category>
+		<category><![CDATA[trigonometry]]></category>
+		<category><![CDATA[unit circle]]></category>
+		<guid isPermaLink="false">/?p=2164</guid>
+
+					<description><![CDATA[I wrote nearly a year ago about my adjustment to what I had done previously to develop the topic. The idea was based on what my own pre-Calculus teacher did in high school, a series of activities related to a &#8216;wrapping function&#8217; moving around the unit circle. This lesson is]]></description>
+										<content:encoded><![CDATA[<p>I wrote <a title="After a hiatus: circular functions" href="/2014/05/20/after-a-hiatus-circular-functions/">nearly a year ago</a> about my adjustment to what I had done previously to develop the topic. The idea was based on what my own pre-Calculus teacher did in high school, a series of activities related to a &#8216;wrapping function&#8217; moving around the unit circle. This lesson is for a group of Algebra 2 level students that will likely move into the IB program for next year. Mastery of trigonometric functions isn&#8217;t necessary, but I do want students to feel comfortable converting between radians and degrees, locating angles on the unit circle, and evaluating trigonometric functions.</p>
+<p>In the last class, we talked about 30-60-90 and 45-45-90 triangles and the fact that we can evaluate trigonometric functions exactly using our knowledge of ratios and the Pythagorean theorem. We also did a series of exercises having students locate angles on the unit circle during the last class.</p>
+<p>Today&#8217;s warm-up was a continuation of these ideas through these sets of questions:</p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2015/04/Screen-Shot-2015-04-22-at-10.44.18-AM.png"><img loading="lazy" class="alignnone size-medium wp-image-2174" src="http://blog.evanweinberg.org/wp-content/uploads/2015/04/Screen-Shot-2015-04-22-at-10.44.18-AM-300x126.png" alt="Screen Shot 2015-04-22 at 10.44.18 AM" width="300" height="126" srcset="/wp-content/uploads/2015/04/Screen-Shot-2015-04-22-at-10.44.18-AM-300x126.png 300w, /wp-content/uploads/2015/04/Screen-Shot-2015-04-22-at-10.44.18-AM-768x322.png 768w, /wp-content/uploads/2015/04/Screen-Shot-2015-04-22-at-10.44.18-AM.png 829w" sizes="(max-width: 300px) 100vw, 300px" /></a> <a href="http://blog.evanweinberg.org/wp-content/uploads/2015/04/Screen-Shot-2015-04-22-at-10.44.24-AM.png"><img loading="lazy" class="alignnone size-medium wp-image-2173" src="http://blog.evanweinberg.org/wp-content/uploads/2015/04/Screen-Shot-2015-04-22-at-10.44.24-AM-300x109.png" alt="Screen Shot 2015-04-22 at 10.44.24 AM" width="300" height="109" srcset="/wp-content/uploads/2015/04/Screen-Shot-2015-04-22-at-10.44.24-AM-300x109.png 300w, /wp-content/uploads/2015/04/Screen-Shot-2015-04-22-at-10.44.24-AM-768x278.png 768w, /wp-content/uploads/2015/04/Screen-Shot-2015-04-22-at-10.44.24-AM.png 820w" sizes="(max-width: 300px) 100vw, 300px" /></a></p>
+<p>&nbsp;</p>
+<p>Normally at this stage, I show a development using similar triangles of finding what these coordinates are. Though I bring up this goal in a number of different ways, whether students are doing this at their seats, or I&#8217;m doing it for them, I can never the sense of understanding that I want. This development is also <span style="text-decoration: underline;">not</span> what I want them to do when they are evaluating trigonometric functions either &#8211; I want them to figure out where they are on the unit circle, and then evaluate based on the x and y-coordinates of the point.</p>
+<p>Today I made a subtle change to my sequence. I directly told students that the coordinates of these points were some combination of a set of five lengths. Two of these lengths we found in a previous lesson, but I never made a connection to it here. I asked them to put the numbers in order from least to greatest</p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2015/04/Screen-Shot-2015-04-22-at-10.20.16-AM.png"><img loading="lazy" class="alignnone size-medium wp-image-2167" src="http://blog.evanweinberg.org/wp-content/uploads/2015/04/Screen-Shot-2015-04-22-at-10.20.16-AM-300x110.png" alt="Screen Shot 2015-04-22 at 10.20.16 AM" width="300" height="110" srcset="/wp-content/uploads/2015/04/Screen-Shot-2015-04-22-at-10.20.16-AM-300x110.png 300w, /wp-content/uploads/2015/04/Screen-Shot-2015-04-22-at-10.20.16-AM-768x282.png 768w, /wp-content/uploads/2015/04/Screen-Shot-2015-04-22-at-10.20.16-AM.png 810w" sizes="(max-width: 300px) 100vw, 300px" /></a></p>
+<p>Then I asked them to complete the coordinates in this blank unit circle. Here&#8217;s a student&#8217;s work, corrected by a classmate when it was shared:<br />
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2015/04/Screen-Shot-2015-04-22-at-10.21.32-AM.png"><img loading="lazy" class="alignnone size-medium wp-image-2168" src="http://blog.evanweinberg.org/wp-content/uploads/2015/04/Screen-Shot-2015-04-22-at-10.21.32-AM-300x249.png" alt="Screen Shot 2015-04-22 at 10.21.32 AM" width="300" height="249" srcset="/wp-content/uploads/2015/04/Screen-Shot-2015-04-22-at-10.21.32-AM-300x249.png 300w, /wp-content/uploads/2015/04/Screen-Shot-2015-04-22-at-10.21.32-AM.png 603w" sizes="(max-width: 300px) 100vw, 300px" /></a></p>
+<p>All of the conversations about sign and value that I had to force previously happened naturally this time. The handout was folded so that as students finished, I could then nudge them into the next step of finding angles that match to particular coordinates, an exercise on the other side.</p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2015/04/IMG_08271.jpg"><img loading="lazy" class="alignnone size-medium wp-image-2170" src="http://blog.evanweinberg.org/wp-content/uploads/2015/04/IMG_08271-300x225.jpg" alt="IMG_0827" width="300" height="225" srcset="/wp-content/uploads/2015/04/IMG_08271-300x225.jpg 300w, /wp-content/uploads/2015/04/IMG_08271-1024x768.jpg 1024w, /wp-content/uploads/2015/04/IMG_08271-768x576.jpg 768w, /wp-content/uploads/2015/04/IMG_08271-1536x1152.jpg 1536w, /wp-content/uploads/2015/04/IMG_08271-2048x1536.jpg 2048w, /wp-content/uploads/2015/04/IMG_08271-1200x900.jpg 1200w, /wp-content/uploads/2015/04/IMG_08271-1980x1485.jpg 1980w" sizes="(max-width: 300px) 100vw, 300px" /></a></p>
+<p>For most of the students, this wasn&#8217;t a problem. Some even looked like they were enjoying it.</p>
+<p>It was only in the last few minutes of the class that I introduced the sine, cosine, and tangent as a shorthand way of asking the question of finding the x-coordinate, y-coordinate, or the ratio of the two. My students are pretty trusting, but they have also become used to asking why [Statement A] is true once they have the basic idea of what [Statement A] means. This lesson was just a continuation of this process. Almost every student was able to evaluate a cosine function of a different angle during the exit activity.</p>
+<p>I felt a little bad about giving the coordinates and putting off the understanding to later. This short bit of mathematical fact, however, was followed immediately by a task that required them to reason about what they mean. It builds the need to show why those coordinates are what they are, and this process of looking at 45-45-90 and 30-60-90 triangles on the unit circle will make much more sense in the context of the student experiences here.</p>
+<p>One student summed up my motivation for doing this beautifully as she was packing up &#8211; <em>I love that I&#8217;m not making this quote up</em>:</p>
+<blockquote><p>It&#8217;s good that you don&#8217;t have to memorize it because you can just see the picture in your head and know what the answer is.</p></blockquote>
+<p>&nbsp;</p>
+<p>Jackpot.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2015/04/22/a-small-change-unit-circle-trigonometric-functions/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">2164</post-id>	</item>
+		<item>
+		<title>A Small Change: Solving Equations with Logarithms</title>
+		<link>/2015/04/06/a-small-change-solving-equations-with-logarithms/</link>
+					<comments>/2015/04/06/a-small-change-solving-equations-with-logarithms/#respond</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Mon, 06 Apr 2015 01:53:55 +0000</pubDate>
+				<category><![CDATA[algebra 2]]></category>
+		<category><![CDATA[reflection]]></category>
+		<category><![CDATA[teaching stories]]></category>
+		<category><![CDATA[logarithms]]></category>
+		<category><![CDATA[mathematical practice]]></category>
+		<category><![CDATA[precision]]></category>
+		<guid isPermaLink="false">/?p=2130</guid>
+
+					<description><![CDATA[In my Math 10 class, did my lesson today involving solving exponential equations that cannot be solved using knowledge of integral powers. My start was the same as it has been for that lesson over many years: I have students start with an iterative guess-and-check method since it&#8217;s something that]]></description>
+										<content:encoded><![CDATA[<p>In my Math 10 class, did my lesson today involving solving exponential equations that cannot be solved using knowledge of integral powers. My start was the same as it has been for that lesson over many years:</p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2015/04/Screen-Shot-2015-04-06-at-9.37.22-AM.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2015/04/Screen-Shot-2015-04-06-at-9.37.22-AM-300x54.png" alt="Screen Shot 2015-04-06 at 9.37.22 AM" width="300" height="54" class="alignnone size-medium wp-image-2131" srcset="/wp-content/uploads/2015/04/Screen-Shot-2015-04-06-at-9.37.22-AM-300x54.png 300w, /wp-content/uploads/2015/04/Screen-Shot-2015-04-06-at-9.37.22-AM.png 596w" sizes="(max-width: 300px) 100vw, 300px" /></a></p>
+<p>I have students start with an iterative guess-and-check method since it&#8217;s something that will pretty much always work. This was no big deal to the students. When one student said her TI calculator gave the exact answer, I asked if she really thought that was the exact answer. She said no, but I used Python to rub it in a bit.</p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2015/04/Screen-Shot-2015-04-06-at-9.39.40-AM.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2015/04/Screen-Shot-2015-04-06-at-9.39.40-AM-300x57.png" alt="Screen Shot 2015-04-06 at 9.39.40 AM" width="300" height="57" class="alignnone size-medium wp-image-2132" srcset="/wp-content/uploads/2015/04/Screen-Shot-2015-04-06-at-9.39.40-AM-300x57.png 300w, /wp-content/uploads/2015/04/Screen-Shot-2015-04-06-at-9.39.40-AM.png 372w" sizes="(max-width: 300px) 100vw, 300px" /></a></p>
+<p>This was another opportunity to show the difference between exact and approximate answers &#8211; always something I try to teach implicitly whenever it comes up. As with many of the Common Core Standards for Mathematical Practice, I think this (MP6 &#8211; Attend to Precision) is always an idea that comes with context.</p>
+<p>The big shift in this lesson came when we started solving the equation algebraically. I always do a bit of hand-waving at this point saying &#8216;isn&#8217;t it great that these logarithm properties let us do this?&#8217;, while getting a class full of students giving me just enough of a sarcastic head nod to make me feel bad about it.</p>
+<p>Instead, I made reference to the process of switching back and forth from logarithmic and exponential form.</p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2015/04/Screen-Shot-2015-04-06-at-9.45.20-AM.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2015/04/Screen-Shot-2015-04-06-at-9.45.20-AM-294x300.png" alt="Screen Shot 2015-04-06 at 9.45.20 AM" width="294" height="300" class="alignnone size-medium wp-image-2133" srcset="/wp-content/uploads/2015/04/Screen-Shot-2015-04-06-at-9.45.20-AM-294x300.png 294w, /wp-content/uploads/2015/04/Screen-Shot-2015-04-06-at-9.45.20-AM.png 509w" sizes="(max-width: 294px) 100vw, 294px" /></a> </p>
+<p>The students are pretty skilled at doing this. I wrote it up in the notes myself because most students wrote it faster than I could get anyone to explain the process.</p>
+<p>The key here was that when I asked students to calculate these values on the calculator, nobody could do it. One found the LOGBASE command on their TI, but for the most part, this stayed as an abstract number. It made sense to them that they ended up with &#8216;x =&#8217; in the end, but that didn&#8217;t make a big difference in terms of being able to talk about what that meant. They did a couple of these on their own.</p>
+<p>Only then did I show them the logarithm property trick that lets us get the answer in a different form:<br />
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2015/04/Screen-Shot-2015-04-06-at-9.48.54-AM.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2015/04/Screen-Shot-2015-04-06-at-9.48.54-AM-300x188.png" alt="Screen Shot 2015-04-06 at 9.48.54 AM" width="300" height="188" class="alignnone size-medium wp-image-2134" srcset="/wp-content/uploads/2015/04/Screen-Shot-2015-04-06-at-9.48.54-AM-300x188.png 300w, /wp-content/uploads/2015/04/Screen-Shot-2015-04-06-at-9.48.54-AM.png 538w" sizes="(max-width: 300px) 100vw, 300px" /></a></p>
+<p>I admittedly connected some dots here, but I didn&#8217;t do so in a formal way of introducing change of base. A couple of them figured out that this was a form that they <u>could</u> calculate using the common logarithm button on their calculators.</p>
+<p>I&#8217;m not emphasizing log properties this year outside of what they allow us to do in solving equations. This is something that we will devote more time to next year in IB Mathematics year 1 class. I will mention this change of base property as a nice tool to use for confirming graphical and iterative solutions, but probably won&#8217;t assess them knowing how to apply change of base directly.</p>
+<p>Any time I can get rid of hand-waving and showing mathematics as a list of tricks to be memorized, it&#8217;s a win. </p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2015/04/06/a-small-change-solving-equations-with-logarithms/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">2130</post-id>	</item>
+		<item>
+		<title>Clicking Useless Buttons and Exponential Models</title>
+		<link>/2015/03/13/clicking-useless-buttons-and-exponential-models/</link>
+					<comments>/2015/03/13/clicking-useless-buttons-and-exponential-models/#respond</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Fri, 13 Mar 2015 01:38:01 +0000</pubDate>
+				<category><![CDATA[algebra 2]]></category>
+		<category><![CDATA[programming]]></category>
+		<category><![CDATA[teaching philosophy]]></category>
+		<category><![CDATA[exponential functions]]></category>
+		<category><![CDATA[three-acts]]></category>
+		<guid isPermaLink="false">/?p=2104</guid>
+
+					<description><![CDATA[Last fall, when I was teaching my web design students about jQuery events, I included an example page that counted the number of times a button was clicked and displayed the total. As a clear indicator of their strong engagement in what I asked them to do next, my students]]></description>
+										<content:encoded><![CDATA[<p>Last fall, when I was teaching my web design students about jQuery events, I included an example page that counted the number of times a button was clicked and displayed the total. As a clear indicator of their strong engagement in what I asked them to do next, my students competed with each other to see who could click the most number of clicks in a given time period. With the popularity of pointless games like <a href="http://orteil.dashnet.org/cookieclicker/">Cookie Clicker </a>, I knew there had to be something there to use toward an end that served my teaching.</p>
+<p>Shortly afterwards, I made a three-act video activity that used this concept &#8211; you can get it yourself <a href="http://blog.evanweinberg.org/wp-content/uploads/2015/03/Archive.zip">here.</a></p>
+<p>This was how I started a new unit on exponential functions with my Math 10 class this week. The previous unit was about polynomials, and had polynomial regression for modeling through Geogebra as a major component. One group went straight to Geogebra to solve this problem to figure out how many clicks. For the rest, the solutions were analog. Here&#8217;s a sample:</p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2015/03/Screen-Shot-2015-03-12-at-4.43.32-PM.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2015/03/Screen-Shot-2015-03-12-at-4.43.32-PM-300x278.png" alt="Screen Shot 2015-03-12 at 4.43.32 PM" width="300" height="278" class="alignnone size-medium wp-image-2106" srcset="/wp-content/uploads/2015/03/Screen-Shot-2015-03-12-at-4.43.32-PM-300x278.png 300w, /wp-content/uploads/2015/03/Screen-Shot-2015-03-12-at-4.43.32-PM.png 460w" sizes="(max-width: 300px) 100vw, 300px" /></a></p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2015/03/Screen-Shot-2015-03-12-at-4.43.54-PM.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2015/03/Screen-Shot-2015-03-12-at-4.43.54-PM-300x247.png" alt="Screen Shot 2015-03-12 at 4.43.54 PM" width="300" height="247" class="alignnone size-medium wp-image-2107" srcset="/wp-content/uploads/2015/03/Screen-Shot-2015-03-12-at-4.43.54-PM-300x247.png 300w, /wp-content/uploads/2015/03/Screen-Shot-2015-03-12-at-4.43.54-PM.png 417w" sizes="(max-width: 300px) 100vw, 300px" /></a></p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2015/03/Screen-Shot-2015-03-12-at-4.44.06-PM.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2015/03/Screen-Shot-2015-03-12-at-4.44.06-PM-289x300.png" alt="Screen Shot 2015-03-12 at 4.44.06 PM" width="289" height="300" class="alignnone size-medium wp-image-2108" srcset="/wp-content/uploads/2015/03/Screen-Shot-2015-03-12-at-4.44.06-PM-289x300.png 289w, /wp-content/uploads/2015/03/Screen-Shot-2015-03-12-at-4.44.06-PM.png 485w" sizes="(max-width: 289px) 100vw, 289px" /></a></p>
+<p>When we watched the answer video, there was a lot of discouragement about how nobody had the correct answer. I used this as an opportunity to revisit the idea of mathematics as a set of different models. Polynomial models, no matter what we do to them, just don&#8217;t account for <u>everything</u> out there in the universe. There was a really neat interchange between two students sitting next to each other, one who added 20 each time, and another who multiplied by 20 each time. Without having to push too much, these students reasoned that the multiplication case resulted in a very different looking set of data.</p>
+<p>This activity was a perfect segue into exponential functions, the most uncontrived I think I&#8217;ve set up in years. It was based, however, on a useless game with no real world connections or applications aside from other also useless games. No multiplying bacteria or rabbits, no schemes of getting double the number of pennies for a month.</p>
+<p>I put this down as another example of how relevance and real world don&#8217;t necessarily go hand in hand when it comes to classroom engagement.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2015/03/13/clicking-useless-buttons-and-exponential-models/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">2104</post-id>	</item>
+		<item>
+		<title>After a hiatus: circular functions</title>
+		<link>/2014/05/20/after-a-hiatus-circular-functions/</link>
+					<comments>/2014/05/20/after-a-hiatus-circular-functions/#respond</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Tue, 20 May 2014 09:01:36 +0000</pubDate>
+				<category><![CDATA[algebra 2]]></category>
+		<category><![CDATA[reflection]]></category>
+		<guid isPermaLink="false">/?p=1846</guid>
+
+					<description><![CDATA[It has been a busy time in gealgerobophysiculus land. By land, I of course mean school, and by busy, I mean what results when you have multiple exciting projects going on, school functions to organize, and the normal operations of a classroom to sort through and organize. I haven&#8217;t taught]]></description>
+										<content:encoded><![CDATA[<p>It has been a busy time in gealgerobophysiculus land. By land, I of course mean school, and by busy, I mean what results when you have multiple exciting projects going on, school functions to organize, and the normal operations of a classroom to sort through and organize.</p>
+<p>I haven&#8217;t taught the unit circle in three years. Before that, I took the approach of throwing a definition of the radian up on the board and discussing it as this strange thing that mathematicians decided would be a good idea. When I learned this in high school, we did some cool activities involving string and wrapping functions. At that time, it wasn&#8217;t clear to me how the string wrapping around a circular object really related to measuring an angle around it. I was always relating the idea of the radian angle back to degrees, because the angle part never made sense.</p>
+<p>After some thinking and coding, I put together an activity that I thought would make this concept more concrete for the students in my tenth grade class. You can check it out at <a href="http://apps.evanweinberg.org/circlemeetsradius/" title="http://apps.evanweinberg.org/circlemeetsradius/">http://apps.evanweinberg.org/circlemeetsradius/</a> </p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2014/05/Screen-Shot-2014-05-20-at-4.40.19-PM.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2014/05/Screen-Shot-2014-05-20-at-4.40.19-PM.png" alt="Screen Shot 2014-05-20 at 4.40.19 PM" width="1081" height="510" class="alignnone size-full wp-image-1847" srcset="/wp-content/uploads/2014/05/Screen-Shot-2014-05-20-at-4.40.19-PM.png 1081w, /wp-content/uploads/2014/05/Screen-Shot-2014-05-20-at-4.40.19-PM-300x142.png 300w, /wp-content/uploads/2014/05/Screen-Shot-2014-05-20-at-4.40.19-PM-1024x483.png 1024w, /wp-content/uploads/2014/05/Screen-Shot-2014-05-20-at-4.40.19-PM-768x362.png 768w" sizes="(max-width: 1081px) 100vw, 1081px" /></a></p>
+<p>It starts with the premise of moving around a circle at distances of integer multiples of the radius. Looking at your own work doesn&#8217;t really establish how this relates to measuring angles at all. When you look at what happens when <u>many</u> people do the same thing to differently sized circles, the result makes clear that this could be a fairly natural way to measure out angles:<br />
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2014/05/Screen-Shot-2014-05-20-at-4.44.06-PM.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2014/05/Screen-Shot-2014-05-20-at-4.44.06-PM.png" alt="Screen Shot 2014-05-20 at 4.44.06 PM" width="526" height="472" class="alignnone size-full wp-image-1848" srcset="/wp-content/uploads/2014/05/Screen-Shot-2014-05-20-at-4.44.06-PM.png 526w, /wp-content/uploads/2014/05/Screen-Shot-2014-05-20-at-4.44.06-PM-300x269.png 300w" sizes="(max-width: 526px) 100vw, 526px" /></a></p>
+<p>I didn&#8217;t have the networked part of this applet working when I did this with students, so I collected screenshots of students and their different circles together. I asked students what they expected would be different about the locations of these six points for circles of different sizes, and there was pretty solid agreement that they would be in roughly the same point around the circle, but this was still too abstract to establish the idea that these points measure out angles. The students weren&#8217;t too surprised by the result, either, but I think the activity in this form still left me as the teacher to connect the dots.</p>
+<p>I wish I had an extra day to configure the final screen of this activity. I wouldn&#8217;t have had to work so hard.</p>
+<p>The rest of the unit walked the line from this concrete idea of moving around the circle up the ladder of abstraction to what we ask students to typically do with these functions. We went from identifying points around the circle for a given angle measured in radians, to using our knowledge of 30-60-90 triangles to find the coordinates of some of these points, to formal definitions of sine, cosine, and tangent functions using these points. Every time I could, I related this idea back to the first activity of moving around the circle, but by the time we got to graphing these functions, I think I was demanding a high level of abstraction without also demanding the deliberate practice necessary to connect the angles and coordinates to each other. Students struggled to evaluate the trigonometric functions at different angles not because they couldn&#8217;t piece it together with time, but because they always felt compelled to go all the way back to the circle. I suppose it&#8217;s the trigonometric equivalent of going back to counting on your fingers. </p>
+<p>I also was a bit disappointed to see that only a third of the class answered this question correctly on the unit exam:</p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2014/05/Screen-Shot-2014-05-20-at-4.57.41-PM.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2014/05/Screen-Shot-2014-05-20-at-4.57.41-PM.png" alt="Screen Shot 2014-05-20 at 4.57.41 PM" width="1038" height="427" class="alignnone size-full wp-image-1849" srcset="/wp-content/uploads/2014/05/Screen-Shot-2014-05-20-at-4.57.41-PM.png 1038w, /wp-content/uploads/2014/05/Screen-Shot-2014-05-20-at-4.57.41-PM-300x123.png 300w, /wp-content/uploads/2014/05/Screen-Shot-2014-05-20-at-4.57.41-PM-1024x421.png 1024w, /wp-content/uploads/2014/05/Screen-Shot-2014-05-20-at-4.57.41-PM-768x316.png 768w" sizes="(max-width: 1038px) 100vw, 1038px" /></a></p>
+<p>To those that recognized the similarity to our opening activity, it was quite easy. The bulk did not see it this way though.</p>
+<p>At this stage, however, I&#8217;m not too concerned. Many students admitted immediately after the exam that they did not practice the unit circle as much as they should have. They reported that they understood much of the unit up to the graphing part, where I think I pushed them a bit more quickly to piece together the graphs than would have been ideal for them to get an intuitive sense for them. I&#8217;m confident that a second and more rigorous look at these functions next year in IB year one will help solidify some of these concepts for them.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2014/05/20/after-a-hiatus-circular-functions/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">1846</post-id>	</item>
+		<item>
+		<title>Exponent rules and Witchcraft</title>
+		<link>/2013/07/12/exponent-rules-and-witchcraft/</link>
+					<comments>/2013/07/12/exponent-rules-and-witchcraft/#comments</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Fri, 12 Jul 2013 14:12:26 +0000</pubDate>
+				<category><![CDATA[algebra 2]]></category>
+		<category><![CDATA[teaching stories]]></category>
+		<category><![CDATA[exponent rules]]></category>
+		<category><![CDATA[math as witchcraft]]></category>
+		<category><![CDATA[reflection]]></category>
+		<category><![CDATA[summer]]></category>
+		<guid isPermaLink="false">/?p=1574</guid>
+
+					<description><![CDATA[I just received this email from a student: I FINALLY UNDERSTAND YOUR WITCHCRAFT OF WHY 3 TO THE POWER OF 0 IS ONE. 3^0 = 3^(1 + -1) = (3^1)*(3^-1) = 3 * (1/3) Talk about an accomplished summer. This group in Algebra 2 took a lot of convincing. I]]></description>
+										<content:encoded><![CDATA[<p>I just received this email from a student:</p>
+<blockquote><p>
+I FINALLY UNDERSTAND YOUR WITCHCRAFT OF WHY 3 TO THE POWER OF 0 IS ONE.</p>
+<p>3^0 = 3^(1 + -1) = (3^1)*(3^-1) = 3 * (1/3)</p>
+<p>Talk about an accomplished summer.</p>
+</blockquote>
+<p>This group in Algebra 2 took a lot of convincing. I went through about four or five different approaches to proving this. They objected to using laws of exponents since 3<sup>0</sup> <em>is</em> one of the rules of exponents. They didn&#8217;t like writing out factors and dividing them out. They didn&#8217;t like following patterns. While they did accept that they could use the exponent rule as fact, they didn&#8217;t like doing this. I really liked that they pushed me so far on this, and I don&#8217;t entirely believe that their disbelief was simply a method of delaying the lesson of the day.</p>
+<p>Whatever it was that led this particular student to have such a revelation, it makes me incredibly proud that this student <em>chose</em> to follow that lead, especially given that it is the middle of summer vacation. Despite labeling the content of the course &#8216;witchcraft&#8217;, I&#8217;m marking this down in the &#8216;win&#8217; column.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2013/07/12/exponent-rules-and-witchcraft/feed/</wfw:commentRss>
+			<slash:comments>1</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">1580</post-id>	</item>
+		<item>
+		<title>2012-2013 Year In Review – Learning Standards</title>
+		<link>/2013/06/26/2012-2013-year-in-review-learning-standards/</link>
+					<comments>/2013/06/26/2012-2013-year-in-review-learning-standards/#respond</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Wed, 26 Jun 2013 14:26:24 +0000</pubDate>
+				<category><![CDATA[algebra 2]]></category>
+		<category><![CDATA[calculus]]></category>
+		<category><![CDATA[geometry]]></category>
+		<category><![CDATA[physics]]></category>
+		<category><![CDATA[reflection]]></category>
+		<category><![CDATA[teaching philosophy]]></category>
+		<category><![CDATA[Uncategorized]]></category>
+		<category><![CDATA[learning standards]]></category>
+		<category><![CDATA[SBG]]></category>
+		<category><![CDATA[year in review]]></category>
+		<guid isPermaLink="false">/?p=1530</guid>
+
+					<description><![CDATA[This is the second post reflecting on this past year and I what I did with my students. My first post is located here. I wrote about this year being the first time I went with standards based grading. One of the most important aspects of this process was creating]]></description>
+										<content:encoded><![CDATA[<p>This is the second post reflecting on this past year and I what I did with my students.</p>
+<p>My first post is located <a href="/2013/06/24/2012-2013-year-in-review-standards-based-grading/">here</a>. I wrote about this year being the first time I went with standards based grading. One of the most important aspects of this process was creating the learning standards that focused the work of each unit.</p>
+<h3>What did I do?</h3>
+<p>I set out to create learning standards for each unit of my courses: Geometry, Advanced Algebra (not my title &#8211; this was an Algebra 2 sans trig), Calculus, and Physics. While I wanted to be able to do this for the entire semester at the beginning of the semester, I ended up doing it unit by unit due to time constraints. The content of my courses didn&#8217;t change relative to what I had done in previous years though, so it was more of a matter of deciding what themes existed in the content that could be distilled into standards. This involved some combination of concepts into one to prevent the situation of having too many. In some ways, this was a neat exercise to see that two separate concepts really weren&#8217;t that different. For example, seeing absolute value equations and inequalities as the same standard led to both a presentation and an assessment process that emphasized the common application of the absolute value definition to both situations.</p>
+<h3>What worked:</h3>
+<ul>
+<li><em>The most powerful payoff in creating the standards came at the end of the semester.</em> Students were used to referring to the standards and knew that they were the first place to look for what they needed to study. Students would often ask for a review sheet for the entire semester. Having the standards document available made it easy to ask the students to find problems relating to each standard. This enabled them to then make their own review sheet and ask directed questions related to the standards they did not understand.</li>
+<li><em>The standards focus on what students should be able to do.</em> I tried to keep this focus so that students could simultaneously recognize the connection between the content (definitions, theorems, problem types) and what I would ask them to do with that content. My courses don&#8217;t involve much recall of facts and instead focus on applying concepts in a number of different situations. The standards helped me show that I valued this application.</li>
+<li><em>Writing problems and assessing students was always in the context of the standards.</em> I could give big picture, open-ended problems that required a bit more synthesis on the part of students than before. I could require that students write, read, and look up information needed for a problem and be creative in their presentation as they felt was appropriate. My focus was on seeing how well their work presented and demonstrated proficiency on these standards. They got experience and got feedback on their work (misspelling words in student videos was one) but my focus was on their understanding.</li>
+<li><em>The number standards per unit was limited to 4-6 each&#8230;eventually.</em> I quickly realized that 7 was on the edge of being too many, but had trouble cutting them down in some cases. In particular, I had trouble doing this with the differentiation unit in Calculus. To make it so that the unit wasn&#8217;t any more important than the others, each standard for that unit was weighted 80%, a fact that turned out not to be very important to students.</li>
+</ul>
+<h3>What needs work:</h3>
+<ul>
+<li><em>The vocabulary of the standards needs to be more precise and clearly communicated.</em> I tried (and didn&#8217;t always succeed) to make it possible for a student to read a standard and understand what they had to be able to do. I realize now, looking back over them all, that I use certain words over and over again but have never specifically said what it means. What does it mean to &#8216;apply&#8217; a concept? What about &#8216;relate&#8217; a definition? These explanations don&#8217;t need to be in the standards themselves, but it is important that they be somewhere and be explained in some way so students can better understand them.</li>
+<li><em>Example problems and references for each standard would be helpful in communicating their content.</em> I wrote about this in my last post. Students generally understood the standards, but wanted specific problems that they were <u>sure</u> related to a particular standard.</li>
+<li><em>Some of the specific content needs to be adjusted.</em> This was my first year being much more deliberate in following the Modeling Physics curriculum. I haven&#8217;t, unfortunately, been able to attend a training workshop that would probably help me understand how to implement the curriculum more effectively. The unbalanced force unit was crammed in at the end of the first semester and worked through in a fairly superficial way. Not good, Weinberg.</li>
+<li><em>Standards for non-content related skills need to be worked in to the scheme.</em> I wanted to have some standards for year or semester long skills standards. For example, unit 5 in Geometry included a standard (not listed in my document below) on creating a presenting a multimedia proof. This was to provide students opportunities to learn to create a video in which they clearly communicate the steps and content of a geometric proof. They could create their video, submit it to me, and get feedback to make it better over time. I also would love to include some programming or computational thinking standards as well that students can work on long term. These standards need to be communicated and cultivated over a long period of time. They will otherwise be just like the others in terms of the rush at the end of the semester. I&#8217;ll think about these this summer.</li>
+</ul>
+<p>You can see my standards in this Google document:<br />
+<a href="https://docs.google.com/spreadsheet/ccc?key=0ApQ316G8u4SUdHpGRnJCQWpQbG0tN2liNlEzNUs2dEE&amp;usp=sharing">2012-2013 &#8211; Learning Standards</a></p>
+<p>I&#8217;d love to hear your comments on these standards or on the post &#8211; comment away please!</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2013/06/26/2012-2013-year-in-review-learning-standards/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">1530</post-id>	</item>
+		<item>
+		<title>Angry Birds Project &#8211; Results and Post-Mortem</title>
+		<link>/2013/01/30/angry-birds-project-results-and-post-mortem/</link>
+					<comments>/2013/01/30/angry-birds-project-results-and-post-mortem/#comments</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Wed, 30 Jan 2013 01:22:09 +0000</pubDate>
+				<category><![CDATA[algebra 2]]></category>
+		<category><![CDATA[computational-thinking]]></category>
+		<category><![CDATA[reflection]]></category>
+		<category><![CDATA[teaching stories]]></category>
+		<category><![CDATA[angry birds]]></category>
+		<category><![CDATA[geogebra]]></category>
+		<category><![CDATA[video]]></category>
+		<guid isPermaLink="false">/?p=873</guid>
+
+					<description><![CDATA[In my post last week, I detailed what I was having students do to get some experience modeling quadratic functions using Angry Birds. I was at the 21CL conference in Hong Kong, so the students did this with a substitute teacher. The student teams each submitted their five predictions for]]></description>
+										<content:encoded><![CDATA[<p>In my post last week, I detailed what I was having students do to get some experience modeling quadratic functions using Angry Birds. I was at the <a href="http://21clhk.org/">21CL </a>conference in Hong Kong, so the students did this with a substitute teacher. The student teams each submitted their five predictions for the ratio of hit distance to the distance from the slingshot to the edge of the picture. I brought them into Geogebra and created a set of pictures like this one:</p>
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2013/01/screen-shot-2013-01-29-at-7-57-47-am.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2013/01/screen-shot-2013-01-29-at-7-57-47-am.png?w=300" alt="Screen Shot 2013-01-29 at 7.57.47 AM" width="300" height="54" class="aligncenter size-medium wp-image-874" srcset="/wp-content/uploads/2013/01/screen-shot-2013-01-29-at-7-57-47-am.png 612w, /wp-content/uploads/2013/01/screen-shot-2013-01-29-at-7-57-47-am-300x55.png 300w" sizes="(max-width: 300px) 100vw, 300px" /></a></p>
+<p>After learning some features of Camtasia I hadn&#8217;t yet used, I put together this summary video of the activity:</p>
+<p>[wpvideo ysubHH3L]</p>
+<p>I played the video, and the students were engaged watching the videos, but there was a general sense of dread (not suspense) on their faces as the team with the best predictions was revealed. This, of course, made me really nervous. They did clap for the winners when they were revealed, and we had some good discussion about modeling, which videos were more difficult and why, but there was a general sense of discomfort all through this activity. Given that I wasn&#8217;t quite able to figure out exactly why they were being so awkward, I asked them what they thought of the activity on a scale of 1 &#8211; 10.</p>
+<p>They hated it.</p>
+<p>I should have guessed there might be something wrong when I received three separate emails from the three members one team with results that were completely different. Seeing three members of one team work independently (and inefficiently) is something I&#8217;m pretty tuned in to when I am in the room, but this was bigger. It didn&#8217;t sound like there was much utilization of the fact that they were in teams. I need to ask about this, but I think they were all working in parallel rather than dividing up the labor, talking about their results, and comparing to each other.</p>
+<p>Some things I want to remember about this:</p>
+<ul>
+<li>I need to be a lot more aware of the level of my own excitement around activity in comparison to that of the students. I showed one of the shortened videos at the end of the previous class and asked what questions they really wanted to know. They all said they wanted to know where the bird would land, but in all honesty, I think they were being charitable. They didn&#8217;t really care that much. In the game, you learn shortly after whether the bird you fling will hit where you want it to or not. Here, they had to go through a process of importing a picture, fitting a parabola, and finding a zero of a function using Geogebra, and then went a weekend without knowing.
+<p>While it is true that using a computer made this task possible, and was more enjoyable than being forced to do this by hand, the relativity of this scale should be suspect. &#8220;Oh good, you&#8217;re giving me pain meds after pulling my tooth. Let&#8217;s do this again!&#8221;
+</li>
+<li>A note about <a href="http://blog.mrmeyer.com/?p=8002">pseudocontext</a> &#8211; throwing Angry Birds in to a project does not by itself does not necessarily engage students. It is a way in. I think the way I did this was less contrived than other similar projects I&#8217;ve seen, but that didn&#8217;t make it a good one. Trying to make things &#8216;relevant&#8217; by connecting math to something the students like can look desperate if done in the wrong way. I think this was the wrong way.</li>
+<li>I would have gotten a lot more mileage out of the video if I had stopped it here:
+<p><a href="http://blog.evanweinberg.org/wp-content/uploads/2013/01/screen-shot-2013-01-30-at-9-23-26-am.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2013/01/screen-shot-2013-01-30-at-9-23-26-am.png?w=150" alt="Screen Shot 2013-01-30 at 9.23.26 AM" width="150" height="132" class="aligncenter size-thumbnail wp-image-878" srcset="/wp-content/uploads/2013/01/screen-shot-2013-01-30-at-9-23-26-am.png 367w, /wp-content/uploads/2013/01/screen-shot-2013-01-30-at-9-23-26-am-300x266.png 300w" sizes="(max-width: 150px) 100vw, 150px" /></a><br />
+ That would have been relevant to them, and probably would have resulted in turning this activity back around.  I am kicking myself for not doing that. Seriously. That moment WAS when the students were all watching and interested, and I missed it.</li>
+</ul>
+<p>Next time. You try and fail and reflect &#8211; I&#8217;m still glad I did it.</p>
+<p>We went on to have a lovely conversation about complex numbers and the equation $latex x^{2}+4 = 0 $. One student immediately said that $ sqrt{-2} $ was just fine to substitute. Another stayed after class to explain why she thought it was a disturbing idea.</p>
+<p>No harm done. </p>
+<p>P.S. &#8211; Anyone who uses this post as a reason not to try these ideas out with their class and to instead slog on with standard lectures has missed the point. I didn&#8217;t do this completely right. That doesn&#8217;t mean it couldn&#8217;t be a home run in the right hands. </p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2013/01/30/angry-birds-project-results-and-post-mortem/feed/</wfw:commentRss>
+			<slash:comments>6</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">873</post-id>	</item>
+		<item>
+		<title>How Good is Your Model (Angry Birds) Part 2 &#8211; Refining my process</title>
+		<link>/2013/01/22/how-good-is-your-model-angry-birds-part-2-refining-my-process/</link>
+					<comments>/2013/01/22/how-good-is-your-model-angry-birds-part-2-refining-my-process/#respond</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Tue, 22 Jan 2013 10:13:50 +0000</pubDate>
+				<category><![CDATA[algebra 2]]></category>
+		<category><![CDATA[computational-thinking]]></category>
+		<category><![CDATA[teaching philosophy]]></category>
+		<category><![CDATA[algebra2]]></category>
+		<category><![CDATA[angry birds]]></category>
+		<category><![CDATA[quadratic model]]></category>
+		<guid isPermaLink="false">/?p=820</guid>
+
+					<description><![CDATA[A year ago, I wrote about my attempt to integrate Angry Birds as part of my quadratic modeling unit. I was certainly not the first, and there have been many others that have taken this idea and run with it. This is definitely a great way of using the concept]]></description>
+										<content:encoded><![CDATA[<p>A year ago, <a href="/2012/01/13/how-good-is-your-model-angry-birds-edition/">I wrote about my attempt</a> to integrate Angry Birds as part of my quadratic modeling unit. I was certainly not the first, and there have been many others <a href="http://www.teachmaths-inthinking.co.uk/activities/angry-birds.htm">that have taken this idea</a> and run with it. This is definitely a great way of using the concept of fitting parabolas to a realistic task that the students can have fun completing.</p>
+<p>As I said a year ago, however, the bigger picture skill that is really powerful with modeling is making do with less information. I incentivized my students last year to come up with a model that predicts the final location of the collision of a bird <i>earlier</i> than everyone else. In other words, if Thomas is able to predict the correct final location with ten seconds of data, while Nick is able to do so with only seven, Nick has done the better job of modeling. I did this by asking the students to try to do this with the earliest possible frame in the video. </p>
+<p>This time, I have found a better way to do this. Five videos, all of them cut short.<br />
+I&#8217;m asking the students to complete this table:<br />
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2013/01/screen-shot-2013-01-22-at-6-03-12-pm.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2013/01/screen-shot-2013-01-22-at-6-03-12-pm.png?w=300" alt="Screen Shot 2013-01-22 at 6.03.12 PM" width="300" height="123" class="aligncenter size-medium wp-image-821" srcset="/wp-content/uploads/2013/01/screen-shot-2013-01-22-at-6-03-12-pm.png 782w, /wp-content/uploads/2013/01/screen-shot-2013-01-22-at-6-03-12-pm-300x124.png 300w, /wp-content/uploads/2013/01/screen-shot-2013-01-22-at-6-03-12-pm-768x316.png 768w" sizes="(max-width: 300px) 100vw, 300px" /></a></p>
+<p>The impact ratio is defined as the ratio of the orange line to the yellow line, as shown in this image:<br />
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2013/01/screen-shot-2013-01-22-at-6-04-44-pm.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2013/01/screen-shot-2013-01-22-at-6-04-44-pm.png?w=300" alt="Screen Shot 2013-01-22 at 6.04.44 PM" width="300" height="158" class="aligncenter size-medium wp-image-822" srcset="/wp-content/uploads/2013/01/screen-shot-2013-01-22-at-6-04-44-pm.png 522w, /wp-content/uploads/2013/01/screen-shot-2013-01-22-at-6-04-44-pm-300x158.png 300w" sizes="(max-width: 300px) 100vw, 300px" /></a></p>
+<p>Each group of students will calculate the ratio for each video using Geogebra. Some videos reveal more about the path than others. I&#8217;ll sum the errors, rank the student groups based on cumulative error, and then we&#8217;ll have a great discussion about what made this difficult. </p>
+<p>The sensitivity of a quadratic (or any fit) fit to data points that are close together is what I&#8217;m targeting here. I&#8217;ve tried other techniques to flesh this out in students before &#8211; I still get students &#8216;fitting&#8217; a table of data by choosing the first two or three points. I&#8217;m hoping this will be a bit more interesting and successful than my previous attempts. </p>
+<p>Trimmed Angry Bird Videos:</p>
+<p>[wpvideo Em5oyDGw]<br />
+[wpvideo oJJml7i5]<br />
+[wpvideo gf2zXikv]<br />
+[wpvideo EY77wnKI]<br />
+[wpvideo DENYt0RX]</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2013/01/22/how-good-is-your-model-angry-birds-part-2-refining-my-process/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">820</post-id>	</item>
+		<item>
+		<title>Cell phone tracking, Processing, and computational thinking</title>
+		<link>/2012/11/28/computational-thinking-cell-phone-location/</link>
+					<comments>/2012/11/28/computational-thinking-cell-phone-location/#comments</comments>
+		
+		<dc:creator><![CDATA[user]]></dc:creator>
+		<pubDate>Wed, 28 Nov 2012 14:13:58 +0000</pubDate>
+				<category><![CDATA[algebra 2]]></category>
+		<category><![CDATA[computational-thinking]]></category>
+		<category><![CDATA[geogebra]]></category>
+		<category><![CDATA[programming]]></category>
+		<category><![CDATA[computational thinking]]></category>
+		<category><![CDATA[localization]]></category>
+		<category><![CDATA[location]]></category>
+		<category><![CDATA[particle filter]]></category>
+		<category><![CDATA[processing]]></category>
+		<guid isPermaLink="false">/?p=801</guid>
+
+					<description><![CDATA[I gave a survey to my students recently. My lowest score on any of the questions was &#8216;What I learn in this class will help me in real life.&#8217; I&#8217;ve given this question before, and am used to getting less than optimal responses. I even think I probably had a]]></description>
+										<content:encoded><![CDATA[<p>I gave a survey to my students recently. My lowest score on any of the questions was &#8216;What I learn in this class will help me in real life.&#8217; I&#8217;ve given this question before, and am used to getting less than optimal responses. I even think I probably had a higher score on this question than I have received previously, but it still bothers me that we are having this discussion. Despite my efforts to include more problem solving, modeling, and focusing on conceptual understanding related tasks over boring algorithmic lessons, the fact that I am still getting lower scores on this question compared to others convinces me that I have a long way to go.</p>
+<p>I came up with this activity in response. It combines some of the ideas I learned in my <a href="http://www.udacity.com/overview/Course/cs373">Udacity course on robotic cars</a> with the fact that nearly all my students carry cell phones. While I know many cell phones have GPS, it is my understanding that phones have used cell towers for a while to help with the process of locating phones. It always amazes me, for example, how my cell service immediately switches to roaming immediately when driving across the US-Canada border, even when I had a non-GPS capable phone.</p>
+<p>My students know how to find distance using the distance formula and sets of coordinates, but they were intrigued by the idea of going backwards &#8211; if you know your distance from known locations, can you figure out your own location?  The idea of figuring this out isn&#8217;t complicated. It can most easily be done by identifying intersections of circles as shown below:<br />
+<a href="http://blog.evanweinberg.org/wp-content/uploads/2012/11/screen-shot-2012-11-28-at-9-43-05-pm.png"><img loading="lazy" src="http://blog.evanweinberg.org/wp-content/uploads/2012/11/screen-shot-2012-11-28-at-9-43-05-pm.png?w=300" alt="" title="Screen Shot 2012-11-28 at 9.43.05 PM" width="300" height="255" class="alignright size-medium wp-image-802" srcset="/wp-content/uploads/2012/11/screen-shot-2012-11-28-at-9-43-05-pm.png 628w, /wp-content/uploads/2012/11/screen-shot-2012-11-28-at-9-43-05-pm-300x255.png 300w" sizes="(max-width: 300px) 100vw, 300px" /></a></p>
+<p>One of my students recalled this method of solving the problem from what he saw in the movie <a href="http://en.wikipedia.org/wiki/Taken_2">Taken 2 </a>, and was quickly able to solve the problem this way graphically in <a href="http://geogebratube.org/material/show/id/23369">Geogebra</a>. Most students didn&#8217;t follow this method though &#8211; the general trend was to take a guess and adjust the guess to reduce the overall error until the distances were as close to the given distances as possible. </p>
+<p>I got them to also look at other situations &#8211; if only two measurements to known locations are known, where could the cell phone be located? They played around to find that there were two locations in this case. I again pointed out that they were following an algorithm that could easily be taught to a computer. </p>
+<p>I then showed them <a href="http://www.openprocessing.org/sketch/81113">a Processing sketch</a> that went through this process. It is not a true particle filter that goes through resampling to improve the guessed location over time, but it does use the idea of making a number of guesses and highlighting the ones with the lowest error. The idea of making 300,000 random guesses and choosing the ones that are closest to the set of distances is something that computers are clearly better at than humans are. There are analytical ways of solving this problem, but this is a good way of using the computational power of the computer to make a brute force calculation to get an approximate answer to the question.</p>
+<p>You can look at the activity we did in class here:<br />
+<a href='http://blog.evanweinberg.org/wp-content/uploads/2012/11/using-cell-phones-to-track-location.pdf'>Using Cell Phones to Track Location</a></p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/2012/11/28/computational-thinking-cell-phone-location/feed/</wfw:commentRss>
+			<slash:comments>3</slash:comments>
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">801</post-id>	</item>
+	</channel>
+</rss>
