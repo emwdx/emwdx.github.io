@@ -16,7 +16,18 @@
 
   <style>
       
+      .video-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+      }
 
+      .video-responsive {
+        width: 100%;
+        max-width: 640px;
+        height: auto;
+      }
 
 
   </style> 
@@ -64,29 +75,28 @@
       <div class="col">
         
       </div>
-      <div class="col-12 embed-responsive ">
-        <div class="embed-responsive-item">
-          <video autoplay="autoplay" muted="muted" loop="loop" width="100%" playsinline>
+      <div class="col"></div>
+        <div class="col-12 video-container">
+          <video class="video-responsive" autoplay muted loop playsinline width="50%">
             <source src="./website_hero.mp4" type="video/mp4">
           </video>
         </div>
-        
+
       </div>
       <div class="col">
         
       </div>
     </div>
-    <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+    <div class="row g-4 py-5 row-cols-1 row-cols-lg-3 px-3">
       <div class="feature col">
-        <div class="feature-icon d-inline-flex align-items-center justify-content-center bg-primary bg-gradient text-white fs-2 mb-3">
-          <svg class="bi" width="1em" height="1em"><use xlink:href="#collection"/></svg>
+        <div class="feature-icon d-inline-flex align-items-center justify-content-center bg-primary bg-gradient text-white fs-2 mb-3">    <svg class="bi" width="1em" height="1em"><use xlink:href="#collection"/></svg>
         </div>
         <div class = "container">
         <h2>I'm a teacher.</h2>
       </div>
         <p></p>
-        <div class = "container">
-          <p class = "blurb">For the past twenty one years, I have taught mathematics, physics, engineering, robotics, app development, and other courses. This has been at public schools in New York City, and international schools in Hangzhou, China, Ho Chi Minh City, Vietnam. I now teach in Santiago, Chile at the <a href ="https://www.nido.cl">School Nido de Aguilas</a> .</p>
+        <div class = "container px-3">
+          <p class = "blurb">For the past twenty one years, I have taught mathematics, physics, engineering, robotics, app development, and other courses. This has been at public schools in New York City, and international schools in China and Vietnam. I now teach in Santiago, Chile at the <a href ="https://www.nido.cl">Interntaional School Nido de Aguilas</a> .</p>
           <a href="/teaching.html" class="icon-link d-inline-flex align-items-center">
             See more about teaching.
             <svg class="bi" width="1em" height="1em"><use xlink:href="#chevron-right"/></svg>
@@ -133,7 +143,7 @@
     <a href="/" class="mb-3 me-2 mb-md-0 text-muted text-decoration-none lh-1">
       <svg class="bi" width="30" height="24"><use xlink:href="#bootstrap"/></svg>
     </a>
-    <span class="mb-3 mb-md-0 text-muted">&copy; 2022 Evan Weinberg</span>
+    <span class="mb-3 mb-md-0 text-muted">&copy; 2024 Evan Weinberg</span>
   </div>
 
   <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
