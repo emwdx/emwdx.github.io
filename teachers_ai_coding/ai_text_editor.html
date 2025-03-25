@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calm Writer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f4f4f0; /* Calm off-white */
+            --text-color: #333;
+            --fade-start-perc: 40%; /* How much % from top is fully faded */
+            --fade-end-perc: 85%;  /* How much % from top is fully visible */
+            --font-size: 2.8em;   /* Big font size */
+            --line-height: 1.6;
+            --controls-bg: #e8e8e0;
+            --button-bg: #d0d0c8;
+            --button-hover-bg: #b8b8b0;
+            --modal-bg: #e0e0d8;
+            --modal-header-bg: #d0d0c8;
+            --modal-border: #b8b8b0;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Atkinson Hyperlegible', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-size: 16px; /* Base font size */
+            overflow: hidden; /* Prevent body scrollbars */
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh; /* Full viewport height */
+        }
+
+        .editor-wrapper {
+            flex-grow: 1; /* Takes remaining vertical space */
+            position: relative;
+            overflow: hidden; /* Needed for mask containment */
+        }
+
+        #editor {
+            width: 100%;
+            height: 100%;
+            border: none;
+            outline: none;
+            padding: 20px 40px; /* Generous padding */
+            box-sizing: border-box;
+            font-family: 'Atkinson Hyperlegible', sans-serif;
+            font-size: var(--font-size);
+            line-height: var(--line-height);
+            background-color: transparent; /* Let container bg show through */
+            color: var(--text-color);
+            resize: none; /* Disable resizing */
+            overflow-y: auto; /* Allow scrolling within the textarea */
+
+            /* The fading effect using mask - Commented out as requested */
+            /*
+            mask-image: linear-gradient(
+                to bottom,
+                transparent 0%,
+                transparent var(--fade-start-perc),
+                black var(--fade-end-perc),
+                black 100%
+            );
+            -webkit-mask-image: linear-gradient(
+                to bottom,
+                transparent 0%,
+                transparent var(--fade-start-perc),
+                black var(--fade-end-perc),
+                black 100%
+            );
+            */
+        }
+
+        /* Make scrollbar less intrusive (optional, webkit only) */
+        #editor::-webkit-scrollbar {
+            width: 8px;
+        }
+        #editor::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        #editor::-webkit-scrollbar-thumb {
+            background-color: rgba(0,0,0,0.1);
+            border-radius: 4px;
+        }
+         #editor::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(0,0,0,0.2);
+        }
+
+        .controls {
+            padding: 15px 40px;
+            background-color: var(--controls-bg);
+            border-top: 1px solid #ccc;
+            display: flex;
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+            align-items: center;
+            gap: 15px; /* Spacing between control items */
+            position: relative; /* Needed for z-index stacking if modal gets complex */
+            z-index: 10;
+        }
+
+        .controls label {
+            font-size: 0.9em;
+            margin-right: 5px;
+        }
+
+        .controls input[type="password"],
+        .controls select {
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.9em;
+            background-color: #fff;
+        }
+
+        .controls input[type="password"] {
+             width: 250px; /* Adjust as needed */
+        }
+
+        .controls button {
+            padding: 10px 15px;
+            font-size: 0.9em;
+            font-family: 'Atkinson Hyperlegible', sans-serif;
+            border: none;
+            border-radius: 4px;
+            background-color: var(--button-bg);
+            color: var(--text-color);
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .controls button:hover:not(:disabled) {
+            background-color: var(--button-hover-bg);
+        }
+         .controls button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+         }
+
+        /* --- Modal Styles --- */
+        #aiModalOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.3); /* Dim background */
+            display: none; /* Initially hidden */
+            justify-content: center;
+            align-items: center;
+            z-index: 1000; /* Ensure it's on top */
+            padding: 20px; /* Prevent modal touching edges */
+            box-sizing: border-box;
+        }
+
+        #aiModal {
+            background-color: var(--modal-bg);
+            border: 1px solid var(--modal-border);
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh; /* Limit height */
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, opacity 0.3s ease, height 0.3s ease, width 0.3s ease; /* Smooth transitions */
+            overflow: hidden; /* Needed for border-radius clipping */
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background-color: var(--modal-header-bg);
+            border-bottom: 1px solid var(--modal-border);
+            cursor: grab; /* Indicate draggable possibility (though not implemented) */
+        }
+         .modal-header h3 {
+            margin: 0;
+            font-size: 1.1em;
+         }
+         .modal-controls button {
+            background: none;
+            border: none;
+            font-size: 1.2em;
+            cursor: pointer;
+            padding: 2px 5px;
+            margin-left: 8px;
+            color: var(--text-color);
+            opacity: 0.7;
+         }
+          .modal-controls button:hover {
+             opacity: 1;
+          }
+
+        .modal-content {
+            padding: 15px 20px;
+            font-size: 0.95em;
+            line-height: 1.6;
+            overflow-y: auto; /* Scroll if content is long */
+            flex-grow: 1; /* Take remaining space in modal */
+            white-space: pre-wrap; /* Preserve formatting from AI */
+        }
+
+        /* Minimized State */
+        #aiModal.minimized {
+            position: fixed; /* Position independently */
+            bottom: 20px;
+            right: 20px;
+            width: 300px;
+            height: auto; /* Only header height */
+            max-height: none;
+            overflow: hidden;
+            transform: translateY(0); /* Override centering transform */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        #aiModal.minimized .modal-content {
+            display: none; /* Hide content when minimized */
+        }
+        #aiModal.minimized .modal-header {
+             border-bottom: none; /* No border needed when content hidden */
+        }
+        #aiModalOverlay.modal-minimized-overlay {
+             /* Make overlay non-blocking when modal is minimized */
+             pointer-events: none;
+             background: none; /* No dimming */
+        }
+        #aiModal.minimized {
+            pointer-events: auto; /* Ensure modal itself is interactive */
+        }
+
+        /* --- End Modal Styles --- */
+
+        /* Simple notification style */
+        .notification {
+            position: fixed;
+            bottom: 80px; /* Above controls */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(50, 50, 50, 0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            z-index: 1001; /* Above modal overlay */
+            font-size: 0.9em;
+            display: none; /* Initially hidden */
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="editor-wrapper">
+            <textarea id="editor" placeholder="Start writing...">There wasn't anything particularly special about the cat, aside from the fact it dragged a 3 foot long serpentine tail behind it wherever it went. Usually, it went into the letterbox.</textarea>
+        </div>
+
+        <div class="controls">
+            <div>
+                <label for="apiKey">Gemini API Key:</label>
+                <input type="password" id="apiKey" placeholder="Paste your API Key here">
+            </div>
+            <div>
+                <label for="modelSelect">Model:</label>
+                <select id="modelSelect">
+                    
+                    <option value="gemini-2.0-flash">gemini-2.0-flash</option>
+                </select>
+            </div>
+            <button id="getFeedbackBtn">Get Encouraging Ideas</button>
+            <button id="copyTextBtn">Copy All Text</button>
+        </div>
+    </div>
+
+    <!-- Modal Structure -->
+    <div id="aiModalOverlay">
+        <div id="aiModal">
+            <div class="modal-header">
+                <h3>AI Encouragement</h3>
+                <div class="modal-controls">
+                    <button id="minimizeModalBtn" title="Minimize">－</button> <!-- Using symbols for buttons -->
+                    <button id="closeModalBtn" title="Close">✕</button>
+                </div>
+            </div>
+            <div class="modal-content" id="aiFeedbackContent">
+                <!-- AI feedback will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Simple notification element -->
+    <div id="notificationArea" class="notification"></div>
+
+    <script>
+        const editor = document.getElementById('editor');
+        const apiKeyInput = document.getElementById('apiKey');
+        const modelSelect = document.getElementById('modelSelect');
+        const getFeedbackBtn = document.getElementById('getFeedbackBtn');
+        const copyTextBtn = document.getElementById('copyTextBtn');
+        // const feedbackArea = document.getElementById('feedbackArea'); // Removed
+
+        // Modal elements
+        const modalOverlay = document.getElementById('aiModalOverlay');
+        const modal = document.getElementById('aiModal');
+        const modalContent = document.getElementById('aiFeedbackContent');
+        const minimizeModalBtn = document.getElementById('minimizeModalBtn');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+
+        // Notification element
+        const notificationArea = document.getElementById('notificationArea');
+
+        // --- Persistance (Optional - Uncomment if needed) ---
+        /* ... (localStorage code remains the same) ... */
+
+        // Function to show simple notifications
+        function showNotification(message, duration = 3000) {
+            notificationArea.textContent = message;
+            notificationArea.style.display = 'block';
+            setTimeout(() => {
+                notificationArea.style.display = 'none';
+            }, duration);
+        }
+
+                // --- Updated Copy Text Functionality ---
+                copyTextBtn.addEventListener('click', () => {
+            const textToCopy = editor.value;
+
+            if (!textToCopy) {
+                showNotification('Nothing to copy yet!');
+                return;
+            }
+
+            // Try the modern Clipboard API first (requires HTTPS or localhost)
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(textToCopy)
+                    .then(() => {
+                        showNotification('Text copied to clipboard! (Modern API)');
+                        copyTextBtn.textContent = 'Copied!';
+                         setTimeout(() => {
+                            copyTextBtn.textContent = 'Copy All Text';
+                        }, 3000);
+                    })
+                    .catch(err => {
+                        console.error('Modern clipboard copy failed: ', err);
+                        showNotification('Error copying text (Modern API). See console.');
+                        // Optionally try fallback here too, but unlikely to succeed if modern fails for reasons other than context
+                        tryFallbackCopy(textToCopy);
+                    });
+            } else {
+                // Fallback for insecure contexts (like file:///) or older browsers
+                console.warn("Using fallback copy method (document.execCommand). Secure context needed for navigator.clipboard.");
+                tryFallbackCopy(textToCopy);
+            }
+        });
+
+        // Fallback copy function using document.execCommand
+        function tryFallbackCopy(text) {
+            let success = false;
+            const tempTextArea = document.createElement("textarea");
+            tempTextArea.style.position = 'fixed'; // Prevent scrolling page
+            tempTextArea.style.top = '-9999px';
+            tempTextArea.style.left = '-9999px';
+            tempTextArea.value = text;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            tempTextArea.setSelectionRange(0, 99999); // For mobile devices
+
+            try {
+                success = document.execCommand('copy');
+                if (success) {
+                    showNotification('Text copied to clipboard! (Fallback)');
+                    copyTextBtn.textContent = 'Copied!';
+                     setTimeout(() => {
+                        copyTextBtn.textContent = 'Copy All Text';
+                    }, 3000);
+                } else {
+                     throw new Error('document.execCommand("copy") returned false.');
+                }
+            } catch (err) {
+                console.error('Fallback clipboard copy failed: ', err);
+                showNotification('Copying failed. Please copy manually (Ctrl+C).');
+                // Optional: Select text in the main editor for easy manual copying
+                // editor.select();
+                // editor.setSelectionRange(0, 99999);
+            } finally {
+                document.body.removeChild(tempTextArea);
+            }
+        }
+        // --- End Updated Copy Text Functionality ---
+
+        // --- Modal Control Logic ---
+        closeModalBtn.addEventListener('click', () => {
+            modalOverlay.style.display = 'none';
+        });
+
+        minimizeModalBtn.addEventListener('click', () => {
+            modal.classList.toggle('minimized');
+             modalOverlay.classList.toggle('modal-minimized-overlay');
+
+            if (modal.classList.contains('minimized')) {
+                minimizeModalBtn.textContent = '＋'; // Change to maximize symbol
+                minimizeModalBtn.title = 'Maximize';
+            } else {
+                minimizeModalBtn.textContent = '－'; // Change back to minimize symbol
+                minimizeModalBtn.title = 'Minimize';
+                // Ensure content area is scrollable if needed when maximizing
+                modalContent.scrollTop = 0;
+            }
+        });
+
+        // Optional: Close modal if clicking outside of it on the overlay
+        modalOverlay.addEventListener('click', (event) => {
+             // Only close if the click is directly on the overlay, not the modal itself
+             // and not when the modal is minimized (overlay is non-blocking then)
+            if (event.target === modalOverlay && !modal.classList.contains('minimized')) {
+                modalOverlay.style.display = 'none';
+            }
+        });
+        // --- End Modal Control Logic ---
+
+        // AI Feedback Functionality
+        getFeedbackBtn.addEventListener('click', async () => {
+            const apiKey = apiKeyInput.value.trim();
+            const model = modelSelect.value;
+            const text = editor.value.trim();
+            console.log(model)
+            if (!apiKey) {
+                showNotification('Please enter your Gemini API Key.');
+                return;
+            }
+            if (!text) {
+                showNotification('Write something first before asking for ideas!');
+                return;
+            }
+
+            // Disable button and show loading state
+            getFeedbackBtn.disabled = true;
+            getFeedbackBtn.textContent = 'Thinking...';
+            // Show modal with loading message
+            modalContent.textContent = 'Getting feedback from AI...';
+            modal.classList.remove('minimized'); // Ensure modal is maximized
+            modalOverlay.classList.remove('modal-minimized-overlay');
+            minimizeModalBtn.textContent = '－';
+            minimizeModalBtn.title = 'Minimize';
+            modalOverlay.style.display = 'flex'; // Show modal overlay
+
+            const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+
+            const prompt = `You are a very encouraging and supportive writing assistant. Look at the following text written by the user. Do NOT comment on grammar, spelling, or capitalization. Focus ONLY on the ideas and content presented.
+1.  Provide 1-2 sentences of positive reinforcement about what the user has written so far.
+2.  Offer 2-3 gentle, open-ended questions or creative suggestions to help them think about what to write next, based *specifically* on their existing text.
+Keep your entire response concise, friendly, and uplifting. Max 150 words.
+
+User's text:
+---
+${text}
+---`;
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{
+                                text: prompt
+                            }]
+                        }],
+                        generationConfig: {
+                            maxOutputTokens: 250, // Increased slightly just in case
+                        }
+                    })
+                });
+
+                if (!response.ok) {
+                    let errorData;
+                    try {
+                        errorData = await response.json();
+                    } catch(e) {
+                        throw new Error(`HTTP error! status: ${response.status} ${response.statusText}`);
+                    }
+                    console.error('API Error Response:', errorData);
+                    throw new Error(`API Error: ${errorData?.error?.message || `HTTP status ${response.status}`}`);
+                }
+
+                const data = await response.json();
+                let feedbackText = 'Could not extract feedback from response.'; // Default
+
+                if (data.candidates && data.candidates[0]?.content?.parts?.[0]?.text) {
+                     feedbackText = data.candidates[0].content.parts[0].text;
+                 } else if (data.candidates && data.candidates[0]?.finishReason === "SAFETY") {
+                     feedbackText = "The AI could not generate a response due to safety filters being triggered.";
+                 } else {
+                     console.warn("Unexpected API response structure:", data);
+                 }
+
+                modalContent.textContent = feedbackText; // Update modal with actual feedback
+
+            } catch (error) {
+                console.error('Error fetching AI feedback:', error);
+                modalContent.textContent = `Error: ${error.message}. Check the console. Is your API key correct?`; // Show error in modal
+            } finally {
+                // Re-enable button
+                getFeedbackBtn.disabled = false;
+                getFeedbackBtn.textContent = 'Get Encouraging Ideas';
+            }
+        });
+
+    </script>
+
+</body>
+</html>
