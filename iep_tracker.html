@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IEP Task Tracker</title>
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #f5f5f5;
+            --text-color: #333;
+            --border-color: #ddd;
+            --hover-color: #e0e0e0;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --success-color: #2ecc71;
+            --completed-color: #95a5a6;
+        }
+
+        body {
+            font-family: sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            flex-grow: 1;
+        }
+
+        h1, h2, h3 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-top: 1.5em;
+            margin-bottom: 1em;
+        }
+        h1:first-child, h2:first-child {
+            margin-top: 0;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-section, .student-list-section, .task-view-section {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        textarea,
+        select {
+            width: calc(100% - 22px); /* Account for padding and border */
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            box-sizing: border-box; /* Include padding and border in element's total width/height */
+        }
+         input[type="date"] {
+            cursor: pointer;
+         }
+
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.2s ease;
+            margin-right: 5px;
+            margin-bottom: 5px; /* Add space below buttons if they wrap */
+        }
+
+        button:hover {
+            background-color: #357abd;
+        }
+
+        button.secondary {
+            background-color: #777;
+        }
+        button.secondary:hover {
+            background-color: #555;
+        }
+        button.danger {
+             background-color: var(--danger-color);
+        }
+         button.danger:hover {
+             background-color: #c0392b;
+         }
+
+        #studentList, #taskList {
+            list-style-type: none;
+            padding: 0;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+        }
+
+        #studentList li, #taskList li {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #fff;
+            transition: background-color 0.2s ease;
+        }
+
+        #studentList li:last-child, #taskList li:last-child {
+            border-bottom: none;
+        }
+
+        #studentList li:hover, #taskList li:hover {
+             background-color: var(--hover-color);
+        }
+
+        #studentList li span {
+            flex-grow: 1;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+         #studentList li span:hover {
+            text-decoration: underline;
+            color: var(--primary-color);
+         }
+
+        .student-actions button {
+            padding: 5px 10px;
+            font-size: 0.9em;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .task-checkbox {
+            margin-right: 15px;
+            min-width: 20px; /* Ensure checkbox doesn't shrink */
+            transform: scale(1.2); /* Make checkbox slightly larger */
+            cursor: pointer;
+        }
+
+        .task-details {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column; /* Stack details vertically */
+            gap: 2px; /* Space between lines */
+        }
+
+        .task-student-name {
+            font-weight: bold;
+        }
+
+        .task-description {
+            color: #555;
+        }
+
+        .task-due-date {
+            font-size: 0.9em;
+            color: #777;
+            min-width: 90px; /* Ensure date aligns somewhat */
+            text-align: right;
+            margin-left: 10px;
+        }
+
+        .task-item.completed .task-details {
+            text-decoration: line-through;
+            color: var(--completed-color);
+        }
+        .task-item.completed .task-student-name,
+        .task-item.completed .task-description,
+        .task-item.completed .task-due-date {
+             color: var(--completed-color);
+        }
+
+        .task-item.overdue .task-due-date {
+            color: var(--danger-color);
+            font-weight: bold;
+        }
+
+        #bulkAddStatus {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .filter-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+        }
+         .filter-controls label {
+             margin-bottom: 0; /* Adjust label margin for inline display */
+             white-space: nowrap; /* Prevent labels from breaking */
+         }
+         .filter-controls input[type="date"],
+         .filter-controls select {
+            margin-bottom: 0; /* Remove default bottom margin */
+            width: auto; /* Allow inputs/selects to size naturally */
+            min-width: 150px; /* Ensure usable width */
+         }
+
+         #showCompletedToggle {
+            margin-left: auto; /* Push toggle to the right */
+         }
+
+        /* Modal Styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1000; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.5); /* Black w/ opacity */
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto; /* 10% from the top and centered */
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            width: 80%; /* Could be more or less, depending on screen size */
+            max-width: 600px;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .close-button {
+            color: #aaa;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+        }
+
+        #modalTaskList {
+             list-style-type: none;
+             padding: 0;
+             max-height: 40vh;
+             overflow-y: auto;
+        }
+         #modalTaskList li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+         }
+          #modalTaskList li:last-child {
+             border-bottom: none;
+          }
+         #modalTaskList .task-status {
+             font-weight: bold;
+             margin-left: 15px;
+         }
+         #modalTaskList .completed { color: var(--success-color); }
+         #modalTaskList .pending { color: var(--warning-color); }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.9em;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>IEP Task Tracker</h1>
+
+        <div class="grid-container">
+            <!-- Section 1: Add / Edit Students -->
+            <div class="form-section">
+                <h2 id="studentFormTitle">Add New Student</h2>
+                <input type="hidden" id="editStudentId"> <!-- Hidden field to store ID when editing -->
+                <div>
+                    <label for="studentName">Student Name:</label>
+                    <input type="text" id="studentName" placeholder="Enter student's full name">
+                </div>
+                <div>
+                    <label for="iepDueDate">IEP Due Date:</label>
+                    <input type="date" id="iepDueDate">
+                </div>
+                <button id="addStudentBtn">Add Student</button>
+                <button id="cancelEditBtn" class="secondary" style="display: none;">Cancel Edit</button>
+
+                <h3>Bulk Add Students</h3>
+                <label for="bulkStudentData">Paste student data (Name TAB Date - one per line):</label>
+                <textarea id="bulkStudentData" placeholder="Example:
+John Doe	2024-12-15
+Jane Smith	2025-01-20"></textarea>
+                <button id="bulkAddBtn">Paste & Add Students</button>
+                <div id="bulkAddStatus"></div>
+            </div>
+
+            <!-- Section 2: Student List -->
+            <div class="student-list-section">
+                <h2>Student List (<span id="studentCount">0</span>)</h2>
+                <ul id="studentList">
+                    <!-- Student items will be added here by JavaScript -->
+                </ul>
+                 <button id="clearAllDataBtn" class="danger" style="margin-top: 15px;">Clear All Students & Tasks</button>
+            </div>
+        </div>
+
+        <!-- Section 3: Task View -->
+        <div class="task-view-section">
+            <h2>Tasks</h2>
+            <div class="filter-controls">
+                <div>
+                    <label for="viewDate">View tasks relative to:</label>
+                    <input type="date" id="viewDate">
+                </div>
+                <div>
+                    <label for="viewPeriod">Show tasks for:</label>
+                    <select id="viewPeriod">
+                        <option value="day">This Day</option>
+                        <option value="week" selected>This Week</option>
+                        <option value="month">This Month</option>
+                        <option value="all">All Upcoming (inc. overdue)</option>
+                    </select>
+                </div>
+                 <div>
+                    <label for="studentFilter">Filter by Student:</label>
+                    <select id="studentFilter">
+                        <option value="">-- All Students --</option>
+                        <!-- Student options added by JS -->
+                    </select>
+                </div>
+                <button id="showCompletedToggle" class="secondary">Show Completed Tasks</button>
+            </div>
+            <h3 id="taskListTitle">Tasks for this Week</h3>
+            <ul id="taskList">
+                <!-- Task items will be added here by JavaScript -->
+                 <li id="noTasksMessage" style="text-align: center; color: #777; display: none;">No tasks found for this period.</li>
+            </ul>
+        </div>
+    </div>
+
+     <!-- Student Detail Modal -->
+    <div id="studentModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal()">×</span>
+            <h2 id="modalStudentName">Student Details</h2>
+            <p><strong>IEP Due Date:</strong> <span id="modalIepDate"></span></p>
+            <h3>Tasks for this Student:</h3>
+            <ul id="modalTaskList">
+                <!-- Tasks for the selected student will be listed here -->
+            </ul>
+        </div>
+    </div>
+
+     <!-- Completed Tasks Modal -->
+    <div id="completedTasksModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeCompletedModal()">×</span>
+            <h2>All Completed Tasks</h2>
+            <ul id="modalCompletedTaskList" style="list-style-type: none; padding: 0; max-height: 60vh; overflow-y: auto;">
+                <!-- Completed tasks will be listed here -->
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        IEP Task Tracker - Data saved locally in your browser.
+    </footer>
+
+    <script>
+        // --- Constants ---
+        const STUDENTS_KEY = 'iepTracker_students';
+        const COMPLETIONS_KEY = 'iepTracker_completions';
+
+        // Task Definitions (days relative to IEP due date)
+        const TASKS = [
+            { type: 'invite', description: 'Send meeting invitation', daysOffset: -30 },
+            { type: 'reminder', description: 'Send meeting reminder', daysOffset: -3 },
+            { type: 'print', description: 'Print signature pages', daysOffset: -1 },
+            { type: 'eval', description: 'Schedule re-evaluation (due)', yearsOffset: 3 }
+        ];
+
+        // --- DOM Elements ---
+        const studentNameInput = document.getElementById('studentName');
+        const iepDueDateInput = document.getElementById('iepDueDate');
+        const addStudentBtn = document.getElementById('addStudentBtn');
+        const bulkStudentDataInput = document.getElementById('bulkStudentData');
+        const bulkAddBtn = document.getElementById('bulkAddBtn');
+        const bulkAddStatus = document.getElementById('bulkAddStatus');
+        const studentListUl = document.getElementById('studentList');
+        const studentCountSpan = document.getElementById('studentCount');
+        const viewDateInput = document.getElementById('viewDate');
+        const viewPeriodSelect = document.getElementById('viewPeriod');
+        const taskListUl = document.getElementById('taskList');
+        const taskListTitle = document.getElementById('taskListTitle');
+        const noTasksMessage = document.getElementById('noTasksMessage');
+        const studentFormTitle = document.getElementById('studentFormTitle');
+        const editStudentIdInput = document.getElementById('editStudentId');
+        const cancelEditBtn = document.getElementById('cancelEditBtn');
+        const clearAllDataBtn = document.getElementById('clearAllDataBtn');
+        const studentFilterSelect = document.getElementById('studentFilter');
+        const showCompletedToggle = document.getElementById('showCompletedToggle');
+
+        // Modals
+        const studentModal = document.getElementById('studentModal');
+        const modalStudentName = document.getElementById('modalStudentName');
+        const modalIepDate = document.getElementById('modalIepDate');
+        const modalTaskList = document.getElementById('modalTaskList');
+        const completedTasksModal = document.getElementById('completedTasksModal');
+        const modalCompletedTaskList = document.getElementById('modalCompletedTaskList');
+
+
+        // --- State ---
+        let students = [];
+        let taskCompletions = {}; // Structure: { 'taskId': true }
+
+        // --- Utility Functions ---
+
+        // Date formatting (YYYY-MM-DD) - crucial for consistency
+        function formatDate(date) {
+            if (!date) return '';
+            const d = new Date(date);
+            // Adjust for timezone offset to prevent date shifts
+            d.setMinutes(d.getMinutes() + d.getTimezoneOffset());
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        // Add days to a date (YYYY-MM-DD string)
+        function addDays(dateStr, days) {
+            const date = new Date(dateStr + 'T00:00:00'); // Use T00:00:00 to avoid timezone issues with just date strings
+            if (isNaN(date.getTime())) return null; // Invalid date string
+            date.setDate(date.getDate() + days);
+            return formatDate(date);
+        }
+
+        // Add years to a date (YYYY-MM-DD string)
+        function addYears(dateStr, years) {
+             const date = new Date(dateStr + 'T00:00:00');
+             if (isNaN(date.getTime())) return null;
+             date.setFullYear(date.getFullYear() + years);
+             // Handle leap years if adding years lands on Feb 29 but the target year isn't a leap year
+             const originalMonth = new Date(dateStr + 'T00:00:00').getMonth();
+             if (date.getMonth() !== originalMonth) {
+                date.setDate(0); // Go to the last day of the previous month (Feb 28)
+             }
+             return formatDate(date);
+        }
+
+        // Generate a unique ID
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substring(2, 7);
+        }
+
+        // Generate a unique ID for a specific task instance
+        function getTaskId(studentId, taskType, taskDueDate) {
+            // Using studentId, type, and the *calculated* task due date ensures uniqueness for this instance
+            return `${studentId}_${taskType}_${taskDueDate}`;
+        }
+
+        // --- Data Persistence ---
+        function loadData() {
+            const studentsData = localStorage.getItem(STUDENTS_KEY);
+            students = studentsData ? JSON.parse(studentsData) : [];
+            // Ensure all students have IDs (for backward compatibility if needed)
+            students.forEach(s => { if (!s.id) s.id = generateId(); });
+            saveStudents(); // Save back if any IDs were added
+
+            const completionsData = localStorage.getItem(COMPLETIONS_KEY);
+            taskCompletions = completionsData ? JSON.parse(completionsData) : {};
+        }
+
+        function saveStudents() {
+            localStorage.setItem(STUDENTS_KEY, JSON.stringify(students));
+        }
+
+        function saveCompletions() {
+            localStorage.setItem(COMPLETIONS_KEY, JSON.stringify(taskCompletions));
+        }
+
+        // --- Core Logic ---
+
+        function addStudent(name, iepDate) {
+            if (!name || !iepDate) {
+                alert('Please provide both student name and IEP due date.');
+                return false;
+            }
+             // Validate date format more strictly if needed
+             if (isNaN(new Date(iepDate).getTime())) {
+                 alert('Invalid IEP Due Date format. Please use the date picker or YYYY-MM-DD.');
+                 return false;
+             }
+
+            const newStudent = {
+                id: generateId(),
+                name: name.trim(),
+                iepDueDate: iepDate
+            };
+            students.push(newStudent);
+            saveStudents();
+            return true;
+        }
+
+         function updateStudent(id, name, iepDate) {
+            if (!name || !iepDate) {
+                alert('Please provide both student name and IEP due date.');
+                return false;
+            }
+            if (isNaN(new Date(iepDate).getTime())) {
+                 alert('Invalid IEP Due Date format. Please use the date picker or YYYY-MM-DD.');
+                 return false;
+             }
+
+            const studentIndex = students.findIndex(s => s.id === id);
+            if (studentIndex > -1) {
+                // Before updating, consider cleaning up old completion keys if IEP date changes significantly
+                // (Optional, depends on desired behavior - for simplicity, we'll keep old ones for now)
+                // clearCompletionsForStudent(id); // Example if needed
+
+                students[studentIndex].name = name.trim();
+                students[studentIndex].iepDueDate = iepDate;
+                saveStudents();
+                return true;
+            }
+            return false; // Should not happen if called correctly
+        }
+
+        function deleteStudent(id) {
+            if (!confirm(`Are you sure you want to delete this student and all their associated task history? This cannot be undone.`)) {
+                return;
+            }
+            students = students.filter(s => s.id !== id);
+             // Clean up completions for the deleted student
+            Object.keys(taskCompletions).forEach(key => {
+                if (key.startsWith(id + '_')) {
+                    delete taskCompletions[key];
+                }
+            });
+            saveStudents();
+            saveCompletions();
+            renderStudentList();
+            renderTaskList(); // Refresh tasks as student is gone
+            populateStudentFilter(); // Update filter dropdown
+        }
+
+         function clearCompletionsForStudent(studentId) {
+            Object.keys(taskCompletions).forEach(key => {
+                if (key.startsWith(studentId + '_')) {
+                    delete taskCompletions[key];
+                }
+            });
+            // Note: saveCompletions() should be called after this if needed immediately
+        }
+
+        function handleBulkAdd() {
+            const data = bulkStudentDataInput.value.trim();
+            if (!data) return;
+
+            const lines = data.split('\n');
+            let addedCount = 0;
+            let errorCount = 0;
+            const errors = [];
+
+            lines.forEach((line, index) => {
+                line = line.trim();
+                if (!line) return; // Skip empty lines
+
+                const parts = line.split('\t'); // Assume TAB separation
+                if (parts.length === 2) {
+                    const name = parts[0].trim();
+                    const dateStr = parts[1].trim();
+                    // Basic validation for date format (YYYY-MM-DD)
+                    if (name && /^\d{4}-\d{2}-\d{2}$/.test(dateStr) && !isNaN(new Date(dateStr).getTime())) {
+                         if (addStudent(name, dateStr)) {
+                            addedCount++;
+                         } else {
+                             errorCount++; // Should not happen with current addStudent logic, but good practice
+                             errors.push(`Line ${index + 1}: Error adding '${name}'`);
+                         }
+                    } else {
+                        errorCount++;
+                         errors.push(`Line ${index + 1}: Invalid format or date for '${name}' (Expected: Name TAB YYYY-MM-DD)`);
+                    }
+                } else {
+                    errorCount++;
+                    errors.push(`Line ${index + 1}: Invalid format (Expected: Name TAB Date)`);
+                }
+            });
+
+            bulkStudentDataInput.value = ''; // Clear textarea
+            bulkAddStatus.textContent = `Added ${addedCount} students. ${errorCount} lines had errors.`;
+            if (errors.length > 0) {
+                 console.warn("Bulk Add Errors:\n" + errors.join("\n"));
+                 alert("Some lines could not be processed. Check console (F12 -> Console) for details.");
+            }
+
+            if (addedCount > 0) {
+                renderStudentList();
+                renderTaskList();
+                 populateStudentFilter();
+            }
+        }
+
+        function getTasksForPeriod(referenceDateStr, period, studentIdFilter = null) {
+            const referenceDate = new Date(referenceDateStr + 'T00:00:00'); // Use specific time to avoid TZ issues
+            let startDate, endDate;
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // Normalize today's date
+
+            switch (period) {
+                case 'day':
+                    startDate = referenceDate;
+                    endDate = referenceDate;
+                    break;
+                case 'week':
+                    const dayOfWeek = referenceDate.getDay(); // 0=Sun, 1=Mon,...
+                    startDate = new Date(referenceDate);
+                    startDate.setDate(referenceDate.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1)); // Start on Monday (or Sunday if preferred)
+                    endDate = new Date(startDate);
+                    endDate.setDate(startDate.getDate() + 6);
+                    break;
+                case 'month':
+                    startDate = new Date(referenceDate.getFullYear(), referenceDate.getMonth(), 1);
+                    endDate = new Date(referenceDate.getFullYear(), referenceDate.getMonth() + 1, 0);
+                    break;
+                case 'all':
+                default:
+                    // 'All Upcoming' means anything due from the reference date onwards, plus any past-due incomplete tasks
+                    startDate = new Date(referenceDate);
+                    // Set a reasonably far future end date
+                    endDate = new Date(referenceDate);
+                    endDate.setFullYear(endDate.getFullYear() + 10); // Look 10 years ahead
+                    break;
+            }
+
+            // Ensure dates are compared correctly by zeroing out time
+             startDate.setHours(0, 0, 0, 0);
+             endDate.setHours(0, 0, 0, 0);
+             const startStr = formatDate(startDate);
+             const endStr = formatDate(endDate);
+             const refStr = formatDate(referenceDate); // Today or selected view date as string
+
+             console.log(`Filtering tasks between ${startStr} and ${endStr} (Reference: ${refStr}, Period: ${period})`);
+
+
+            let relevantTasks = [];
+
+            const studentsToProcess = studentIdFilter
+                ? students.filter(s => s.id === studentIdFilter)
+                : students;
+
+
+            studentsToProcess.forEach(student => {
+                if (!student.iepDueDate || isNaN(new Date(student.iepDueDate).getTime())) return; // Skip if invalid date
+
+                TASKS.forEach(taskDef => {
+                    let taskDueDateStr;
+                    if (taskDef.daysOffset !== undefined) {
+                        taskDueDateStr = addDays(student.iepDueDate, taskDef.daysOffset);
+                    } else if (taskDef.yearsOffset !== undefined) {
+                        taskDueDateStr = addYears(student.iepDueDate, taskDef.yearsOffset);
+                    }
+
+                    if (!taskDueDateStr) return; // Skip if date calculation failed
+
+                    const taskId = getTaskId(student.id, taskDef.type, taskDueDateStr);
+                    const isCompleted = taskCompletions[taskId] === true;
+                    const taskDueDate = new Date(taskDueDateStr + 'T00:00:00'); // Compare dates correctly
+
+                    // Determine if task should be shown:
+                    let includeTask = false;
+                    const isOverdue = taskDueDate < referenceDate && !isCompleted;
+
+                     if (period === 'all') {
+                        // Show if due on or after reference date, OR if overdue
+                        if (taskDueDate >= referenceDate || isOverdue) {
+                             includeTask = true;
+                        }
+                    } else {
+                         // Show if due within the period, OR if overdue (and today is within the period)
+                         // Rollover: If task was due *before* the period starts but is incomplete, show it.
+                        if ((taskDueDate >= startDate && taskDueDate <= endDate) || (taskDueDate < startDate && !isCompleted)) {
+                             includeTask = true;
+                        }
+                    }
+
+                    if (includeTask) {
+                        relevantTasks.push({
+                            id: taskId,
+                            studentId: student.id,
+                            studentName: student.name,
+                            type: taskDef.type,
+                            description: taskDef.description,
+                            taskDueDate: taskDueDateStr,
+                            originalIepDueDate: student.iepDueDate,
+                            isCompleted: isCompleted,
+                            isOverdue: taskDueDate < referenceDate && !isCompleted // Mark specifically if overdue relative to view date
+                        });
+                    }
+                });
+            });
+
+             // Sort tasks primarily by due date, secondarily by student name
+            relevantTasks.sort((a, b) => {
+                if (a.taskDueDate < b.taskDueDate) return -1;
+                if (a.taskDueDate > b.taskDueDate) return 1;
+                // If dates are the same, sort by student name
+                if (a.studentName < b.studentName) return -1;
+                if (a.studentName > b.studentName) return 1;
+                return 0; // Should be rare with unique IDs but good practice
+            });
+
+            return relevantTasks;
+        }
+
+        function toggleTaskCompletion(taskId, checkboxElement) {
+            const isCompleted = checkboxElement.checked;
+            if (isCompleted) {
+                taskCompletions[taskId] = true;
+            } else {
+                delete taskCompletions[taskId]; // Remove key if unchecked
+            }
+            saveCompletions();
+             // Re-render to reflect potential style changes (like strikethrough) and rollover logic
+            renderTaskList();
+             // If student modal is open and showing this student, refresh it
+             if (studentModal.style.display === 'block') {
+                 const studentId = taskId.split('_')[0];
+                 const currentModalStudentId = studentModal.dataset.studentId;
+                 if (studentId === currentModalStudentId) {
+                     displayStudentDetails(currentModalStudentId);
+                 }
+             }
+        }
+
+        // --- Rendering Functions ---
+        function renderStudentList() {
+            studentListUl.innerHTML = ''; // Clear existing list
+            studentCountSpan.textContent = students.length;
+
+            if (students.length === 0) {
+                 studentListUl.innerHTML = '<li style="text-align: center; color: #777;">No students added yet.</li>';
+                 return;
+            }
+
+            // Sort students alphabetically by name for consistent display
+             const sortedStudents = [...students].sort((a, b) => a.name.localeCompare(b.name));
+
+
+            sortedStudents.forEach(student => {
+                const li = document.createElement('li');
+                li.dataset.studentId = student.id; // Store ID for easier access
+
+                const nameSpan = document.createElement('span');
+                 nameSpan.textContent = `${student.name} (IEP Due: ${student.iepDueDate})`;
+                 nameSpan.title = "Click to view student details";
+                 nameSpan.onclick = () => displayStudentDetails(student.id); // Add click handler to show modal
+                li.appendChild(nameSpan);
+
+
+                const actionsDiv = document.createElement('div');
+                actionsDiv.className = 'student-actions';
+
+                const editBtn = document.createElement('button');
+                editBtn.textContent = 'Edit';
+                editBtn.className = 'secondary';
+                editBtn.onclick = () => setupEditStudent(student.id);
+                actionsDiv.appendChild(editBtn);
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.textContent = 'Delete';
+                deleteBtn.className = 'danger';
+                deleteBtn.onclick = () => deleteStudent(student.id);
+                actionsDiv.appendChild(deleteBtn);
+
+                li.appendChild(actionsDiv);
+                studentListUl.appendChild(li);
+            });
+        }
+
+         function populateStudentFilter() {
+             const currentFilterValue = studentFilterSelect.value;
+             studentFilterSelect.innerHTML = '<option value="">-- All Students --</option>'; // Reset
+             const sortedStudents = [...students].sort((a, b) => a.name.localeCompare(b.name));
+             sortedStudents.forEach(student => {
+                 const option = document.createElement('option');
+                 option.value = student.id;
+                 option.textContent = student.name;
+                 studentFilterSelect.appendChild(option);
+             });
+             // Try to restore previous selection if student still exists
+             if (students.some(s => s.id === currentFilterValue)) {
+                 studentFilterSelect.value = currentFilterValue;
+             } else {
+                studentFilterSelect.value = ""; // Default to 'All' if previous selection is gone
+             }
+         }
+
+
+        function renderTaskList() {
+            const viewDate = viewDateInput.value;
+            const period = viewPeriodSelect.value;
+            const studentIdFilter = studentFilterSelect.value;
+
+            if (!viewDate) {
+                 taskListUl.innerHTML = '<li style="text-align: center; color: var(--warning-color);">Please select a date to view tasks.</li>';
+                 taskListTitle.textContent = 'Tasks';
+                 noTasksMessage.style.display = 'none';
+                 return;
+            }
+
+            const tasks = getTasksForPeriod(viewDate, period, studentIdFilter || null); // Pass null if filter is empty string
+
+            taskListUl.innerHTML = ''; // Clear list
+
+            if (tasks.length === 0) {
+                noTasksMessage.style.display = 'block';
+            } else {
+                 noTasksMessage.style.display = 'none';
+                 tasks.forEach(task => {
+                    const li = document.createElement('li');
+                    li.className = 'task-item';
+                     if (task.isCompleted) {
+                        li.classList.add('completed');
+                    }
+                     if (task.isOverdue) {
+                         li.classList.add('overdue');
+                     }
+
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.className = 'task-checkbox';
+                    checkbox.checked = task.isCompleted;
+                    checkbox.dataset.taskId = task.id;
+                    checkbox.onchange = (e) => toggleTaskCompletion(task.id, e.target);
+
+                    const detailsDiv = document.createElement('div');
+                    detailsDiv.className = 'task-details';
+
+                    const studentNameSpan = document.createElement('span');
+                    studentNameSpan.className = 'task-student-name';
+                    studentNameSpan.textContent = task.studentName;
+                    detailsDiv.appendChild(studentNameSpan);
+
+                    const descriptionSpan = document.createElement('span');
+                    descriptionSpan.className = 'task-description';
+                    descriptionSpan.textContent = task.description;
+                    detailsDiv.appendChild(descriptionSpan);
+
+                     const dueDateSpan = document.createElement('span');
+                     dueDateSpan.className = 'task-due-date';
+                     dueDateSpan.textContent = task.taskDueDate;
+                     if (task.isOverdue) {
+                         dueDateSpan.textContent += ' (Overdue)';
+                         dueDateSpan.style.fontWeight = 'bold';
+                         dueDateSpan.style.color = 'var(--danger-color)';
+                     } else if (task.isCompleted) {
+                         dueDateSpan.style.color = 'var(--completed-color)';
+                     }
+
+
+                    li.appendChild(checkbox);
+                    li.appendChild(detailsDiv);
+                    li.appendChild(dueDateSpan);
+                    taskListUl.appendChild(li);
+                });
+            }
+
+            // Update title based on selection
+            const periodText = viewPeriodSelect.options[viewPeriodSelect.selectedIndex].text;
+             const studentName = studentIdFilter ? students.find(s=>s.id === studentIdFilter)?.name : null;
+            taskListTitle.textContent = `Tasks for ${periodText}` + (studentName ? ` (Student: ${studentName})` : '') + ` (relative to ${viewDate})`;
+
+        }
+
+        // --- Edit Student UI Logic ---
+        function setupEditStudent(id) {
+            const student = students.find(s => s.id === id);
+            if (!student) return;
+
+            editStudentIdInput.value = student.id;
+            studentNameInput.value = student.name;
+            iepDueDateInput.value = student.iepDueDate;
+
+            studentFormTitle.textContent = `Editing ${student.name}`;
+            addStudentBtn.textContent = 'Update Student';
+            cancelEditBtn.style.display = 'inline-block'; // Show cancel button
+        }
+
+        function cancelEdit() {
+            editStudentIdInput.value = '';
+            studentNameInput.value = '';
+            iepDueDateInput.value = ''; // Clear date
+
+            studentFormTitle.textContent = 'Add New Student';
+            addStudentBtn.textContent = 'Add Student';
+            cancelEditBtn.style.display = 'none'; // Hide cancel button
+        }
+
+        // --- Modal Logic ---
+        function displayStudentDetails(studentId) {
+            const student = students.find(s => s.id === studentId);
+            if (!student) return;
+
+            studentModal.dataset.studentId = studentId; // Store current student ID in modal for refresh logic
+            modalStudentName.textContent = student.name;
+            modalIepDate.textContent = student.iepDueDate;
+
+            modalTaskList.innerHTML = ''; // Clear previous tasks
+
+             const allTasksForStudent = [];
+             TASKS.forEach(taskDef => {
+                 let taskDueDateStr;
+                 if (taskDef.daysOffset !== undefined) {
+                     taskDueDateStr = addDays(student.iepDueDate, taskDef.daysOffset);
+                 } else if (taskDef.yearsOffset !== undefined) {
+                     taskDueDateStr = addYears(student.iepDueDate, taskDef.yearsOffset);
+                 }
+                 if (taskDueDateStr) {
+                     const taskId = getTaskId(student.id, taskDef.type, taskDueDateStr);
+                     const isCompleted = taskCompletions[taskId] === true;
+                     allTasksForStudent.push({
+                         id: taskId,
+                         description: taskDef.description,
+                         dueDate: taskDueDateStr,
+                         isCompleted: isCompleted
+                     });
+                 }
+             });
+
+             // Sort tasks by due date
+             allTasksForStudent.sort((a, b) => a.dueDate.localeCompare(b.dueDate));
+
+             if (allTasksForStudent.length === 0) {
+                modalTaskList.innerHTML = '<li>No tasks generated for this student yet.</li>';
+             } else {
+                 allTasksForStudent.forEach(task => {
+                     const li = document.createElement('li');
+                     const descSpan = document.createElement('span');
+                     descSpan.textContent = `${task.description} (Due: ${task.dueDate})`;
+
+                     const statusSpan = document.createElement('span');
+                     statusSpan.className = 'task-status';
+                     if (task.isCompleted) {
+                         statusSpan.textContent = 'Completed';
+                         statusSpan.classList.add('completed');
+                         descSpan.style.textDecoration = 'line-through';
+                         descSpan.style.color = '#888';
+                     } else {
+                         // Check if overdue relative to *today* for status display
+                         const todayStr = formatDate(new Date());
+                          if (task.dueDate < todayStr) {
+                             statusSpan.textContent = 'Pending (Overdue)';
+                             statusSpan.classList.add('pending');
+                             statusSpan.style.color = 'var(--danger-color)';
+                          } else {
+                             statusSpan.textContent = 'Pending';
+                             statusSpan.classList.add('pending');
+                          }
+                     }
+
+                     li.appendChild(descSpan);
+                     li.appendChild(statusSpan);
+                     modalTaskList.appendChild(li);
+                 });
+             }
+
+
+            studentModal.style.display = 'block';
+        }
+
+        function closeModal() {
+            studentModal.style.display = 'none';
+             studentModal.dataset.studentId = ''; // Clear stored ID
+        }
+
+         function displayCompletedTasks() {
+            modalCompletedTaskList.innerHTML = ''; // Clear previous list
+            const completedTaskIds = Object.keys(taskCompletions).filter(key => taskCompletions[key] === true);
+
+            if (completedTaskIds.length === 0) {
+                modalCompletedTaskList.innerHTML = '<li>No tasks marked as completed yet.</li>';
+                completedTasksModal.style.display = 'block';
+                return;
+            }
+
+             const completedTaskDetails = [];
+
+            completedTaskIds.forEach(taskId => {
+                const parts = taskId.split('_');
+                if (parts.length < 3) return; // Malformed ID
+                const studentId = parts[0];
+                const taskType = parts[1];
+                // Reconstruct task due date from the rest of the ID parts (in case date contained '_')
+                 const taskDueDate = parts.slice(2).join('_');
+
+                const student = students.find(s => s.id === studentId);
+                const taskDef = TASKS.find(t => t.type === taskType);
+
+                 if (student && taskDef) {
+                    completedTaskDetails.push({
+                        studentName: student.name,
+                        description: taskDef.description,
+                        dueDate: taskDueDate,
+                        // We could add a 'completedDate' if we stored timestamps, but for now just list them
+                    });
+                } else {
+                     // Handle orphaned completion entries if student/task def was deleted/changed
+                     completedTaskDetails.push({
+                         studentName: `(Unknown Student: ${studentId})`,
+                         description: `(Unknown Task Type: ${taskType})`,
+                         dueDate: taskDueDate,
+                     });
+                 }
+            });
+
+             // Sort completed tasks, e.g., by due date or student name
+             completedTaskDetails.sort((a, b) => {
+                if (a.dueDate < b.dueDate) return -1;
+                if (a.dueDate > b.dueDate) return 1;
+                return a.studentName.localeCompare(b.studentName);
+             });
+
+             completedTaskDetails.forEach(task => {
+                const li = document.createElement('li');
+                 li.style.padding = '8px 0';
+                 li.style.borderBottom = '1px solid #eee';
+                 li.textContent = `${task.studentName} - ${task.description} (Original Due: ${task.dueDate})`;
+                 modalCompletedTaskList.appendChild(li);
+             });
+              // Remove border from last item
+             if (modalCompletedTaskList.lastChild) {
+                 modalCompletedTaskList.lastChild.style.borderBottom = 'none';
+             }
+
+
+            completedTasksModal.style.display = 'block';
+        }
+
+         function closeCompletedModal() {
+             completedTasksModal.style.display = 'none';
+         }
+
+
+        // --- Event Listeners ---
+        addStudentBtn.addEventListener('click', () => {
+            const studentId = editStudentIdInput.value;
+            const name = studentNameInput.value;
+            const iepDate = iepDueDateInput.value;
+
+            let success = false;
+            if (studentId) {
+                // Update existing student
+                success = updateStudent(studentId, name, iepDate);
+            } else {
+                // Add new student
+                success = addStudent(name, iepDate);
+            }
+
+             if (success) {
+                renderStudentList();
+                renderTaskList(); // Update tasks in case dates changed
+                populateStudentFilter(); // Update filter dropdown
+                cancelEdit(); // Reset form
+             }
+        });
+
+        cancelEditBtn.addEventListener('click', cancelEdit);
+
+        bulkAddBtn.addEventListener('click', handleBulkAdd);
+
+        viewDateInput.addEventListener('change', renderTaskList);
+        viewPeriodSelect.addEventListener('change', renderTaskList);
+        studentFilterSelect.addEventListener('change', renderTaskList);
+        showCompletedToggle.addEventListener('click', displayCompletedTasks);
+
+         clearAllDataBtn.addEventListener('click', () => {
+             if (confirm('DANGER! Are you absolutely sure you want to delete ALL students and ALL task completion history? This cannot be undone!')) {
+                 students = [];
+                 taskCompletions = {};
+                 saveStudents();
+                 saveCompletions();
+                 renderStudentList();
+                 renderTaskList();
+                 populateStudentFilter();
+                 cancelEdit(); // Reset edit form if active
+                 alert('All data has been cleared.');
+             }
+         });
+
+         // Close modals if clicking outside the content
+         window.onclick = function(event) {
+             if (event.target == studentModal) {
+                 closeModal();
+             }
+             if (event.target == completedTasksModal) {
+                 closeCompletedModal();
+             }
+         }
+
+
+        // --- Initialization ---
+        function init() {
+            loadData();
+             // Set default view date to today
+            viewDateInput.value = formatDate(new Date());
+            renderStudentList();
+             populateStudentFilter();
+            renderTaskList(); // Initial task rendering for today/this week
+        }
+
+        // Run initialization when the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', init);
+
+    </script>
+
+</body>
+</html>
