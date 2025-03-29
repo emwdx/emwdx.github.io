@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Organizer</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden; /* Prevent scrollbars on the main body */
+        }
+
+        #input-area {
+            width: 30%;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #ccc;
+        }
+
+        #tasks-input {
+            flex: 1; /* Take up remaining space */
+            margin-bottom: 10px;
+            resize: none; /* Prevent textarea resizing */
+            font-size: 16px;
+        }
+
+        #categories {
+            width: 70%;
+            display: flex;
+            flex-wrap: wrap; /* Allows categories to wrap to the next line */
+        }
+
+        .category {
+            width: 50%; /* Two columns */
+            height: 50vh; /* Take half the viewport height */
+            box-sizing: border-box;
+            padding: 20px;
+            border: 1px solid #ddd;
+            overflow-y: auto; /* Add scrollbars if content overflows */
+            position: relative;
+        }
+
+        .category h2 {
+            position: sticky;
+            top: 0;
+            background-color: white;
+            z-index: 10;
+            padding: 5px 0;
+            margin: 0px -20px 10px -20px; /* Remove h2 default margins, fix extra top margin */
+            border-bottom: 1px solid #ddd;
+            text-align: center; /* Center the heading text */
+
+        }
+
+
+        .task-box {
+            /*background-color: #f0f0f0;*/  /* Removed default gray */
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 10px;
+            cursor: grab;
+            position: relative; /* For absolute positioning of the trash can */
+            user-select: none;
+        }
+
+        .task-box:hover .trash-can {
+            display: block;
+        }
+
+        .trash-can {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            display: none;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .dragging {
+            opacity: 0.5;
+            border: 2px dashed #aaa;
+        }
+        .category.drop-target {
+            background-color: rgba(0, 255, 0, 0.1); /* Light green highlight */
+        }
+
+        /* Category Colors */
+        #now .task-box       { background-color: #ffcccc; } /* Light Red */
+        #today .task-box     { background-color: #ccffcc; } /* Light Green */
+        #this-week .task-box { background-color: #ccccff; } /* Light Blue */
+        #later .task-box     { background-color: #ffffcc; } /* Light Yellow */
+
+
+    </style>
+</head>
+<body>
+
+    <div id="input-area">
+        <textarea id="tasks-input" placeholder="Enter tasks, one per line"></textarea>
+        <button id="sort-button">Sort Tasks</button>
+    </div>
+
+    <div id="categories">
+        <div class="category" id="now" data-category="Now"><h2>Now</h2></div>
+        <div class="category" id="today" data-category="Today"><h2>Today</h2></div>
+        <div class="category" id="this-week" data-category="This Week"><h2>This Week</h2></div>
+        <div class="category" id="later" data-category="Later"><h2>Later</h2></div>
+    </div>
+
+    <script>
+        const tasksInput = document.getElementById('tasks-input');
+        const sortButton = document.getElementById('sort-button');
+        const categories = document.getElementById('categories');
+        const categoryDivs = document.querySelectorAll('.category');
+
+        let draggedTask = null;
+
+
+        function createTaskBox(taskText) {
+            const taskBox = document.createElement('div');
+            taskBox.classList.add('task-box');
+            taskBox.textContent = taskText;
+            taskBox.draggable = true;
+
+            const trashCan = document.createElement('span');
+            trashCan.classList.add('trash-can');
+            trashCan.innerHTML = ''; // Trash can icon
+            trashCan.addEventListener('click', (event) => {
+                event.stopPropagation(); // Prevent dragging when clicking the trash can
+                taskBox.remove();
+                saveTasks();
+            });
+            taskBox.appendChild(trashCan);
+
+            return taskBox;
+        }
+
+
+
+        function loadTasks() {
+            categoryDivs.forEach(category => {
+              const categoryName = category.id;
+              const savedTasks = localStorage.getItem(categoryName);
+              if (savedTasks) {
+                savedTasks.split('|').forEach(taskText => {
+                  if (taskText.trim() !== "") { //prevent empty strings from making blank boxes.
+                    // Remove any non-printable characters, including the "rectangle"
+                    const cleanedTaskText = taskText.replace(/[^\x20-\x7E]/g, '');
+                    const taskBox = createTaskBox(cleanedTaskText);
+                    category.appendChild(taskBox);
+                    addDragListeners(taskBox); //add the listeners after it's created.
+                  }
+                });
+              }
+            });
+        }
+
+        function saveTasks() {
+            categoryDivs.forEach(category => {
+                const categoryName = category.id;
+                const tasks = Array.from(category.querySelectorAll('.task-box'))
+                                  .map(taskBox => taskBox.textContent.replace('🗑️', '').trim()) //remove trashcan from save.
+                                  .join('|');
+                localStorage.setItem(categoryName, tasks);
+            });
+        }
+
+        sortButton.addEventListener('click', () => {
+            const tasks = tasksInput.value.trim().split('\n').filter(task => task.trim() !== '');
+            tasksInput.value = ''; // Clear the input
+
+            tasks.forEach(taskText => {
+                const taskBox = createTaskBox(taskText);
+
+                // Randomly assign to a category (initial placement)
+                const randomIndex = Math.floor(Math.random() * categoryDivs.length);
+                categoryDivs[randomIndex].appendChild(taskBox);
+                addDragListeners(taskBox);
+            });
+
+            saveTasks();
+        });
+
+        function addDragListeners(taskBox) {
+            taskBox.addEventListener('dragstart', (event) => {
+                draggedTask = event.target;
+                draggedTask.classList.add('dragging');
+                event.dataTransfer.setData('text/plain', ''); // Required for Firefox
+            });
+
+            taskBox.addEventListener('dragend', (event) => {
+                draggedTask.classList.remove('dragging');
+                draggedTask = null;
+                saveTasks();
+            });
+        }
+
+
+        categoryDivs.forEach(category => {
+          category.addEventListener('dragover', (event) => {
+              event.preventDefault(); // Necessary to allow dropping
+
+              if (draggedTask && !category.contains(draggedTask)) {
+                   category.classList.add('drop-target');
+              }
+
+          });
+
+          category.addEventListener('dragleave', (event) => {
+               category.classList.remove('drop-target');
+          });
+
+          category.addEventListener('drop', (event) => {
+                event.preventDefault();
+                category.classList.remove('drop-target');
+
+                if (draggedTask) {
+                    category.appendChild(draggedTask);
+                    saveTasks();
+                }
+          });
+        });
+
+        // Load tasks on page load
+        loadTasks();
+
+    </script>
+
+</body>
+</html>

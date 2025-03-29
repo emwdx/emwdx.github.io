@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Real-time QR Code Generator</title>
+  <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0; /* Remove default body margin */
+      background-color: #f0f0f0;
+    }
+
+    #container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    #qrcode {
+      margin-top: 20px;
+      width: 256px; /* Initial size, can be adjusted */
+      height: 256px;
+    }
+
+    #input-container {
+      display: flex;
+      flex-direction: column;  /* Stack label and input */
+      align-items: center; /* Center items horizontally */
+      margin-bottom: 20px; /* Add some space below the input */
+      width: 100%; /* Ensure the input container takes full width */
+    }
+    #input-container label {
+       margin-bottom: 5px; /* Add some space between label and input */
+    }
+
+    #urlInput {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 16px;
+      width: 100%; /* Make the input take up all the width */
+      box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    }
+
+    /* Style for the generated QR code image (optional, but good for consistency) */
+    #qrcode img {
+      display: block; /* Remove extra space below the image */
+      max-width: 100%; /* Ensure the QR code fits within its container */
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <div id="input-container">
+        <label for="urlInput">Enter URL or Text:</label>
+        <input type="text" id="urlInput" placeholder="https://www.example.com" />
+    </div>
+    <div id="qrcode"></div>
+  </div>
+
+
+  <script>
+    const urlInput = document.getElementById('urlInput');
+    const qrcodeDiv = document.getElementById('qrcode');
+    let qrcode = null; // Store the QRCode object
+
+    function generateQRCode() {
+      const text = urlInput.value.trim();  // Remove leading/trailing whitespace
+
+      if (text) {
+        if (qrcode) {
+          qrcode.clear(); // Clear previous QR code
+          qrcode.makeCode(text);  // Generate new QR code
+        } else {
+          // Initialize QRCode only once
+           qrcode = new QRCode(qrcodeDiv, {
+            text: text,
+            width: 256,
+            height: 256,
+            colorDark: "#000000",  // Customize colors (optional)
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H // Error correction level (H is highest)
+          });
+        }
+       } else {
+        // Clear the QR code if the input is empty
+         if (qrcode) {
+              qrcode.clear();
+          }
+          qrcodeDiv.innerHTML = ''; // Remove any remaining content (important!)
+
+      }
+    }
+
+
+    // Generate QR code on input change
+    urlInput.addEventListener('input', generateQRCode);
+
+    // Initial QR code generation (optional, for a default QR code)
+    //  generateQRCode(); // uncomment this to generate a QR for an empty string, initially
+  </script>
+</body>
+</html>

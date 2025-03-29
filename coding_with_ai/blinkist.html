@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Text Reader</title>
+<style>
+body {
+  font-family: sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100vh;
+  margin: 0;
+}
+
+#textInput {
+  width: 80%;
+  height: 200px;
+  margin-bottom: 20px;
+  padding: 10px;
+  font-size: 16px;
+}
+
+#startButton {
+  padding: 20px 40px;
+  font-size: 24px;
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+#outputArea {
+  width: 80%;
+  height: 300px;
+  border: 1px solid #ccc;
+  padding: 20px;
+  font-size: 36px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+#wordDisplay {
+  font-size: 48px;
+}
+
+#speedControls {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+#fasterButton, #slowerButton {
+  padding: 10px 20px;
+  font-size: 16px;
+  margin: 0 10px;
+  cursor: pointer;
+}
+
+#wordsPerDisplay {
+  padding: 8px;
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+</style>
+</head>
+<body>
+
+<textarea id="textInput" placeholder="Paste your text here..."></textarea>
+<select id="wordsPerDisplay">
+  <option value="1">1 Word</option>
+  <option value="2">2 Words</option>
+  <option value="3">3 Words</option>
+  <option value="4">4 Words</option>
+</select>
+<button id="startButton">Start Reading</button>
+<div id="outputArea">
+  <span id="wordDisplay"></span>
+</div>
+<div id="speedControls">
+  <button id="slowerButton">Slower</button>
+  <button id="fasterButton">Faster</button>
+</div>
+
+<script>
+const textInput = document.getElementById('textInput');
+const startButton = document.getElementById('startButton');
+const wordDisplay = document.getElementById('wordDisplay');
+const outputArea = document.getElementById('outputArea');
+const fasterButton = document.getElementById('fasterButton');
+const slowerButton = document.getElementById('slowerButton');
+const wordsPerDisplaySelect = document.getElementById('wordsPerDisplay');
+
+let words = [];
+let currentIndex = 0;
+let reading = false;
+let delay = 1000;
+const periodDelayMultiplier = 2;
+
+startButton.addEventListener('click', () => {
+  if (!reading) {
+    words = textInput.value.trim().split(/\s+/);
+    currentIndex = 0;
+    reading = true;
+    startButton.textContent = "Stop";
+    displayWord();
+  } else {
+    reading = false;
+    startButton.textContent = "Start Reading";
+    wordDisplay.textContent = "";
+  }
+});
+
+function displayWord() {
+  if (!reading) return;
+  const wordsToShow = parseInt(wordsPerDisplaySelect.value);
+  let displayedWords = [];
+  let reachedPunctuation = false;
+
+  for (let i = 0; i < wordsToShow; i++) {
+    if (currentIndex + i < words.length) {
+      displayedWords.push(words[currentIndex + i]);
+      if (words[currentIndex + i].endsWith('.')) {
+        reachedPunctuation = true;
+        break;
+      }
+    } else {
+      break;
+    }
+  }
+
+  wordDisplay.textContent = displayedWords.join(' ');
+  currentIndex += displayedWords.length;
+
+  let currentDelay = delay;
+  if (displayedWords.some(word => word.endsWith('.'))) {
+    currentDelay = delay * periodDelayMultiplier;
+  }
+
+  if (currentIndex < words.length) {
+    setTimeout(displayWord, currentDelay);
+  } else {
+    reading = false;
+    startButton.textContent = "Start Reading";
+    wordDisplay.textContent = "";
+  }
+}
+
+fasterButton.addEventListener('click', () => {
+  delay = Math.max(200, delay - 100);
+});
+
+slowerButton.addEventListener('click', () => {
+  delay += 100;
+});
+</script>
+
+</body>
+</html>

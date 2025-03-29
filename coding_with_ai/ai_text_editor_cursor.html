@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Focused Writer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --text-color: #2c3338;
+            --modal-bg: #ffffff;
+            --modal-border: #e1e4e8;
+            --button-bg: #4a5568;
+            --button-hover: #2d3748;
+            --notification-bg: rgba(0, 0, 0, 0.8);
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: var(--bg-color);
+            font-family: 'Atkinson Hyperlegible', sans-serif;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        #editor {
+            width: 100%;
+            height: calc(100vh - 180px);
+            padding: 30px;
+            box-sizing: border-box;
+            border: none;
+            border-radius: 8px;
+            background-color: white;
+            font-family: 'Atkinson Hyperlegible', sans-serif;
+            font-size: 2.8em;
+            line-height: 1.6;
+            resize: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #editor:focus {
+            outline: none;
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background-color: var(--bg-color);
+            border-top: 1px solid var(--modal-border);
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .controls input,
+        .controls select,
+        .controls button {
+            font-family: 'Atkinson Hyperlegible', sans-serif;
+            font-size: 1em;
+            padding: 8px 12px;
+            border: 1px solid var(--modal-border);
+            border-radius: 4px;
+        }
+
+        .controls button {
+            background-color: var(--button-bg);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .controls button:hover {
+            background-color: var(--button-hover);
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--modal-bg);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            width: 90%;
+            max-width: 600px;
+            z-index: 1000;
+        }
+
+        .modal.minimized {
+            top: auto;
+            bottom: 100px;
+            right: 20px;
+            left: auto;
+            transform: none;
+            width: auto;
+            padding: 10px 20px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--modal-border);
+        }
+
+        .modal-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .modal-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            padding: 0 5px;
+            color: var(--text-color);
+        }
+
+        .modal-content {
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        /* Notification styles */
+        .notification {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--notification-bg);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-size: 1em;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1001;
+        }
+
+        .notification.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <textarea id="editor" placeholder="Start writing..."></textarea>
+
+    <div class="controls">
+        <input type="password" id="apiKey" placeholder="Gemini API Key" />
+        <select id="modelSelect">
+            <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
+            <option value="gemini-1.5-flash-latest">Gemini 1.5 Flash</option>
+            <option value="gemini-pro">Gemini Pro</option>
+        </select>
+        <button onclick="getAIFeedback()">Get Encouraging Ideas</button>
+        <button onclick="copyText()">Copy All Text</button>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="modal" id="aiModal">
+        <div class="modal-header">
+            <h3 class="modal-title">AI Encouragement</h3>
+            <div class="modal-controls">
+                <button class="modal-button" id="minimizeBtn">−</button>
+                <button class="modal-button" id="closeBtn">×</button>
+            </div>
+        </div>
+        <div class="modal-content" id="aiContent">
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Modal functionality
+        const modal = document.getElementById('aiModal');
+        const overlay = document.getElementById('overlay');
+        const minimizeBtn = document.getElementById('minimizeBtn');
+        const closeBtn = document.getElementById('closeBtn');
+
+        closeBtn.onclick = () => {
+            modal.style.display = 'none';
+            overlay.style.display = 'none';
+            modal.classList.remove('minimized');
+            minimizeBtn.textContent = '−';
+        };
+
+        minimizeBtn.onclick = () => {
+            modal.classList.toggle('minimized');
+            minimizeBtn.textContent = modal.classList.contains('minimized') ? '+' : '−';
+            overlay.style.display = modal.classList.contains('minimized') ? 'none' : 'block';
+        };
+
+        overlay.onclick = () => {
+            if (!modal.classList.contains('minimized')) {
+                closeBtn.click();
+            }
+        };
+
+        // Notification system
+        function showNotification(message, duration = 3000) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, duration);
+        }
+
+        // Copy functionality with fallback
+        async function copyText() {
+            const text = document.getElementById('editor').value;
+            
+            if (!text) {
+                showNotification('Nothing to copy yet!');
+                return;
+            }
+
+            try {
+                if (navigator.clipboard && window.isSecureContext) {
+                    await navigator.clipboard.writeText(text);
+                    showNotification('Text copied to clipboard!');
+                } else {
+                    // Fallback for non-secure contexts
+                    const textArea = document.getElementById('editor');
+                    textArea.select();
+                    document.execCommand('copy');
+                    showNotification('Text copied to clipboard!');
+                }
+            } catch (err) {
+                showNotification('Failed to copy text: ' + err.message);
+            }
+        }
+
+        // AI feedback functionality
+        async function getAIFeedback() {
+            const apiKey = document.getElementById('apiKey').value;
+            const model = document.getElementById('modelSelect').value;
+            const content = document.getElementById('editor').value;
+
+            if (!apiKey) {
+                showNotification('Please enter your API key');
+                return;
+            }
+
+            if (!content) {
+                showNotification('Please write something first');
+                return;
+            }
+
+            // Show modal with loading state
+            modal.style.display = 'block';
+            overlay.style.display = 'block';
+            document.getElementById('aiContent').innerHTML = 'Loading...';
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/${model}:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{
+                                text: `Act as a supportive writing companion. Review the following text and provide:
+                                1. A brief positive comment about the content and ideas (1-2 sentences)
+                                2. 2-3 gentle suggestions or questions to help continue the writing
+                                
+                                Important: Focus ONLY on content and ideas. DO NOT comment on grammar, spelling, or technical aspects.
+                                Keep your response encouraging and concise (max 150 words).
+                                
+                                Text to review: "${content}"`
+                            }]
+                        }]
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('API request failed');
+                }
+
+                const data = await response.json();
+                const aiResponse = data.candidates[0].content.parts[0].text;
+                document.getElementById('aiContent').innerHTML = aiResponse;
+
+            } catch (error) {
+                document.getElementById('aiContent').innerHTML = 'Error getting AI feedback. Please check your API key and try again.';
+                showNotification('Error: ' + error.message);
+            }
+        }
+
+        // Optional: Autosave functionality (commented out as requested)
+        /*
+        // WARNING: Storing API keys in localStorage is not secure.
+        // Only use this for personal, local-only applications.
+        
+        function saveToLocalStorage() {
+            localStorage.setItem('writerContent', document.getElementById('editor').value);
+            localStorage.setItem('writerApiKey', document.getElementById('apiKey').value);
+            localStorage.setItem('writerModel', document.getElementById('modelSelect').value);
+        }
+
+        function loadFromLocalStorage() {
+            const content = localStorage.getItem('writerContent');
+            const apiKey = localStorage.getItem('writerApiKey');
+            const model = localStorage.getItem('writerModel');
+            
+            if (content) document.getElementById('editor').value = content;
+            if (apiKey) document.getElementById('apiKey').value = apiKey;
+            if (model) document.getElementById('modelSelect').value = model;
+        }
+
+        // Autosave every 30 seconds
+        setInterval(saveToLocalStorage, 30000);
+        document.getElementById('editor').addEventListener('input', saveToLocalStorage);
+        
+        // Load on startup
+        loadFromLocalStorage();
+        */
+    </script>
+</body>
+</html>
