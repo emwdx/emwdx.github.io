@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classroom Seating Chart</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            display: flex;
+            gap: 30px;
+            width: 100%;
+            max-width: 1200px;
+            align-items: flex-start;
+        }
+
+        .controls, .constraints {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            width: 250px; /* Fixed width for control panels */
+            flex-shrink: 0; /* Prevent shrinking */
+        }
+
+        h2, h3 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        textarea {
+            width: 95%;
+            min-height: 100px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 5px;
+            font-size: 0.9em;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button:active {
+            background-color: #004085;
+        }
+
+        .seating-chart {
+            flex-grow: 1; /* Allow chart to take remaining space */
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive grid */
+            gap: 20px;
+            background-color: #e9e9e9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .table {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            min-height: 150px; /* Ensure tables have some height */
+        }
+
+        .table-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
+            color: #555;
+        }
+
+        .seats {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* 2x2 grid for seats */
+            gap: 10px;
+        }
+
+        .seat {
+            border: 1px dashed #ccc;
+            min-height: 40px;
+            padding: 8px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 0.9em;
+            overflow: hidden;
+            position: relative; /* For potential highlighting */
+        }
+
+        .seat.empty {
+            background-color: #efefef;
+        }
+
+        .student {
+            display: inline-block;
+            padding: 5px 8px;
+            background-color: #d1e7ff;
+            border: 1px solid #a6cfff;
+            border-radius: 4px;
+            cursor: grab;
+            user-select: none; /* Prevent text selection during drag */
+            width: 100%; /* Make student fill the seat */
+            box-sizing: border-box; /* Include padding/border in width */
+            white-space: nowrap; /* Prevent names from wrapping */
+            overflow: hidden; /* Hide overflow */
+            text-overflow: ellipsis; /* Add ... for long names */
+        }
+
+        .student.dragging {
+            opacity: 0.5;
+            background-color: #f8d7da; /* Indicate dragging */
+        }
+
+        /* Drag-over styling */
+        .seat.drag-over {
+            background-color: #cce5ff;
+            border-style: solid;
+        }
+
+        /* Constraint violation highlighting */
+        .seat.violation-separate {
+            background-color: #f8d7da; /* Light red */
+            border: 2px solid #dc3545; /* Red border */
+        }
+         .student.violation-separate {
+            background-color: #f8d7da; /* Light red */
+            border: 1px solid #dc3545;
+        }
+
+        .seat.violation-together {
+            background-color: #fff3cd; /* Light yellow */
+             border: 2px solid #ffc107; /* Yellow border */
+        }
+        .student.violation-together {
+             background-color: #fff3cd; /* Light yellow */
+             border: 1px solid #ffc107;
+        }
+
+        #status {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #e2e3e5;
+            border: 1px solid #d6d8db;
+            border-radius: 4px;
+            color: #383d41;
+            text-align: center;
+            font-size: 0.9em;
+            min-height: 20px;
+        }
+         #status.error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+         #status.success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>Classroom Seating Chart (6 Tables of 4)</h1>
+
+    <div class="container">
+        <div class="controls">
+            <h2>Controls</h2>
+            <label for="studentList">Enter Student Names (one per line):</label>
+            <textarea id="studentList" rows="12" placeholder="Alice&#10;Bob&#10;Charlie&#10;David&#10;Eve&#10;..."></textarea>
+            <button onclick="loadStudents()">Load Students</button>
+            <button onclick="randomizeSeating()">Randomize Seating</button>
+             <div id="status">Enter student names and click Load.</div>
+        </div>
+
+        <div class="constraints">
+            <h3>Constraints</h3>
+            <label for="keepTogether">Keep Together (pairs/groups per line, comma-separated):</label>
+            <textarea id="keepTogether" rows="5" placeholder="Alice, Bob&#10;Charlie, David, Eve"></textarea>
+
+            <label for="keepSeparate">Keep Separate (pairs per line, comma-separated):</label>
+            <textarea id="keepSeparate" rows="5" placeholder="Frank, Grace&#10;Heidi, Ivan"></textarea>
+
+            <button onclick="validateConstraints()">Check Constraints</button>
+        </div>
+
+        <div class="seating-chart" id="seatingChart">
+            <!-- Tables will be generated here by JavaScript -->
+        </div>
+    </div>
+
+
+    <script>
+        const seatingChartDiv = document.getElementById('seatingChart');
+        const studentListTextArea = document.getElementById('studentList');
+        const keepTogetherTextArea = document.getElementById('keepTogether');
+        const keepSeparateTextArea = document.getElementById('keepSeparate');
+        const statusDiv = document.getElementById('status');
+        const NUM_TABLES = 6;
+        const SEATS_PER_TABLE = 4;
+        const TOTAL_SEATS = NUM_TABLES * SEATS_PER_TABLE;
+
+        let studentNames = []; // Array to hold the master list of students
+        let constraints = { together: [], separate: [] };
+
+        // --- Initialization ---
+        function initializeChart() {
+            seatingChartDiv.innerHTML = ''; // Clear previous chart
+            for (let i = 1; i <= NUM_TABLES; i++) {
+                const tableDiv = document.createElement('div');
+                tableDiv.classList.add('table');
+                tableDiv.dataset.tableId = i; // Add table identifier
+
+                const title = document.createElement('div');
+                title.classList.add('table-title');
+                title.textContent = `Table ${i}`;
+                tableDiv.appendChild(title);
+
+                const seatsDiv = document.createElement('div');
+                seatsDiv.classList.add('seats');
+
+                for (let j = 1; j <= SEATS_PER_TABLE; j++) {
+                    const seatDiv = document.createElement('div');
+                    seatDiv.classList.add('seat', 'empty');
+                    seatDiv.dataset.seatId = `${i}-${j}`; // Unique seat identifier
+                    // Add drag and drop listeners to the seat itself
+                    addSeatDragDropListeners(seatDiv);
+                    seatsDiv.appendChild(seatDiv);
+                }
+                tableDiv.appendChild(seatsDiv);
+                seatingChartDiv.appendChild(tableDiv);
+            }
+             updateStatus(`Chart initialized with ${NUM_TABLES} tables and ${SEATS_PER_TABLE} seats each.`);
+        }
+
+        // --- Student Loading ---
+        function loadStudents() {
+            const names = studentListTextArea.value.split('\n')
+                .map(name => name.trim())
+                .filter(name => name !== ''); // Remove empty lines and trim whitespace
+
+            if (names.length === 0) {
+                 updateStatus("Please enter student names.", "error");
+                 return;
+            }
+
+            if (names.length > TOTAL_SEATS) {
+                updateStatus(`Warning: ${names.length} students entered, but only ${TOTAL_SEATS} seats available. Only the first ${TOTAL_SEATS} will be seated initially.`, "error");
+                 studentNames = names.slice(0, TOTAL_SEATS);
+            } else {
+                 studentNames = names;
+            }
+
+            clearSeatingChart(); // Clear names from seats before placing new ones
+            placeStudentsInSeats(studentNames); // Place students sequentially initially
+             updateStatus(`${studentNames.length} students loaded. Drag to rearrange or click Randomize.`);
+        }
+
+        // --- Seating Logic ---
+         function clearSeatingChart() {
+            const seats = seatingChartDiv.querySelectorAll('.seat');
+            seats.forEach(seat => {
+                seat.innerHTML = ''; // Remove student span
+                seat.classList.add('empty');
+                 removeHighlighting(seat); // Clear any validation highlights
+            });
+        }
+
+        function placeStudentsInSeats(studentsToPlace) {
+             clearSeatingChart(); // Ensure chart is empty first
+            const seats = Array.from(seatingChartDiv.querySelectorAll('.seat')); // Get all seat elements
+
+             studentsToPlace.forEach((name, index) => {
+                if (index < seats.length) {
+                    addStudentToSeat(seats[index], name);
+                }
+            });
+             updateStatus(`Placed ${studentsToPlace.length} students.`);
+        }
+
+        function randomizeSeating() {
+            if (studentNames.length === 0) {
+                updateStatus("Load students before randomizing.", "error");
+                return;
+            }
+
+            // Fisher-Yates (Knuth) Shuffle algorithm
+            let shuffledStudents = [...studentNames]; // Create a copy
+            for (let i = shuffledStudents.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffledStudents[i], shuffledStudents[j]] = [shuffledStudents[j], shuffledStudents[i]]; // Swap
+            }
+
+            placeStudentsInSeats(shuffledStudents);
+             updateStatus("Seating randomized. Check constraints if needed.");
+             // Optionally run validation automatically after randomizing
+             // validateConstraints();
+        }
+
+        // --- Constraint Handling ---
+        function parseConstraints() {
+            constraints = { together: [], separate: [] };
+
+            // Parse Keep Together
+            const togetherLines = keepTogetherTextArea.value.split('\n').filter(line => line.trim() !== '');
+            togetherLines.forEach(line => {
+                const group = line.split(',')
+                                 .map(name => name.trim())
+                                 .filter(name => name !== '');
+                if (group.length > 1) {
+                    constraints.together.push(group);
+                }
+            });
+
+            // Parse Keep Separate (only pairs are easily checked on drop, but logic handles groups for validation)
+            const separateLines = keepSeparateTextArea.value.split('\n').filter(line => line.trim() !== '');
+            separateLines.forEach(line => {
+                const group = line.split(',')
+                                 .map(name => name.trim())
+                                 .filter(name => name !== '');
+                if (group.length > 1) {
+                     // For simple validation, we check all pairs within the group
+                     for (let i = 0; i < group.length; i++) {
+                        for (let j = i + 1; j < group.length; j++) {
+                             constraints.separate.push([group[i], group[j]]);
+                        }
+                     }
+                    // Alternatively, store the group: constraints.separate.push(group);
+                }
+            });
+             console.log("Parsed Constraints:", constraints); // For debugging
+        }
+
+        function validateConstraints() {
+            parseConstraints(); // Ensure constraints are up-to-date
+            clearAllHighlighting(); // Clear previous validation results
+
+            let violationsFound = false;
+            const seats = seatingChartDiv.querySelectorAll('.seat');
+            const tableMap = getTableMap(); // Get current student locations {tableId: [studentName, ...]}
+
+            // Check "Keep Separate"
+            constraints.separate.forEach(pair => {
+                const studentA = pair[0];
+                const studentB = pair[1];
+
+                 for (const tableId in tableMap) {
+                    const studentsAtTable = tableMap[tableId];
+                    if (studentsAtTable.includes(studentA) && studentsAtTable.includes(studentB)) {
+                         violationsFound = true;
+                         highlightViolation(studentA, 'separate');
+                         highlightViolation(studentB, 'separate');
+                         console.warn(`Separation Violation: ${studentA} and ${studentB} are together at Table ${tableId}`);
+                         break; // No need to check other tables for this pair
+                    }
+                 }
+            });
+
+             // Check "Keep Together"
+             constraints.together.forEach(group => {
+                 let tableIdFound = null;
+                 let allFound = true;
+                 let foundCount = 0;
+
+                 // Find the table where the first student in the group is located
+                 const firstStudent = group[0];
+                 for (const tableId in tableMap) {
+                    if (tableMap[tableId].includes(firstStudent)) {
+                        tableIdFound = tableId;
+                        break;
+                    }
+                 }
+
+                 // If the first student is found, check if all others are at the SAME table
+                 if (tableIdFound !== null) {
+                     const studentsAtThisTable = tableMap[tableIdFound];
+                     for (const student of group) {
+                         if (studentsAtThisTable.includes(student)) {
+                             foundCount++;
+                         } else {
+                             // If any student from the group is NOT at this table, it's a potential violation
+                             // Check if they are placed elsewhere
+                             let foundElsewhere = false;
+                              for (const otherTableId in tableMap) {
+                                  if (otherTableId !== tableIdFound && tableMap[otherTableId].includes(student)) {
+                                      foundElsewhere = true;
+                                      break;
+                                  }
+                              }
+                              if (foundElsewhere) {
+                                  allFound = false;
+                                  break; // Exit inner loop, group is split
+                              }
+                              // If not found at the expected table and not found elsewhere, maybe not placed yet? Ignore for now.
+                         }
+                     }
+                     // If not all members were found at the same table, mark violation
+                     if (!allFound || foundCount !== group.length) {
+                         // Check if *all* members of the group are actually placed somewhere. If not, don't highlight yet.
+                         let allGroupMembersPlaced = true;
+                         for(const student of group) {
+                             let isPlaced = false;
+                             for(const tid in tableMap) { if(tableMap[tid].includes(student)) { isPlaced = true; break; }}
+                             if (!isPlaced) { allGroupMembersPlaced = false; break; }
+                         }
+
+                         if (allGroupMembersPlaced) {
+                             violationsFound = true;
+                             group.forEach(student => highlightViolation(student, 'together'));
+                             console.warn(`Together Violation: Group [${group.join(', ')}] is not together.`);
+                         }
+                     }
+                 } else {
+                     // If the first student of the group isn't even placed, check if *any* are placed.
+                     // If some are placed but not all, it could be a violation.
+                     let anyPlaced = false;
+                     let allPlaced = true;
+                     for(const student of group) {
+                         let isPlaced = false;
+                         for(const tid in tableMap) { if(tableMap[tid].includes(student)) { isPlaced = true; break; }}
+                         if (isPlaced) anyPlaced = true;
+                         else allPlaced = false;
+                     }
+                     if (anyPlaced && !allPlaced && group.length > 1) {
+                         violationsFound = true;
+                         group.forEach(student => highlightViolation(student, 'together')); // Highlight all as potentially wrong
+                         console.warn(`Together Violation: Group [${group.join(', ')}] is incomplete or split.`);
+                     }
+                 }
+             });
+
+
+            if (violationsFound) {
+                 updateStatus("Constraint violations found (highlighted).", "error");
+            } else {
+                 updateStatus("No constraint violations detected.", "success");
+            }
+        }
+
+        // Helper to get the current state of tables
+        function getTableMap() {
+            const map = {};
+            const tables = seatingChartDiv.querySelectorAll('.table');
+            tables.forEach(table => {
+                const tableId = table.dataset.tableId;
+                map[tableId] = [];
+                const studentsInTable = table.querySelectorAll('.student');
+                studentsInTable.forEach(studentSpan => {
+                    map[tableId].push(studentSpan.textContent);
+                });
+            });
+            return map;
+        }
+
+         // Helper to find a student's seat and highlight it
+         function highlightViolation(studentName, violationType) {
+             const studentSpan = findStudentSpan(studentName);
+             if (studentSpan) {
+                 const seat = studentSpan.parentElement;
+                 seat.classList.add(`violation-${violationType}`);
+                 // Also highlight the student span itself for clarity
+                 studentSpan.classList.add(`violation-${violationType}`);
+             }
+         }
+
+          function findStudentSpan(studentName) {
+              const spans = seatingChartDiv.querySelectorAll('.student');
+              for (let span of spans) {
+                  if (span.textContent === studentName) {
+                      return span;
+                  }
+              }
+              return null;
+          }
+
+         function clearAllHighlighting() {
+             const highlightedElements = seatingChartDiv.querySelectorAll('.violation-separate, .violation-together');
+             highlightedElements.forEach(el => {
+                 el.classList.remove('violation-separate', 'violation-together');
+             });
+         }
+         function removeHighlighting(seatElement) {
+              seatElement.classList.remove('violation-separate', 'violation-together');
+              const studentSpan = seatElement.querySelector('.student');
+              if(studentSpan) {
+                    studentSpan.classList.remove('violation-separate', 'violation-together');
+              }
+         }
+
+        // --- Drag and Drop Functionality ---
+        let draggedStudentElement = null; // Keep track of the element being dragged
+
+        function addStudentDragDropListeners(studentSpan) {
+            studentSpan.setAttribute('draggable', 'true');
+
+            studentSpan.addEventListener('dragstart', (event) => {
+                // event.dataTransfer.setData('text/plain', event.target.textContent); // Use student name as data
+                event.dataTransfer.setData('text/plain', event.target.dataset.studentName); // Use student name as data
+                event.dataTransfer.effectAllowed = 'move';
+                draggedStudentElement = event.target; // Store the actual element
+                event.target.classList.add('dragging');
+                 clearAllHighlighting(); // Clear validation highlights during drag
+                 updateStatus(`Dragging ${event.target.dataset.studentName}...`);
+            });
+
+            studentSpan.addEventListener('dragend', (event) => {
+                // Clean up styles regardless of drop success
+                 if (draggedStudentElement) {
+                    draggedStudentElement.classList.remove('dragging');
+                 }
+                 draggedStudentElement = null; // Clear reference
+                  // Optional: re-validate after drop? Maybe too slow. User can click button.
+                 // updateStatus("Drag ended."); // Status updated on drop
+            });
+        }
+
+        function addSeatDragDropListeners(seatDiv) {
+            seatDiv.addEventListener('dragover', (event) => {
+                event.preventDefault(); // Necessary to allow dropping
+                event.dataTransfer.dropEffect = 'move';
+                seatDiv.classList.add('drag-over'); // Visual feedback
+            });
+
+            seatDiv.addEventListener('dragleave', (event) => {
+                seatDiv.classList.remove('drag-over'); // Remove visual feedback
+            });
+
+            seatDiv.addEventListener('drop', (event) => {
+                event.preventDefault(); // Prevent default drop behavior
+                seatDiv.classList.remove('drag-over'); // Remove visual feedback
+
+                if (!draggedStudentElement) return; // Should not happen, but safety check
+
+                const targetSeat = event.target.closest('.seat'); // Ensure we get the seat, even if dropped on student
+                if (!targetSeat) return; // Drop didn't land on a valid seat area
+
+                const sourceSeat = draggedStudentElement.parentElement;
+                const studentNameToMove = draggedStudentElement.dataset.studentName;
+
+                 // --- Basic Constraint Check on Drop (Separation Only) ---
+                 parseConstraints(); // Make sure constraints are fresh
+                 const targetTable = targetSeat.closest('.table');
+                 const targetTableId = targetTable.dataset.tableId;
+                 const studentsInTargetTable = Array.from(targetTable.querySelectorAll('.student'))
+                                                  .map(span => span.dataset.studentName)
+                                                  .filter(name => name !== studentNameToMove); // Exclude the one being moved
+
+                 let separationViolation = false;
+                 for (const pair of constraints.separate) {
+                     const [sA, sB] = pair;
+                     if ( (sA === studentNameToMove && studentsInTargetTable.includes(sB)) ||
+                          (sB === studentNameToMove && studentsInTargetTable.includes(sA)) )
+                     {
+                         separationViolation = true;
+                         updateStatus(`Cannot move ${studentNameToMove} here: Separation violation with ${studentsInTargetTable.includes(sA) ? sA : sB}.`, "error");
+                         break;
+                     }
+                 }
+
+                 if (separationViolation) {
+                     // Do not perform the move if separation constraint violated
+                     draggedStudentElement.classList.remove('dragging'); // Still clean up dragging style
+                     draggedStudentElement = null;
+                     return;
+                 }
+                 // --- End Constraint Check ---
+
+
+                // Check if the target seat is occupied
+                const occupantStudentElement = targetSeat.querySelector('.student');
+
+                // Perform the swap/move
+                if (occupantStudentElement) {
+                    // Target seat is occupied, swap students
+                    const occupantName = occupantStudentElement.dataset.studentName;
+                    sourceSeat.appendChild(occupantStudentElement); // Move occupant to source seat
+                     targetSeat.appendChild(draggedStudentElement); // Move dragged student to target seat
+                     updateStatus(`Swapped ${studentNameToMove} with ${occupantName}.`);
+                } else {
+                    // Target seat is empty, just move the student
+                    targetSeat.appendChild(draggedStudentElement);
+                    targetSeat.classList.remove('empty');
+                    sourceSeat.classList.add('empty'); // Mark source seat as empty
+                     updateStatus(`Moved ${studentNameToMove} to an empty seat.`);
+                }
+
+                 // Clean up dragging state
+                 draggedStudentElement.classList.remove('dragging');
+                 draggedStudentElement = null; // Important to clear this
+
+                // Ensure seats have correct 'empty' class
+                if (sourceSeat.childElementCount === 0) sourceSeat.classList.add('empty');
+                 else sourceSeat.classList.remove('empty');
+                if (targetSeat.childElementCount === 0) targetSeat.classList.add('empty');
+                 else targetSeat.classList.remove('empty');
+
+                 // Remove any lingering highlights from previous validation on the affected seats
+                 removeHighlighting(sourceSeat);
+                 removeHighlighting(targetSeat);
+            });
+        }
+
+        // Helper function to add a student span to a seat
+        function addStudentToSeat(seatDiv, studentName) {
+            seatDiv.innerHTML = ''; // Clear seat first
+            const studentSpan = document.createElement('span');
+            studentSpan.classList.add('student');
+            studentSpan.textContent = studentName;
+            studentSpan.dataset.studentName = studentName; // Store name in data attribute for easier access
+            addStudentDragDropListeners(studentSpan); // Make the new span draggable
+            seatDiv.appendChild(studentSpan);
+            seatDiv.classList.remove('empty');
+        }
+
+        // --- Utility Functions ---
+        function updateStatus(message, type = 'info') {
+             statusDiv.textContent = message;
+             statusDiv.className = ''; // Clear previous classes
+             if (type === 'error') {
+                 statusDiv.classList.add('error');
+             } else if (type === 'success') {
+                 statusDiv.classList.add('success');
+             }
+             console.log(`Status (${type}): ${message}`); // Also log to console
+        }
+
+
+        // --- Initial Setup ---
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeChart();
+             updateStatus("Ready. Enter student names or load previous data."); // Initial message
+        });
+
+    </script>
+
+</body>
+</html>

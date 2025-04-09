@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Seat Assigner</title>
+    <style>
+        /* Basic Reset & Body Styles */
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f8f9fa; /* Light gray background */
+        }
+
+        /* Layout Containers */
+        #controls {
+            width: 320px; /* Slightly wider controls */
+            padding: 25px;
+            background-color: #e9ecef; /* Lighter gray for controls */
+            border-right: 2px solid #dee2e6; /* Subtle border */
+            display: flex;
+            flex-direction: column;
+            gap: 18px; /* Spacing between control groups */
+            overflow-y: auto; /* Scroll if controls get too long */
+        }
+
+        #seatGridContainer {
+            flex: 1; /* Takes remaining width */
+            padding: 25px;
+            overflow-y: auto; /* Add scroll if grid becomes too tall */
+            background-color: #ffffff; /* White background for grid area */
+        }
+
+        /* Control Element Styling */
+        .control-group {
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            padding: 15px;
+            background-color: #f8f9fa;
+        }
+
+        .control-group h3 {
+            margin-top: 0;
+            margin-bottom: 12px;
+            color: #495057; /* Darker gray text */
+            font-size: 1.1em;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 8px;
+        }
+
+        #controls label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600; /* Slightly bolder */
+            color: #495057;
+            font-size: 0.95em;
+        }
+
+        #controls input[type="file"],
+        #controls input[type="text"],
+        #controls select,
+        #controls button {
+            width: 100%;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 1em;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        #controls input[type="file"] {
+            padding: 5px; /* Less padding for file input */
+            background-color: #ffffff;
+        }
+        #controls input:focus, #controls select:focus {
+            border-color: #80bdff;
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        }
+
+
+        #controls button {
+            background-color: #007bff; /* Primary blue */
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.2s ease;
+        }
+        #controls button:not(:disabled):hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+        #controls button:disabled {
+            background-color: #adb5bd; /* Gray when disabled */
+            cursor: not-allowed;
+        }
+        #controls button.secondary {
+            background-color: #6c757d; /* Gray for secondary actions */
+        }
+        #controls button.secondary:not(:disabled):hover {
+            background-color: #5a6268;
+        }
+        #controls button.danger {
+            background-color: #dc3545; /* Red for danger actions */
+        }
+         #controls button.danger:not(:disabled):hover {
+            background-color: #c82333;
+        }
+
+
+        #status {
+            margin-top: 10px;
+            font-style: italic;
+            color: #6c757d; /* Gray for status */
+            font-size: 0.9em;
+            min-height: 1.2em; /* Reserve space */
+        }
+
+        /* Seat Grid Styling */
+        #seatGrid {
+            display: grid;
+            /* Adjust columns for responsiveness */
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            border-radius: 5px;
+            background-color: #f8f9fa; /* Light background for grid itself */
+            border: 1px solid #dee2e6;
+            min-height: 300px; /* Ensure grid has some visible height */
+        }
+        #seatGrid:empty::before {
+            content: "Upload names and click 'Generate Seats' to see assignments here.";
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 280px; /* Approx min-height minus padding */
+            color: #6c757d;
+            font-size: 1.1em;
+            text-align: center;
+            grid-column: 1 / -1; /* Span across all columns */
+        }
+
+
+        .student-entry {
+            background-color: #ffffff; /* White cards */
+            padding: 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+            display: flex; /* Use flex to better control vertical alignment if needed */
+            flex-direction: column;
+            justify-content: center;
+            min-height: 100px; /* Ensure a minimum height for cards */
+        }
+
+        .seat-number {
+            display: block;
+            font-size: 2.8em; /* Larger number */
+            font-weight: 700; /* Bolder */
+            color: #e63946; /* Vibrant Red */
+            margin-bottom: 5px;
+            line-height: 1.1;
+        }
+
+        .student-name {
+            display: block;
+            font-size: 1.3em; /* Larger name */
+            color: #1d3557; /* Dark Blue */
+            word-wrap: break-word; /* Handle long names */
+            line-height: 1.3;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="controls">
+        <h2>Seat Assigner</h2>
+
+        <div class="control-group">
+            <h3>1. Load Student Names</h3>
+            <label for="fileInput">Upload (.txt or .csv, one name per line):</label>
+            <input type="file" id="fileInput" accept=".txt,.csv">
+
+             <p style="font-size: 0.85em; color: #6c757d; margin-top: 5px; margin-bottom: 15px;">
+                Or paste names below (one per line):
+            </p>
+            <textarea id="pasteNames" rows="5" style="width: 100%; font-size: 0.9em; border: 1px solid #ced4da; border-radius: 4px; padding: 8px;" placeholder="Paste names here..."></textarea>
+            <button id="loadPastedBtn" style="margin-top: 5px;">Load Pasted Names</button>
+        </div>
+
+        <div class="control-group">
+            <h3>2. Generate & Randomize</h3>
+             <button id="generateBtn" disabled>Generate Seats</button>
+             <button id="randomizeBtn" class="secondary" disabled>Randomize Again</button>
+        </div>
+
+        <div class="control-group">
+            <h3>3. Save & Load Lists</h3>
+            <label for="saveLabelInput">Label for current list:</label>
+            <input type="text" id="saveLabelInput" placeholder="e.g., Period 1 Class">
+            <button id="saveListBtn" class="secondary" disabled>Save Current List</button>
+
+            <hr style="margin: 15px 0; border: 0; border-top: 1px solid #dee2e6;">
+
+            <label for="savedListsSelect">Load a saved list:</label>
+            <select id="savedListsSelect">
+                <option value="">-- Select a saved list --</option>
+            </select>
+            <div style="display: flex; gap: 10px; margin-top: 5px;">
+                 <button id="loadListBtn" class="secondary" style="flex: 1;" disabled>Load Selected</button>
+                 <button id="deleteListBtn" class="danger" style="flex: 1;" disabled>Delete Selected</button>
+            </div>
+       </div>
+
+        <div id="status">Ready</div>
+    </div>
+
+    <div id="seatGridContainer">
+        <div id="seatGrid">
+            <!-- Student entries will be generated here by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        // --- DOM Elements ---
+        const fileInput = document.getElementById('fileInput');
+        const pasteNamesInput = document.getElementById('pasteNames');
+        const loadPastedBtn = document.getElementById('loadPastedBtn');
+        const generateBtn = document.getElementById('generateBtn');
+        const randomizeBtn = document.getElementById('randomizeBtn');
+        const saveLabelInput = document.getElementById('saveLabelInput');
+        const saveListBtn = document.getElementById('saveListBtn');
+        const savedListsSelect = document.getElementById('savedListsSelect');
+        const loadListBtn = document.getElementById('loadListBtn');
+        const deleteListBtn = document.getElementById('deleteListBtn');
+        const seatGrid = document.getElementById('seatGrid');
+        const statusDiv = document.getElementById('status');
+
+        // --- State ---
+        let currentStudentNames = [];
+        const STORAGE_KEY = 'studentSeatLists';
+
+        // --- Utility Functions ---
+
+        /**
+         * Shuffles array in place using Fisher-Yates algorithm.
+         * @param {Array} array Array to shuffle.
+         */
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+            }
+        }
+
+        /**
+         * Updates the status message displayed to the user.
+         * @param {string} message The message to display.
+         * @param {boolean} isError If true, displays in red (optional).
+         */
+        function updateStatus(message, isError = false) {
+            statusDiv.textContent = message;
+            statusDiv.style.color = isError ? '#dc3545' : '#6c757d';
+        }
+
+        /**
+         * Processes the loaded names (from file or paste)
+         * @param {string} text The raw text containing names.
+         */
+        function processNames(text) {
+            if (!text) {
+                updateStatus('No names found.', true);
+                return;
+            }
+             // Split by newline, trim whitespace, filter out empty lines
+            const names = text.split('\n')
+                              .map(name => name.trim())
+                              .filter(name => name.length > 0);
+
+            if (names.length === 0) {
+                updateStatus('No valid names found after processing.', true);
+                return;
+            }
+
+            currentStudentNames = names;
+            seatGrid.innerHTML = ''; // Clear grid
+            generateBtn.disabled = false;
+            randomizeBtn.disabled = true; // Can't randomize until generated
+            saveListBtn.disabled = false;
+            saveLabelInput.value = ''; // Clear potential old label
+            updateStatus(`${names.length} student names loaded. Ready to generate.`);
+        }
+
+
+        /**
+         * Reads the uploaded file content.
+         * @param {Event} event The file input change event.
+         */
+        function handleFileLoad(event) {
+            const file = event.target.files[0];
+            if (!file) {
+                updateStatus('No file selected.');
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = (e) => {
+                try {
+                    processNames(e.target.result);
+                     // Clear the file input value so the same file can be re-selected
+                    fileInput.value = null;
+                    pasteNamesInput.value = ''; // Clear pasted names if file is loaded
+                } catch (error) {
+                    console.error("Error processing file:", error);
+                    updateStatus(`Error reading file: ${error.message}`, true);
+                    currentStudentNames = [];
+                    updateButtonStates(); // Reset button states on error
+                }
+            };
+
+            reader.onerror = (e) => {
+                console.error("FileReader error:", e);
+                updateStatus('Error reading file.', true);
+                currentStudentNames = [];
+                updateButtonStates(); // Reset button states on error
+            };
+
+            reader.readAsText(file);
+        }
+
+         /**
+         * Loads names from the textarea.
+         */
+        function handlePasteLoad() {
+            processNames(pasteNamesInput.value);
+            fileInput.value = null; // Clear file input if pasting
+        }
+
+        /**
+         * Generates and displays the seat assignments in the grid.
+         */
+        function displayAssignments() {
+            if (currentStudentNames.length === 0) {
+                updateStatus('No student names loaded to generate assignments.', true);
+                return;
+            }
+
+            const studentCount = currentStudentNames.length;
+            let seatNumbers = Array.from({ length: studentCount }, (_, i) => i + 1); // Create [1, 2, ..., n]
+
+            shuffleArray(seatNumbers); // Randomize seat numbers
+
+            seatGrid.innerHTML = ''; // Clear previous grid content
+
+            for (let i = 0; i < studentCount; i++) {
+                const studentName = currentStudentNames[i];
+                const seatNumber = seatNumbers[i];
+
+                const entryDiv = document.createElement('div');
+                entryDiv.className = 'student-entry';
+
+                const numberSpan = document.createElement('span');
+                numberSpan.className = 'seat-number';
+                numberSpan.textContent = seatNumber;
+
+                const nameSpan = document.createElement('span');
+                nameSpan.className = 'student-name';
+                nameSpan.textContent = studentName;
+
+                entryDiv.appendChild(numberSpan);
+                entryDiv.appendChild(nameSpan);
+                seatGrid.appendChild(entryDiv);
+            }
+
+            randomizeBtn.disabled = false; // Enable randomize after generation
+            updateStatus(`Generated seat assignments for ${studentCount} students.`);
+        }
+
+        // --- Local Storage Functions ---
+
+        /**
+         * Retrieves saved lists from localStorage.
+         * @returns {object} The saved lists object, or an empty object if none/error.
+         */
+        function getSavedLists() {
+            try {
+                const lists = localStorage.getItem(STORAGE_KEY);
+                return lists ? JSON.parse(lists) : {};
+            } catch (error) {
+                console.error("Error reading from localStorage:", error);
+                updateStatus("Error loading saved lists.", true);
+                // Optionally clear corrupted data: localStorage.removeItem(STORAGE_KEY);
+                return {};
+            }
+        }
+
+        /**
+         * Saves the current student list to localStorage with a label.
+         */
+        function saveCurrentList() {
+            const label = saveLabelInput.value.trim();
+            if (!label) {
+                updateStatus('Please enter a label to save the list.', true);
+                return;
+            }
+            if (currentStudentNames.length === 0) {
+                updateStatus('No student list loaded to save.', true);
+                return;
+            }
+
+            const savedLists = getSavedLists();
+            savedLists[label] = currentStudentNames; // Add or overwrite list
+
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(savedLists));
+                updateStatus(`List "${label}" saved successfully.`);
+                saveLabelInput.value = ''; // Clear input after saving
+                populateSavedListsDropdown(); // Update dropdown
+            } catch (error) {
+                console.error("Error saving to localStorage:", error);
+                updateStatus(`Error saving list: ${error.message}`, true);
+            }
+        }
+
+        /**
+         * Populates the dropdown select with saved list labels.
+         */
+        function populateSavedListsDropdown() {
+            const savedLists = getSavedLists();
+            const labels = Object.keys(savedLists);
+
+            // Clear existing options except the default placeholder
+            savedListsSelect.innerHTML = '<option value="">-- Select a saved list --</option>';
+
+            if (labels.length > 0) {
+                labels.sort().forEach(label => { // Sort labels alphabetically
+                    const option = document.createElement('option');
+                    option.value = label;
+                    option.textContent = label;
+                    savedListsSelect.appendChild(option);
+                });
+            }
+            // Enable/disable load/delete buttons based on selection
+            updateLoadDeleteButtonStates();
+        }
+
+        /**
+         * Loads the list selected in the dropdown.
+         */
+        function loadSelectedList() {
+            const selectedLabel = savedListsSelect.value;
+            if (!selectedLabel) {
+                updateStatus('No list selected to load.', true);
+                return;
+            }
+
+            const savedLists = getSavedLists();
+            if (savedLists[selectedLabel]) {
+                currentStudentNames = savedLists[selectedLabel];
+                seatGrid.innerHTML = ''; // Clear grid
+                generateBtn.disabled = false;
+                randomizeBtn.disabled = true; // Must generate first
+                saveListBtn.disabled = false; // Can re-save (maybe under new label)
+                saveLabelInput.value = selectedLabel; // Pre-fill label input
+                updateStatus(`Loaded list "${selectedLabel}" (${currentStudentNames.length} students). Click Generate.`);
+                 pasteNamesInput.value = currentStudentNames.join('\n'); // Show loaded names in textarea
+            } else {
+                updateStatus(`Could not find list "${selectedLabel}". It might have been deleted.`, true);
+                populateSavedListsDropdown(); // Refresh dropdown in case list disappeared
+            }
+        }
+
+        /**
+         * Deletes the list selected in the dropdown from localStorage.
+         */
+        function deleteSelectedList() {
+            const selectedLabel = savedListsSelect.value;
+            if (!selectedLabel) {
+                updateStatus('No list selected to delete.', true);
+                return;
+            }
+
+            // Confirmation dialog
+            if (!confirm(`Are you sure you want to delete the list "${selectedLabel}"? This cannot be undone.`)) {
+                return; // User canceled
+            }
+
+            const savedLists = getSavedLists();
+            if (savedLists[selectedLabel]) {
+                delete savedLists[selectedLabel]; // Remove the list
+                try {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(savedLists));
+                    updateStatus(`List "${selectedLabel}" deleted.`);
+                    populateSavedListsDropdown(); // Refresh dropdown
+                } catch (error) {
+                    console.error("Error saving to localStorage after delete:", error);
+                    updateStatus(`Error updating lists after deletion: ${error.message}`, true);
+                }
+            } else {
+                updateStatus(`Could not find list "${selectedLabel}" to delete.`, true);
+                populateSavedListsDropdown(); // Refresh anyway
+            }
+        }
+
+
+        /** Enables/disables Load and Delete buttons based on dropdown selection */
+        function updateLoadDeleteButtonStates() {
+             const hasSelection = savedListsSelect.value !== '';
+             loadListBtn.disabled = !hasSelection;
+             deleteListBtn.disabled = !hasSelection;
+        }
+
+        /** Updates enabled/disabled state of all relevant buttons */
+        function updateButtonStates() {
+            const namesLoaded = currentStudentNames.length > 0;
+            const gridPopulated = seatGrid.children.length > 0;
+
+            generateBtn.disabled = !namesLoaded;
+            randomizeBtn.disabled = !gridPopulated; // Only enable after first generation
+            saveListBtn.disabled = !namesLoaded;
+
+            updateLoadDeleteButtonStates(); // Handle load/delete based on selection
+        }
+
+
+        // --- Event Listeners ---
+        fileInput.addEventListener('change', handleFileLoad);
+        loadPastedBtn.addEventListener('click', handlePasteLoad);
+        generateBtn.addEventListener('click', displayAssignments);
+        randomizeBtn.addEventListener('click', displayAssignments); // Re-shuffles and displays
+        saveListBtn.addEventListener('click', saveCurrentList);
+        savedListsSelect.addEventListener('change', updateLoadDeleteButtonStates); // Update on selection change
+        loadListBtn.addEventListener('click', loadSelectedList);
+        deleteListBtn.addEventListener('click', deleteSelectedList);
+
+        // --- Initialisation ---
+        document.addEventListener('DOMContentLoaded', () => {
+            populateSavedListsDropdown(); // Load saved lists on page load
+            updateStatus('Ready. Load names via file or paste.');
+            // Initial button states are set via HTML 'disabled' or handled by populateSavedListsDropdown
+        });
+
+    </script>
+
+</body>
+</html>
