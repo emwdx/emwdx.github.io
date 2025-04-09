@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classroom Seating Chart</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            margin: 0;
+            height: 100vh;
+            overflow: hidden; /* Prevent body scrolling */
+            background-color: #f4f4f4;
+        }
+
+        #left-panel {
+            width: 280px; /* Slightly wider for delete buttons */
+            padding: 20px;
+            background-color: #e9e9e9;
+            border-right: 1px solid #ccc;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            box-sizing: border-box; /* Include padding in width/height */
+        }
+
+        #left-panel h2, #right-panel h2 {
+            margin-top: 0;
+            text-align: center;
+            color: #333;
+        }
+
+        #student-names {
+            width: 100%;
+            height: 150px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            padding: 5px;
+            font-family: monospace; /* Better for lists */
+        }
+
+        #left-panel button {
+            padding: 10px;
+            margin-bottom: 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        #left-panel button:hover {
+            background-color: #0056b3;
+        }
+        #left-panel button:active {
+            background-color: #004080;
+        }
+
+
+        #student-list-container {
+            flex-grow: 1; /* Takes remaining space */
+            overflow-y: auto; /* Scroll if list is long */
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+
+        #student-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #student-list li {
+            padding: 6px 5px; /* Adjusted padding */
+            border-bottom: 1px solid #eee;
+            font-size: 0.9em;
+            display: flex; /* Use flexbox for layout */
+            justify-content: space-between; /* Push name and button apart */
+            align-items: center; /* Vertically align */
+        }
+         #student-list li:last-child {
+            border-bottom: none;
+        }
+         #student-list li span {
+             flex-grow: 1; /* Allow name to take available space */
+             margin-right: 5px; /* Space before button */
+             word-break: break-all; /* Prevent long names overflowing */
+         }
+        .delete-student-btn {
+            padding: 2px 6px;
+            font-size: 0.8em;
+            line-height: 1;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            flex-shrink: 0; /* Prevent button from shrinking */
+        }
+        .delete-student-btn:hover {
+            background-color: #c82333;
+        }
+
+
+        #right-panel {
+            flex-grow: 1; /* Takes remaining horizontal space */
+            padding: 20px;
+            height: 100%;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #classroom-canvas {
+            flex-grow: 1; /* Takes remaining vertical space */
+            position: relative; /* Crucial for positioning desks */
+            background-color: #ffffff;
+            border: 2px solid #b0c4de; /* Light steel blue border */
+            overflow: hidden; /* Hide parts of desks dragged outside */
+            cursor: default; /* Default cursor for the canvas */
+            background-image: linear-gradient(to right, #f0f0f0 1px, transparent 1px),
+                              linear-gradient(to bottom, #f0f0f0 1px, transparent 1px);
+            background-size: 20px 20px; /* Grid lines */
+        }
+
+        .desk {
+            position: absolute; /* Allows placement via top/left */
+            width: 90px;
+            height: 60px;
+            background-color: #add8e6; /* Light blue */
+            border: 1px solid #888;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-size: 12px;
+            cursor: grab; /* Indicates draggable */
+            user-select: none; /* Prevent text selection during drag */
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+            overflow: hidden; /* Hide text overflow */
+            padding: 5px;
+            box-sizing: border-box;
+            color: #333;
+            transition: background-color 0.2s ease; /* Smooth color change */
+        }
+         .desk:hover {
+             background-color: #bde6f6; /* Lighter blue on hover */
+         }
+         .desk.empty { /* Style for empty desks */
+              background-color: #d3d3d3;
+              color: #666;
+         }
+         .desk.empty:hover {
+              background-color: #c0c0c0;
+         }
+
+
+        .desk.dragging {
+            cursor: grabbing;
+            opacity: 0.7;
+            z-index: 1000; /* Bring dragged desk to front */
+            box-shadow: 4px 4px 10px rgba(0,0,0,0.3);
+            background-color: #9acbe6; /* Slightly darker blue while dragging */
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="left-panel">
+        <h2>Students</h2>
+        <label for="student-names">Paste Student Names (one per line):</label>
+        <textarea id="student-names" placeholder="Paste names here...
+New names will be added to the list."></textarea>
+        <button id="load-button">Load/Add Students</button>
+        <button id="randomize-button">Assign Students to Desks</button>
+        <div id="student-list-container">
+            <h3>Loaded Students (<span id="student-count">0</span>):</h3>
+            <ul id="student-list">
+                <!-- Student names will be loaded here -->
+            </ul>
+        </div>
+    </div>
+
+    <div id="right-panel">
+        <h2>Classroom Layout (<span id="desk-count">0</span> Desks)</h2>
+        <div id="classroom-canvas">
+            <!-- Desks will be added here -->
+        </div>
+    </div>
+
+    <script>
+        const studentNamesTextArea = document.getElementById('student-names');
+        const loadButton = document.getElementById('load-button');
+        const randomizeButton = document.getElementById('randomize-button');
+        const studentListUl = document.getElementById('student-list');
+        const classroomCanvas = document.getElementById('classroom-canvas');
+        const studentCountSpan = document.getElementById('student-count');
+        const deskCountSpan = document.getElementById('desk-count');
+
+        let students = []; // Global student list
+        let draggedDesk = null;
+        let dragOffsetX = 0;
+        let dragOffsetY = 0;
+
+        // --- LocalStorage Keys ---
+        const STUDENTS_STORAGE_KEY = 'classroomSeatingChartStudents_v3'; // Increment version if needed
+        const LAYOUT_STORAGE_KEY = 'classroomSeatingChartLayout_v3';
+
+        // --- Student Loading & Persistence ---
+
+        loadButton.addEventListener('click', loadOrAppendStudentsFromTextArea);
+
+        function loadOrAppendStudentsFromTextArea() {
+            const namesText = studentNamesTextArea.value.trim();
+            if (!namesText) return;
+
+            const newNames = namesText.split('\n')
+                                .map(name => name.trim())
+                                .filter(name => name);
+
+            if (newNames.length === 0) return;
+
+            const combinedStudents = [...students, ...newNames];
+            const uniqueStudents = Array.from(new Set(combinedStudents));
+            const addedCount = uniqueStudents.length - students.length; // Count how many were actually new
+
+            students = uniqueStudents;
+
+            renderStudentList();
+            saveStudentsToLocalStorage();
+            studentNamesTextArea.value = '';
+            console.log(`Loaded/Appended ${addedCount} new unique students. Total: ${students.length}`);
+
+            // Optional: Immediately create desks for newly added students if user prefers,
+            // or let the "Assign" button handle it. Current logic requires Assign button.
+            // If you want immediate creation:
+            // if (addedCount > 0) {
+            //    addDesksForNewStudents(addedCount);
+            // }
+        }
+
+        function renderStudentList() {
+            studentListUl.innerHTML = ''; // Clear previous list
+            studentCountSpan.textContent = students.length;
+            if (students.length === 0) {
+                 studentListUl.innerHTML = '<li>No students loaded.</li>';
+                 return;
+            }
+            students.forEach(name => {
+                const li = document.createElement('li');
+                const nameSpan = document.createElement('span');
+                nameSpan.textContent = name;
+                const deleteBtn = document.createElement('button');
+                deleteBtn.textContent = '✖';
+                deleteBtn.className = 'delete-student-btn';
+                deleteBtn.title = `Remove ${name}`;
+                deleteBtn.dataset.studentName = name;
+                deleteBtn.addEventListener('click', handleDeleteStudentClick);
+                li.appendChild(nameSpan);
+                li.appendChild(deleteBtn);
+                studentListUl.appendChild(li);
+            });
+        }
+
+        function handleDeleteStudentClick(event) {
+            const nameToDelete = event.target.dataset.studentName;
+            if (nameToDelete && confirm(`Are you sure you want to remove "${nameToDelete}"? This will empty their desk but leave the desk itself.`)) {
+                deleteStudent(nameToDelete);
+            }
+        }
+
+        function deleteStudent(nameToDelete) {
+            console.log(`Attempting to delete student: ${nameToDelete}`);
+            const studentIndex = students.findIndex(s => s === nameToDelete);
+            if (studentIndex === -1) {
+                console.log(`Student ${nameToDelete} not found in list.`);
+                return; // Student not found
+            }
+
+            // Remove from the global list
+            students.splice(studentIndex, 1);
+
+            // Update storage and UI list
+            saveStudentsToLocalStorage();
+            renderStudentList(); // Re-render the list
+
+            // Find the desk and mark it as empty, keep the desk element
+            const deskElements = classroomCanvas.querySelectorAll('.desk');
+            let layoutChanged = false;
+            deskElements.forEach(desk => {
+                if (desk.dataset.student === nameToDelete) {
+                    console.log(`Found desk for ${nameToDelete}, marking as empty.`);
+                    desk.textContent = '(Empty)';
+                    desk.dataset.student = ''; // Clear the student association
+                    desk.classList.add('empty'); // Add class for styling empty desks
+                    layoutChanged = true;
+                }
+            });
+
+            // Save layout ONLY if a desk assignment actually changed
+            if (layoutChanged) {
+                saveDeskLayoutToLocalStorage();
+            }
+
+             console.log(`Student ${nameToDelete} removed. Current students:`, students);
+        }
+
+
+        function saveStudentsToLocalStorage() {
+            try {
+                localStorage.setItem(STUDENTS_STORAGE_KEY, JSON.stringify(students));
+            } catch (e) {
+                console.error("Error saving students to localStorage:", e);
+            }
+        }
+
+        function loadStudentsFromLocalStorage() {
+            try {
+                const storedStudents = localStorage.getItem(STUDENTS_STORAGE_KEY);
+                students = storedStudents ? JSON.parse(storedStudents) : [];
+            } catch (e) {
+                console.error("Error loading students from localStorage:", e);
+                students = [];
+                localStorage.removeItem(STUDENTS_STORAGE_KEY);
+            }
+            renderStudentList(); // Update UI
+        }
+
+        // --- Randomization / Assignment / Desk Creation ---
+
+        randomizeButton.addEventListener('click', assignStudentsToDesks);
+
+        /**
+         * Assigns loaded students to desks.
+         * - Shuffles students.
+         * - Fills existing desks first (prioritizing empty ones).
+         * - If more students than desks, creates NEW desks for the extras.
+         * - If more desks than students, marks extra desks as empty.
+         */
+        function assignStudentsToDesks() {
+            if (students.length === 0) {
+                alert('Please load students first!');
+                return;
+            }
+
+            let deskElements = Array.from(classroomCanvas.querySelectorAll('.desk'));
+            const shuffledStudents = shuffleArray([...students]); // Shuffle a copy
+
+            const numStudents = shuffledStudents.length;
+            const numDesks = deskElements.length;
+
+            console.log(`Assigning ${numStudents} students to ${numDesks} potential desk spots.`);
+
+            // --- Assign students to EXISTING desks (up to numDesks) ---
+            // Prioritize filling empty desks first
+            const emptyDesks = deskElements.filter(desk => !desk.dataset.student || desk.dataset.student === '');
+            const occupiedDesks = deskElements.filter(desk => desk.dataset.student && desk.dataset.student !== '');
+            const availableDesks = [...emptyDesks, ...occupiedDesks]; // Order to fill empty first
+
+            availableDesks.forEach((desk, index) => {
+                if (index < numStudents) {
+                    // Assign a student to this desk
+                    desk.textContent = shuffledStudents[index];
+                    desk.dataset.student = shuffledStudents[index];
+                    desk.classList.remove('empty');
+                } else {
+                    // More desks than students - mark this EXTRA desk as empty
+                    if (!desk.dataset.student) return; // Already empty, skip update
+                    desk.textContent = '(Empty)';
+                    desk.dataset.student = '';
+                    desk.classList.add('empty');
+                }
+            });
+
+            // --- Create NEW desks if needed (more students than existing desks) ---
+            if (numStudents > numDesks) {
+                const studentsToAdd = shuffledStudents.slice(numDesks); // Get the students needing new desks
+                console.log(`Creating ${studentsToAdd.length} new desks for overflow students.`);
+                const canvasRect = classroomCanvas.getBoundingClientRect();
+                const deskWidth = 90;
+                const deskHeight = 60;
+                const padding = 10;
+
+                studentsToAdd.forEach(name => {
+                    const desk = createDeskElement(name); // Create desk WITH the student name
+
+                    // Basic random placement for new desks
+                    const maxLeft = Math.max(0, canvasRect.width - deskWidth - padding);
+                    const maxTop = Math.max(0, canvasRect.height - deskHeight - padding);
+                    const randomLeft = Math.random() * maxLeft + padding;
+                    const randomTop = Math.random() * maxTop + padding;
+
+                    desk.style.left = `${randomLeft}px`;
+                    desk.style.top = `${randomTop}px`;
+
+                    classroomCanvas.appendChild(desk);
+                });
+                 updateDeskCount(); // Update count after creating new desks
+            }
+
+            saveDeskLayoutToLocalStorage(); // Save layout after all assignments/creations
+        }
+
+
+        /** Shuffles an array in place using Fisher-Yates algorithm */
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+            }
+            return array;
+        }
+
+        // --- Desk Creation and Layout Persistence ---
+
+        function createDeskElement(studentName) {
+            const desk = document.createElement('div');
+            desk.className = 'desk';
+            desk.dataset.student = studentName || '';
+
+            if (studentName) {
+                 desk.textContent = studentName;
+            } else {
+                 desk.textContent = '(Empty)';
+                 desk.classList.add('empty');
+            }
+
+            desk.draggable = false;
+            desk.addEventListener('mousedown', startDrag);
+            return desk;
+        }
+
+         function saveDeskLayoutToLocalStorage() {
+            const deskElements = classroomCanvas.querySelectorAll('.desk');
+            const layoutData = [];
+            deskElements.forEach(desk => {
+                layoutData.push({
+                    name: desk.dataset.student || '',
+                    top: desk.style.top,
+                    left: desk.style.left
+                });
+            });
+
+            try {
+                localStorage.setItem(LAYOUT_STORAGE_KEY, JSON.stringify(layoutData));
+                console.log(`Saved layout for ${layoutData.length} desks.`);
+            } catch (e) {
+                 console.error("Error saving layout to localStorage:", e);
+                 alert("Could not save desk layout. LocalStorage might be full or disabled.");
+            }
+             updateDeskCount();
+        }
+
+        function loadDeskLayoutFromLocalStorage() {
+            classroomCanvas.innerHTML = '';
+            try {
+                const storedLayout = localStorage.getItem(LAYOUT_STORAGE_KEY);
+                if (storedLayout) {
+                    const layoutData = JSON.parse(storedLayout);
+                    console.log(`Loading layout for ${layoutData.length} desks.`);
+                    layoutData.forEach(deskData => {
+                        const desk = createDeskElement(deskData.name);
+                        desk.style.top = deskData.top;
+                        desk.style.left = deskData.left;
+                        classroomCanvas.appendChild(desk);
+                    });
+                } else {
+                     console.log("No saved layout found.");
+                }
+            } catch (e) {
+                console.error("Error loading layout from localStorage:", e);
+                localStorage.removeItem(LAYOUT_STORAGE_KEY);
+            }
+             updateDeskCount();
+        }
+
+        function updateDeskCount() {
+            const count = classroomCanvas.querySelectorAll('.desk').length;
+            deskCountSpan.textContent = count;
+        }
+
+
+        // --- Drag and Drop Logic (Corrected) ---
+
+        function startDrag(e) {
+            e.preventDefault();
+            const targetDesk = e.target.closest('.desk');
+             if (e.button !== 0 || !targetDesk) return;
+
+            draggedDesk = targetDesk;
+            const rect = draggedDesk.getBoundingClientRect();
+            dragOffsetX = e.clientX - rect.left;
+            dragOffsetY = e.clientY - rect.top;
+            draggedDesk.classList.add('dragging');
+            document.addEventListener('mousemove', dragMove);
+            document.addEventListener('mouseup', stopDrag);
+        }
+
+        function dragMove(e) {
+            if (!draggedDesk) return;
+            e.preventDefault();
+            const canvasRect = classroomCanvas.getBoundingClientRect();
+            let newX_viewport = e.clientX - dragOffsetX;
+            let newY_viewport = e.clientY - dragOffsetY;
+            let newX_canvas = newX_viewport - canvasRect.left;
+            let newY_canvas = newY_viewport - canvasRect.top;
+            const deskRect = draggedDesk.getBoundingClientRect();
+            const minX = 0;
+            const minY = 0;
+            const maxX = classroomCanvas.clientWidth - deskRect.width;
+            const maxY = classroomCanvas.clientHeight - deskRect.height;
+            newX_canvas = Math.max(minX, Math.min(newX_canvas, maxX));
+            newY_canvas = Math.max(minY, Math.min(newY_canvas, maxY));
+            draggedDesk.style.left = `${newX_canvas}px`;
+            draggedDesk.style.top = `${newY_canvas}px`;
+        }
+
+        function stopDrag(e) {
+            if (!draggedDesk) return;
+            draggedDesk.classList.remove('dragging');
+            draggedDesk = null;
+            document.removeEventListener('mousemove', dragMove);
+            document.removeEventListener('mouseup', stopDrag);
+            saveDeskLayoutToLocalStorage(); // Save layout after drag ends
+        }
+
+
+        // --- Initial Load ---
+        function initializeApp() {
+            console.log("Initializing App...");
+            loadStudentsFromLocalStorage();
+            loadDeskLayoutFromLocalStorage();
+            renderStudentList();
+            updateDeskCount();
+            console.log("Initialization complete.");
+        }
+
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+    </script>
+
+</body>
+</html>
