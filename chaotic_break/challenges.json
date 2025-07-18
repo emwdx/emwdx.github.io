@@ -1,0 +1,352 @@
+[
+  {
+    "id": "trivia-1",
+    "type": "trivia",
+    "title": "Quick Knowledge",
+    "instructions": "Name 5 countries in South America in 15 seconds.",
+    "difficulty": 2
+  },
+  {
+    "id": "charade-1",
+    "type": "charade",
+    "title": "Act It Out!",
+    "instructions": "[PLAYER] must act out: <span class='blur-text'>a penguin riding a unicycle</span>. Others guess in 30 seconds.",
+    "difficulty": 2
+  },
+  {
+    "id": "pictionary-1",
+    "type": "pictionary",
+    "title": "Quick Draw",
+    "instructions": "[PLAYER] must draw: <span class='blur-text'>the concept of 'gravity'</span>. Others guess in 30 seconds.",
+    "difficulty": 3
+  },
+  {
+    "id": "physical-1",
+    "type": "physical",
+    "title": "Team Balance",
+    "instructions": "The whole team must balance on one foot with their eyes closed for 10 seconds.",
+    "difficulty": 2
+  },
+  {
+    "id": "word-1",
+    "type": "word",
+    "title": "Word Chain",
+    "instructions": "Starting with 'CHAOS', say a word that begins with the last letter of the previous word. Get 10 words in 25 seconds.",
+    "difficulty": 2
+  },
+  {
+    "id": "personal-1",
+    "type": "personal",
+    "title": "Memory Lane",
+    "instructions": "[PLAYER], name the last movie you watched. The team must guess if you liked it or not.",
+    "difficulty": 1
+  },
+  {
+    "id": "music-1",
+    "type": "music",
+    "title": "Hum a Tune",
+    "instructions": "[PLAYER] must hum the theme song to a popular 90s TV show. The team has 30 seconds to guess the show.",
+    "difficulty": 2
+  },
+  {
+    "id": "cryptogram-1",
+    "type": "cryptogram",
+    "title": "Secret Message",
+    "instructions": "Solve this cryptogram: 'VKLIHG ZIV GIBFXB'. The answer is <span class='blur-text'>'POCKETS ARE TRICKY' (Atbash cipher)</span>.",
+    "difficulty": 3
+  },
+  {
+    "id": "pattern-1",
+    "type": "pattern",
+    "title": "Number Sequence",
+    "instructions": "What comes next in the sequence: 1, 1, 2, 3, 5, 8, ...? The answer is <span class='blur-text'>13 (Fibonacci)</span>.",
+    "difficulty": 2
+  },
+  {
+    "id": "physical-2",
+    "type": "physical",
+    "title": "Cue Stick Bridge",
+    "instructions": "Two players must hold a cue stick horizontally between their index fingers for 20 seconds without it falling.",
+    "difficulty": 2
+  },
+  {
+    "id": "trivia-2",
+    "type": "trivia",
+    "title": "Science Fact",
+    "instructions": "What is the most abundant element in the Earth's atmosphere? <span class='blur-text'>Nitrogen</span>.",
+    "difficulty": 1
+  },
+  {
+    "id": "charade-2",
+    "type": "charade",
+    "title": "Silent Story",
+    "instructions": "[PLAYER] must act out: <span class='blur-text'>trying to assemble IKEA furniture with the instructions upside down</span>.",
+    "difficulty": 3
+  },
+  {
+    "id": "word-2",
+    "type": "word",
+    "title": "Anagram",
+    "instructions": "Unscramble this word: 'ZARDAH'. The answer is <span class='blur-text'>HAZARD</span>.",
+    "difficulty": 1
+  },
+  {
+    "id": "personal-2",
+    "type": "personal",
+    "title": "Last Meal",
+    "instructions": "[PLAYER], what was the last thing you ate? The team must guess one ingredient.",
+    "difficulty": 1
+  },
+  {
+    "id": "music-2",
+    "type": "music",
+    "title": "Finish the Lyric",
+    "instructions": "Finish this lyric: 'I see a red door and I...' <span class='blur-text'>want it painted black (The Rolling Stones)</span>.",
+    "difficulty": 2
+  },
+  {
+    "id": "physical-3",
+    "type": "physical",
+    "title": "No-Look Pass",
+    "instructions": "One player closes their eyes and gently tosses a chalk cube to [PLAYER], who must catch it.",
+    "difficulty": 1
+  },
+  {
+    "id": "trivia-3",
+    "type": "trivia",
+    "title": "History Buff",
+    "instructions": "In what year did the Titanic sink? <span class='blur-text'>1912</span>.",
+    "difficulty": 2
+  },
+  {
+    "id": "pictionary-2",
+    "type": "pictionary",
+    "title": "Abstract Concept",
+    "instructions": "[PLAYER] must draw: <span class='blur-text'>'A stroke of luck'</span>.",
+    "difficulty": 3
+  },
+  {
+    "id": "word-3",
+    "type": "word",
+    "title": "Rhyme Time",
+    "instructions": "Name 5 words that rhyme with 'BREAK' in 15 seconds.",
+    "difficulty": 1
+  },
+  {
+    "id": "personal-3",
+    "type": "personal",
+    "title": "Spirit Animal",
+    "instructions": "The team must decide on a 'spirit animal' for [PLAYER]. [PLAYER] must then act out that animal.",
+    "difficulty": 2
+  },
+  {
+    "id": "music-3",
+    "type": "music",
+    "title": "One-Word Wonder",
+    "instructions": "[PLAYER] must sing a song using only the word 'ball'. The team must guess the song.",
+    "difficulty": 3
+  },
+  {
+    "id": "cryptogram-2",
+    "type": "cryptogram",
+    "title": "Mixed Message",
+    "instructions": "Unscramble this sentence: 'THE FELT IS ALWAYS GREENER'. The answer is <span class='blur-text'>THE GRASS IS ALWAYS GREENER</span>.",
+    "difficulty": 2
+  },
+  {
+    "id": "pattern-2",
+    "type": "pattern",
+    "title": "Logical Leap",
+    "instructions": "Which letter comes next: J, F, M, A, M, ...? <span class='blur-text'>J (Months of the year)</span>.",
+    "difficulty": 2
+  },
+  {
+    "id": "physical-4",
+    "type": "physical",
+    "title": "Human Bridge",
+    "instructions": "Two players must form a bridge with their bodies that a third player can crawl under.",
+    "difficulty": 2
+  },
+  {
+    "id": "trivia-4",
+    "type": "trivia",
+    "title": "Art History",
+    "instructions": "Who painted the Mona Lisa? <span class='blur-text'>Leonardo da Vinci</span>.",
+    "difficulty": 1
+  },
+  {
+    "id": "charade-3",
+    "type": "charade",
+    "title": "Job Mime",
+    "instructions": "[PLAYER] must act out the job of a <span class='blur-text'>snake charmer</span>.",
+    "difficulty": 2
+  },
+  {
+    "id": "word-4",
+    "type": "word",
+    "title": "Palindrome",
+    "instructions": "Say a 5-letter palindrome. <span class='blur-text'>(e.g., LEVEL, MADAM, ROTOR)</span>.",
+    "difficulty": 1
+  },
+  {
+    "id": "personal-4",
+    "type": "personal",
+    "title": "Dream Vacation",
+    "instructions": "[PLAYER] describes their dream vacation in 3 words. The team must guess the location.",
+    "difficulty": 2
+  },
+  {
+    "id": "music-4",
+    "type": "music",
+    "title": "Band Name Game",
+    "instructions": "Name 3 bands that have a color in their name.",
+    "difficulty": 1
+  },
+  {
+    "id": "physical-5",
+    "type": "physical",
+    "title": "Synchronized Sip",
+    "instructions": "The entire team must take a sip of their drink at the exact same time.",
+    "difficulty": 1
+  },
+  {
+    "id": "trivia-5",
+    "type": "trivia",
+    "title": "Literary Genius",
+    "instructions": "Who wrote 'To Kill a Mockingbird'? <span class='blur-text'>Harper Lee</span>.",
+    "difficulty": 2
+  },
+  {
+    "id": "pictionary-3",
+    "type": "pictionary",
+    "title": "Saying and Phrases",
+    "instructions": "[PLAYER] must draw the idiom: <span class='blur-text'>'Bite the bullet'</span>.",
+    "difficulty": 3
+  },
+  {
+    "id": "word-5",
+    "type": "word",
+    "title": "Category Chaos",
+    "instructions": "Name 7 things you would find in a garage in 20 seconds.",
+    "difficulty": 1
+  },
+  {
+    "id": "personal-5",
+    "type": "personal",
+    "title": "Hidden Talent",
+    "instructions": "[PLAYER] must demonstrate a hidden talent for 10 seconds.",
+    "difficulty": 2
+  },
+  {
+    "id": "music-5",
+    "type": "music",
+    "title": "Whistle a Show Tune",
+    "instructions": "[PLAYER] must whistle a song from a famous musical. The team has 30 seconds to guess the musical.",
+    "difficulty": 2
+  },
+  {
+    "id": "cryptogram-3",
+    "type": "cryptogram",
+    "title": "Pigpen Cipher",
+    "instructions": "Solve this Pigpen cipher: <span class='blur-text'>[Image of a pigpen cipher message for 'CUEBALL']</span>. The answer is <span class='blur-text'>CUEBALL</span>.",
+    "difficulty": 3
+  },
+  {
+    "id": "pattern-3",
+    "type": "pattern",
+    "title": "Visual Sequence",
+    "instructions": "What shape comes next in this pattern: Triangle, Square, Pentagon, ...? <span class='blur-text'>Hexagon</span>.",
+    "difficulty": 1
+  },
+  {
+    "id": "physical-6",
+    "type": "physical",
+    "title": "Coin Flick",
+    "instructions": "[PLAYER] must flick a coin and catch it on the back of their hand.",
+    "difficulty": 1
+  },
+  {
+    "id": "trivia-6",
+    "type": "trivia",
+    "title": "Mythology",
+    "instructions": "In Greek mythology, who is the god of the sea? <span class='blur-text'>Poseidon</span>.",
+    "difficulty": 1
+  },
+  {
+    "id": "charade-4",
+    "type": "charade",
+    "title": "Historical Figure",
+    "instructions": "[PLAYER] must act out being <span class='blur-text'>Cleopatra</span>.",
+    "difficulty": 2
+  },
+  {
+    "id": "word-6",
+    "type": "word",
+    "title": "Compound Words",
+    "instructions": "Create 3 compound words using the word 'BALL'. (e.g., baseball, basketball, ballroom)",
+    "difficulty": 1
+  },
+  {
+    "id": "personal-6",
+    "type": "personal",
+    "title": "Childhood Memory",
+    "instructions": "[PLAYER] must share a 1-sentence childhood memory. The team must guess if it's true or false.",
+    "difficulty": 2
+  },
+  {
+    "id": "music-6",
+    "type": "music",
+    "title": "Air Guitar Solo",
+    "instructions": "[PLAYER] must perform a 15-second air guitar solo to a song of their choice (played in their head).",
+    "difficulty": 1
+  },
+  {
+    "id": "physical-7",
+    "type": "physical",
+    "title": "Paper Football",
+    "instructions": "One player must successfully flick a paper football between the goalposts of another player's fingers.",
+    "difficulty": 1
+  },
+  {
+    "id": "trivia-7",
+    "type": "trivia",
+    "title": "Capital Cities",
+    "instructions": "What is the capital of Australia? <span class='blur-text'>Canberra</span>.",
+    "difficulty": 2
+  },
+  {
+    "id": "pictionary-4",
+    "type": "pictionary",
+    "title": "Movie Scene",
+    "instructions": "[PLAYER] must draw a famous scene from the movie <span class='blur-text'>'The Matrix' (the red pill/blue pill scene)</span>.",
+    "difficulty": 3
+  },
+  {
+    "id": "word-7",
+    "type": "word",
+    "title": "Backwards Word",
+    "instructions": "Say the word 'CHALLENGE' backwards.",
+    "difficulty": 2
+  },
+  {
+    "id": "personal-7",
+    "type": "personal",
+    "title": "Pet Peeve",
+    "instructions": "[PLAYER] must act out one of their biggest pet peeves.",
+    "difficulty": 2
+  },
+  {
+    "id": "music-7",
+    "type": "music",
+    "title": "Beatbox",
+    "instructions": "[PLAYER] must create a beatbox rhythm for 15 seconds.",
+    "difficulty": 2
+  },
+  {
+    "id": "physical-8",
+    "type": "physical",
+    "title": "Bottle Flip",
+    "instructions": "[PLAYER] must successfully flip a water bottle and have it land upright.",
+    "difficulty": 2
+  }
+]

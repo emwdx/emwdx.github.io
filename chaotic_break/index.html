@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chaotic Break Companion</title>
+    <style>
+        :root {
+            --bg-color: #1a1a1a;
+            --primary-color: #2a2a2a;
+            --secondary-color: #3a3a3a;
+            --text-color: #e0e0e0;
+            --accent-color: #00aaff;
+            --success-color: #4CAF50;
+            --fail-color: #F44336;
+            --blur-color: #ffcc00;
+            --border-radius: 8px;
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-family);
+            margin: 0;
+            padding: 1rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 1rem;
+            background-color: var(--primary-color);
+            border-radius: var(--border-radius);
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        #game-art {
+            max-width: 100%;
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+            border: 2px solid var(--secondary-color);
+        }
+
+        h1, h2, h3, h4 {
+            margin: 0;
+            color: var(--accent-color);
+        }
+        h1 { font-size: 2rem; }
+        h2 { font-size: 1.5rem; margin-bottom: 1rem; }
+        h3 { font-size: 1.2rem; margin-bottom: 0.5rem; }
+        h4 { font-size: 1.1rem; margin-top: 1rem; margin-bottom: 0.5rem; }
+
+        .game-status {
+            display: flex;
+            justify-content: space-around;
+            background-color: var(--secondary-color);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .status-item {
+            font-size: 1.2rem;
+        }
+        #round-counter, #at-counter {
+            font-weight: bold;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .main-controls, .rules-reference {
+            background-color: var(--secondary-color);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1.5rem;
+        }
+
+        .control-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .result-box {
+            background-color: var(--bg-color);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            min-height: 50px;
+            margin-top: 1rem;
+            border-left: 4px solid var(--accent-color);
+        }
+        #challenge-display {
+             border-left-color: var(--blur-color);
+        }
+
+        .blur-text {
+            background-color: var(--blur-color);
+            color: var(--blur-color);
+            cursor: pointer;
+            padding: 0 4px;
+            border-radius: 4px;
+            transition: all 0.2s ease-in-out;
+            user-select: none;
+        }
+        .blur-text.revealed {
+            background-color: transparent;
+            color: var(--text-color);
+            cursor: default;
+        }
+
+        button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+        button:hover {
+            background-color: #0088cc;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .btn-success { background-color: var(--success-color); }
+        .btn-success:hover { background-color: #45a049; }
+        .btn-fail { background-color: var(--fail-color); }
+        .btn-fail:hover { background-color: #e53935; }
+        .btn-secondary { background-color: #6c757d; }
+        .btn-secondary:hover { background-color: #5a6268; }
+
+        details {
+            background: var(--primary-color);
+            border-radius: var(--border-radius);
+            margin-bottom: 0.5rem;
+        }
+        summary {
+            padding: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            color: var(--accent-color);
+        }
+        .details-content {
+            padding: 0 1rem 1rem 1rem;
+            border-top: 1px solid var(--secondary-color);
+        }
+        ul, ol { padding-left: 20px; }
+        li { margin-bottom: 0.5rem; }
+
+        .player-name-input {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--secondary-color);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-size: 1rem;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <img id="game-art" src="chaotic_break_art.png" alt="Chaotic Break Game Art">
+            <h1>Chaotic Break</h1>
+            <p>A Cooperative Pool Party Game Companion</p>
+        </header>
+
+        <div class="game-status">
+            <div class="status-item">
+                <h3>Round</h3>
+                <span id="round-counter">1 / 20</span>
+            </div>
+            <div class="status-item">
+                <h3>Advantage Tokens</h3>
+                <span id="at-counter">0</span>
+            </div>
+        </div>
+
+        <div class="main-controls">
+            <h2>Game Actions</h2>
+            
+            <div class="control-section" id="challenge-section">
+                <h3>1. Quick Challenge</h3>
+                <button id="generate-challenge-btn">Generate New Challenge</button>
+                <div id="challenge-display" class="result-box">
+                    <p>Set up players and game below, then click for your first challenge!</p>
+                </div>
+                <div id="challenge-outcome-btns" class="button-group" style="display: none;">
+                    <button id="challenge-success-btn" class="btn-success">Success</button>
+                    <button id="challenge-fail-btn" class="btn-fail">Failure</button>
+                </div>
+            </div>
+
+            <div class="control-section">
+                <h3>2. Shot Mode & Rolls</h3>
+                 <div class="button-group">
+                    <button id="roll-shot-mode-btn">Roll Shot Mode (d8)</button>
+                    <button id="resolve-portal-btn">Portal/Surge (d4/d6)</button>
+                </div>
+                <div id="shot-mode-result" class="result-box">
+                    <p>Roll to see how you'll shoot this round.</p>
+                </div>
+                <div id="portal-result" class="result-box" style="margin-top: 1rem;">
+                    <p>For balls in Portals or for Surge Events.</p>
+                </div>
+            </div>
+            
+            <hr style="border-color: var(--secondary-color); margin: 2rem 0;">
+
+            <div class="control-section">
+                 <h3>3. End of Round</h3>
+                <button id="next-round-btn" class="btn-secondary">Slide Countdown Bead (Next Round)</button>
+            </div>
+        </div>
+
+        <div class="rules-reference">
+            <h2>Quick Reference & Setup</h2>
+             <details open>
+                <summary>Player & Game Setup</summary>
+                <div class="details-content">
+                    <div id="player-setup-section" class="control-section">
+                        <h3>Players</h3>
+                        <p>Enter player names below (2-8 players). Names are saved to your browser.</p>
+                        <div id="player-inputs">
+                            <!-- Player inputs are generated here -->
+                        </div>
+                        <div class="button-group">
+                            <button id="add-player-btn">+</button>
+                            <button id="remove-player-btn">-</button>
+                        </div>
+                        <button id="save-players-btn" style="margin-top: 1rem;">Save Players</button>
+                    </div>
+                    <hr style="border-color: var(--primary-color); margin: 2rem 0;">
+                    <div class="control-section">
+                        <h3>Assign Portals (d6)</h3>
+                        <button id="assign-portals-btn">Roll for Portals</button>
+                        <div id="portals-setup-result" class="result-box"></div>
+                    </div>
+                    <div class="control-section">
+                        <h3>Transform Balls (4-6 cards)</h3>
+                        <button id="transform-balls-btn">Draw Transformation Cards</button>
+                        <div id="transform-balls-result" class="result-box"></div>
+                    </div>
+                </div>
+            </details>
+            <details>
+                <summary>Game Flow</summary>
+                <div class="details-content">
+                    <ol>
+                        <li><strong>Set Mission Target:</strong> As a team, choose a ball or objective for the round.</li>
+                        <li><strong>Generate & Complete Challenge:</strong> Use the app to get a challenge. Success earns AT; failure triggers a Hazard.</li>
+                        <li><strong>Roll for Shot Mode:</strong> Use the app to roll a d8 for the round's shot mutator.</li>
+                        <li><strong>Spend Advantage Tokens (Optional):</strong> Use AT to bend the rules.</li>
+                        <li><strong>Everyone Shoots Once:</strong> Each player takes their shot.</li>
+                        <li><strong>Resolve Effects:</strong> Apply Portal results, close Stations, or trigger Curses.</li>
+                        <li><strong>Slide Countdown Bead:</strong> Move one bead on your scorer and click "Next Round".</li>
+                    </ol>
+                </div>
+            </details>
+            <details>
+                <summary>Advantage Token Costs</summary>
+                <div class="details-content">
+                    <ul>
+                        <li><strong>1 AT: Reroll Shot Mode</strong> - Roll d8 again.</li>
+                        <li><strong>1 AT: Cue Ball Nudge</strong> - Move cue ball one chalk-length.</li>
+                        <li><strong>1 AT: Scratch Shield</strong> - Ignore scratch for this round.</li>
+                        <li><strong>2 AT: Pickle Push</strong> - Move pickleball one cue-ball width.</li>
+                        <li><strong>2 AT: Resurrect Ball</strong> - Return banished/replaced ball to center.</li>
+                        <li><strong>3 AT: Clear Hazard</strong> - Remove persistent hazard (card or cup).</li>
+                        <li><strong>3 AT: Station Reset</strong> - Reopen a closed Station; redistribute its cleared contents.</li>
+                        <li><strong>3 AT: Auto-Claim Card</strong> - Automatically clear a Target Card if a ball is near it.</li>
+                        <li><strong>4 AT: Time Refund</strong> - Slide bead backward (once per game).</li>
+                    </ul>
+                </div>
+            </details>
+            <details>
+                <summary>Ball Transformations & Clearing</summary>
+                <div class="details-content">
+                    <h4>Transformations</h4>
+                    <ul>
+                        <li><strong>♥ Hearts (Target Card):</strong> Remove ball, place card.</li>
+                        <li><strong>♦ Diamonds (Pickleball):</strong> Replace ball with a pickleball obstacle.</li>
+                        <li><strong>♣ Clubs (Cup Hazard):</strong> Remove ball, place an inverted cup.</li>
+                        <li><strong>♠ Spades (Cursed Ball):</strong> Mark the ball.</li>
+                    </ul>
+                    <hr style="border-color: var(--primary-color); margin: 1rem 0;">
+                    <h4>Clearing Conditions</h4>
+                     <ul>
+                        <li><strong>Target Card (♥):</strong> Drive the cue ball or any object ball across the card’s surface with intent.</li>
+                        <li><strong>Pickleball (♦):</strong> Cannot be cleared directly. Acts as an obstacle.</li>
+                        <li><strong>Cup Hazard (♣):</strong> Any ball rolling under the cup is banished (removed from play).</li>
+                        <li><strong>Cursed Ball (♠):</strong> The first time it is touched by any other ball, trigger a Surge Event. After the surge, it becomes a normal ball.</li>
+                        <li><strong>Normal Ball:</strong> Pocket in a Station or clear through a Portal.</li>
+                    </ul>
+                </div>
+            </details>
+            <details>
+                <summary>Hazards & Surge Events</summary>
+                <div class="details-content">
+                    <h4>Hazards (from failed challenges)</h4>
+                    <p>Hazards are physical obstacles added to the table. Examples include:</p>
+                    <ul>
+                        <li><strong>Cards on Table:</strong> A playing card that freezes any ball it touches.</li>
+                        <li><strong>Cups/Bowls:</strong> An inverted cup that banishes balls.</li>
+                        <li><strong>Pickleballs:</strong> Extra obstacles that block shots.</li>
+                        <li><strong>Bounce Zones:</strong> Rubber bands that deflect balls.</li>
+                    </ul>
+                    <hr style="border-color: var(--primary-color); margin: 1rem 0;">
+                    <h4>Surge Events (d6 Roll)</h4>
+                    <p>Triggered by Jokers or Cursed Balls. Roll a d6 and apply the effect:</p>
+                    <ul>
+                        <li><strong>1. Mass Resurrection:</strong> Return all banished balls to the table center.</li>
+                        <li><strong>2. Selective Raise:</strong> Return 1 random cleared ball to its original spot.</li>
+                        <li><strong>3. Void Sweep:</strong> Remove 1 obstacle of each type from the table.</li>
+                        <li><strong>4. Temporal Skip:</strong> Do not move the countdown bead at the end of this round.</li>
+                        <li><strong>5. Double Challenge:</strong> Immediately run another Quick Challenge.</li>
+                        <li><strong>6. All Portals Live:</strong> Every pocket behaves as a Portal for the next round.</li>
+                    </ul>
+                </div>
+            </details>
+        </div>
+
+        <footer>
+            <p>Based on the game "Chaotic Break". This app is licensed under CC BY-NC-SA 4.0.</p>
+            <button id="reset-game-btn" class="btn-fail" style="width: auto; padding: 8px 12px; margin-top: 1rem;">Reset All Game Data</button>
+        </footer>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DATA ---
+            let allChallenges = [];
+
+            const shotModes = {
+                1: "<strong>Normal:</strong> Take a shot using standard pool rules.",
+                2: "<strong>Cue Butt Push:</strong> Use the blunt end of the cue to push the cue ball.",
+                3: "<strong>Guided Roll:</strong> Place a cue flat on the table and roll the cue ball along it.",
+                4: "<strong>Opposite Hand:</strong> Use your non-dominant hand for the shot.",
+                5: "<strong>Bank First:</strong> The cue ball must touch a rail before hitting a target ball.",
+                6: "<strong>Portal Call:</strong> Cue ball or target must interact with a Portal.",
+                7: "<strong>Freehand Roll:</strong> Use your hand to roll or flick the cue ball.",
+                8: "<strong>Blind Aim:</strong> Shooter closes their eyes; teammates give verbal directions."
+            };
+
+            const portalOutcomes = {
+                1: "<strong>Mouth Re-Spot:</strong> Ball re-spots at the mouth of the opposite portal.",
+                2: "<strong>Redirect:</strong> Ball may be redirected to any open Station pocket.",
+                3: "<strong>Conditional Clear:</strong> If < 3 objects are in that portal, the ball is cleared. Otherwise, re-spot it.",
+                4: "<strong>Override Clear:</strong> Ball is cleared, even if the portal is at capacity."
+            };
+
+            const surgeEvents = {
+                1: "<strong>Mass Resurrection:</strong> Return all banished balls to the table center.",
+                2: "<strong>Selective Raise:</strong> Return 1 random cleared ball to its original spot.",
+                3: "<strong>Void Sweep:</strong> Remove 1 obstacle of each type from the table.",
+                4: "<strong>Temporal Skip:</strong> Do not move the countdown bead at the end of this round.",
+                5: "<strong>Double Challenge:</strong> Immediately run another Quick Challenge.",
+                6: "<strong>All Portals Live:</strong> Every pocket behaves as a Portal for the next round."
+            };
+            
+            const cardRanks = { 1: 'A', 2: '2', 3: '3', 4: '4', 5: '5', 6: '6', 7: '7', 8: '8', 9: '9', 10: '10', 11: 'J', 12: 'Q', 13: 'K' };
+            const suits = { '♥': 'Hearts (Target Card)', '♦': 'Diamonds (Pickleball)', '♣': 'Clubs (Cup Hazard)', '♠': 'Spades (Cursed Ball)' };
+
+            // --- GAME STATE ---
+            let gameState = {
+                round: 1,
+                advantageTokens: 0,
+                players: [],
+                currentChallenge: null,
+            };
+
+            // --- DOM ELEMENTS ---
+            const roundCounter = document.getElementById('round-counter');
+            const atCounter = document.getElementById('at-counter');
+            const generateChallengeBtn = document.getElementById('generate-challenge-btn');
+            const challengeDisplay = document.getElementById('challenge-display');
+            const challengeOutcomeBtns = document.getElementById('challenge-outcome-btns');
+            const challengeSuccessBtn = document.getElementById('challenge-success-btn');
+            const challengeFailBtn = document.getElementById('challenge-fail-btn');
+            const rollShotModeBtn = document.getElementById('roll-shot-mode-btn');
+            const shotModeResult = document.getElementById('shot-mode-result');
+            const resolvePortalBtn = document.getElementById('resolve-portal-btn');
+            const portalResult = document.getElementById('portal-result');
+            const nextRoundBtn = document.getElementById('next-round-btn');
+            const assignPortalsBtn = document.getElementById('assign-portals-btn');
+            const portalsSetupResult = document.getElementById('portals-setup-result');
+            const transformBallsBtn = document.getElementById('transform-balls-btn');
+            const transformBallsResult = document.getElementById('transform-balls-result');
+            const playerSetupSection = document.getElementById('player-setup-section');
+            const playerInputs = document.getElementById('player-inputs');
+            const addPlayerBtn = document.getElementById('add-player-btn');
+            const removePlayerBtn = document.getElementById('remove-player-btn');
+            const savePlayersBtn = document.getElementById('save-players-btn');
+            const resetGameBtn = document.getElementById('reset-game-btn');
+
+            // --- FUNCTIONS ---
+            function updateUI() {
+                roundCounter.textContent = `${gameState.round} / 20`;
+                atCounter.textContent = gameState.advantageTokens;
+            }
+
+            function saveState() {
+                localStorage.setItem('chaoticBreakState', JSON.stringify(gameState));
+            }
+
+            function loadState() {
+                const savedState = localStorage.getItem('chaoticBreakState');
+                if (savedState) {
+                    gameState = JSON.parse(savedState);
+                    if (gameState.players.length > 0) {
+                        playerSetupSection.innerHTML = `<p><strong>Players:</strong> ${gameState.players.join(', ')}</p>`;
+                    } else {
+                        renderPlayerInputs();
+                    }
+                } else {
+                    renderPlayerInputs();
+                }
+                updateUI();
+            }
+
+            function renderPlayerInputs() {
+                playerInputs.innerHTML = '';
+                const playersToRender = gameState.players.length > 0 ? gameState.players : ['', ''];
+                playersToRender.forEach((name, index) => {
+                    const newInput = document.createElement('input');
+                    newInput.type = 'text';
+                    newInput.placeholder = `Player ${index + 1}`;
+                    newInput.className = 'player-name-input';
+                    newInput.value = name;
+                    playerInputs.appendChild(newInput);
+                });
+            }
+
+            function addPlayerInput() {
+                const inputCount = playerInputs.children.length;
+                if (inputCount < 8) {
+                    const newInput = document.createElement('input');
+                    newInput.type = 'text';
+                    newInput.placeholder = `Player ${inputCount + 1}`;
+                    newInput.className = 'player-name-input';
+                    playerInputs.appendChild(newInput);
+                }
+            }
+
+            function removePlayerInput() {
+                const inputCount = playerInputs.children.length;
+                if (inputCount > 2) {
+                    playerInputs.removeChild(playerInputs.lastChild);
+                }
+            }
+
+            function savePlayers() {
+                const inputs = playerInputs.querySelectorAll('.player-name-input');
+                const newPlayers = [];
+                inputs.forEach(input => {
+                    if (input.value.trim() !== '') {
+                        newPlayers.push(input.value.trim());
+                    }
+                });
+
+                if (newPlayers.length >= 2) {
+                    gameState.players = newPlayers;
+                    playerSetupSection.innerHTML = `<p><strong>Players:</strong> ${gameState.players.join(', ')}</p>`;
+                    saveState();
+                } else {
+                    alert("Please enter at least two player names.");
+                }
+            }
+
+            function assignPortals() {
+                let portalA = Math.floor(Math.random() * 6) + 1;
+                let portalB;
+                do {
+                    portalB = Math.floor(Math.random() * 6) + 1;
+                } while (portalA === portalB);
+                portalsSetupResult.innerHTML = `<p><strong>Portal A is pocket ${portalA}.</strong></p><p><strong>Portal B is pocket ${portalB}.</strong></p><p>(Count clockwise from top left)</p>`;
+            }
+
+            function transformBalls() {
+                const numToTransform = Math.floor(Math.random() * 3) + 4; // 4-6
+                let transformations = '<ul>';
+                const usedBalls = new Set();
+                const availableBallNumbers = Object.keys(cardRanks);
+
+                for (let i = 0; i < numToTransform; i++) {
+                    let ballNumKey;
+                    do {
+                        ballNumKey = availableBallNumbers[Math.floor(Math.random() * availableBallNumbers.length)];
+                    } while (usedBalls.has(ballNumKey));
+                    usedBalls.add(ballNumKey);
+
+                    const suitKeys = Object.keys(suits);
+                    const randomSuit = suitKeys[Math.floor(Math.random() * suitKeys.length)];
+                    const ballDisplayName = cardRanks[ballNumKey];
+
+                    transformations += `<li><strong>Ball ${ballNumKey} (${ballDisplayName}):</strong> Becomes a ${suits[randomSuit]}</li>`;
+                }
+                transformations += '</ul>';
+                transformBallsResult.innerHTML = transformations;
+            }
+
+            function generateChallenge() {
+                if (allChallenges.length === 0) {
+                    challengeDisplay.innerHTML = `<p style="color: var(--fail-color);">Could not load challenges. Make sure challenges.json is in the same directory.</p>`;
+                    return;
+                }
+                if (gameState.players.length < 2) {
+                    alert("Please set up at least 2 players before starting.");
+                    return;
+                }
+
+                let challenge = { ...allChallenges[Math.floor(Math.random() * allChallenges.length)] };
+                gameState.currentChallenge = challenge;
+
+                let instructionText = challenge.instructions;
+                if (instructionText.includes('[PLAYER]')) {
+                    const randomPlayer = gameState.players[Math.floor(Math.random() * gameState.players.length)];
+                    instructionText = instructionText.replace(/\u005bPLAYER\u005d/g, `<strong>${randomPlayer}</strong>`);
+                }
+                
+                challengeDisplay.innerHTML = `
+                    <h3>${challenge.title} (Difficulty: ${challenge.difficulty})</h3>
+                    <p>${instructionText}</p>
+                `;
+                
+                challengeOutcomeBtns.style.display = 'flex';
+                
+                const blurElements = challengeDisplay.querySelectorAll('.blur-text');
+                blurElements.forEach(el => {
+                    el.addEventListener('click', () => el.classList.add('revealed'), { once: true });
+                });
+            }
+
+            function handleChallengeSuccess() {
+                if (!gameState.currentChallenge) return;
+                const difficulty = gameState.currentChallenge.difficulty;
+                gameState.advantageTokens += difficulty;
+                challengeDisplay.innerHTML = `<p style="color: var(--success-color);">Success! Gained ${difficulty} AT.</p>`;
+                cleanupAfterChallenge();
+                updateUI();
+                saveState();
+            }
+
+            function handleChallengeFailure() {
+                challengeDisplay.innerHTML = `<p style="color: var(--fail-color);">Failure. Draw a Hazard card!</p>`;
+                cleanupAfterChallenge();
+            }
+            
+            function cleanupAfterChallenge() {
+                gameState.currentChallenge = null;
+                challengeOutcomeBtns.style.display = 'none';
+            }
+
+            function rollShotMode() {
+                const roll = Math.floor(Math.random() * 8) + 1;
+                shotModeResult.innerHTML = `<p><strong>Roll: ${roll}</strong> &mdash; ${shotModes[roll]}</p>`;
+            }
+
+            function resolvePortal() {
+                const d4Roll = Math.floor(Math.random() * 4) + 1;
+                const d6Roll = Math.floor(Math.random() * 6) + 1;
+                portalResult.innerHTML = `
+                    <p><strong>Portal (d4): ${d4Roll}</strong> &mdash; ${portalOutcomes[d4Roll]}</p>
+                    <p style="margin-top: 1rem;"><strong>Surge (d6): ${d6Roll}</strong> &mdash; ${surgeEvents[d6Roll]}</p>
+                `;
+            }
+
+            function nextRound() {
+                if (gameState.round < 20) {
+                    gameState.round++;
+                    challengeDisplay.innerHTML = '<p>Click the button to get your next challenge!</p>';
+                    shotModeResult.innerHTML = '<p>Roll to see how you\'ll shoot this round.</p>';
+                    portalResult.innerHTML = '<p>For balls in Portals or for Surge Events.</p>';
+                    cleanupAfterChallenge();
+                    updateUI();
+                    saveState();
+                } else {
+                    alert("Game Over! The 20 rounds are up.");
+                }
+            }
+
+            function resetGame() {
+                if (confirm("Are you sure you want to reset all game data? This cannot be undone.")) {
+                    localStorage.removeItem('chaoticBreakState');
+                    gameState = {
+                        round: 1,
+                        advantageTokens: 0,
+                        players: [],
+                        currentChallenge: null,
+                    };
+                    playerSetupSection.innerHTML = `
+                        <h3>Players</h3>
+                        <p>Enter player names below (2-8 players). Names are saved to your browser.</p>
+                        <div id="player-inputs"></div>
+                        <div class="button-group">
+                            <button id="add-player-btn">+</button>
+                            <button id="remove-player-btn">-</button>
+                        </div>
+                        <button id="save-players-btn" style="margin-top: 1rem;">Save Players</button>
+                    `;
+                    // Re-add event listeners since we blew away the innerHTML
+                    document.getElementById('add-player-btn').addEventListener('click', addPlayerInput);
+                    document.getElementById('remove-player-btn').addEventListener('click', removePlayerInput);
+                    document.getElementById('save-players-btn').addEventListener('click', savePlayers);
+                    loadState();
+                }
+            }
+            
+            async function loadChallenges() {
+                try {
+                    const response = await fetch('challenges.json');
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    allChallenges = await response.json();
+                } catch (e) {
+                    console.error("Failed to load challenges:", e);
+                    generateChallengeBtn.disabled = true;
+                    challengeDisplay.innerHTML = `<p style="color: var(--fail-color);">Error: Could not load challenges.json. Please check the file and the console for more details.</p>`;
+                }
+            }
+
+            // --- EVENT LISTENERS ---
+            addPlayerBtn.addEventListener('click', addPlayerInput);
+            removePlayerBtn.addEventListener('click', removePlayerInput);
+            savePlayersBtn.addEventListener('click', savePlayers);
+            generateChallengeBtn.addEventListener('click', generateChallenge);
+            challengeSuccessBtn.addEventListener('click', handleChallengeSuccess);
+            challengeFailBtn.addEventListener('click', handleChallengeFailure);
+            rollShotModeBtn.addEventListener('click', rollShotMode);
+            resolvePortalBtn.addEventListener('click', resolvePortal);
+            nextRoundBtn.addEventListener('click', nextRound);
+            assignPortalsBtn.addEventListener('click', assignPortals);
+            transformBallsBtn.addEventListener('click', transformBalls);
+            resetGameBtn.addEventListener('click', resetGame);
+
+            // --- INITIALIZE ---
+            loadChallenges();
+            loadState();
+        });
+    </script>
+</body>
+</html>
