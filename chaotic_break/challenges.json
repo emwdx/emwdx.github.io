@@ -348,5 +348,299 @@
     "title": "Bottle Flip",
     "instructions": "[PLAYER] must successfully flip a water bottle and have it land upright.",
     "difficulty": 2
+  },
+  {
+    "id": "physical-9",
+    "type": "physical",
+    "title": "Steady Hand",
+    "instructions": "[PLAYER] must stand a coin on its edge. It must remain standing for 5 seconds.",
+    "difficulty": 2
+  },
+  {
+    "id": "word-8",
+    "type": "word",
+    "title": "Opposite Day",
+    "instructions": "[PLAYER] must describe a common activity (e.g., brushing teeth, making coffee) using only words that mean the opposite of what they're doing. The team has 30 seconds to guess the activity.",
+    "difficulty": 3
+  },
+  {
+    "id": "charade-5",
+    "type": "charade",
+    "title": "Abstract Emotion",
+    "instructions": "[PLAYER] must act out: <span class='blur-text'>the feeling of realizing you forgot something important</span>. The team must guess the emotion or situation in 30 seconds.",
+    "difficulty": 2
+  },
+  {
+    "id": "team-1",
+    "type": "team",
+    "title": "Team Handshake",
+    "instructions": "The entire team has 45 seconds to create and perform a synchronized 3-move handshake.",
+    "difficulty": 1
+  },
+  {
+    "id": "pictionary-5",
+    "type": "pictionary",
+    "title": "Draw a Sound",
+    "instructions": "[PLAYER] must draw the sound of <span class='blur-text'>a sizzling frying pan</span>. No letters or numbers allowed. Team has 30 seconds to guess.",
+    "difficulty": 3
+  },
+  {
+    "id": "personal-8",
+    "type": "personal",
+    "title": "Two Truths, One Lie",
+    "instructions": "[PLAYER] must tell the group two true things and one lie about themselves. The team must unanimously agree on which statement is the lie.",
+    "difficulty": 2
+  },
+  {
+    "id": "logic-1",
+    "type": "logic",
+    "title": "Odd One Out",
+    "instructions": "Which of these doesn't belong and why? A car, a bicycle, a boat, <span class='blur-text'>a horse (it's alive)</span>.",
+    "difficulty": 2
+  },
+  {
+    "id": "music-8",
+    "type": "music",
+    "title": "Movie Theme",
+    "instructions": "[PLAYER] must hum the main theme from a movie they choose. The team has 30 seconds to name the movie.",
+    "difficulty": 2
+  },
+  {
+    "id": "physical-10",
+    "type": "physical",
+    "title": "Silent Command",
+    "instructions": "Without speaking or making noise, one player must get another player to pick up the cue chalk and hand it to them.",
+    "difficulty": 2
+  },
+  {
+    "id": "word-9",
+    "type": "word",
+    "title": "Pun Challenge",
+    "instructions": "The team must come up with 3 puns related to pool or chaos within 30 seconds.",
+    "difficulty": 1
+  },
+  {
+    "id": "impersonation-1",
+    "type": "impersonation",
+    "title": "Famous Voice",
+    "instructions": "[PLAYER] must say the phrase 'The cue ball is a fickle friend' in the voice of a famous cartoon character. The team must guess the character.",
+    "difficulty": 2
+  },
+  {
+    "id": "trivia-8",
+    "type": "trivia",
+    "title": "Invention Timeline",
+    "instructions": "Which was invented first: the telephone or the light bulb? <span class='blur-text'>The telephone (1876, light bulb was 1879)</span>.",
+    "difficulty": 2
+  },
+  {
+    "id": "pictionary-6",
+    "type": "pictionary",
+    "title": "Draw a Verb",
+    "instructions": "[PLAYER] must draw the verb: <span class='blur-text'>'to float'</span>. Team guesses in 20 seconds.",
+    "difficulty": 2
+  },
+  {
+    "id": "personal-9",
+    "type": "personal",
+    "title": "Guess the Doodle",
+    "instructions": "[PLAYER] closes their eyes and draws a simple animal. The team must guess what animal it is.",
+    "difficulty": 1
+  },
+  {
+    "id": "physical-11",
+    "type": "physical",
+    "title": "Human Knot",
+    "instructions": "Three players stand in a circle, reach across and grab the hands of two different people. They must then untangle themselves into a single circle without letting go.",
+    "difficulty": 3
+  },
+  {
+    "id": "word-10",
+    "type": "word",
+    "title": "Acronym Attack",
+    "instructions": "Create a sentence where the first letter of each word spells 'BALL'. (e.g., 'Big Angry Llamas Leap').",
+    "difficulty": 1
+  },
+  {
+    "id": "charade-6",
+    "type": "charade",
+    "title": "Everyday Appliance",
+    "instructions": "[PLAYER] must act out being a <span class='blur-text'>toaster</span>, from toast going in to popping out.",
+    "difficulty": 2
+  },
+  {
+    "id": "music-9",
+    "type": "music",
+    "title": "Name That Instrument",
+    "instructions": "[PLAYER] must make the sound of a musical instrument with their voice. The team has 15 seconds to guess the instrument.",
+    "difficulty": 1
+  },
+  {
+    "id": "logic-2",
+    "type": "logic",
+    "title": "River Crossing Riddle",
+    "instructions": "You must cross a river with a fox, a chicken, and a bag of grain. Your boat can only carry you and one other item. How do you get all three across without anything being eaten? <span class='blur-text'>Take chicken, return. Take fox, return with chicken. Take grain, return. Take chicken.</span>",
+    "difficulty": 3
+  },
+  {
+    "id": "personal-10",
+    "type": "personal",
+    "title": "Dream Car",
+    "instructions": "[PLAYER] describes their dream car using only three adjectives. The team must guess the make or model.",
+    "difficulty": 2
+  },
+  {
+    "id": "physical-12",
+    "type": "physical",
+    "title": "Mirror, Mirror",
+    "instructions": "Two players stand facing each other. For 30 seconds, one player makes slow movements while the other must perfectly mirror them.",
+    "difficulty": 1
+  },
+  {
+    "id": "trivia-9",
+    "type": "trivia",
+    "title": "Animal Kingdom",
+    "instructions": "What is a group of crows called? <span class='blur-text'>A murder</span>.",
+    "difficulty": 2
+  },
+  {
+    "id": "word-11",
+    "type": "word",
+    "title": "Story Time",
+    "instructions": "The team must create a story. Each person adds one word at a time. The story must be at least 10 words long and make sense.",
+    "difficulty": 1
+  },
+  {
+    "id": "impersonation-2",
+    "type": "impersonation",
+    "title": "Movie Quote",
+    "instructions": "[PLAYER] picks a famous movie quote and says it in the voice of the wrong character (e.g., 'I'll be back' as Yoda). The team must guess the movie and the character being impersonated.",
+    "difficulty": 3
+  },
+  {
+    "id": "pictionary-7",
+    "type": "pictionary",
+    "title": "Draw a Saying",
+    "instructions": "[PLAYER] has 40 seconds to draw the idiom: <span class='blur-text'>'a storm in a teacup'</span>.",
+    "difficulty": 3
+  },
+  {
+    "id": "charade-7",
+    "type": "charade",
+    "title": "Historical Event",
+    "instructions": "[PLAYER] must act out <span class='blur-text'>the discovery of fire</span> in under 20 seconds.",
+    "difficulty": 2
+  },
+  {
+    "id": "logic-3",
+    "type": "logic",
+    "title": "The Next Step",
+    "instructions": "What comes next in the pattern: 1, 4, 9, 16, ...? <span class='blur-text'>25 (squared numbers)</span>.",
+    "difficulty": 2
+  },
+  {
+    "id": "personal-11",
+    "type": "personal",
+    "title": "Would You Rather",
+    "instructions": "[PLAYER] answers a 'would you rather' question (e.g., 'fly or be invisible?'). The team must guess their answer.",
+    "difficulty": 1
+  },
+  {
+    "id": "physical-13",
+    "type": "physical",
+    "title": "Object Stack",
+    "instructions": "The team must stack three different objects found in the room (e.g., a phone, a wallet, a chalk cube) on top of each other. The stack must stay balanced for 5 seconds.",
+    "difficulty": 1
+  },
+  {
+    "id": "music-10",
+    "type": "music",
+    "title": "Finish the Line",
+    "instructions": "[PLAYER] sings the first line of a very famous song. The rest of the team must sing the next line correctly.",
+    "difficulty": 1
+  },
+  {
+    "id": "word-12",
+    "type": "word",
+    "title": "Without Vowels",
+    "instructions": "Say this phrase out loud without any of the vowel sounds: 'Pocket the eight ball'. (e.g., 'Pckt th ght bll')",
+    "difficulty": 2
+  },
+  {
+    "id": "trivia-10",
+    "type": "trivia",
+    "title": "Planetary Order",
+    "instructions": "Name the 4th planet from the sun. <span class='blur-text'>Mars</span>.",
+    "difficulty": 1
+  },
+  {
+    "id": "impersonation-3",
+    "type": "impersonation",
+    "title": "As a Chef",
+    "instructions": "[PLAYER] must describe how to play pool, but in the style of a dramatic TV chef.",
+    "difficulty": 2
+  },
+  {
+    "id": "charade-8",
+    "type": "charade",
+    "title": "Invisible Object",
+    "instructions": "[PLAYER] must interact with an invisible object, and the team must guess what the object is. The object is: <span class='blur-text'>a leaky water balloon</span>.",
+    "difficulty": 2
+  },
+  {
+    "id": "physical-14",
+    "type": "physical",
+    "title": "Tip Tap",
+    "instructions": "[PLAYER] must use a cue stick to gently tap a ball on the table five times in five seconds, without the ball rolling more than its own diameter.",
+    "difficulty": 3
+  },
+  {
+    "id": "pictionary-8",
+    "type": "pictionary",
+    "title": "Book Title",
+    "instructions": "[PLAYER] chooses a famous book and has 45 seconds to draw its title literally.",
+    "difficulty": 2
+  },
+  {
+    "id": "personal-12",
+    "type": "personal",
+    "title": "Go-To Snack",
+    "instructions": "[PLAYER] pantomimes making and eating their favorite snack. The team must guess what it is.",
+    "difficulty": 1
+  },
+  {
+    "id": "logic-4",
+    "type": "logic",
+    "title": "Light Switches",
+    "instructions": "A room has 3 switches outside, but only one turns on the light bulb inside. You can only enter the room once. How do you know which switch is correct? <span class='blur-text'>Flip switch 1 on for a minute, then off. Flip switch 2 on. Enter room. If light is on, it's #2. If off but bulb is warm, it's #1. If off and cold, it's #3.</span>",
+    "difficulty": 3
+  },
+  {
+    "id": "word-13",
+    "type": "word",
+    "title": "Alphabet Game",
+    "instructions": "Name an animal for the letter 'A', a food for 'B', and a place for 'C'. You have 15 seconds.",
+    "difficulty": 1
+  },
+  {
+    "id": "team-2",
+    "type": "team",
+    "title": "Group Pose",
+    "instructions": "The entire team must pose to recreate a famous movie poster. The adjudicator will choose the movie.",
+    "difficulty": 2
+  },
+  {
+    "id": "music-11",
+    "type": "music",
+    "title": "One Word Song",
+    "instructions": "[PLAYER] picks a famous song and must sing it using only the word 'break'. The team must guess the song.",
+    "difficulty": 3
+  },
+  {
+    "id": "physical-15",
+    "type": "physical",
+    "title": "Longest Reach",
+    "instructions": "[PLAYER] must place a coin on the pool table as far from any rail as possible, using only a cue stick to position it.",
+    "difficulty": 2
   }
 ]
