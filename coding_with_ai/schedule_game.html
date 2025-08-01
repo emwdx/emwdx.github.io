@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Schedule Trainer</title>
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --background-color: #f8f9fa;
+            --light-gray: #e9ecef;
+            --dark-gray: #343a40;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+            --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--background-color);
+            color: var(--dark-gray);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        h1, h2 {
+            color: var(--dark-gray);
+            text-align: center;
+            border-bottom: 2px solid var(--light-gray);
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        /* Schedule Input Table */
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .schedule-table th, .schedule-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .schedule-table th {
+            background-color: #f2f2f2;
+        }
+        
+        .schedule-table td:first-child {
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        /* Buttons */
+        .button-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            margin: 5px;
+        }
+        button:disabled {
+            background-color: var(--secondary-color);
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        button:hover:not(:disabled) {
+            background-color: #0056b3;
+        }
+
+        button.clear { background-color: var(--danger-color); }
+        button.clear:hover:not(:disabled) { background-color: #c82333; }
+        button.quiz-start-btn { background-color: var(--success-color); }
+        button.quiz-start-btn:hover:not(:disabled) { background-color: #218838; }
+        button.edit-schedule-btn { background-color: var(--info-color); }
+        button.edit-schedule-btn:hover:not(:disabled) { background-color: #138496; }
+
+        /* Quiz Section */
+        #quiz-section {
+            display: none; /* Hidden by default */
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid var(--light-gray);
+        }
+        
+        .quiz-container {
+            padding: 20px;
+            background-color: #fdfdff;
+            border: 1px solid var(--light-gray);
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        /* Points Display */
+        #points-display {
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: var(--light-gray);
+            border-radius: 5px;
+        }
+        
+        #points-display span {
+            margin: 0 15px;
+        }
+
+        #feedback {
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none; /* Hidden by default */
+        }
+        
+        .feedback-correct {
+            color: var(--success-color);
+            background-color: #e9f7ef;
+        }
+
+        .feedback-incorrect {
+            color: var(--danger-color);
+            background-color: #fbebed;
+        }
+
+        /* Level 1 Styles */
+        #level1-options button {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+            background-color: var(--secondary-color);
+        }
+        
+        /* Level 2 Styles */
+        #level2-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+
+        .drop-zone {
+            padding: 15px;
+            margin: 10px;
+            border: 2px dashed var(--secondary-color);
+            border-radius: 5px;
+            width: 150px;
+            min-height: 70px; /* Use min-height */
+            text-align: center;
+            transition: border-color 0.3s;
+            position: relative;
+        }
+        
+        .drop-zone span {
+            font-weight: bold;
+            color: var(--dark-gray);
+        }
+
+        .correct-answer-text {
+            font-size: 0.9em;
+            color: var(--danger-color);
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        
+        .draggable-course {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: grab;
+            text-align: center;
+        }
+        .draggable-course[draggable="false"] {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        #courses-pool {
+            padding: 10px;
+            margin-top: 20px;
+            border: 1px solid var(--light-gray);
+            background-color: #f9f9f9;
+            min-height: 50px;
+        }
+        
+        /* Level 3 Styles */
+        .selection-group {
+            margin-bottom: 20px;
+        }
+        .selection-group h4 {
+            margin-bottom: 10px;
+        }
+        .selection-group button {
+            background-color: var(--secondary-color);
+        }
+        .selection-group button.selected {
+            background-color: var(--primary-color);
+            box-shadow: 0 0 5px 2px rgba(0, 123, 255, 0.5);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Schedule Trainer</h1>
+
+        <div id="schedule-input-section">
+            <h2>Enter Your Schedule</h2>
+            <form id="schedule-form">
+                <table class="schedule-table">
+                    <thead>
+                        <tr>
+                            <th>Block</th>
+                            <th>Course Name</th>
+                            <th>Teacher Name</th>
+                        </tr>
+                    </thead>
+                    <tbody id="schedule-body"></tbody>
+                </table>
+                <div class="button-container">
+                    <button type="submit">Save and Start</button>
+                    <button type="button" class="clear" onclick="clearSchedule()">Clear All Data</button>
+                </div>
+            </form>
+        </div>
+        
+        <div id="edit-button-container" class="button-container" style="display:none;">
+             <button class="edit-schedule-btn" onclick="toggleScheduleView()">Show / Edit Schedule</button>
+        </div>
+
+        <div id="quiz-section">
+            <h2>Let's Practice!</h2>
+            <div id="points-display">
+                <span id="session-points">Session Points: 0</span>
+                <span id="total-points">Total Points: 0</span>
+            </div>
+            <div class="button-container">
+                <button class="quiz-start-btn" onclick="startLevel1()">Level 1: What's the Class? (+10pts)</button>
+                <button class="quiz-start-btn" onclick="startLevel2()">Level 2: Match the Day (+25pts)</button>
+                <button class="quiz-start-btn" onclick="startLevel3()">Level 3: Match Course & Teacher (+40pts)</button>
+            </div>
+            <div id="quiz-interface" class="quiz-container" style="display:none;">
+                <h3 id="quiz-question"></h3>
+                <div id="level1-options"></div>
+                <div id="level2-container">
+                    <div id="courses-pool"></div>
+                    <div id="schedule-slots"></div>
+                </div>
+                <div id="level3-container">
+                    <div id="course-selection" class="selection-group"></div>
+                    <div id="teacher-selection" class="selection-group"></div>
+                </div>
+                <div id="quiz-check-button" class="button-container"></div>
+            </div>
+            <div id="feedback"></div>
+        </div>
+    </div>
+
+    <script>
+        const scheduleForm = document.getElementById('schedule-form');
+        const scheduleBody = document.getElementById('schedule-body');
+        const scheduleInputSection = document.getElementById('schedule-input-section');
+        const editButtonContainer = document.getElementById('edit-button-container');
+        const quizSection = document.getElementById('quiz-section');
+        const quizInterface = document.getElementById('quiz-interface');
+        const feedbackDiv = document.getElementById('feedback');
+        
+        const blocks = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+        let currentQuizAnswer = null;
+        let sessionPoints = 0;
+        let totalPoints = 0;
+
+        // --- State variables to prevent repeats ---
+        let lastQuestionBlock = null;
+        let lastDayScheduleIndex = -1;
+
+        // --- Core Functions ---
+        function saveSchedule(e) {
+            e.preventDefault();
+            const schedule = {};
+            for (const block of blocks) {
+                const course = document.getElementById(`course-${block}`).value.trim();
+                const teacher = document.getElementById(`teacher-${block}`).value.trim();
+                schedule[block] = { course, teacher };
+            }
+            localStorage.setItem('studentSchedule', JSON.stringify(schedule));
+            showFeedback('Schedule Saved! Let the games begin!', 'correct');
+            if (Object.values(schedule).some(e => e.course && e.teacher)) {
+                quizSection.style.display = 'block';
+                scheduleInputSection.style.display = 'none';
+                editButtonContainer.style.display = 'block';
+                updatePointsDisplay();
+            }
+        }
+        
+        function loadSchedule() {
+            const schedule = JSON.parse(localStorage.getItem('studentSchedule')) || {};
+            let html = '';
+            blocks.forEach(block => {
+                const entry = schedule[block] || { course: '', teacher: '' };
+                html += `
+                    <tr>
+                        <td>Block ${block}</td>
+                        <td><input type="text" id="course-${block}" value="${entry.course}" placeholder="e.g., Algebra 1"></td>
+                        <td><input type="text" id="teacher-${block}" value="${entry.teacher}" placeholder="e.g., Ms. Smith"></td>
+                    </tr>
+                `;
+            });
+            scheduleBody.innerHTML = html;
+            const scheduleExists = Object.values(schedule).some(e => e.course && e.teacher);
+            if (scheduleExists) {
+                quizSection.style.display = 'block';
+                scheduleInputSection.style.display = 'none';
+                editButtonContainer.style.display = 'block';
+            }
+        }
+
+        function toggleScheduleView() {
+            const isHidden = scheduleInputSection.style.display === 'none';
+            scheduleInputSection.style.display = isHidden ? 'block' : 'none';
+        }
+
+        function clearSchedule() {
+            if (confirm('Are you sure you want to clear the entire schedule? This will also reset your total points!')) {
+                localStorage.removeItem('studentSchedule');
+                localStorage.removeItem('totalPoints');
+                sessionPoints = 0;
+                totalPoints = 0;
+                updatePointsDisplay();
+                loadSchedule();
+                quizSection.style.display = 'none';
+                scheduleInputSection.style.display = 'block';
+                editButtonContainer.style.display = 'none';
+                hideQuiz();
+                showFeedback('Schedule and Points Cleared.', 'incorrect');
+            }
+        }
+        
+        function showFeedback(message, type) {
+            feedbackDiv.textContent = message;
+            feedbackDiv.className = type === 'correct' ? 'feedback-correct' : 'feedback-incorrect';
+            feedbackDiv.style.display = 'block';
+        }
+
+        function hideQuiz() {
+            quizInterface.style.display = 'none';
+            feedbackDiv.style.display = 'none';
+            currentQuizAnswer = null;
+        }
+        
+        function getScheduleData() {
+            const data = JSON.parse(localStorage.getItem('studentSchedule'));
+            if (!data || Object.keys(data).length === 0) {
+                alert("Please save a complete schedule first!");
+                return null;
+            }
+            return data;
+        }
+        
+        // --- Points Functions ---
+        function loadPoints() {
+            totalPoints = parseInt(localStorage.getItem('totalPoints')) || 0;
+            sessionPoints = 0;
+            updatePointsDisplay();
+        }
+
+        function addPoints(amount) {
+            sessionPoints += amount;
+            totalPoints += amount;
+            localStorage.setItem('totalPoints', totalPoints);
+            updatePointsDisplay();
+        }
+        
+        function updatePointsDisplay() {
+            document.getElementById('session-points').textContent = `Session Points: ${sessionPoints}`;
+            document.getElementById('total-points').textContent = `Total Points: ${totalPoints}`;
+        }
+
+        // --- Quiz Level Functions ---
+        function cleanupQuizInterfaces() {
+            document.getElementById('level1-options').innerHTML = '';
+            document.getElementById('level2-container').style.display = 'none';
+            document.getElementById('level3-container').style.display = 'none';
+            document.getElementById('quiz-check-button').innerHTML = '';
+        }
+
+        // LEVEL 1
+        function startLevel1() {
+            hideQuiz();
+            cleanupQuizInterfaces();
+            const schedule = getScheduleData();
+            if (!schedule) return;
+
+            const validEntries = Object.entries(schedule).filter(([b, v]) => v.course && b !== lastQuestionBlock);
+            if (validEntries.length < 3) {
+                alert("Please enter at least 3 unique courses to start Level 1.");
+                return;
+            }
+
+            const [randomBlock, correctAnswer] = validEntries[Math.floor(Math.random() * validEntries.length)];
+            currentQuizAnswer = {block: randomBlock, course: correctAnswer.course};
+            lastQuestionBlock = randomBlock;
+            
+            const otherCourses = Object.values(schedule).map(v => v.course).filter(c => c && c !== correctAnswer.course);
+            const shuffledOthers = otherCourses.sort(() => 0.5 - Math.random());
+            const distractors = [...new Set(shuffledOthers)].slice(0, 2);
+
+            const options = [correctAnswer.course, ...distractors].sort(() => Math.random() - 0.5);
+
+            document.getElementById('quiz-question').textContent = `What class do you have in Block ${randomBlock}?`;
+            const optionsHtml = options.map(opt => `<button onclick="checkLevel1Answer('${opt.replace(/'/g, "\\'")}')">${opt}</button>`).join('');
+            document.getElementById('level1-options').innerHTML = optionsHtml;
+            quizInterface.style.display = 'block';
+        }
+        
+        function checkLevel1Answer(selectedCourse) {
+            document.querySelectorAll('#level1-options button').forEach(b => b.disabled = true); // Lock buttons
+            if (selectedCourse === currentQuizAnswer.course) {
+                addPoints(10);
+                showFeedback('Correct!', 'correct');
+                setTimeout(startLevel1, 2000); 
+            } else {
+                showFeedback(`Incorrect. The class for Block ${currentQuizAnswer.block} is ${currentQuizAnswer.course}.`, 'incorrect');
+                setTimeout(startLevel1, 3000);
+            }
+        }
+        
+        // LEVEL 2
+        let dragSrcEl = null;
+        
+        function handleDragStart(e) { this.style.opacity = '0.4'; dragSrcEl = this; }
+        function handleDragOver(e) { e.preventDefault(); return false; }
+        function handleDrop(e) {
+            e.preventDefault();
+            if (this.children.length > 1) {
+                document.getElementById('courses-pool').appendChild(this.children[1]);
+            }
+            this.appendChild(dragSrcEl);
+            dragSrcEl.style.opacity = '1';
+            return false;
+        }
+        
+        function startLevel2() {
+            hideQuiz();
+            cleanupQuizInterfaces();
+            const schedule = getScheduleData();
+            if (!schedule) return;
+            
+            const cascadingSchedules = [
+                ['A', 'B', 'C', 'D'], ['B', 'C', 'D', 'A'], ['C', 'D', 'A', 'B'], ['D', 'A', 'B', 'C'],
+                ['E', 'F', 'G', 'H'], ['F', 'G', 'H', 'E'], ['G', 'H', 'E', 'F'], ['H', 'E', 'F', 'G']
+            ];
+
+            let scheduleIndex;
+            do {
+                scheduleIndex = Math.floor(Math.random() * cascadingSchedules.length);
+            } while (cascadingSchedules.length > 1 && scheduleIndex === lastDayScheduleIndex);
+            lastDayScheduleIndex = scheduleIndex;
+            
+            const dayBlocks = cascadingSchedules[scheduleIndex];
+            currentQuizAnswer = dayBlocks;
+            
+            const dayCourses = dayBlocks.map(b => schedule[b] ? schedule[b].course : '').filter(Boolean);
+            if (dayCourses.length !== 4) {
+                alert(`To play, please enter courses for blocks ${dayBlocks.join(', ')}.`);
+                return;
+            }
+            
+            document.getElementById('level2-container').style.display = 'flex';
+            document.getElementById('quiz-question').textContent = `Match your courses for the day: ${dayBlocks.join(', ')}`;
+            
+            const coursesPool = document.getElementById('courses-pool');
+            coursesPool.innerHTML = '<h4>Courses to place:</h4>';
+            dayCourses.sort(() => Math.random() - 0.5).forEach(course => {
+                const courseDiv = document.createElement('div');
+                courseDiv.textContent = course;
+                courseDiv.className = 'draggable-course';
+                courseDiv.draggable = true;
+                courseDiv.addEventListener('dragstart', handleDragStart);
+                coursesPool.appendChild(courseDiv);
+            });
+            
+            const scheduleSlots = document.getElementById('schedule-slots');
+            scheduleSlots.innerHTML = '<h4>Day Schedule:</h4>';
+            dayBlocks.forEach(block => {
+                const slotDiv = document.createElement('div');
+                slotDiv.className = 'drop-zone';
+                slotDiv.id = `slot-${block}`;
+                slotDiv.innerHTML = `<span>Block ${block}</span>`;
+                slotDiv.addEventListener('dragover', handleDragOver);
+                slotDiv.addEventListener('drop', handleDrop);
+                scheduleSlots.appendChild(slotDiv);
+            });
+            
+            document.getElementById('quiz-check-button').innerHTML = '<button onclick="checkLevel2Answer()">Check Answers</button>';
+            quizInterface.style.display = 'block';
+        }
+        
+        function checkLevel2Answer() {
+            document.querySelector('#quiz-check-button button').disabled = true; // Lock button
+            document.querySelectorAll('.draggable-course').forEach(c => c.draggable = false); // Lock dragging
+
+            const schedule = getScheduleData();
+            let allCorrect = true;
+            for(const block of currentQuizAnswer) {
+                const slot = document.getElementById(`slot-${block}`);
+                const droppedCourseEl = slot.getElementsByClassName('draggable-course')[0];
+                const correctCourse = schedule[block].course;
+
+                if (!droppedCourseEl || droppedCourseEl.textContent !== correctCourse) {
+                    allCorrect = false;
+                    slot.style.borderColor = 'var(--danger-color)';
+                    // Show correct answer
+                    const correctAnswerText = document.createElement('div');
+                    correctAnswerText.className = 'correct-answer-text';
+                    correctAnswerText.textContent = `(is ${correctCourse})`;
+                    slot.appendChild(correctAnswerText);
+                } else {
+                    slot.style.borderColor = 'var(--success-color)';
+                }
+            }
+            
+            if (allCorrect) {
+                addPoints(25);
+                showFeedback('Perfect Match!', 'correct');
+                setTimeout(startLevel2, 2500);
+            } else {
+                showFeedback('Not quite. The correct answers are now shown.', 'incorrect');
+                setTimeout(startLevel2, 4000);
+            }
+        }
+        
+        // LEVEL 3
+        let level3Selections = { course: null, teacher: null };
+        function startLevel3() {
+            hideQuiz();
+            cleanupQuizInterfaces();
+            const schedule = getScheduleData();
+            if (!schedule) return;
+
+            const validEntries = Object.entries(schedule).filter(([b, v]) => v.course && v.teacher && b !== lastQuestionBlock);
+             if (validEntries.length < 1) {
+                lastQuestionBlock = null; // Reset if we run out of new blocks
+                startLevel3();
+                return;
+            }
+            
+            document.getElementById('level3-container').style.display = 'block';
+            
+            const allCourses = [...new Set(Object.values(schedule).map(e => e.course).filter(Boolean))].sort(() => Math.random() - 0.5);
+            const allTeachers = [...new Set(Object.values(schedule).map(e => e.teacher).filter(Boolean))].sort(() => Math.random() - 0.5);
+            
+            const [randomBlock, answer] = validEntries[Math.floor(Math.random() * validEntries.length)];
+            currentQuizAnswer = answer;
+            lastQuestionBlock = randomBlock;
+            
+            document.getElementById('quiz-question').textContent = `Who is your teacher and what is your course for Block ${randomBlock}?`;
+            
+            let html = '<h4>Select the Course:</h4>';
+            allCourses.forEach(c => html += `<button onclick="selectLevel3(this, 'course')">${c}</button>`);
+            document.getElementById('course-selection').innerHTML = html;
+
+            html = '<h4>Select the Teacher:</h4>';
+            allTeachers.forEach(t => html += `<button onclick="selectLevel3(this, 'teacher')">${t}</button>`);
+            document.getElementById('teacher-selection').innerHTML = html;
+            
+            document.getElementById('quiz-check-button').innerHTML = '<button onclick="checkLevel3Answer()">Check Answer</button>';
+            level3Selections = { course: null, teacher: null };
+            quizInterface.style.display = 'block';
+        }
+
+        function selectLevel3(element, type) {
+            level3Selections[type] = element.textContent;
+            const group = element.parentElement;
+            group.querySelectorAll('button').forEach(btn => btn.classList.remove('selected'));
+            element.classList.add('selected');
+        }
+        
+        function checkLevel3Answer() {
+            document.querySelector('#quiz-check-button button').disabled = true;
+            document.querySelectorAll('#level3-container button').forEach(b => b.disabled = true);
+
+            if (!level3Selections.course || !level3Selections.teacher) {
+                alert("Please select both a course and a teacher.");
+                document.querySelector('#quiz-check-button button').disabled = false;
+                document.querySelectorAll('#level3-container button').forEach(b => b.disabled = false);
+                return;
+            }
+            
+            const isCourseCorrect = level3Selections.course === currentQuizAnswer.course;
+            const isTeacherCorrect = level3Selections.teacher === currentQuizAnswer.teacher;
+            
+            if (isCourseCorrect && isTeacherCorrect) {
+                addPoints(40);
+                showFeedback('Exactly right!', 'correct');
+                setTimeout(startLevel3, 2000);
+            } else {
+                showFeedback(`Incorrect. The answer is ${currentQuizAnswer.course} with ${currentQuizAnswer.teacher}.`, 'incorrect');
+                setTimeout(startLevel3, 3500);
+            }
+        }
+        
+        // --- Event Listeners and Initializer ---
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSchedule();
+            loadPoints();
+        });
+        scheduleForm.addEventListener('submit', saveSchedule);
+    </script>
+</body>
+</html>```
