@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Name Learning App</title>
+    <style>
+        html, body {
+            height: 100%;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            flex-direction: column; /* Ensure footer can be pushed to the bottom */
+            align-items: center;
+            background-color: #f4f4f9;
+            text-align: center;
+            margin: 0;
+        }
+        main.container {
+            flex: 1 0 auto; /* Allow main content to grow and push footer down */
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 800px;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        button, input[type="text"], input[type="file"] {
+            font-size: 1rem;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            margin: 5px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        button:disabled {
+            background-color: #cccccc;
+            border-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .edit-btn { background-color: #17a2b8; border-color: #17a2b8; }
+        .edit-btn:hover { background-color: #138496; }
+        .delete-btn { background-color: #dc3545; border-color: #dc3545; }
+        .delete-btn:hover { background-color: #c82333; }
+        .back-btn, .info-btn { background-color: #6c757d; border-color: #6c757d;}
+        .back-btn:hover, .info-btn:hover { background-color: #5a6268; }
+        .section {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        #info-box {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: left;
+        }
+        #info-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        #info-header h2 {
+            margin: 0;
+            font-size: 1.25rem;
+        }
+        .privacy-statement {
+            font-weight: bold;
+            color: #28a745;
+            background-color: #e9f7ef;
+            border: 1px solid #a7d7b9;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        #info-content ul { padding-left: 20px; line-height: 1.6; }
+        #class-list ul { list-style: none; padding: 0; }
+        #class-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #eee;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            flex-wrap: wrap;
+        }
+        #edit-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 20px;
+            margin-top: 1.5rem;
+        }
+        .thumbnail-card { display: flex; flex-direction: column; align-items: center; }
+        .thumbnail-card img { width: 150px; height: 150px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; }
+        .thumbnail-card input { width: 140px; margin-top: 10px; text-align: center; }
+        #student-image { max-width: 100%; height: auto; max-height: 300px; border-radius: 8px; margin-bottom: 1rem; }
+        #image-choices img {
+            width: 150px; height: 150px; object-fit: cover; margin: 5px;
+            border: 3px solid transparent; border-radius: 8px; cursor: pointer;
+            transition: border-color 0.3s, transform 0.3s;
+        }
+        #image-choices img:hover { transform: scale(1.05); border-color: #007bff; }
+        #feedback { margin-top: 1rem; font-size: 1.2rem; font-weight: bold; }
+        .correct { color: #28a745; }
+        .incorrect { color: #dc3545; }
+        .hidden { display: none; }
+
+        /* Footer Styles */
+        .app-footer {
+            width: 100%;
+            padding: 1.5rem 2rem;
+            border-top: 1px solid #dee2e6;
+            background-color: #fff;
+            flex-shrink: 0; /* Prevent footer from shrinking */
+        }
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .social-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+        }
+        .social-links li {
+            margin-left: 1.5rem;
+        }
+        .social-links a {
+            color: #6c757d; /* a.text-muted */
+            transition: color 0.2s;
+        }
+        .social-links a:hover {
+            color: #343a40;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SVG Icon Definitions -->
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+      <symbol id="linkedin" viewBox="0 0 16 16">
+        <path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854V1.146zm4.943 12.248V6.169H2.542v7.225h2.401zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248-.822 0-1.359.54-1.359 1.248 0 .694.521 1.248 1.327 1.248h.016zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.377 0-1.937.73-2.25 1.256h.016a5.54 5.54 0 0 1 .016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225h2.4z"/>
+      </symbol>
+      <symbol id="twitter" viewBox="0 0 16 16">
+        <path d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334 0-.14 0-.282-.006-.422A6.685 6.685 0 0 0 16 3.542a6.658 6.658 0 0 1-1.889.518 3.301 3.301 0 0 0 1.447-1.817 6.533 6.533 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.325 9.325 0 0 1-6.767-3.429 3.289 3.289 0 0 0 1.018 4.382A3.323 3.323 0 0 1 .64 6.575v.045a3.288 3.288 0 0 0 2.632 3.218 3.203 3.203 0 0 1-.865.115 3.23 3.23 0 0 1-.614-.057 3.283 3.283 0 0 0 3.067 2.277A6.588 6.588 0 0 1 .78 13.58a6.32 6.32 0 0 1-.78-.045A9.344 9.344 0 0 0 5.026 15z"/>
+      </symbol>
+      <symbol id="instagram" viewBox="0 0 16 16">
+        <path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.927 3.927 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.916 3.916 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.926 3.926 0 0 0-.923-1.417A3.911 3.911 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0h.003zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599.28.28.453.546.598.92.11.282.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.47 2.47 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.478 2.478 0 0 1-.92-.598 2.48 2.48 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233s.008-2.388.046-3.231c.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.282-.11.705-.24 1.485-.276.843-.038 1.096-.047 3.232-.047h.001zm4.908 1.327a.896.896 0 1 0 0 1.792.896.896 0 0 0 0-1.792zm-1.803 2.411a3.487 3.487 0 1 0-7.07 0 3.487 3.487 0 0 0 7.07 0zm-3.535 2.442a2.487 2.487 0 1 1 0-4.975 2.487 2.487 0 0 1 0 4.975z"/>
+      </symbol>
+      <symbol id="github" viewBox="0 0 16 16">
+        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+      </symbol>
+    </svg>
+
+    <main class="container">
+        <!-- Information Box -->
+        <div id="info-box" class="section">
+            <div id="info-header">
+                <h2>Welcome & Instructions</h2>
+                <button id="toggle-info-btn" class="info-btn">Hide</button>
+            </div>
+            <div id="info-content">
+                <p class="privacy-statement">
+                    <strong>Your Data is Safe:</strong> All photos and class information are stored directly in your browser on this computer. Nothing is ever uploaded to a server.
+                </p>
+                <h3>How to Use This App:</h3>
+                <ul>
+                    <li><strong>1. Add a Class:</strong> In the "Add a New Class" section below, enter a name, select all the student photos, and click "Save Class".</li>
+                    <li><strong>2. Edit Names:</strong> Click the "Edit" button next to a class. Type the correct name under each photo and click "Save Changes".</li>
+                    <li><strong>3. Study:</strong> Click the "Study" button next to a class to begin learning!</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main App Screens -->
+        <div id="home-screen">
+            <h1>Student Name Learning App</h1>
+            <div id="class-manager" class="section">
+                <h2>My Classes</h2>
+                <div id="class-list"></div>
+            </div>
+            <div id="add-class-section" class="section">
+                <h2>Add a New Class</h2>
+                <input type="text" id="class-name-input" placeholder="Enter Class Name">
+                <input type="file" id="image-loader" multiple accept="image/png, image/jpeg, image/gif">
+                <button id="save-class-btn" disabled>Save Class</button>
+                <p id="upload-status"></p>
+            </div>
+        </div>
+        <div id="edit-screen" class="hidden">
+            <h2 id="edit-title"></h2>
+            <button onclick="handleSaveChanges()" class="back-btn">Save Changes and Go Back</button>
+            <div id="edit-grid"></div>
+        </div>
+        <div id="level-selection" class="hidden">
+            <h2 id="level-title"></h2>
+            <button onclick="startLevel(1)">Level 1: Guess the Name</button>
+            <button onclick="startLevel(2)">Level 2: Guess the Face</button>
+            <button onclick="startLevel(3)">Level 3: All Names Challenge</button>
+            <button onclick="showHomeScreen()" class="back-btn">Back to All Classes</button>
+        </div>
+        <div id="game-board" class="hidden">
+            <h2 id="instruction"></h2>
+            <img id="student-image" src="" alt="Student Picture" class="hidden">
+            <div id="choices"></div>
+            <div id="image-choices"></div>
+            <div id="feedback"></div>
+            <button id="next-button" class="hidden" onclick="nextStudent()">Next</button>
+            <button onclick="showLevelSelection()" class="back-btn">Back to Levels</button>
+        </div>
+    </main>
+
+    <footer class="app-footer">
+        <div class="footer-content">
+            <span><a href = "https://evanweinberg.com">© 2025 Evan Weinberg</a></span>
+            <ul class="social-links">
+                <li><a href="https://www.linkedin.com/in/evan-weinberg-b89a858/"><svg width="24" height="24"><use xlink:href="#linkedin"></use></svg></a></li>
+                <li><a href="https://twitter.com/emwdx"><svg width="24" height="24"><use xlink:href="#twitter"></use></svg></a></li>
+                <li><a href="https://instagram.com/emwdx"><svg width="24" height="24"><use xlink:href="#instagram"></use></svg></a></li>
+                <li><a href="https://github.com/emwdx"><svg width="24" height="24"><use xlink:href="#github"></use></svg></a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <script>
+        // --- Full working script from previous steps ---
+        let currentClassName = null;
+        let students = [];
+        let currentStudent = null;
+        let currentLevel = 0;
+        let tempFiles = [];
+
+        const DOM = {
+            homeScreen: document.getElementById('home-screen'),
+            editScreen: document.getElementById('edit-screen'),
+            levelSelection: document.getElementById('level-selection'),
+            gameBoard: document.getElementById('game-board'),
+            classNameInput: document.getElementById('class-name-input'),
+            imageLoader: document.getElementById('image-loader'),
+            saveClassBtn: document.getElementById('save-class-btn'),
+            uploadStatus: document.getElementById('upload-status'),
+            classList: document.getElementById('class-list'),
+            editTitle: document.getElementById('edit-title'),
+            editGrid: document.getElementById('edit-grid'),
+            levelTitle: document.getElementById('level-title'),
+            toggleInfoBtn: document.getElementById('toggle-info-btn'),
+            infoContent: document.getElementById('info-content')
+        };
+
+        const AppStorage = {
+            getClasses: () => JSON.parse(localStorage.getItem('studentClasses') || '{}'),
+            saveClasses: (classes) => localStorage.setItem('studentClasses', JSON.stringify(classes)),
+            saveClass: function(className, classData) {
+                const classes = this.getClasses();
+                classes[className] = classData;
+                this.saveClasses(classes);
+            },
+            deleteClass: function(className) {
+                const classes = this.getClasses();
+                delete classes[className];
+                this.saveClasses(classes);
+            }
+        };
+
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        async function handleSaveClass() {
+            const className = DOM.classNameInput.value.trim();
+            if (!className || tempFiles.length === 0) return;
+
+            DOM.saveClassBtn.disabled = true;
+            DOM.uploadStatus.textContent = "Saving class... This may take a moment.";
+
+            const classData = [];
+            for (const file of tempFiles) {
+                const name = file.name.substring(0, file.name.lastIndexOf('.'));
+                const base64 = await fileToBase64(file);
+                classData.push({ id: `id_${Date.now()}_${Math.random()}`, name, src: base64 });
+            }
+
+            AppStorage.saveClass(className, classData);
+            resetAddClassForm();
+            renderClassList();
+        }
+        
+        function handleDeleteClass(className) {
+            if (confirm(`Are you sure you want to delete the class "${className}"? This cannot be undone.`)) {
+                AppStorage.deleteClass(className);
+                renderClassList();
+            }
+        }
+
+        function handleEditClass(className) {
+            currentClassName = className;
+            const classes = AppStorage.getClasses();
+            const classData = classes[className];
+            
+            DOM.editTitle.textContent = `Editing: ${className}`;
+            DOM.editGrid.innerHTML = '';
+
+            classData.forEach((student) => {
+                const card = document.createElement('div');
+                card.className = 'thumbnail-card';
+                card.innerHTML = `
+                    <img src="${student.src}" alt="Student photo">
+                    <input type="text" value="${student.name}" data-student-id="${student.id}">
+                `;
+                DOM.editGrid.appendChild(card);
+            });
+            showScreen('edit-screen');
+        }
+
+        function handleSaveChanges() {
+            const classes = AppStorage.getClasses();
+            const currentClassData = classes[currentClassName];
+            const nameInputs = DOM.editGrid.querySelectorAll('input[type="text"]');
+
+            nameInputs.forEach(input => {
+                const studentId = input.getAttribute('data-student-id');
+                const student = currentClassData.find(s => s.id === studentId);
+                if (student) {
+                    student.name = input.value.trim() || "Unnamed";
+                }
+            });
+
+            AppStorage.saveClass(currentClassName, currentClassData);
+            renderClassList();
+            showHomeScreen();
+        }
+
+        function showScreen(screenId) {
+            ['home-screen', 'edit-screen', 'level-selection', 'game-board'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            document.getElementById(screenId).classList.remove('hidden');
+        }
+        
+        function showHomeScreen() { showScreen('home-screen'); }
+        function showLevelSelection() { showScreen('level-selection'); }
+
+        function renderClassList() {
+            const classes = AppStorage.getClasses();
+            const classNames = Object.keys(classes);
+            DOM.classList.innerHTML = '';
+
+            if (classNames.length === 0) {
+                DOM.classList.innerHTML = '<p>No classes saved yet. Add one below!</p>';
+                return;
+            }
+
+            const ul = document.createElement('ul');
+            classNames.forEach(name => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <span>${name} (${classes[name].length} students)</span>
+                    <div>
+                        <button onclick="chooseClassToStudy('${name}')">Study</button>
+                        <button class="edit-btn" onclick="handleEditClass('${name}')">Edit</button>
+                        <button class="delete-btn" onclick="handleDeleteClass('${name}')">Delete</button>
+                    </div>
+                `;
+                ul.appendChild(li);
+            });
+            DOM.classList.appendChild(ul);
+        }
+
+        function resetAddClassForm() {
+            DOM.classNameInput.value = '';
+            DOM.imageLoader.value = '';
+            DOM.uploadStatus.textContent = '';
+            DOM.saveClassBtn.disabled = true;
+            tempFiles = [];
+        }
+
+        function updateSaveButtonState() {
+            const hasClassName = DOM.classNameInput.value.trim() !== '';
+            const hasFiles = tempFiles.length > 0;
+            DOM.saveClassBtn.disabled = !(hasClassName && hasFiles);
+        }
+
+        function handleFileSelection(event) {
+            tempFiles = Array.from(event.target.files);
+            DOM.uploadStatus.textContent = `${tempFiles.length} files selected.`;
+            updateSaveButtonState();
+        }
+
+        function chooseClassToStudy(className) {
+            currentClassName = className;
+            const classes = AppStorage.getClasses();
+            students = classes[currentClassName];
+            if(students.length < 3) {
+                alert("You need at least 3 students in a class to start a study session.");
+                return;
+            }
+            DOM.levelTitle.textContent = `Studying: ${currentClassName}`;
+            showLevelSelection();
+        }
+
+        function startLevel(level) {
+            currentLevel = level;
+            showScreen('game-board');
+            nextStudent();
+        }
+
+        function nextStudent() {
+            document.getElementById('feedback').textContent = '';
+            document.getElementById('next-button').classList.add('hidden');
+            document.getElementById('student-image').classList.add('hidden');
+            document.getElementById('choices').innerHTML = '';
+            document.getElementById('image-choices').innerHTML = '';
+
+            currentStudent = students[Math.floor(Math.random() * students.length)];
+            if (currentLevel === 1) level1();
+            else if (currentLevel === 2) level2();
+            else if (currentLevel === 3) level3();
+        }
+        
+        function level1() {
+            document.getElementById('instruction').textContent = 'Whose picture is this?';
+            const studentImage = document.getElementById('student-image');
+            studentImage.src = currentStudent.src;
+            studentImage.classList.remove('hidden');
+
+            const correctName = currentStudent.name;
+            const otherNames = shuffleArray(Array.from(new Set(students.map(s => s.name).filter(name => name !== correctName))));
+            const finalChoices = [correctName];
+            
+            for (let i = 0; i < 2 && i < otherNames.length; i++) {
+                finalChoices.push(otherNames[i]);
+            }
+            
+            shuffleArray(finalChoices);
+
+            const choicesDiv = document.getElementById('choices');
+            choicesDiv.innerHTML = '';
+            finalChoices.forEach(name => {
+                const button = document.createElement('button');
+                button.textContent = name;
+                button.onclick = () => checkNameAnswer(name);
+                choicesDiv.appendChild(button);
+            });
+        }
+
+        function level2() {
+            document.getElementById('instruction').textContent = `Find the picture of ${currentStudent.name}`;
+            const imageChoicesDiv = document.getElementById('image-choices');
+            const shuffledStudents = shuffleArray([...students]);
+
+            shuffledStudents.forEach(student => {
+                const img = document.createElement('img');
+                img.src = student.src;
+                img.setAttribute('data-student-id', student.id);
+                img.onclick = () => checkImageAnswer(student.id);
+                imageChoicesDiv.appendChild(img);
+            });
+        }
+
+        function level3() {
+            document.getElementById('instruction').textContent = 'Whose picture is this?';
+            document.getElementById('student-image').src = currentStudent.src;
+            document.getElementById('student-image').classList.remove('hidden');
+
+            const choicesDiv = document.getElementById('choices');
+            const allNames = shuffleArray(students.map(s => s.name));
+            allNames.forEach(name => {
+                const button = document.createElement('button');
+                button.textContent = name;
+                button.onclick = () => checkNameAnswer(name);
+                choicesDiv.appendChild(button);
+            });
+        }
+
+        function checkNameAnswer(selectedName) {
+            const feedback = document.getElementById('feedback');
+            const isCorrect = selectedName === currentStudent.name;
+            feedback.className = isCorrect ? 'correct' : 'incorrect';
+            feedback.textContent = isCorrect ? 'Correct!' : `Incorrect. This is ${currentStudent.name}.`;
+            
+            document.querySelectorAll('#choices button').forEach(button => button.disabled = true);
+            document.getElementById('next-button').classList.remove('hidden');
+        }
+
+        function checkImageAnswer(selectedId) {
+            const feedback = document.getElementById('feedback');
+            const isCorrect = selectedId === currentStudent.id;
+            feedback.className = isCorrect ? 'correct' : 'incorrect';
+            feedback.textContent = isCorrect ? 'Correct!' : 'Incorrect. The correct picture is highlighted.';
+
+            document.querySelectorAll('#image-choices img').forEach(img => {
+                img.onclick = null;
+                const imgId = img.getAttribute('data-student-id');
+                if (imgId === currentStudent.id) img.style.borderColor = '#28a745';
+                else if (imgId === selectedId) img.style.borderColor = '#dc3545';
+            });
+            document.getElementById('next-button').classList.remove('hidden');
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // --- Initial Load and Event Listeners ---
+        document.addEventListener('DOMContentLoaded', () => {
+            DOM.saveClassBtn.addEventListener('click', handleSaveClass);
+            DOM.imageLoader.addEventListener('change', handleFileSelection);
+            DOM.classNameInput.addEventListener('input', updateSaveButtonState);
+
+            DOM.toggleInfoBtn.addEventListener('click', () => {
+                const isHidden = DOM.infoContent.classList.toggle('hidden');
+                DOM.toggleInfoBtn.textContent = isHidden ? 'Show' : 'Hide';
+                localStorage.setItem('infoBoxHidden', isHidden);
+            });
+
+            if (localStorage.getItem('infoBoxHidden') === 'true') {
+                DOM.infoContent.classList.add('hidden');
+                DOM.toggleInfoBtn.textContent = 'Show';
+            }
+
+            renderClassList();
+        });
+    </script>
+</body>
+</html>
