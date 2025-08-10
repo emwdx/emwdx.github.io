@@ -1,0 +1,1168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Minimalist AI Co-Writer</title>
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+<header>
+  <div class="toolbar">
+    <div class="left">
+      <select id="provider"><option value="local">Local model</option><option value="openai">OpenAI</option></select>
+      <input id="baseUrl" class="wide" type="text" placeholder="Base URL" />
+      <input id="model" type="text" placeholder="Model id/name (LM Studio)" value = "gpt-5-mini"/>
+      <input id="apiKey" type="password" placeholder="API key (optional)" />
+      <span class="pill" id="confPill">style confidence: 0%</span>
+    </div>
+    <div class="right">
+      <button id="toggleMeta">Show Summary/Profile</button>
+      <button id="aiContinue" class="primary">AI Continue (⌘↵)</button>
+      <button id="exportBtn">Export .txt</button>
+      <button id="exportMdColoredBtn">Export .md (colored)</button>
+      <button id="resetBtn">Reset</button>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+  <div class="sm hint">Tip: In LM Studio, enable “Allow CORS”. Default URL here targets your LAN host. For OpenAI, the Base URL is fixed and your API key is required.</div>
+
+  <div id="starterRow">
+    <input id="seedInput" type="text" placeholder="Starter (teacher prompt or topic)…" />
+    <button id="insertSeed">Insert Seed</button>
+    <button id="aiSeed">AI Seed</button>
+  </div>
+
+  <div id="editor" contenteditable="true" spellcheck="true"
+       placeholder="Write the first sentence in your own voice…"></div>
+
+  <div class="status" id="status">Ready.</div>
+
+  <div class="meta" id="meta">
+    <div style="flex:1;">
+      <div class="row"><strong>Story Summary</strong> <span class="hint">(sent to the model each turn)</span></div>
+      <textarea id="summaryBox"></textarea>
+    </div>
+    <div style="flex:1;">
+      <div class="row"><strong>Writer Profile</strong> <span class="hint">(evolves over time; stored locally)</span></div>
+      <textarea id="profileBox"></textarea>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ========= Local storage keys ========= */
+const LS = {
+  baseUrl: 'coauthor_baseUrl',
+  provider: 'coauthor_provider',
+  model: 'coauthor_model',
+  key: 'coauthor_apiKey',
+  story: 'coauthor_story',
+  story_html: 'coauthor_story_html',
+  profile: 'coauthor_profile',
+  summary: 'coauthor_summary',
+  lastLen: 'coauthor_lastLen',
+  lastText: 'coauthor_lastText' // NEW
+};
+
+const defaultProfile = {
+  style_traits: [],
+  avg_sentence_length: 0,
+  punctuation_tendencies: [],
+  tone: "neutral",
+  lexical_variety: "unknown",
+  confidence: 0.0,
+  notes: "insufficient data",
+  sample_count: 0
+};
+
+// UI refs
+const editor = document.getElementById('editor');
+const apiKeyInput = document.getElementById('apiKey');
+const modelInput = document.getElementById('model');
+const baseUrlInput = document.getElementById('baseUrl');
+const statusEl = document.getElementById('status');
+const confPill = document.getElementById('confPill');
+const summaryBox = document.getElementById('summaryBox');
+const profileBox = document.getElementById('profileBox');
+const meta = document.getElementById('meta');
+
+/* ========= Init ========= */
+(function init() {
+  baseUrlInput.value = localStorage.getItem(LS.baseUrl) || 'http://192.168.1.11:1234/v1/chat/completions';
+  modelInput.value = localStorage.getItem(LS.model) || 'your-model-name';
+  apiKeyInput.value = localStorage.getItem(LS.key) || '';
+
+  // Provider selector
+  const providerSel = document.getElementById('provider');
+  providerSel.value = localStorage.getItem(LS.provider) || 'local';
+  updateProviderUI();
+
+  const storyHTML = localStorage.getItem(LS.story_html);
+  if (storyHTML) {
+    setEditorHTML(storyHTML);
+    cleanupAISpans();
+  } else {
+    const story = localStorage.getItem(LS.story) || '';
+    setEditorText(story);
+  }
+
+  summaryBox.value = localStorage.getItem(LS.summary) || '';
+  profileBox.value = JSON.stringify(loadProfile(), null, 2);
+  updateConfidencePill(loadProfile().confidence);
+
+  if (!localStorage.getItem(LS.lastLen)) localStorage.setItem(LS.lastLen, String(getEditorText().length));
+  if (!localStorage.getItem(LS.lastText)) localStorage.setItem(LS.lastText, getEditorText());
+  if (!localStorage.getItem(LS.provider)) localStorage.setItem(LS.provider, document.getElementById('provider').value);
+})();
+
+// Persist basics
+[baseUrlInput, modelInput, apiKeyInput].forEach(inp => {
+  inp.addEventListener('change', () => {
+    if (inp === baseUrlInput) localStorage.setItem(LS.baseUrl, inp.value.trim());
+    if (inp === modelInput) localStorage.setItem(LS.model, inp.value.trim());
+    if (inp === apiKeyInput) localStorage.setItem(LS.key, inp.value);
+  });
+});
+// Provider change
+const providerSel = document.getElementById('provider');
+providerSel.addEventListener('change', () => {
+  localStorage.setItem(LS.provider, providerSel.value);
+  updateProviderUI();
+});
+
+// UI actions
+const toggleBtn = document.getElementById('toggleMeta');
+
+toggleBtn.onclick = () => {
+  meta.classList.toggle('open');                           // toggle CSS class
+  const isOpen = meta.classList.contains('open');
+  toggleBtn.textContent = isOpen ? 'Hide Summary/Profile' : 'Show Summary/Profile';
+
+  // if opening, ensure boxes have the latest values and scroll into view
+  if (isOpen) {
+    summaryBox.value = localStorage.getItem(LS.summary) || summaryBox.value || '';
+    try { profileBox.value = JSON.stringify(loadProfile(), null, 2); } catch {}
+    meta.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+};
+
+document.getElementById('resetBtn').onclick = () => {
+  if (!confirm('Reset story, summary, and profile?')) return;
+  setEditorText('');
+  summaryBox.value = '';
+  saveProfile(defaultProfile);
+  profileBox.value = JSON.stringify(defaultProfile, null, 2);
+  updateConfidencePill(0);
+  localStorage.setItem(LS.lastLen, '0');
+  localStorage.removeItem(LS.story_html);
+  persistStory();
+  setStatus('Reset complete.');
+};
+
+document.getElementById('exportBtn').onclick = () => {
+  const blob = new Blob([getEditorText()], { type: 'text/plain;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'coauthored_story.txt';
+  a.click();
+  URL.revokeObjectURL(a.href);
+};
+
+// === Colored exporters ===
+function escapeHtml(s){
+  return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
+}
+function nodeToColoredHTML(node){
+  if (node.nodeType === 3) {
+    return escapeHtml(node.nodeValue).replace(/\n/g,'<br/>');
+  }
+  if (node.nodeType !== 1) return '';
+  const el = node;
+  if (el.classList && el.classList.contains('turn-anchor')) return '';
+  if (el.tagName === 'BR') return '<br/>';
+  let inner = '';
+  el.childNodes.forEach(n => { inner += nodeToColoredHTML(n); });
+  if (el.classList && el.classList.contains('ai-chunk')) {
+    return '<span style="color:#ffb000;text-decoration:underline dotted rgba(255,176,0,0.35);text-underline-offset:2px;">' + inner + '</span>';
+  }
+  return inner; // other spans/elements flatten
+}
+function editorToColoredHTML(){
+  let out = '';
+  editor.childNodes.forEach(n => { out += nodeToColoredHTML(n); });
+  return out;
+}
+function downloadFile(name, content, mime){
+  const blob = new Blob([content], {type: mime});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+document.getElementById('exportMdColoredBtn').onclick = () => {
+  const html = editorToColoredHTML();
+  // Markdown allows inline HTML; ship as-is
+  downloadFile('coauthored_story_colored.md', html + '\n', 'text/markdown;charset=utf-8');
+};
+
+
+document.getElementById('insertSeed').onclick = () => {
+  const seed = document.getElementById('seedInput').value.trim();
+  if (!seed) return;
+  insertText(seed.endsWith('\n') ? seed : seed + '\n\n');
+};
+
+document.getElementById('aiSeed').onclick = async () => {
+  const topic = document.getElementById('seedInput').value.trim() || 'an open-ended adventure';
+  await aiSeedFirstLine(topic);
+};
+
+document.getElementById('aiContinue').onclick = () => continueWithAI();
+
+// Cmd/Ctrl+Enter
+document.addEventListener('keydown', (e) => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+    e.preventDefault();
+    continueWithAI();
+  }
+});
+
+// Save story on edit (debounced)
+let saveTimer = null;
+editor.addEventListener('input', () => {
+  if (saveTimer) clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    cleanupAISpans();
+    persistStory();
+  }, 200);
+});
+editor.addEventListener('beforeinput', (e) => {
+  const types = ['insertText','insertParagraph','insertLineBreak','insertFromPaste'];
+  if (types.includes(e.inputType)) {
+    ensureCaretOutsideAI();
+  }
+});
+/* ========= Editor helpers ========= */
+function getEditorText() {
+  const div = editor.cloneNode(true);
+  div.querySelectorAll('div').forEach(d => { if (d.innerHTML === '<br>') d.innerHTML = '\n'; });
+  div.querySelectorAll('br').forEach(br => br.replaceWith('\n'));
+  return div.textContent || '';
+}
+function setEditorText(text) { editor.innerText = text; }
+function setEditorHTML(html) { editor.innerHTML = html; }
+function insertText(txt) {
+  const cur = getEditorText();
+  const next = cur ? (cur.endsWith('\n') ? cur + txt : cur + '\n' + txt) : txt;
+  setEditorText(next);
+  persistStory();
+}
+function persistStory() {
+  localStorage.setItem(LS.story, getEditorText());
+  localStorage.setItem(LS.story_html, editor.innerHTML);
+}
+function setStatus(msg) { statusEl.textContent = msg; }
+
+function loadProfile() {
+  try { return JSON.parse(localStorage.getItem(LS.profile)) || { ...defaultProfile }; }
+  catch { return { ...defaultProfile }; }
+}
+function saveProfile(p) {
+  localStorage.setItem(LS.profile, JSON.stringify(p));
+  profileBox.value = JSON.stringify(p, null, 2);
+  updateConfidencePill(p.confidence);
+}
+function updateConfidencePill(conf) {
+  const pct = Math.round((conf || 0) * 100);
+  confPill.textContent = `style confidence: ${pct}%`;
+}
+
+function updateProviderUI() {
+  const providerSel = document.getElementById('provider');
+  const provider = providerSel.value || 'local';
+  if (provider === 'openai') {
+    baseUrlInput.disabled = true;
+    baseUrlInput.placeholder = 'OpenAI chat completions URL (fixed)';
+    baseUrlInput.value = 'https://api.openai.com/v1/chat/completions';
+    apiKeyInput.placeholder = 'OpenAI API key (required)';
+  } else {
+    baseUrlInput.disabled = false;
+    baseUrlInput.placeholder = 'Base URL';
+    baseUrlInput.value = localStorage.getItem(LS.baseUrl) || baseUrlInput.value || 'http://192.168.1.11:1234/v1/chat/completions';
+    apiKeyInput.placeholder = 'API key (optional)';
+  }
+}
+
+// ===== Caret utilities (contentEditable) =====
+function getCaretIndexInEditor() {
+  const sel = window.getSelection();
+  if (!sel || sel.rangeCount === 0) return getEditorText().length;
+  const range = sel.getRangeAt(0);
+  if (!editor.contains(range.startContainer)) return getEditorText().length;
+  const pre = document.createRange();
+  pre.selectNodeContents(editor);
+  pre.setEnd(range.startContainer, range.startOffset);
+  return pre.toString().length;
+}
+function isWhitespaceOnly(s) { return !s || !s.replace(/\s/g, ''); }
+
+function splitTrailingWhitespaceFromAI(span) {
+  if (!span || !span.classList?.contains('ai-chunk')) return;
+  const t = span.textContent;
+  const m = /(\s+)$/.exec(t);
+  if (!m) return;
+  const main = t.slice(0, -m[1].length);
+  const tail = m[1];
+  span.textContent = main;                       // keep only main in orange
+  const after = document.createTextNode(tail);   // move whitespace out
+  span.after(after);
+}
+
+function mergeAdjacentAISpans() {
+  const spans = editor.querySelectorAll('span.ai-chunk');
+  let prev = null;
+  spans.forEach(s => {
+    if (!prev) { prev = s; return; }
+    if (prev.nextSibling === s && s.previousSibling === prev && s.className === prev.className) {
+      // merge s into prev
+      prev.textContent += s.textContent;
+      s.remove();
+    } else {
+      prev = s;
+    }
+  });
+}
+
+function getLastTurnAnchor() {
+  const anchors = editor.querySelectorAll('.turn-anchor');
+  return anchors.length ? anchors[anchors.length - 1] : null;
+}
+
+function cleanupAISpans() {
+  // 1) remove empty AI spans
+  editor.querySelectorAll('span.ai-chunk').forEach(s => {
+    if (isWhitespaceOnly(s.textContent)) {
+      const txt = document.createTextNode(s.textContent || '');
+      s.replaceWith(txt);
+    }
+  });
+  // 2) ensure whitespace/newlines are outside the colored span
+  editor.querySelectorAll('span.ai-chunk').forEach(splitTrailingWhitespaceFromAI);
+  // 3) merge siblings created by backspace/delete
+  mergeAdjacentAISpans();
+}
+function lastSentenceStartIndex(text, upto) {
+  const slice = text.slice(0, upto);
+  const idx = Math.max(
+    slice.lastIndexOf('\n'),
+    slice.lastIndexOf('.'),
+    slice.lastIndexOf('!'),
+    slice.lastIndexOf('?')
+  );
+  return idx < 0 ? 0 : idx + 1;
+}
+
+function extractSegmentFromCaret() {
+  const sel = window.getSelection();
+  const caretRange = sel && sel.rangeCount ? sel.getRangeAt(0) : null;
+  const full = getEditorText();
+  if (!caretRange) return { segment: '', caretIndex: full.length };
+
+  const anchor = getLastTurnAnchor();
+  if (anchor && editor.contains(anchor)) {
+    try {
+      const r = document.createRange();
+      r.setStartAfter(anchor);
+      r.setEnd(caretRange.startContainer, caretRange.startOffset);
+      const seg = r.toString().trim();
+      return { segment: seg, caretIndex: getCaretIndexInEditor() };
+    } catch (_) {
+      // fall through
+    }
+  }
+  // If no anchor exists yet (e.g., very first turn), fall back to sentence boundary.
+  const caret = getCaretIndexInEditor();
+  const start = lastSentenceStartIndex(full, caret);
+  const segment = full.slice(start, caret).trim();
+  return { segment, caretIndex: caret };
+}
+
+function fallbackSegment(full, caret) {
+  const left = full.slice(0, caret);
+  const paraStart = Math.max(left.lastIndexOf('\n\n'), left.lastIndexOf('\n')) + 1;
+  return left.slice(paraStart).trim();
+}
+
+function insertAtCaret(text, className = null) {
+  const sel = window.getSelection();
+  const useSpan = !!className;
+
+  // Split trailing newlines out of the styled span
+  const m = /(\n+)$/.exec(text);
+  const trailingNL = m ? m[1] : '\n';                // ensure at least one newline after AI text
+  const mainText   = m ? text.slice(0, -trailingNL.length) : text;
+
+  // Helper to set caret after a given text node offset
+  const setCaretAfter = (textNode, extra = 0) => {
+    const r = document.createRange();
+    r.setStart(textNode, Math.min(textNode.nodeValue.length, extra));
+    r.collapse(true);
+    const s = window.getSelection();
+    s.removeAllRanges(); s.addRange(r);
+  };
+
+  if (!sel || sel.rangeCount === 0) {
+    // Append at end
+    if (useSpan) {
+      const span = document.createElement('span');
+      span.className = className;
+      span.textContent = mainText;
+      editor.appendChild(span);
+
+      // Newline sentinel outside the span
+      const after = document.createTextNode(trailingNL);
+      span.after(after);
+      // Anchor marks boundary between AI and next user text
+      const anchor = document.createElement('span');
+      anchor.className = 'turn-anchor';
+      anchor.setAttribute('contenteditable','false');
+      after.after(anchor);
+      setCaretAfter(after, trailingNL.length);
+      persistStory(); cleanupAISpans();
+      return;
+    } else {
+      insertText(text);
+      return;
+    }
+  }
+
+  // Insert at selection
+  const range = sel.getRangeAt(0);
+  range.deleteContents();
+
+  let nodeToSelect = null;
+  if (useSpan) {
+    const span = document.createElement('span');
+    span.className = className;
+    span.textContent = mainText;
+    range.insertNode(span);
+
+    const after = document.createTextNode(trailingNL);
+    span.after(after);
+    const anchor = document.createElement('span');
+    anchor.className = 'turn-anchor';
+    anchor.setAttribute('contenteditable','false');
+    after.after(anchor);
+    nodeToSelect = after;
+  } else {
+    const tn = document.createTextNode(text);
+    range.insertNode(tn);
+    nodeToSelect = tn;
+  }
+
+  // Move caret after newline / inserted text
+  setCaretAfter(nodeToSelect, useSpan ? trailingNL.length : nodeToSelect.nodeValue.length);
+  persistStory(); cleanupAISpans();
+}
+function closestAISpan(node) {
+  let n = node;
+  while (n && n !== editor) {
+    if (n.nodeType === 1 && n.classList && n.classList.contains('ai-chunk')) return n;
+    n = n.parentNode;
+  }
+  return null;
+}
+
+function ensureCaretOutsideAI() {
+  const sel = window.getSelection();
+  if (!sel || sel.rangeCount === 0) return;
+  const range = sel.getRangeAt(0);
+  if (!editor.contains(range.startContainer)) return;
+
+  const ai = closestAISpan(range.startContainer);
+  if (!ai) return; // already outside
+
+  // Move caret to just after the AI span so user typing is user-colored
+  const after = document.createTextNode('');
+  if (ai.nextSibling) ai.parentNode.insertBefore(after, ai.nextSibling);
+  else ai.parentNode.appendChild(after);
+
+  const newRange = document.createRange();
+  newRange.setStart(after, 0);
+  newRange.setEnd(after, 0);
+  sel.removeAllRanges();
+  sel.addRange(newRange);
+}
+function moveCaretToEnd() {
+  editor.focus();
+  const range = document.createRange();
+  range.selectNodeContents(editor);
+  range.collapse(false);
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+}
+function markTurnComplete(lenAfterAppend) {
+  localStorage.setItem(LS.lastLen, String(lenAfterAppend));
+  localStorage.setItem(LS.lastText, getEditorText()); // NEW
+}
+
+function styleMatchStrength(profile) {
+  const n = profile.sample_count || 0;
+  if (n < 3) return 0.2;
+  if (n < 6) return 0.45;
+  if (n < 10) return 0.7;
+  return 0.9;
+}
+
+/* ========= Responses API for GPT-5 ========= */
+async function responsesComplete({ system, user, max_output_tokens }) {
+  const model = modelInput.value.trim();
+  const url = 'https://api.openai.com/v1/responses';
+  const key = apiKeyInput.value.trim();
+  if (!key) throw new Error('OpenAI provider selected — API key is required.');
+
+  // Build Responses API payload (developer + user)
+  const body = {
+    model,
+    input: [
+      { role: 'developer', content: [{ type: 'input_text', text: system }] },
+      { role: 'user',      content: [{ type: 'input_text', text: user   }] }
+    ],
+    max_output_tokens: (typeof max_output_tokens === 'number' ? max_output_tokens : 180),
+    reasoning: { effort: 'minimal' } // safe default to avoid burning completion budget
+  };
+
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${key}`
+  };
+
+  // Debug: request
+  try {
+    console.debug('[CoWriter][Responses] Request', {
+      url, model, body,
+      headers: { ...headers, Authorization: 'Bearer ***' + key.slice(-4) },
+      t: new Date().toISOString()
+    });
+  } catch {}
+
+  const t0 = (performance && performance.now) ? performance.now() : Date.now();
+  const res = await fetch(url, { method: 'POST', headers, body: JSON.stringify(body) });
+  const raw = await res.text();
+  const t1 = (performance && performance.now) ? performance.now() : Date.now();
+
+  // Debug: response
+  try { console.debug('[CoWriter][Responses] Response', { status: res.status, ok: res.ok, ms: Math.round(t1 - t0), body: raw.slice(0, 1200) }); } catch {}
+
+  if (!res.ok) throw new Error(`OpenAI Responses error ${res.status}: ${raw}`);
+
+  let data; try { data = raw ? JSON.parse(raw) : null; } catch { throw new Error(`OpenAI Responses non-JSON: ${raw.slice(0, 400)}`); }
+
+  // Prefer the convenience aggregator if present
+  let text = '';
+  if (typeof data?.output_text === 'string' && data.output_text.trim()) text = data.output_text;
+  // Fallback: scan output items
+  if (!text && Array.isArray(data?.output)) {
+    const chunks = [];
+    for (const item of data.output) {
+      const content = item?.content;
+      if (Array.isArray(content)) {
+        for (const c of content) {
+          if (typeof c?.text === 'string') chunks.push(c.text);
+        }
+      }
+    }
+    text = chunks.join('');
+  }
+  // Last resort: regex pull
+  if (!text) {
+    const m = raw.match(/"output_text"\s*:\s*"([\s\S]*?)"/);
+    if (m) { try { text = JSON.parse('"' + m[1].replace(/"/g, '\\"') + '"'); } catch {} }
+  }
+
+  // Usage diagnostics (reasoning tokens)
+  try {
+    const rt = data?.usage?.completion_tokens_details?.reasoning_tokens;
+    if (typeof rt === 'number') console.debug('[CoWriter][Responses] reasoning_tokens used:', rt);
+  } catch {}
+
+  if (!text || !text.trim()) throw new Error('Empty completion from Responses API. Try raising max_output_tokens.');
+  return text;
+}
+
+/* ========= LM Studio chat completions ========= */
+async function chatComplete({ system, user, max_tokens, max_completion_tokens, temperature = 0.7 }) {
+  // Provider + endpoint
+  const providerSel = document.getElementById('provider');
+  const provider = (providerSel && providerSel.value) ? providerSel.value : (localStorage.getItem(LS.provider) || 'local');
+  const url = (provider === 'openai') ? 'https://api.openai.com/v1/chat/completions' : baseUrlInput.value.trim();
+  const model = modelInput.value.trim();
+  if (!url) throw new Error('Base URL is empty.');
+  if (!model) throw new Error('Model id/name is empty.');
+
+  const isOpenAI = provider === 'openai';
+  const isGPT5 = isOpenAI && /(^|[^\w])gpt-5(\b|[^\w])/i.test(model);
+
+  // Resolve effective max tokens from either param name
+  const effectiveMax = (isGPT5 ? (max_completion_tokens ?? max_tokens) : (max_tokens ?? max_completion_tokens)) ?? 180;
+
+  // If OpenAI GPT-5*, prefer the Responses API path
+  if (isGPT5) {
+    return await responsesComplete({ system, user, max_output_tokens: effectiveMax });
+  }
+
+  // Build request body according to provider/model expectations
+  const body = {
+    model,
+    messages: [
+      { role: 'system', content: system },
+      { role: 'user', content: user }
+    ],
+    stream: false,
+  };
+  // Chat Completions path (LM Studio or legacy OpenAI models)
+  body.max_tokens = effectiveMax;
+  if (typeof temperature === 'number') body.temperature = temperature;
+
+  // Headers / auth
+  const headers = { 'Content-Type': 'application/json' };
+  const key = apiKeyInput.value.trim();
+  if (key) headers['Authorization'] = `Bearer ${key}`;
+  if (isOpenAI && !key) throw new Error('OpenAI provider selected — API key is required.');
+
+  // ---- DEBUG LOG: request ----
+  try {
+    const logHeaders = { ...headers };
+    if (logHeaders.Authorization) {
+      const v = String(logHeaders.Authorization);
+      logHeaders.Authorization = 'Bearer ' + '***' + v.slice(-4);
+    }
+    console.debug('[CoWriter] Request', { provider, url, model, body, headers: logHeaders, t: new Date().toISOString() });
+  } catch {}
+
+  // Request
+  const t0 = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+  const res = await fetch(url, { method: 'POST', headers, body: JSON.stringify(body) });
+  const raw = await res.text();
+  const t1 = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+
+  // ---- DEBUG LOG: response ----
+  try {
+    console.debug('[CoWriter] Response', { provider, status: res.status, ok: res.ok, ms: Math.round(t1 - t0), body: raw });
+  } catch {}
+
+  // Error status handling with raw payload visible
+  if (!res.ok) {
+    const who = isOpenAI ? 'OpenAI' : 'LM Studio';
+    throw new Error(`${who} error ${res.status}: ${raw}`);
+  }
+
+  // Parse JSON; tolerate non-standard shapes
+  let data;
+  try { data = raw ? JSON.parse(raw) : null; } catch (e) {
+    const who = isOpenAI ? 'OpenAI' : 'LM Studio';
+    throw new Error(`${who} non-JSON response: ${raw.slice(0, 400)}`);
+  }
+
+  // One-off debug: show the first choice shape
+  try { if (data?.choices?.[0]) console.debug('[CoWriter] choices[0] shape', JSON.parse(JSON.stringify(data.choices[0]))); } catch {}
+  // Diagnostic log: reasoning_tokens usage
+  try {
+    const rt = data?.usage?.completion_tokens_details?.reasoning_tokens;
+    if (typeof rt === 'number') console.debug('[CoWriter] reasoning_tokens used:', rt);
+  } catch {}
+
+  // --- Extract text from multiple possible shapes (gpt-5 / legacy / local) ---
+  function unescapeJsonString(str) {
+    try { return JSON.parse('"' + str.replace(/"/g, '\\"') + '"'); } catch { return str; }
+  }
+  function partsToText(parts) {
+    if (!Array.isArray(parts)) return '';
+    const chunks = [];
+    for (const p of parts) {
+      if (typeof p === 'string') { chunks.push(p); continue; }
+      if (!p || typeof p !== 'object') continue;
+      if (typeof p.text === 'string') { chunks.push(p.text); continue; }
+      if (typeof p.content === 'string') { chunks.push(p.content); continue; }
+      if (typeof p.output_text === 'string') { chunks.push(p.output_text); continue; }
+    }
+    return chunks.join('');
+  }
+  function coalesceTextFromChoice(ch) {
+    if (!ch) return '';
+    // 1) Standard chat message content
+    const msg = ch.message;
+    if (msg) {
+      const cont = msg.content;
+      if (typeof cont === 'string' && cont.trim()) return cont;
+      const joined = partsToText(cont);
+      if (joined && joined.trim()) return joined;
+      if (typeof msg.output_text === 'string' && msg.output_text.trim()) return msg.output_text;
+      if (Array.isArray(msg.output_text)) {
+        const j = msg.output_text.join('');
+        if (j.trim()) return j;
+      }
+    }
+    // 2) choice-level fallbacks
+    if (typeof ch.text === 'string' && ch.text.trim()) return ch.text;
+    if (typeof ch.output_text === 'string' && ch.output_text.trim()) return ch.output_text;
+    if (Array.isArray(ch.output_text)) {
+      const j = ch.output_text.join('');
+      if (j.trim()) return j;
+    }
+    if (typeof ch.content === 'string' && ch.content.trim()) return ch.content;
+    return '';
+  }
+
+  let text = '';
+  if (Array.isArray(data?.choices) && data.choices.length) {
+    text = coalesceTextFromChoice(data.choices[0]) || '';
+    if (!text) {
+      // Try all choices
+      text = data.choices.map(coalesceTextFromChoice).filter(Boolean).join('\n');
+    }
+  }
+
+  // Top-level convenience fields some SDKs add
+  if (!text && typeof data?.output_text === 'string') text = data.output_text;
+  if (!text && Array.isArray(data?.output_text)) text = data.output_text.join('');
+  if (!text && typeof data?.content === 'string') text = data.content;
+
+  // Regex salvage for gpt-5 style JSON (non-SDK clients): look for output_text parts
+  if (!text && typeof raw === 'string') {
+    const out = [];
+    // 1) explicit output_text strings anywhere
+    const re1 = /"output_text"\s*:\s*"([\s\S]*?)"/g;
+    let m1; while ((m1 = re1.exec(raw)) !== null) { out.push(unescapeJsonString(m1[1])); }
+    // 2) parts with type: output_text and a following text
+    const re2 = /\{[^{}]*?"type"\s*:\s*"output_text"[^{}]*?"text"\s*:\s*"([\s\S]*?)"[^{}]*?\}/g;
+    let m2; while ((m2 = re2.exec(raw)) !== null) { out.push(unescapeJsonString(m2[1])); }
+    text = out.join('');
+  }
+
+  // Debug preview of extracted text
+  try {
+    console.debug('[CoWriter] Extracted text preview:', (text || '').slice(0, 160));
+  } catch {}
+  if (!text) {
+    try { console.debug('[CoWriter] No text after extraction. First 1400 chars of raw:', raw.slice(0, 1400)); } catch {}
+    console.warn('[CoWriter] Empty completion fields (parsed JSON shown above).');
+    const rt = data?.usage?.completion_tokens_details?.reasoning_tokens;
+    if (typeof rt === 'number') {
+      throw new Error(`Empty completion — reasoning_tokens=${rt}. Try reasoning.effort='minimal' or raise max_completion_tokens.`);
+    }
+    throw new Error('Empty completion (no usable text found).');
+  }
+  return text;
+}
+
+/* ========= Parsing helpers ========= */
+
+function extractJsonStringValue(src, key) {
+  const k = `"${key}"`;
+  let i = src.indexOf(k);
+  if (i === -1) return null;
+  i = src.indexOf(':', i);
+  if (i === -1) return null;
+  i++;
+  while (i < src.length && /\s/.test(src[i])) i++;
+  if (src[i] !== '"') return null;
+  i++; // after opening quote
+  let out = '', esc = false;
+  for (; i < src.length; i++) {
+    const ch = src[i];
+    if (esc) { // basic escapes; extend as needed
+      out += ch === 'n' ? '\n' : ch === 't' ? '\t' : ch;
+      esc = false; continue;
+    }
+    if (ch === '\\') { esc = true; continue; }
+    if (ch === '"') break; // closing quote
+    out += ch;
+  }
+  return out;
+}
+
+function extractJsonObject(src, key) {
+  const k = `"${key}"`;
+  let i = src.indexOf(k);
+  if (i === -1) return null;
+  i = src.indexOf('{', i);
+  if (i === -1) return null;
+  let depth = 0, start = i;
+  for (; i < src.length; i++) {
+    const ch = src[i];
+    if (ch === '{') depth++;
+    else if (ch === '}') { depth--; if (depth === 0) {
+      const blob = src.slice(start, i + 1);
+      try { return JSON.parse(blob); } catch { return null; }
+    }}
+  }
+  return null;
+}
+
+function tryParseJSONish(s) {
+  // 0) Tagged blocks (most reliable for local models)
+  const aiTag = s.match(/\[AI_TEXT\]([\s\S]*?)\[\/AI_TEXT\]/i);
+  const profTag = s.match(/\[UPDATED_PROFILE\]([\s\S]*?)\[\/UPDATED_PROFILE\]/i);
+  const sumTag  = s.match(/\[UPDATED_SUMMARY\]([\s\S]*?)\[\/UPDATED_SUMMARY\]/i);
+  const deltaTag = s.match(/\[SUMMARY_DELTA\]([\s\S]*?)\[\/SUMMARY_DELTA\]/i);
+  if (aiTag || profTag || sumTag || deltaTag) {
+    let prof = loadProfile();
+    if (profTag) { try { prof = { ...prof, ...JSON.parse(profTag[1]) }; } catch {} }
+    try { console.debug('tag-parse ok'); } catch {}
+    return {
+      ai_text: (aiTag ? aiTag[1] : s).trim(),
+      updated_profile: prof,
+      updated_summary: (sumTag ? sumTag[1] : '').trim(),
+      summary_delta: (deltaTag ? deltaTag[1] : '').trim()
+    };
+  }
+
+  // 1) Fenced JSON
+  const fences = [...s.matchAll(/```(?:json)?\s*([\s\S]*?)```/gi)];
+  if (fences.length) {
+    const content = fences[fences.length - 1][1].trim();
+    try { return JSON.parse(content); } catch {}
+  }
+
+  // 2) Raw last {...}
+  const objs = [...s.matchAll(/\{[\s\S]*?\}/g)];
+  if (objs.length) {
+    const last = objs[objs.length - 1][0];
+    try { return JSON.parse(last); } catch {}
+  }
+
+  // 4) Field-level salvage (quote-safe)
+  let ai_text = extractJsonStringValue(s, 'ai_text');
+  const profObj = extractJsonObject(s, 'updated_profile');
+  let updated_profile = profObj ? { ...loadProfile(), ...profObj } : loadProfile();
+  let updated_summary = extractJsonStringValue(s, 'updated_summary') || (summaryBox.value || "");
+
+  // Final guards / cleanup
+if (!ai_text) ai_text = s.trim();
+// Strip common echoed headers to avoid inserting prompt text
+ai_text = ai_text.replace(/WRITER_PROFILE[\s\S]*$/i, '').trim();
+ai_text = ai_text.replace(/STORY_SUMMARY[\s\S]*$/i, '').trim();
+ai_text = ai_text.replace(/RECENT_EXCERPT[\s\S]*$/i, '').trim();
+ai_text = ai_text.replace(/NEW_USER_SENTENCE[\s\S]*$/i, '').trim();
+ai_text = ai_text.replace(/```[\s\S]*$/i, ai_text).replace(/\\n/g, '\n').replace(/\\$/, '');
+return { ai_text, updated_profile, updated_summary };
+}
+/* ========= Seed first line ========= */
+async function aiSeedFirstLine(topic) {
+  setStatus('Seeding opening line…');
+  try {
+    const system = Prompts.seedSystem();
+    const user = Prompts.seedUser(topic);
+    const out = await chatComplete({ system, user, max_tokens: 60, temperature: 0.8 });
+    const line = out.trim().replace(/^"+|"+$/g, '');
+    if (line) {
+      moveCaretToEnd();
+      insertAtCaret(line + '\n\n', 'ai-chunk');
+      cleanupAISpans();
+    }
+    setStatus('Seed inserted.');
+    markTurnComplete(getEditorText().length);
+  } catch (e) {
+    console.error(e); setStatus('Seed error: ' + e.message);
+  }
+}
+
+
+function countWords(s) {
+  return (s.trim().match(/\S+/g) || []).length;
+}
+
+// More detail early; tighten as the story grows
+function targetSummaryWords(totalWords) {
+  if (totalWords < 120) return 200;      // very short: let it be richer
+  if (totalWords < 250) return 160;      // short
+  if (totalWords < 600) return 120;      // medium
+  if (totalWords < 1200) return 100;     // long
+  return 90;                              // very long
+}
+
+// Use full text when short; otherwise a rolling excerpt
+function computeExcerpt(fullText) {
+  const words = countWords(fullText);
+  if (words < 350) return fullText;                // early: give full context
+  const maxChars = 2000;                            // tune if your model can take more
+  const minChars = 900;
+  const take = Math.max(minChars, Math.min(maxChars, Math.floor(fullText.length * 0.4)));
+  return fullText.slice(-take);
+}
+
+function getLastSentence(fullText) {
+  const t = (fullText || '').trim();
+  const m = t.match(/[^.!?\n]+[.!?\n]+$/);
+  return (m ? m[0] : t).trim();
+}
+
+function isDuplicateContinuation(aiText, lastSentence) {
+  if (!aiText || !lastSentence) return false;
+  const norm = s => s.toLowerCase().replace(/[^\w\s]/g,'').replace(/\s+/g,' ').trim();
+  const a = norm(aiText), b = norm(lastSentence);
+  if (!a || !b) return false;
+  if (a === b) return true;
+  if (a.includes(b) || b.includes(a)) return true;
+  const A = new Set(a.split(' '));
+  const B = new Set(b.split(' '));
+  let inter = 0; A.forEach(x => { if (B.has(x)) inter++; });
+  const ratio = inter / Math.max(1, Math.min(A.size, B.size));
+  return ratio > 0.8; // high overlap => likely echo
+}
+
+function isLikelyEcho(txt) {
+  if (txt == null) return true;
+  const t = String(txt).trim();
+  if (t.length === 0) return true;
+  // Accept plausible short continuations
+  if (t.length <= 450 && !/WRITER_PROFILE|STORY_SUMMARY|RECENT_EXCERPT|NEW_USER_SENTENCE|OUTPUT FORMAT|SUMMARY POLICY/i.test(t)) {
+    return false;
+  }
+  // Very long or clearly prompty
+  if (t.length > 1200) return true;
+  return /WRITER_PROFILE|STORY_SUMMARY|RECENT_EXCERPT|NEW_USER_SENTENCE|OUTPUT FORMAT|SUMMARY POLICY/i.test(t);
+}
+function clampAiText(txt) {
+  if (!txt) return '';
+  return (txt || '').trim();
+}
+
+/* ========= Main co-writing continuation ========= */
+async function continueWithAI() {
+  // Determine the user's current segment based on the caret position.
+  const fullBefore = getEditorText();
+  let { segment, caretIndex } = extractSegmentFromCaret();
+  const noNewSegment = !segment || segment.length < 2; // allow empty: continue from end
+
+  // crude sample count bump
+  const profile = loadProfile();
+  const userSentences = (segment.match(/[^.!?]+[.!?]+/g) || [segment]).length;
+  if (!noNewSegment) {
+    profile.sample_count = (profile.sample_count || 0) + userSentences;
+  }
+  saveProfile(profile);
+
+  setStatus('Thinking…');
+  document.getElementById('aiContinue').disabled = true;
+
+  const summary = (summaryBox.value || '').trim();
+  const storyText = fullBefore;
+  const lastChunk = computeExcerpt(storyText);
+  const lastSentence = getLastSentence(storyText);
+  const matchStrength = styleMatchStrength(loadProfile());
+  const totalWords = countWords(storyText);
+  const targetWords = targetSummaryWords(totalWords);
+
+  const system = Prompts.buildSystemPrompt({ matchStrength, targetWords });
+
+  const user = Prompts.buildUserPayload({
+    totalWords,
+    targetWords,
+    profileJson: (profileBox.value || JSON.stringify(loadProfile())),
+    summary: (summary || "(none yet)"),
+    lastChunk,
+    lastSentence,
+    segment,
+    noNewSegment
+  });
+
+  try {
+    const provider = document.getElementById('provider').value;
+    const modelName = modelInput.value.trim();
+    const isGPT5 = (provider === 'openai') && /(^|[^\w])gpt-5(\b|[^\w])/i.test(modelName);
+    const turnMax = isGPT5 ? 520 : 280; // give GPT-5 more headroom
+
+    const raw = await chatComplete({
+      system,
+      user,
+      // pass both; chatComplete will map correctly
+      max_tokens: turnMax,
+      max_completion_tokens: turnMax,
+      temperature: 0.45
+    });
+    const parsed = tryParseJSONish(raw);
+    if (isLikelyEcho(parsed.ai_text)) {
+      setStatus('Model echoed the prompt or returned invalid JSON — no insertion. Try again.');
+      document.getElementById('aiContinue').disabled = false;
+      return;
+    }
+    let aiText = (parsed.ai_text || '').trim();
+
+    // Dedupe: if AI text repeats the last sentence, retry once with stronger anti-repeat hint
+    if (isDuplicateContinuation(aiText, lastSentence)) {
+      setStatus('Retrying to avoid repetition…');
+      const strongerSystem = system + "\nANTI-REPEAT: Do not repeat or paraphrase any prior sentence. Start with a fresh action or decision.";
+      const raw2 = await chatComplete({ system: strongerSystem, user, max_tokens: 300, temperature: 0.45 });
+      const parsed2 = tryParseJSONish(raw2);
+      const aiText2 = (parsed2.ai_text || '').trim();
+      if (!isDuplicateContinuation(aiText2, lastSentence)) {
+        // adopt second attempt and its summary/profile if present
+        aiText = aiText2;
+        // --- Summary update & merge ---
+        let nextSummary2 = parsed2.updated_summary && parsed2.updated_summary.trim() ? parsed2.updated_summary.trim() : '';
+        const delta2 = parsed2.summary_delta && parsed2.summary_delta.trim() ? parsed2.summary_delta.trim() : '';
+        const prevSummary2 = (summaryBox.value || '').trim();
+
+        if (!nextSummary2) {
+          if (delta2) {
+            // Prepend delta bullets to prior summary
+            const deltaBlock = delta2.replace(/^\s*[-*]\s*/gm, '• ');
+            nextSummary2 = prevSummary2 ? (prevSummary2 + "\n" + deltaBlock) : deltaBlock;
+          } else {
+            nextSummary2 = prevSummary2; // keep as-is if model provided nothing
+          }
+        } else {
+          // If model gave a summary but also a delta, append delta at the end for recency
+          if (delta2) {
+            const deltaBlock = delta2.replace(/^\s*[-*]\s*/gm, '• ');
+            if (!nextSummary2.includes(deltaBlock.split('\n')[0])) {
+              nextSummary2 = nextSummary2 + "\n" + deltaBlock;
+            }
+          }
+        }
+        if (nextSummary2 != null) {
+          summaryBox.value = nextSummary2;
+          localStorage.setItem(LS.summary, nextSummary2);
+        }
+        if (parsed2.updated_profile) {
+          const merged2 = { ...loadProfile(), ...parsed2.updated_profile };
+          if ((merged2.sample_count || 0) < (loadProfile().sample_count || 0)) merged2.sample_count = loadProfile().sample_count;
+          saveProfile(merged2);
+        }
+      } else {
+        setStatus('AI repeated the last sentence. Try again or add a few words to steer.');
+        document.getElementById('aiContinue').disabled = false;
+        return;
+      }
+    }
+
+    // Insert at caret with sensible spacing/newline
+    const beforeChar = fullBefore[caretIndex - 1] || '';
+    const needsSpace = beforeChar && !/\s/.test(beforeChar) && beforeChar !== '\n';
+    const suffixNL = aiText.endsWith('\n') ? '' : '\n';
+    insertAtCaret((needsSpace ? ' ' : '') + aiText + suffixNL, 'ai-chunk');
+
+    // --- Summary update & merge ---
+    let nextSummary = parsed.updated_summary && parsed.updated_summary.trim() ? parsed.updated_summary.trim() : '';
+    const delta = parsed.summary_delta && parsed.summary_delta.trim() ? parsed.summary_delta.trim() : '';
+    const prevSummary = (summaryBox.value || '').trim();
+
+    if (!nextSummary) {
+      if (delta) {
+        // Prepend delta bullets to prior summary
+        const deltaBlock = delta.replace(/^\s*[-*]\s*/gm, '• ');
+        nextSummary = prevSummary ? (prevSummary + "\n" + deltaBlock) : deltaBlock;
+      } else {
+        nextSummary = prevSummary; // keep as-is if model provided nothing
+      }
+    } else {
+      // If model gave a summary but also a delta, append delta at the end for recency
+      if (delta) {
+        const deltaBlock = delta.replace(/^\s*[-*]\s*/gm, '• ');
+        if (!nextSummary.includes(deltaBlock.split('\n')[0])) {
+          nextSummary = nextSummary + "\n" + deltaBlock;
+        }
+      }
+    }
+    if (nextSummary != null) {
+      summaryBox.value = nextSummary;
+      localStorage.setItem(LS.summary, nextSummary);
+    }
+    if (parsed.updated_profile) {
+      const merged = { ...loadProfile(), ...parsed.updated_profile };
+      // Keep sample_count monotonic
+      if ((merged.sample_count || 0) < (loadProfile().sample_count || 0)) {
+        merged.sample_count = loadProfile().sample_count;
+      }
+      saveProfile(merged);
+    }
+    markTurnComplete(getEditorText().length);
+    setStatus('AI added a continuation.');
+  } catch (e) {
+    const provider = document.getElementById('provider').value;
+    const modelName = modelInput.value.trim();
+    const isGPT5 = (provider === 'openai') && /(^|[^\w])gpt-5(\b|[^\w])/i.test(modelName);
+
+    // If GPT-5 returned empty due to reasoning tokens, retry once with a larger cap and a direct-emit hint
+    if (isGPT5 && (/reasoning_tokens=\d+/.test(String(e?.message || '')) || /Responses API\. Empty completion/i.test(String(e?.message || '')))) {
+      try {
+        setStatus('Retrying with larger completion budget…');
+        const turnMax2 = 640; // second attempt budget
+        const directSystem = system + '\nEMIT POLICY: Produce the [AI_TEXT] directly now; keep internal reasoning minimal.';
+        const raw2 = await chatComplete({
+          system: directSystem,
+          user,
+          max_tokens: turnMax2,
+          max_completion_tokens: turnMax2,
+          temperature: 0.45
+        });
+        // Continue with normal flow using raw2
+        const parsed = tryParseJSONish(raw2);
+        if (isLikelyEcho(parsed.ai_text)) {
+          setStatus('Model echoed the prompt or returned invalid JSON — no insertion. Try again.');
+          document.getElementById('aiContinue').disabled = false;
+          return;
+        }
+        let aiText =  (parsed.ai_text || '').trim();
+
+        // Insert at caret
+        const fullBefore2 = getEditorText();
+        const caretIndex2 = getCaretIndexInEditor();
+        const beforeChar2 = fullBefore2[caretIndex2 - 1] || '';
+        const needsSpace2 = beforeChar2 && !/\s/.test(beforeChar2) && beforeChar2 !== '\n';
+        const suffixNL2 = aiText.endsWith('\n') ? '' : '\n';
+        insertAtCaret((needsSpace2 ? ' ' : '') + aiText + suffixNL2, 'ai-chunk');
+
+        // Merge summary/profile as usual
+        let nextSummary = parsed.updated_summary && parsed.updated_summary.trim() ? parsed.updated_summary.trim() : '';
+        const delta = parsed.summary_delta && parsed.summary_delta.trim() ? parsed.summary_delta.trim() : '';
+        const prevSummary = (summaryBox.value || '').trim();
+        if (!nextSummary) {
+          if (delta) {
+            const deltaBlock = delta.replace(/^\s*[-*]\s*/gm, '• ');
+            nextSummary = prevSummary ? (prevSummary + "\n" + deltaBlock) : deltaBlock;
+          } else { nextSummary = prevSummary; }
+        } else if (delta) {
+          const deltaBlock = delta.replace(/^\s*[-*]\s*/gm, '• ');
+          if (!nextSummary.includes(deltaBlock.split('\n')[0])) nextSummary = nextSummary + "\n" + deltaBlock;
+        }
+        if (nextSummary != null) {
+          summaryBox.value = nextSummary;
+          localStorage.setItem(LS.summary, nextSummary);
+        }
+        if (parsed.updated_profile) {
+          const merged = { ...loadProfile(), ...parsed.updated_profile };
+          if ((merged.sample_count || 0) < (loadProfile().sample_count || 0)) merged.sample_count = loadProfile().sample_count;
+          saveProfile(merged);
+        }
+        markTurnComplete(getEditorText().length);
+        setStatus('AI added a continuation.');
+      } catch (e2) {
+        console.error(e2);
+        setStatus('AI error (retry): ' + e2.message);
+      } finally {
+        document.getElementById('aiContinue').disabled = false;
+      }
+      return;
+    }
+
+    console.error(e);
+    setStatus('AI error: ' + e.message);
+  } finally {
+    document.getElementById('aiContinue').disabled = false;
+  }
+}
+// Prompts module include
+</script>
+<script src="./prompts.js"></script>
+</body>
+</html>
