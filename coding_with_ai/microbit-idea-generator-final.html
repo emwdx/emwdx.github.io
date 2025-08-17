@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>micro:bit Idea Spark — Sharpen‑style Prompts</title>
+  <style>
+    :root{ --bg:#6C63FF; --bg2:#8E7CFF; --paper:#fff; --ink:#0e0e11; }
+    html,body{height:100%}
+    body{margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial; color:#fff; background:linear-gradient(135deg,var(--bg),var(--bg2)); display:flex; flex-direction:column; min-height:100vh}
+    header{display:flex; justify-content:space-between; align-items:center; gap:12px; padding:18px 20px}
+    .brand{font-weight:800}
+    .row{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+    .btn{background:#111; color:#fff; border:none; border-radius:12px; padding:12px 16px; font-weight:700; cursor:pointer}
+    .btn:hover{background:#1e1e1e}
+    .btn.ghost{background:rgba(0,0,0,.25)}
+    main{flex:1; display:flex; flex-direction:column; align-items:center; padding:0 16px 16px}
+    .panel{width:min(1100px,92vw); background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.2); border-radius:16px; padding:12px; margin-top:8px}
+    details{margin:0 0 8px}
+    details summary{cursor:pointer; user-select:none}
+    .opts{display:flex; gap:10px; flex-wrap:wrap; padding:8px 0}
+    .field{background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.25); border-radius:12px; padding:8px 10px; display:inline-flex; align-items:center; gap:8px}
+    label{font-size:.9rem}
+    select, input[type="checkbox"]{appearance:none; border:none; background:transparent; color:#fff; font-weight:600}
+
+    /* --- HERO CARD (single idea, full screen) --- */
+    .hero-wrap{flex:1; width:100%; display:grid; place-items:center; padding:10px 0}
+    .hero{position:relative; width:min(1100px,92vw); height:60%; background:var(--paper); color:var(--ink); border-radius:24px; box-shadow:0 18px 36px rgba(0,0,0,.24); display:flex; flex-direction:column; justify-content:center; padding: clamp(20px, 6vw, 64px)}
+    .chips{position:absolute; top:16px; left:16px; display:flex; gap:8px; flex-wrap:wrap}
+    .chip{background:#111; color:#fff; border-radius:999px; padding:6px 12px; font-size:.8rem}
+    .toolbar{position:absolute; top:16px; right:16px; display:flex; gap:8px}
+    .title{font-weight:900; line-height:1.05; font-size: clamp(32px, 6.2vw, 86px); margin:0 0 10px}
+    .line{opacity:.95; font-size: clamp(18px, 2.6vw, 34px); line-height:1.25; margin:0}
+
+    footer{padding:12px 16px; text-align:center; opacity:.9}
+    kbd{background:#111; color:#fff; padding:2px 6px; border-radius:6px; font-size:.8rem}
+    .fade{animation:fade .4s ease}
+    @keyframes fade{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:translateY(0)}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">micro:bit Idea Spark <span class="small" style="opacity:.85">(on‑board only)</span></div>
+    <div class="row">
+      <button id="btn-new" class="btn" title="New idea (Space/→)">🔁 New Idea</button>
+      <button id="btn-copy" class="btn ghost" title="Copy idea">📋 Copy</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="panel">
+      <details>
+        <summary>⚙️ Options</summary>
+        <div class="opts">
+          <div class="field"><label for="theme">Theme</label>
+            <select id="theme">
+              <option value="any" selected>Mixed</option>
+              <option value="school">School</option>
+              <option value="home">Home</option>
+              <option value="wellbeing">Wellbeing</option>
+              <option value="play">Play / Games</option>
+              <option value="creative">Creative / Art</option>
+              <option value="environment">Environment</option>
+            </select>
+          </div>
+          <div class="field">
+            <label><input type="checkbox" id="pair"> include partner ideas (radio)</label>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <div id="hero-wrap" class="hero-wrap"></div>
+  </main>
+
+  <footer class="small">Use <kbd>Space</kbd> or <kbd>→</kbd> to refresh. Click 🔁 or 🔀 to reroll. Copy with <kbd>C</kbd>.</footer>
+
+  <script>
+    // ---------- TITLE WORDS (plain, down‑to‑earth) ----------
+    const NOUNS = ['Timer','Buddy','Beacon','Blinker','Coach','Counter','Guardian','Greeter','Meter','Nudge','Sidekick','Signal','Sprite','Tracker'];
+
+    const ADJ = {
+      school:['Classroom','Desk','Study','Focus','Presentation','Project'],
+      home:['Morning','Bedside','Kitchen','Door','Room','Family'],
+      wellbeing:['Calm','Breathing','Posture','Break','Energy','Mood'],
+      play:['Game','Reaction','Dice','Challenge','Score','Arcade'],
+      creative:['Pixel','Ambient','Pattern','Art','Music','Rhythm'],
+      environment:['Light','Comfort','Plant','Air','Weather','Compass'],
+      any:['Pocket','Mini','Daily','Simple','Quiet','Friendly']
+    };
+
+    // ---------- SHARPEN‑STYLE ONE‑LINERS (concrete, on‑board) ----------
+    const LINES = {
+  school: [
+    {t:'a silent desk timer with start/stop and tiny break reminders.'},
+    {t:'a classroom noise meter that shows green/yellow/red on the LEDs.'},
+    {t:'a backpack movement alert that flashes an icon when picked up.'},
+    {t:'a focus streak tracker that celebrates every 20 minutes.'},
+    {t:'a presentation pacer that keeps your speaking pace steady.'},
+    {t:'a two‑person quiz buzzer that shows who buzzed first (partner)', pair:true},
+    {t:'a hallway step‑count race for two devices (partner)', pair:true},
+    {t:'a homeroom check‑in counter where tapping the logo marks you present.'},
+    {t:'a restroom pass timer that counts down and signals when time’s up.'},
+    {t:'a study interval timer that alternates work/rest cycles (25/5).'},
+    {t:'a clap meter that shows a quiet icon when the room gets too loud.'},
+    {t:'a sit‑up posture nudge that shows a straighten‑up icon when tilted forward.'},
+    {t:'a team picker that shuffles student numbers with a shake.'},
+    {t:'a quick poll where A/B is yes/no and LEDs show the live tally.'},
+    {t:'a time‑over cue light that blinks when your talk runs long.'},
+    {t:'a class‑start countdown you trigger by shaking at the bell.'},
+    {t:'a door‑greeter that scrolls “welcome” when the room suddenly brightens.'}
+  ],
+  home: [
+    {t:'a two‑minute toothbrushing timer with a progress bar.'},
+    {t:'a door‑left‑open reminder that nudges after 30 seconds.'},
+    {t:'a room comfort face that smiles when the temp is just right.'},
+    {t:'a water‑drinking reminder that checks in every hour.'},
+    {t:'a clap‑to‑celebrate entry greeter with pixel fireworks.'},
+    {t:'a five‑minute tidy‑up sprint timer for quick chores.'},
+    {t:'a quiet‑hours monitor that warns when the TV room gets loud.'},
+    {t:'a wind‑down breathing light that slows before bedtime.'},
+    {t:'a multi‑interval kitchen‑style timer with simple tones.'},
+    {t:'a hand‑wash 20‑second timer with bubble icons.'},
+    {t:'a sunrise‑style wake light that brightens when the room gets light.'},
+    {t:'a door‑knock notifier that flashes after a knock pattern.'},
+    {t:'a pet‑feeding reminder with A/B to mark fed or not fed.'},
+    {t:'a screen‑time break nudge that pings every 30 minutes.'},
+    {t:'a calm corner beacon that glows when the room gets quiet.'},
+    {t:'a reading session tracker that counts 20‑minute blocks.'},
+    {t:'a pocket metronome for music practice.'},
+    {t:'a chore spinner that picks a random task when shaken.'},
+    {t:'a room‑entry greeter that shows your emoji when you clap once.'}
+  ],
+  wellbeing: [
+    {t:'a breathing pacer that guides inhale/hold/exhale with LEDs.'},
+    {t:'a quick‑break timer that suggests a stretch every 25 minutes.'},
+    {t:'a gentle posture nudge when the device tilts forward on your shirt.'},
+    {t:'a mood light that brightens when the room is quiet.'},
+    {t:'a hydration streak counter you tick with the A button.'},
+    {t:'a gratitude button that shows a random heart when pressed.'},
+    {t:'a two‑minute mindful walk step counter for a reset.'},
+    {t:'a focus bell that chimes softly every 15 minutes.'},
+    {t:'a calm‑down dice that shows how many breaths to take next.'},
+    {t:'a balance game where you keep a dot centered for 60 seconds.'},
+    {t:'a mini meditation gong that plays at start and end.'},
+    {t:'an energy check‑in where A/B selects low/high and gives a tip.'},
+    {t:'a positive posture coach that alerts only after 5s of slouching.'},
+    {t:'a wind‑down starfield that slows over five minutes.'},
+    {t:'a reset countdown you start by shaking when stressed.'}
+  ],
+  play: [
+    {t:'a reaction‑time tester that gets faster each round.'},
+    {t:'a shake‑to‑roll dice with tiny sound effects.'},
+    {t:'a hot‑potato countdown that randomly “pops”.'},
+    {t:'a tilt‑maze game that moves a dot through obstacles.'},
+    {t:'a Simon‑style memory game with tones and icons.'},
+    {t:'a whack‑a‑mole chase where you tap logo when the dot appears.'},
+    {t:'a music memory game that repeats longer tone patterns.'},
+    {t:'a rock‑paper‑scissors over radio that reveals at the same time (partner)', pair:true},
+    {t:'an endless runner where you tilt to dodge obstacles.'},
+    {t:'a clicker game where points rise forever unless you shake wrong.'},
+    {t:'a scoreboard you control with A/B for real‑world games.'},
+    {t:'a number guesser that gives warmer/colder with icons.'},
+    {t:'a sprint start beeper with random delay for fair starts.'},
+    {t:'a secret knock door unlocker game that checks your pattern.'},
+    {t:'a treasure compass that points you toward “X” with clues.'},
+  ],
+  creative: [
+    {t:'a pixel pet that reacts to light and touch logo.'},
+    {t:'an ambient art frame that changes with compass direction.'},
+    {t:'a sound‑level visualizer that draws little equalizer bars.'},
+    {t:'a rhythm toy that plays tones when you tilt.'},
+    {t:'a pixel painter where tilt moves a cursor and A stamps.'},
+    {t:'a logo‑stamp gallery that shows different emojis on tap.'},
+    {t:'a compass‑rose art piece that morphs as you turn.'},
+    {t:'a generative melody that follows room temperature.'},
+    {t:'a light‑theremin that maps brightness to pitch.'},
+    {t:'a simple beat looper you program with A/B.'},
+    {t:'a message scroller for short quotes and names.'},
+    {t:'a daily random pattern you save by pressing A.'},
+    {t:'a clap‑triggered fireworks show on the LEDs.'},
+    {t:'a minimalist clock‑ish pulse that breathes once a minute.'},
+    {t:'a pixel snowfall that reacts to shakes and tilts.'},
+    {t:'a compass‑aligned constellation that lights “north stars”.'},
+    {t:'a tempo trainer that flashes and beeps to your set BPM.'}
+  ],
+  environment: [
+  
+    {t:'a magnet finder that flashes when a fridge magnet is near.'},
+    {t:'a room temperature trend that shows up/down arrows.'},
+    {t:'a shade finder that tells you which spot is brightest.'},
+    {t:'a north finder that shows an arrow when you face north.'},
+    {t:'a quiet corner finder that prefers low sound levels.'},
+    {t:'a draft detector that warns when temperature drops quickly.'},
+    {t:'a plant‑watering nudger that reminds after several dry days.'},
+    {t:'a compass‑based mapper that logs headings for a simple walk.'},
+    {t:'a heatwave alert that shows a thermometer stack icon.'},
+    {t:'a quiet‑hours porch light that glows softly when it’s calm.'},
+    {t:'a park sound scout that rates the calmest picnic spot.'}
+  ]
+};
+
+    const THEMES = ['school','home','wellbeing','play','creative','environment'];
+
+    const rand = n => Math.floor(Math.random()*n);
+    const pick = arr => arr[rand(arr.length)];
+
+    function pickAdj(theme){
+      const pool = (theme==='any') ? ADJ.any : ADJ[theme];
+      return pick(pool);
+    }
+
+    function pickLine(theme, allowPair){
+      let t = theme;
+      if(t==='any') t = pick(THEMES);
+      const pool = LINES[t].filter(x=> allowPair || !x.pair);
+      const line = pick(pool);
+      return {line, theme:t};
+    }
+
+    function makeIdea({theme, allowPair}){
+      const adj = pickAdj(theme);
+      const noun = pick(NOUNS);
+      const {line, theme:resolved} = pickLine(theme, allowPair);
+      const title = `${adj} ${noun}`;
+      const tags = [resolved, (line.t.includes('(partner)')? 'partner' : 'solo')];
+      return {title, line: line.t.replace(' (partner)',''), tags};
+    }
+
+    // ---- RENDER SINGLE HERO ----
+    const heroWrap = document.getElementById('hero-wrap');
+    const themeEl = document.getElementById('theme');
+    const pairEl = document.getElementById('pair');
+
+    let currentIdea = null;
+
+    function heroEl(idea){
+      const card = document.createElement('article'); card.className='hero fade';
+
+      const chips = document.createElement('div'); chips.className='chips';
+      idea.tags.forEach(t=>{ const c=document.createElement('span'); c.className='chip'; c.textContent=t; chips.appendChild(c); });
+
+      const bar = document.createElement('div'); bar.className='toolbar';
+      const b1 = document.createElement('button'); b1.className='btn'; b1.textContent='🔀'; b1.title='Reroll';
+      const b2 = document.createElement('button'); b2.className='btn ghost'; b2.textContent='📋'; b2.title='Copy';
+      bar.append(b1,b2);
+
+      const title = document.createElement('h1'); title.className='title'; title.textContent = idea.title;
+      const line = document.createElement('p'); line.className='line'; line.textContent = idea.line;
+
+      card.append(chips, bar, title, line);
+
+      b1.onclick = ()=> render();
+      b2.onclick = copyIdea;
+      return card;
+    }
+
+    function copyIdea(){
+      if(!currentIdea) return;
+      const md = `**${currentIdea.title}** — ${currentIdea.line}`;
+      navigator.clipboard.writeText(md);
+    }
+
+    function render(){
+      const theme = themeEl.value; const allowPair = !!pairEl.checked;
+      currentIdea = makeIdea({theme, allowPair});
+      heroWrap.innerHTML='';
+      heroWrap.appendChild(heroEl(currentIdea));
+    }
+
+    document.getElementById('btn-new').addEventListener('click', render);
+    document.getElementById('btn-copy').addEventListener('click', copyIdea);
+    [themeEl, pairEl].forEach(el=> el.addEventListener('change', render));
+
+    document.addEventListener('keydown', e=>{
+      if(e.code==='Space' || e.code==='ArrowRight'){ e.preventDefault(); render(); }
+      if(e.key==='c' || e.key==='C'){ e.preventDefault(); copyIdea(); }
+    });
+
+    render();
+  </script>
+</body>
+</html>
