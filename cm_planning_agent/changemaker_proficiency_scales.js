@@ -29,7 +29,7 @@ Leverage individual team members’ knowledge, skills, and experiences in servic
 Give, reflect, and act upon constructive feedback
 2.0:The learner will:
 -paraphrase and listen, -identify when a problem occurs in a group, -describe conflict resolution strategies,-identify next steps for a project and a timeline, -write personal collaboration goals and team agreements, -give feedback to group members
--CRITICAL THINKING PROFICIENCY SCALE:
+-ADAPTIVE THINKING PROFICIENCY SCALE:
 4.0: The learner will:
 Anticipate potential challenges and adapt thinking proactively when addressing emerging issues.
 Synthesize insights across systems, perspectives, or models to uncover or analyze interrelationships, inconsistencies, or counterexamples.
