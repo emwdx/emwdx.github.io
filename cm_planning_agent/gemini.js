@@ -6,7 +6,7 @@ async function runGemini(prompt) {
         alert('Please save your Gemini API key first.');
         return;
     }
-    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key=${apiKey}`;
 
     const payload = {
         contents: [{
