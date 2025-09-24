@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Changemakers Board v4.0 (with Filtering)</title>
+    <style>
+        :root {
+            --color-hub: #4a69bd; --color-inquiry: #e67e22; --color-visual: #f1c40f;
+            --color-synthesize: #2ecc71; --color-feedback: #9b59b6; --color-done: #7f8c8d;
+            --bg-main: #f4f5f7; --bg-list: #ebecf0; --text-dark: #172b4d;
+            --text-light: #5e6c84; --border-radius: 4px; --card-shadow: 0 1px 2px rgba(9,30,66,.25);
+
+            /* Proficiency Scale Tag Colors */
+            --tag-creativity: #ff7675; --tag-adaptive-thinking: #74b9ff; --tag-collaboration: #55efc4;
+            --tag-communication: #fdcb6e; --tag-advocacy-action: #a29bfe;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0; padding: 20px; background-color: var(--bg-main); color: var(--text-dark);
+            height: 100vh; box-sizing: border-box; display: flex; flex-direction: column;
+        }
+
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 0 10px 20px 10px; flex-shrink: 0;}
+        h1 { font-size: 1.5rem; margin: 0; }
+        .board-controls { position: relative; }
+        .control-btn { background-color: var(--bg-list); border: 1px solid #ccc; padding: 8px 15px; border-radius: var(--border-radius); cursor: pointer; }
+        .control-btn:hover { background-color: #dcdde1; }
+        
+        .filter-panel {
+            position: absolute; top: 100%; right: 0; background-color: white; border: 1px solid #ccc;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: var(--border-radius); padding: 15px;
+            z-index: 100; min-width: 220px;
+        }
+
+        .main-content { overflow-x: auto; flex-grow: 1; }
+        .board { display: inline-flex; gap: 15px; height: 100%; }
+
+        .list {
+            background-color: var(--bg-list); border-radius: var(--border-radius); width: 320px;
+            display: flex; flex-direction: column; max-height: 100%; flex-shrink: 0;
+            padding: 10px; box-sizing: border-box;
+        }
+        
+        .list-header { padding: 5px 8px; font-weight: 600; margin-bottom: 10px; }
+        .cards { flex-grow: 1; overflow-y: auto; min-height: 50px; padding: 5px; }
+        .cards.drag-over { border: 2px dashed #007bff; }
+
+        .card {
+            background-color: white; border-radius: var(--border-radius); padding: 10px; margin-bottom: 8px;
+            box-shadow: var(--card-shadow); cursor: pointer; border-left: 5px solid; white-space: normal;
+        }
+        .card-title { margin-bottom: 8px; }
+        .card-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+        .card-tag { padding: 2px 8px; font-size: 0.75rem; border-radius: 12px; color: white; font-weight: 500; }
+        .card.dragging { opacity: 0.5; transform: rotate(3deg); }
+
+        .add-card-btn {
+            background: none; border: none; color: var(--text-light); padding: 10px;
+            text-align: left; cursor: pointer; width: 100%; margin-top: 8px;
+        }
+        .add-card-btn:hover { background-color: rgba(9,30,66,.13); }
+
+        /* Filter View */
+        .filtered-view { padding: 10px; }
+        .filtered-card {
+            background-color: white; border-radius: var(--border-radius); padding: 15px; margin-bottom: 12px;
+            box-shadow: var(--card-shadow); cursor: pointer; border-left: 5px solid;
+            max-width: 800px; margin-left: auto; margin-right: auto;
+        }
+        .filtered-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;}
+        .filtered-card-header .card-title { margin: 0; font-size: 1.1rem; font-weight: 600; }
+        .filtered-card-context { font-size: 0.8rem; color: var(--text-light); font-style: italic; }
+        .filtered-card-tags { margin-top: 10px; }
+        .hidden { display: none !important; }
+
+        /* Modal Styles are mostly unchanged from v3.0 */
+        .modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,.6);display:none;justify-content:center;align-items:center;z-index:1000}.modal{background-color:white;padding:25px;border-radius:8px;width:90%;max-width:850px;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 5px 15px rgba(0,0,0,.3)}.modal-main-content{display:flex;flex-grow:1;gap:20px;overflow:hidden}.modal-left{flex:2;display:flex;flex-direction:column;min-width:0}.modal-right{flex:1;display:flex;flex-direction:column;min-width:0;overflow-y:auto}.modal-header{border-bottom:1px solid #ddd;padding-bottom:15px;margin-bottom:15px}.modal-title-input{font-size:1.5rem;font-weight:bold;border:none;outline:none;width:100%;padding:5px;border-radius:var(--border-radius)}.modal-title-input:focus{box-shadow:inset 0 0 0 2px #007bff}.modal-content-editor{flex-grow:1;display:flex;flex-direction:column;overflow:hidden}.rte-toolbar{border:1px solid #ccc;border-bottom:none;padding:5px;background:#f7f7f7;border-radius:var(--border-radius) var(--border-radius) 0 0}.rte-toolbar button{cursor:pointer;border:1px solid transparent;background-color:white;padding:5px 8px;margin-right:2px;border-radius:3px}.rte-content{border:1px solid #ccc;min-height:200px;padding:10px;flex-grow:1;overflow-y:auto;outline:none;border-radius:0 0 var(--border-radius) var(--border-radius)}#modalProficiencySection h4{margin-top:10px;margin-bottom:5px;border-bottom:1px solid #eee;padding-bottom:3px}#modalProficiencySection .proficiency-level{margin-bottom:10px}#modalProficiencySection .proficiency-level strong{display:block;margin-bottom:4px}#modalProficiencySection .proficiency-level div{font-size:.9em;white-space:pre-wrap;word-wrap:break-word}#modalTagEditor .tag-editor-label{display:block;margin-bottom:5px}#modalTagEditor .tag-editor-label input{margin-right:5px}.modal-actions{display:flex;justify-content:space-between;margin-top:20px}.modal-actions button{padding:10px 20px;border-radius:var(--border-radius);border:none;cursor:pointer;font-size:1rem}.save-btn{background-color:#007bff;color:white}.delete-btn{background-color:#e74c3c;color:white}.close-btn{background-color:#bdc3c7;color:var(--text-dark)}
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Changemakers Board</h1>
+        <div class="board-controls">
+            <button id="showBoardBtn" class="control-btn hidden">Show Full Board</button>
+            <button id="filterToggleBtn" class="control-btn">Filter by Proficiency</button>
+            <div id="filterPanel" class="filter-panel hidden">
+                <!-- Checkboxes will be generated here -->
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="board" id="board"></div>
+        <div class="filtered-view hidden" id="filteredView"></div>
+    </div>
+
+    <div class="modal-overlay" id="cardModal"><!-- Modal HTML is identical to v3.0 --></div>
+
+    <script>
+        // --- DATA STORE (identical to v3.0) ---
+        const proficiencyScales = {'Creativity':{color:'var(--tag-creativity)',levels:{'4.0':'Demonstrate in-depth synthesis and application of ideas that show complexity and/or integration. Produce a product that reflects a novel and useful idea with exceptional originality. Shows evidence of multiple design cycles that explore possibilities and generate improvements based on stakeholder feedback.','3.0':'Produce a product that reflects both a novel and useful idea/solution. Independently generates, iterates and explores a range of ideas with a variety of tools. Explain how a developed product demonstrates a detailed understanding of the problem/task objectives.','2.0':'Produce a product that reflects a useful idea/solution. Generates, iterates and explores ideas with teacher-directed tools. Select a product from provided options and explain how it addresses the task objectives.'}},'Adaptive Thinking':{color:'var(--tag-adaptive-thinking)',levels:{'4.0':'Anticipate potential challenges and adapt thinking proactively. Synthesize insights across systems to uncover interrelationships or inconsistencies. Employ adaptive reasoning to make sense of complexity, question assumptions, and integrate new insights in response to changing contexts.','3.0':'Articulate multiple perspectives related to a complex problem. Select and apply relevant evidence from varied sources to make and defend claims. Use systems thinking tools to identify patterns. Recognize when information may be incomplete or conflicting.','2.0':'Identify and describe a single perspective. Summarize key ideas from multiple sources. Identify strengths and limitations of sources using basic criteria (e.g., CRAAP Test). Use academic language and structure (Claim, Evidence, etc.).'}},'Collaboration':{color:'var(--tag-collaboration)',levels:{'4.0':'Apply and articulate the impact of collaborative practices specific to the project and group dynamic. Develop and implement a strategy for your specific team to be more efficient. Demonstrates self-awareness through evaluation of individual contributions and knows when to support and when to lead.','3.0':'Communicate clearly and respectfully, actively participates and takes initiative, effectively resolves conflicts, and meets deadlines. Leverage individual team members’ skills. Give, reflect, and act upon constructive feedback.','2.0':'Paraphrase and listen. Identify when a problem occurs in a group. Describe conflict resolution strategies. Identify next steps and timeline. Write personal collaboration goals and team agreements.'}},'Communication':{color:'var(--tag-communication)',levels:{'4.0':'Adapt communication tools and strategies to meet the needs of diverse audiences. Apply a sophisticated level of craftsmanship. Extend the quality and depth of the communication by following, adapting or breaking conventions of a medium or style.','3.0':'Share information in an organized and engaging way. Use precise, descriptive and content-specific knowledge to enhance a message. Applies craftsmanship in following conventions of a medium or style.','2.0':'Identify strategies to engage an audience. Plan the organization of a message. Show awareness of the conventions of a medium and elements of craftsmanship (clarity, concision).'}},'Advocacy & Action':{color:'var(--tag-advocacy-action)',levels:{'4.0':'Complete a meaningful positive change that impacts the community or plan for ongoing and sustainable impact. This change has noticeable impact, is lasting, addresses important needs, and involves stakeholders.','3.0':'Build ongoing connections with communities and individuals. Implement a solution based on multiple perspectives and feedback. Analyze the impact of the solution, including successes and failures.','2.0':'Plan and prepare for empathy chats. Capture perspectives of stakeholders. Propose a change, a service opportunity, or an action plan based on stakeholder needs.'}}};
+        const initialBoardData = {lists:[{id:'list-hub',title:'Teacher Hub & Communication Log',color:'var(--color-hub)',cards:[{id:'card-hub-1',title:'❗Daily Log: [Block] - [Date]',content:'<h3>Purpose: Log decisions, progress, and notes for each class block.</h3>',proficiencies:[]},{id:'card-hub-2',title:'📜 Official Master Rubric',content:'<h3>This card is a reference. The full rubric text is stored in the app\'s code.</h3><p>To edit a proficiency scale, a change must be made in the HTML file\'s `proficiencyScales` object.</p>',proficiencies:['Creativity','Adaptive Thinking','Collaboration','Communication','Advocacy & Action']}]},{id:'list-inquiry',title:'Phase 1: Inquiry & Inspiration',color:'var(--color-inquiry)',cards:[{id:'card-inq-2',title:'Source Hunting & AI Summary',content:'<h3>Find 2+ credible sources.</h3><p><b>🤖 AI Assistant Task:</b> Get key terms and a 3-bullet-point summary.</p><p><b>🧠 Your Task:</b> Evaluate sources with CRAAP. Does the summary match the article? Paste your work here.</p>',proficiencies:['Adaptive Thinking']},{id:'card-inq-3',title:'Your Insights & Compass',content:'<h3>This is where YOU make sense of the information. This part is NOT for AI.</h3><p>What did you find surprising? Identify quotes that support your insights. Connect insights to the Affinity Compass quadrants.</p>',proficiencies:['Adaptive Thinking','Advocacy & Action']}]},{id:'list-visual',title:'Phase 2: Visual Exploration (Photoshop)',color:'var(--color-visual)',cards:[{id:'card-vis-1',title:'Photoshop Bootcamp: Hybrid Animal',content:'<h3>Goal: Learn core digital collage skills.</h3><p><b>✅ Checklist:</b> Used selections, layer masks, adjustment layers, and exported a final JPG.</p>',proficiencies:['Creativity']},{id:'card-vis-3',title:'Draft Your Artistic Collage',content:'<h3>Time to create! Build your collage in Photoshop.</h3><p>Focus on creating a powerful visual composition that represents the core ideas from your research.</p>',proficiencies:['Creativity','Communication']}]},{id:'list-synth',title:'Phase 3: Synthesize & Build (Genially)',color:'var(--color-synthesize)',cards:[{id:'card-syn-1',title:'CRITICAL STEP: Revisit & Refine Your Message',content:'<h3>Look at your collage and research. What is the story?</h3><p>The act of creating may have clarified your ideas. Write your single, unifying message now.</p>',proficiencies:['Adaptive Thinking','Communication']},{id:'card-syn-3',title:'Build Your Interactive Graphic in Genially',content:'<h3>Bring it all together!</h3><ol><li>Upload collage.</li><li>Place 5 hotspots.</li><li>Copy/paste final text and sources.</li><li>Test all links.</li></ol>',proficiencies:['Communication','Creativity']}]},{id:'list-feedback',title:'Phase 4: Feedback & Finalize',color:'var(--color-feedback)',cards:[{id:'card-feed-1',title:'Peer Feedback Session',content:'<h3>Get a fresh perspective.</h3><p>Partner up and review each other\'s work. Provide kind, specific, and helpful feedback.</p>',proficiencies:['Collaboration','Communication']},{id:'card-feed-2',title:'SUBMIT: Post Your Genially Link',content:'<h3>Share your work!</h3><p>Post the final, shareable link to your Genially project on Schoology.</p>',proficiencies:['Advocacy & Action']}]}]};
+        
+        let boardData;
+        let activeFilters = [];
+        let isFilterViewActive = false;
+
+        // --- DOM ELEMENTS ---
+        const boardContainer = document.getElementById('board');
+        const filteredViewContainer = document.getElementById('filteredView');
+        const filterToggleBtn = document.getElementById('filterToggleBtn');
+        const showBoardBtn = document.getElementById('showBoardBtn');
+        const filterPanel = document.getElementById('filterPanel');
+        const modal = document.getElementById('cardModal'); // Modal is complex, handled in its own functions
+        
+        // --- LOCAL STORAGE ---
+        function saveBoard() { localStorage.setItem('changemakersBoardV4', JSON.stringify(boardData)); }
+        function loadBoard() {
+            const savedBoard = localStorage.getItem('changemakersBoardV4');
+            boardData = savedBoard ? JSON.parse(savedBoard) : initialBoardData;
+        }
+
+        // --- CORE RENDER FUNCTIONS ---
+        function renderBoard() {
+            boardContainer.innerHTML = '';
+            boardData.lists.forEach(list => {
+                const listEl = document.createElement('div');
+                listEl.className = 'list';
+                listEl.dataset.listId = list.id;
+                listEl.innerHTML = `<div class="list-header" style="border-left: 3px solid ${list.color};">${list.title}</div><div class="cards" data-list-id="${list.id}"></div><button class="add-card-btn" data-list-id="${list.id}">+ Add a card</button>`;
+                const cardsContainer = listEl.querySelector('.cards');
+                list.cards.forEach(card => cardsContainer.appendChild(createCardElement(card, list, 'board')));
+                boardContainer.appendChild(listEl);
+            });
+            addDragAndDropListeners();
+            addCardButtonListeners();
+        }
+
+        function renderFilteredView() {
+            filteredViewContainer.innerHTML = '';
+            if (activeFilters.length === 0) {
+                filteredViewContainer.innerHTML = '<p style="text-align: center; color: var(--text-light);">Select one or more proficiencies to filter cards.</p>';
+                return;
+            }
+
+            const matchingCards = [];
+            boardData.lists.forEach(list => {
+                list.cards.forEach(card => {
+                    const cardProficiencies = card.proficiencies || [];
+                    const isMatch = activeFilters.every(filter => cardProficiencies.includes(filter));
+                    if (isMatch) {
+                        matchingCards.push({ ...card, listId: list.id, listTitle: list.title, listColor: list.color });
+                    }
+                });
+            });
+
+            if (matchingCards.length === 0) {
+                filteredViewContainer.innerHTML = '<p style="text-align: center; color: var(--text-light);">No cards match the selected filter(s).</p>';
+                return;
+            }
+
+            matchingCards.forEach(cardData => {
+                filteredViewContainer.appendChild(createCardElement(cardData, {id: cardData.listId}, 'filtered'));
+            });
+        }
+        
+        // --- UI ELEMENT CREATION ---
+        function createCardElement(card, list, viewType) {
+            if (viewType === 'board') {
+                const cardEl = document.createElement('div');
+                cardEl.className = 'card';
+                cardEl.draggable = true;
+                cardEl.dataset.cardId = card.id;
+                cardEl.dataset.listId = list.id;
+                cardEl.style.borderColor = list.color;
+                cardEl.innerHTML = `<div class="card-title">${card.title}</div><div class="card-tags"></div>`;
+                const tagsContainer = cardEl.querySelector('.card-tags');
+                (card.proficiencies || []).forEach(pName => {
+                    tagsContainer.innerHTML += `<span class="card-tag" style="background-color: ${proficiencyScales[pName]?.color || '#ccc'};">${pName}</span>`;
+                });
+                cardEl.addEventListener('dblclick', () => openModal(card.id, list.id));
+                return cardEl;
+            } else { // 'filtered' view
+                const cardEl = document.createElement('div');
+                cardEl.className = 'filtered-card';
+                cardEl.dataset.cardId = card.id;
+                cardEl.dataset.listId = list.id;
+                cardEl.style.borderColor = card.listColor;
+                cardEl.innerHTML = `
+                    <div class="filtered-card-header">
+                        <div class="card-title">${card.title}</div>
+                        <div class="filtered-card-context">From: ${card.listTitle}</div>
+                    </div>
+                    <div class="card-tags filtered-card-tags"></div>`;
+                const tagsContainer = cardEl.querySelector('.card-tags');
+                (card.proficiencies || []).forEach(pName => {
+                    tagsContainer.innerHTML += `<span class="card-tag" style="background-color: ${proficiencyScales[pName]?.color || '#ccc'};">${pName}</span>`;
+                });
+                cardEl.addEventListener('dblclick', () => openModal(card.id, list.id));
+                return cardEl;
+            }
+        }
+        
+        function populateFilterPanel() {
+            filterPanel.innerHTML = '';
+            Object.keys(proficiencyScales).forEach(pName => {
+                filterPanel.innerHTML += `
+                    <label style="display: block; margin-bottom: 8px;">
+                        <input type="checkbox" value="${pName}" class="filter-checkbox">
+                        ${pName}
+                    </label>`;
+            });
+        }
+
+        // --- VIEW MANAGEMENT ---
+        function switchToFilterView() {
+            isFilterViewActive = true;
+            boardContainer.classList.add('hidden');
+            filteredViewContainer.classList.remove('hidden');
+            filterToggleBtn.classList.add('hidden');
+            showBoardBtn.classList.remove('hidden');
+            renderFilteredView();
+        }
+
+        function switchToBoardView() {
+            isFilterViewActive = false;
+            activeFilters = [];
+            filterPanel.querySelectorAll('.filter-checkbox').forEach(cb => cb.checked = false);
+            filterPanel.classList.add('hidden');
+            
+            boardContainer.classList.remove('hidden');
+            filteredViewContainer.classList.add('hidden');
+            filterToggleBtn.classList.remove('hidden');
+            showBoardBtn.classList.add('hidden');
+            // No need to re-render board unless data changed
+        }
+
+        // --- MODAL LOGIC (Identical to v3.0, with one small change in saveCard) ---
+        // (For brevity, only the modified saveCard is shown. The rest is the same as v3.)
+        function openModal(cardId, listId){ /* ... identical to v3 ... */ }
+        function closeModal(){ /* ... identical to v3 ... */ }
+        function deleteCard(){ /* ... identical to v3 ... */ }
+        function execCmd(command){ /* ... identical to v3 ... */ }
+
+        function saveCard() {
+            const modalTitleInput = document.getElementById('modalTitleInput');
+            const modalContentEditor = document.getElementById('modalContentEditor');
+            const modalTagEditor = document.getElementById('modalTagEditor');
+            let currentEditingCard = window.currentEditingCard; // Assuming it's set globally by openModal
+
+            const { cardId, listId } = currentEditingCard;
+            if (!cardId || !listId) return;
+            const list = boardData.lists.find(l => l.id === listId);
+            const card = list.cards.find(c => c.id === cardId);
+            
+            card.title = modalTitleInput.value.trim() || 'Untitled Card';
+            card.content = modalContentEditor.innerHTML;
+
+            const newProficiencies = [];
+            modalTagEditor.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
+                newProficiencies.push(checkbox.value);
+            });
+            card.proficiencies = newProficiencies;
+
+            saveBoard();
+            
+            // **MODIFICATION HERE**
+            if (isFilterViewActive) {
+                renderFilteredView();
+            } else {
+                renderBoard();
+            }
+            closeModal();
+        }
+        
+        // --- DRAG & DROP + NEW CARD LOGIC (Identical to v3.0) ---
+        function addDragAndDropListeners() { /* ... identical to v3 ... */ }
+        function addCardButtonListeners() { /* ... identical to v3 ... */ }
+
+        // --- INITIALIZATION & EVENT LISTENERS ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Need to populate the modal HTML here since it was removed for brevity above
+            document.getElementById('cardModal').innerHTML = `<div class="modal"><div class="modal-header"><input type="text" id="modalTitleInput" class="modal-title-input" placeholder="Card Title"></div><div class="modal-main-content"><div class="modal-left"><div class="modal-content-editor"><p><strong>Description:</strong></p><div class="rte-toolbar"><button onclick="execCmd('bold')"><b>B</b></button><button onclick="execCmd('italic')"><i>I</i></button><button onclick="execCmd('underline')"><u>U</u></button><button onclick="execCmd('insertUnorderedList')">UL</button><button onclick="execCmd('insertOrderedList')">OL</button></div><div id="modalContentEditor" class="rte-content" contenteditable="true"></div></div></div><div class="modal-right"><h4>Proficiency Scales for this Task</h4><div id="modalProficiencySection"></div><h4 style="margin-top: 20px;">Edit Tags</h4><div id="modalTagEditor"></div></div></div><div class="modal-actions"><div><button id="deleteCardBtn" class="delete-btn">Delete Card</button></div><div><button id="closeModalBtn" class="close-btn">Cancel</button><button id="saveCardBtn" class="save-btn">Save Changes</button></div></div></div>`;
+            window.openModal = function(cardId, listId) {
+                const modalProficiencySection = document.getElementById('modalProficiencySection');
+                const modalTagEditor = document.getElementById('modalTagEditor');
+                const card = boardData.lists.find(l=>l.id===listId).cards.find(c=>c.id===cardId);
+                if (!card) return;
+                window.currentEditingCard = {cardId, listId};
+                document.getElementById('modalTitleInput').value = card.title;
+                document.getElementById('modalContentEditor').innerHTML = card.content;
+                modalProficiencySection.innerHTML = '';
+                modalTagEditor.innerHTML = '';
+                const cardProficiencies = card.proficiencies || [];
+                if(cardProficiencies.length > 0){ cardProficiencies.forEach(pName=>{const scale=proficiencyScales[pName]; if(scale){modalProficiencySection.innerHTML+=`<h4 style="color:${scale.color};">${pName}</h4><div class="proficiency-level"><strong>4.0:</strong> <div>${scale.levels['4.0']}</div></div><div class="proficiency-level"><strong>3.0:</strong> <div>${scale.levels['3.0']}</div></div><div class="proficiency-level"><strong>2.0:</strong> <div>${scale.levels['2.0']}</div></div>`}})}else{modalProficiencySection.innerHTML='<p>No proficiency scales are tagged for this card.</p>'}
+                Object.keys(proficiencyScales).forEach(pName=>{const isChecked=cardProficiencies.includes(pName); modalTagEditor.innerHTML+=`<label class="tag-editor-label"><input type="checkbox" value="${pName}" ${isChecked?'checked':''}> ${pName}</label>`});
+                document.getElementById('cardModal').style.display='flex';
+            };
+            window.closeModal = function() { document.getElementById('cardModal').style.display = 'none'; };
+            window.deleteCard = function() { const {cardId, listId} = window.currentEditingCard; if(!cardId||!listId) return; if(confirm('Are you sure?')){const list=boardData.lists.find(l=>l.id===listId); list.cards=list.cards.filter(c=>c.id!==cardId); saveBoard(); isFilterViewActive?renderFilteredView():renderBoard(); closeModal();}};
+            window.execCmd = function(c) {document.execCommand(c,false,null)};
+            window.addDragAndDropListeners = function() {const cards=document.querySelectorAll('.card'),lists=document.querySelectorAll('.cards');cards.forEach(c=>{c.addEventListener('dragstart',()=>c.classList.add('dragging'));c.addEventListener('dragend',()=>c.classList.remove('dragging'))});lists.forEach(l=>{l.addEventListener('dragover',e=>{e.preventDefault();l.classList.add('drag-over')});l.addEventListener('dragleave',()=>l.classList.remove('drag-over'));l.addEventListener('drop',e=>{e.preventDefault();l.classList.remove('drag-over');const d=document.querySelector('.dragging');if(!d)return; const fl=d.dataset.listId,tl=l.dataset.listId,ci=d.dataset.cardId;if(fl!==tl){const f=boardData.lists.find(x=>x.id===fl),t=boardData.lists.find(x=>x.id===tl),i=f.cards.findIndex(x=>x.id===ci),[m]=f.cards.splice(i,1);t.cards.push(m);saveBoard();renderBoard()}})})};
+            window.addCardButtonListeners = function() {document.querySelectorAll('.add-card-btn').forEach(b=>{b.addEventListener('click',()=>{const lId=b.dataset.listId,title=prompt('Card title:');if(title&&title.trim()!==''){const l=boardData.lists.find(x=>x.id===lId);l.cards.push({id:'card-'+new Date().getTime(),title:title.trim(),content:'<p>...</p>',proficiencies:[]});saveBoard();renderBoard()}})})};
+
+            loadBoard();
+            populateFilterPanel();
+            renderBoard();
+            
+            // New filter event listeners
+            filterToggleBtn.addEventListener('click', () => filterPanel.classList.toggle('hidden'));
+            showBoardBtn.addEventListener('click', switchToBoardView);
+            filterPanel.addEventListener('change', (e) => {
+                if (e.target.classList.contains('filter-checkbox')) {
+                    activeFilters = Array.from(filterPanel.querySelectorAll('.filter-checkbox:checked')).map(cb => cb.value);
+                    switchToFilterView();
+                }
+            });
+
+            // Standard modal buttons
+            document.getElementById('saveCardBtn').addEventListener('click', saveCard);
+            document.getElementById('deleteCardBtn').addEventListener('click', deleteCard);
+            document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+        });
+    </script>
+</body>
+</html>
