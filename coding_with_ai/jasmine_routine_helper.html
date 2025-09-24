@@ -1,487 +1,567 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>Nightly Routine Helper</title>
- <script src="https://cdn.tailwindcss.com"></script>
- <style>
- .custom-pink {
- background-color: #F8BBD0; /* Light Pink */
- }
- .text-custom-pink-dark {
- color: #C2185B; /* Dark Pink */
- }
- .avatar-option {
- cursor: pointer;
- transition: transform 0.2s, box-shadow 0.2s;
- }
- .avatar-option:hover {
- transform: scale(1.1);
- }
- .avatar-option.selected {
- border: 4px solid #F472B6;
- transform: scale(1.1);
- box-shadow: 0 0 15px rgba(244, 114, 182, 0.7);
- }
- </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nightly Routine Helper</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .custom-pink {
+            background-color: #F8BBD0; /* Light Pink */
+        }
+        .text-custom-pink-dark {
+            color: #C2185B; /* Dark Pink */
+        }
+        .avatar-option {
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .avatar-option:hover {
+            transform: scale(1.1);
+        }
+        .avatar-option.selected {
+            border: 4px solid #F472B6;
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(244, 114, 182, 0.7);
+        }
+    </style>
 </head>
 <body class="custom-pink min-h-screen flex items-center justify-center p-4 font-sans text-pink-900">
 
- <!-- Main Content -->
- <div id="main-content" class="w-full max-w-lg text-center bg-pink-100 p-8 rounded-3xl shadow-2xl space-y-8">
- <h1 class="text-4xl md:text-5xl font-extrabold text-pink-700 leading-tight">Your Nightly Routine</h1>
+    <!-- Main Content -->
+    <div id="main-content" class="w-full max-w-lg text-center bg-pink-100 p-8 rounded-3xl shadow-2xl space-y-8">
+        <h1 class="text-4xl md:text-5xl font-extrabold text-pink-700 leading-tight">Your Nightly Routine</h1>
 
- <!-- Character Selection -->
- <div id="character-selection-container" class="space-y-4">
- <h2 class="text-2xl font-bold text-pink-700">Choose Your Helper!</h2>
- <div id="character-options" class="flex justify-center space-x-4">
- <!-- Avatar options will be injected here by JS -->
- </div>
- </div>
+        <!-- Character Selection -->
+        <div id="character-selection-container" class="space-y-4">
+            <h2 class="text-2xl font-bold text-pink-700">Choose Your Helper!</h2>
+            <div id="character-options" class="flex justify-center space-x-4">
+                <!-- Avatar options will be injected here by JS -->
+            </div>
+        </div>
 
- <!-- Selected Avatar and Encouragement -->
- <div id="avatar-display-container" class="flex flex-col items-center space-y-4 hidden">
- <div id="avatar-container" class="w-32 h-32 md:w-40 md:h-40">
- <!-- SVG of the selected character will be injected here -->
- </div>
- <p id="encouragement-message" class="text-xl font-semibold text-pink-800 transition-opacity duration-500">Let's get started!</p>
- </div>
+        <!-- Selected Avatar and Encouragement -->
+        <div id="avatar-display-container" class="flex flex-col items-center space-y-4 hidden">
+            <div id="avatar-container" class="w-32 h-32 md:w-40 md:h-40">
+                <!-- SVG of the selected character will be injected here -->
+            </div>
+            <p id="encouragement-message" class="text-xl font-semibold text-pink-800 transition-opacity duration-500">Let's get started!</p>
+        </div>
 
- <div class="space-y-4 text-left">
- <p class="text-lg md:text-xl text-pink-800">Set a time to get a reminder to start your wind-down routine.</p>
- <form id="routine-form" class="space-y-4">
- <div class="flex flex-col items-start space-y-2">
- <label for="set-time" class="text-lg font-semibold text-pink-600">Reminder Time:</label>
- <input type="time" id="set-time" class="w-full p-4 text-xl rounded-xl border-2 border-pink-300 focus:outline-none focus:ring-2 focus:ring-pink-500 transition-shadow">
- </div>
- <button type="submit" class="w-full bg-pink-500 text-white rounded-full py-4 font-bold text-2xl shadow-lg hover:bg-pink-600 transition-colors">Set Reminder</button>
- </form>
- </div>
+        <div class="space-y-4 text-left">
+            <p class="text-lg md:text-xl text-pink-800">Set a time to get a reminder to start your wind-down routine.</p>
+            <form id="routine-form" class="space-y-4">
+                <div class="flex flex-col items-start space-y-2">
+                    <label for="set-time" class="text-lg font-semibold text-pink-600">Reminder Time:</label>
+                    <input type="time" id="set-time" class="w-full p-4 text-xl rounded-xl border-2 border-pink-300 focus:outline-none focus:ring-2 focus:ring-pink-500 transition-shadow">
+                </div>
+                <button type="submit" class="w-full bg-pink-500 text-white rounded-full py-4 font-bold text-2xl shadow-lg hover:bg-pink-600 transition-colors">Set Reminder</button>
+            </form>
+        </div>
 
- <p id="status-message" class="text-lg text-pink-700 font-semibold hidden"></p>
+        <p id="status-message" class="text-lg text-pink-700 font-semibold hidden"></p>
 
- <div class="grid grid-cols-2 gap-4 text-pink-800 font-bold">
- <div class="bg-pink-300 p-6 rounded-2xl shadow-inner transform hover:scale-105 transition-transform">
- <p class="text-xl">Current Streak</p>
- <p id="streak-display" class="text-5xl text-pink-900 mt-2 font-extrabold">0</p>
- </div>
- <div class="bg-pink-300 p-6 rounded-2xl shadow-inner transform hover:scale-105 transition-transform">
- <p class="text-xl">Restores Left</p>
- <p id="restores-display" class="text-5xl text-pink-900 mt-2 font-extrabold">5</p>
- </div>
- </div>
+        <div class="grid grid-cols-2 gap-4 text-pink-800 font-bold">
+            <div class="bg-pink-300 p-6 rounded-2xl shadow-inner transform hover:scale-105 transition-transform">
+                <p class="text-xl">Current Streak</p>
+                <p id="streak-display" class="text-5xl text-pink-900 mt-2 font-extrabold">0</p>
+            </div>
+            <div class="bg-pink-300 p-6 rounded-2xl shadow-inner transform hover:scale-105 transition-transform">
+                <p class="text-xl">Restores Left</p>
+                <p id="restores-display" class="text-5xl text-pink-900 mt-2 font-extrabold">5</p>
+            </div>
+        </div>
 
- <p id="completion-message" class="text-green-600 font-bold text-xl hidden transform scale-110 transition-transform">Great job! Streak updated!</p>
- </div>
+        <!-- Data Management -->
+        <div class="mt-8 flex flex-col sm:flex-row justify-center items-center gap-4">
+            <button id="save-data-btn" class="w-full sm:w-auto bg-green-500 text-white rounded-full py-3 px-8 font-bold text-lg shadow-lg hover:bg-green-600 transition-colors">Save Data</button>
+            <label for="import-data-input" class="w-full sm:w-auto bg-blue-500 text-white rounded-full py-3 px-8 font-bold text-lg shadow-lg hover:bg-blue-600 transition-colors cursor-pointer">
+                Import Data
+            </label>
+            <input type="file" id="import-data-input" class="hidden" accept=".json">
+        </div>
 
- <!-- Notification Overlay -->
- <div id="notification-overlay" class="hidden fixed inset-0 bg-pink-900 bg-opacity-95 backdrop-blur-sm flex flex-col items-center justify-center p-8 text-center text-white z-50">
- <div id="notification-content" class="bg-pink-600 p-10 rounded-3xl shadow-2xl flex flex-col items-center max-w-xl w-full">
- <!-- Content injected by JS -->
- </div>
- </div>
+        <p id="completion-message" class="text-green-600 font-bold text-xl hidden transform scale-110 transition-transform">Great job! Streak updated!</p>
+    </div>
 
- <!-- Extension Modal -->
- <div id="extension-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 p-4">
- <div class="bg-pink-100 p-8 rounded-3xl shadow-2xl text-center text-pink-900 max-w-sm w-full relative">
- <button id="close-extension-modal" class="absolute top-4 right-4 text-pink-500 hover:text-pink-700 text-3xl">&times;</button>
- <h2 class="text-3xl font-bold mb-4">Extend Your Time</h2>
- <p class="text-lg mb-6">How many minutes would you like to extend?</p>
- <input type="number" id="extend-time" placeholder="e.g., 15" min="1" class="w-full p-4 text-xl rounded-xl text-center border-2 border-pink-300 focus:outline-none focus:ring-2 focus:ring-pink-500 transition-shadow">
- <button id="extend-btn" class="w-full mt-6 bg-pink-500 text-white rounded-full py-4 font-bold text-xl shadow-lg hover:bg-pink-600 transition-colors">Extend</button>
- </div>
- </div>
+    <!-- Notification Overlay -->
+    <div id="notification-overlay" class="hidden fixed inset-0 bg-pink-900 bg-opacity-95 backdrop-blur-sm flex flex-col items-center justify-center p-8 text-center text-white z-50">
+        <div id="notification-content" class="bg-pink-600 p-10 rounded-3xl shadow-2xl flex flex-col items-center max-w-xl w-full">
+            <!-- Content injected by JS -->
+        </div>
+    </div>
 
- <!-- Streak Reset Modal -->
- <div id="streak-reset-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 p-4">
- <div class="bg-pink-100 p-8 rounded-3xl shadow-2xl text-center text-pink-900 max-w-sm w-full relative">
- <button id="close-streak-reset-modal" class="absolute top-4 right-4 text-pink-500 hover:text-pink-700 text-3xl">&times;</button>
- <h2 class="text-3xl font-bold mb-4">Streak Reset</h2>
- <p class="text-lg">Oh no! Your streak has been reset. But don't worry, you've got this! Start a new streak tonight!</p>
- </div>
- </div>
+    <!-- Extension Modal -->
+    <div id="extension-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 p-4">
+        <div class="bg-pink-100 p-8 rounded-3xl shadow-2xl text-center text-pink-900 max-w-sm w-full relative">
+            <button id="close-extension-modal" class="absolute top-4 right-4 text-pink-500 hover:text-pink-700 text-3xl">&times;</button>
+            <h2 class="text-3xl font-bold mb-4">Extend Your Time</h2>
+            <p class="text-lg mb-6">How many minutes would you like to extend?</p>
+            <input type="number" id="extend-time" placeholder="e.g., 15" min="1" class="w-full p-4 text-xl rounded-xl text-center border-2 border-pink-300 focus:outline-none focus:ring-2 focus:ring-pink-500 transition-shadow">
+            <button id="extend-btn" class="w-full mt-6 bg-pink-500 text-white rounded-full py-4 font-bold text-xl shadow-lg hover:bg-pink-600 transition-colors">Extend</button>
+        </div>
+    </div>
 
- <script>
- const routineForm = document.getElementById('routine-form');
- const setTimeInput = document.getElementById('set-time');
- const notificationOverlay = document.getElementById('notification-overlay');
- const notificationContent = document.getElementById('notification-content');
- const streakDisplay = document.getElementById('streak-display');
- const restoresDisplay = document.getElementById('restores-display');
- const completionMessage = document.getElementById('completion-message');
- const extensionModal = document.getElementById('extension-modal');
- const extendTimeInput = document.getElementById('extend-time');
- const streakResetModal = document.getElementById('streak-reset-modal');
- const avatarContainer = document.getElementById('avatar-container');
- const encouragementMessage = document.getElementById('encouragement-message');
- const statusMessage = document.getElementById('status-message');
- const characterSelectionContainer = document.getElementById('character-selection-container');
- const avatarDisplayContainer = document.getElementById('avatar-display-container');
+    <!-- Streak Reset Modal -->
+    <div id="streak-reset-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 p-4">
+        <div class="bg-pink-100 p-8 rounded-3xl shadow-2xl text-center text-pink-900 max-w-sm w-full relative">
+            <button id="close-streak-reset-modal" class="absolute top-4 right-4 text-pink-500 hover:text-pink-700 text-3xl">&times;</button>
+            <h2 class="text-3xl font-bold mb-4">Streak Reset</h2>
+            <p class="text-lg">Oh no! Your streak has been reset. But don't worry, you've got this! Start a new streak tonight!</p>
+        </div>
+    </div>
 
- let timerId;
+    <script>
+        const routineForm = document.getElementById('routine-form');
+        const setTimeInput = document.getElementById('set-time');
+        const notificationOverlay = document.getElementById('notification-overlay');
+        const notificationContent = document.getElementById('notification-content');
+        const streakDisplay = document.getElementById('streak-display');
+        const restoresDisplay = document.getElementById('restores-display');
+        const completionMessage = document.getElementById('completion-message');
+        const extensionModal = document.getElementById('extension-modal');
+        const extendTimeInput = document.getElementById('extend-time');
+        const streakResetModal = document.getElementById('streak-reset-modal');
+        const avatarContainer = document.getElementById('avatar-container');
+        const encouragementMessage = document.getElementById('encouragement-message');
+        const statusMessage = document.getElementById('status-message');
+        const characterSelectionContainer = document.getElementById('character-selection-container');
+        const avatarDisplayContainer = document.getElementById('avatar-display-container');
+        const saveDataBtn = document.getElementById('save-data-btn');
+        const importDataInput = document.getElementById('import-data-input');
 
- const characters = {
- bear: {
- happy: `
- <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
- <!-- Head -->
- <path d="M50 15 C 20 15, 10 50, 50 85 C 90 50, 80 15, 50 15 Z" fill="#6A453A"/>
- <!-- Muzzle -->
- <path d="M50 75 A 15 10 0 0 0 50 55 A 15 10 0 0 0 50 75 Z" fill="#A57F6C"/>
- <!-- Ears -->
- <circle cx="20" cy="20" r="15" fill="#6A453A"/>
- <circle cx="80" cy="20" r="15" fill="#6A453A"/>
- <circle cx="20" cy="20" r="10" fill="#A57F6C"/>
- <circle cx="80" cy="20" r="10" fill="#A57F6C"/>
- <!-- Eyes -->
- <circle cx="40" cy="45" r="5" fill="#2D2B29"/>
- <circle cx="60" cy="45" r="5" fill="#2D2B29"/>
- <!-- Mouth (Happy) -->
- <path d="M 40 65 Q 50 75, 60 65" fill="none" stroke="#2D2B29" stroke-width="3" stroke-linecap="round"/>
- <!-- Nose -->
- <circle cx="50" cy="60" r="3" fill="#2D2B29"/>
- </svg>
- `,
- sad: `
- <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
- <!-- Head -->
- <path d="M50 15 C 20 15, 10 50, 50 85 C 90 50, 80 15, 50 15 Z" fill="#6A453A"/>
- <!-- Muzzle -->
- <path d="M50 75 A 15 10 0 0 0 50 55 A 15 10 0 0 0 50 75 Z" fill="#A57F6C"/>
- <!-- Ears -->
- <circle cx="20" cy="20" r="15" fill="#6A453A"/>
- <circle cx="80" cy="20" r="15" fill="#6A453A"/>
- <circle cx="20" cy="20" r="10" fill="#A57F6C"/>
- <circle cx="80" cy="20" r="10" fill="#A57F6C"/>
- <!-- Eyes -->
- <circle cx="40" cy="45" r="5" fill="#2D2B29"/>
- <circle cx="60" cy="45" r="5" fill="#2D2B29"/>
- <!-- Mouth (Sad) -->
- <path d="M 40 75 Q 50 65, 60 75" fill="none" stroke="#2D2B29" stroke-width="3" stroke-linecap="round"/>
- <!-- Nose -->
- <circle cx="50" cy="60" r="3" fill="#2D2B29"/>
- </svg>
- `
- },
- bunny: {
- happy: `
- <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
- <!-- Head -->
- <circle cx="50" cy="65" r="30" fill="#BCC6CC"/>
- <!-- Ears -->
- <path d="M35 15 C20 0, 15 30, 35 50" fill="#BCC6CC"/>
- <path d="M65 15 C80 0, 85 30, 65 50" fill="#BCC6CC"/>
- <path d="M35 25 C25 15, 20 30, 35 45" fill="#D3C9D5"/>
- <path d="M65 25 C75 15, 80 30, 65 45" fill="#D3C9D5"/>
- <!-- Cheeks -->
- <circle cx="40" cy="75" r="5" fill="#E9967A" opacity="0.8"/>
- <circle cx="60" cy="75" r="5" fill="#E9967A" opacity="0.8"/>
- <!-- Eyes -->
- <circle cx="40" cy="60" r="3" fill="#2D2B29"/>
- <circle cx="60" cy="60" r="3" fill="#2D2B29"/>
- <!-- Mouth (Happy) -->
- <path d="M45 70 Q50 75, 55 70" fill="none" stroke="#2D2B29" stroke-width="2" stroke-linecap="round"/>
- <!-- Nose -->
- <path d="M50 70 L50 72 M48 70 L52 70" stroke="#2D2B29" stroke-width="1.5"/>
- </svg>
- `,
- sad: `
- <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
- <!-- Head -->
- <circle cx="50" cy="65" r="30" fill="#BCC6CC"/>
- <!-- Ears (Droopy) -->
- <path d="M35 15 C20 30, 15 40, 35 50" fill="#BCC6CC"/>
- <path d="M65 15 C80 30, 85 40, 65 50" fill="#BCC6CC"/>
- <path d="M35 25 C25 35, 20 45, 35 45" fill="#D3C9D5"/>
- <path d="M65 25 C75 35, 80 45, 65 45" fill="#D3C9D5"/>
- <!-- Cheeks -->
- <circle cx="40" cy="75" r="5" fill="#E9967A" opacity="0.8"/>
- <circle cx="60" cy="75" r="5" fill="#E9967A" opacity="0.8"/>
- <!-- Eyes -->
- <circle cx="40" cy="60" r="3" fill="#2D2B29"/>
- <circle cx="60" cy="60" r="3" fill="#2D2B29"/>
- <!-- Mouth (Sad) -->
- <path d="M45 80 Q50 75, 55 80" fill="none" stroke="#2D2B29" stroke-width="2" stroke-linecap="round"/>
- <!-- Nose -->
- <path d="M50 70 L50 72 M48 70 L52 70" stroke="#2D2B29" stroke-width="1.5"/>
- </svg>
- `
- },
- cat: {
- happy: `
- <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
- <!-- Head -->
- <path d="M50 90 Q 10 70, 25 40 Q 50 10, 75 40 Q 90 70, 50 90 Z" fill="#F4A261"/>
- <!-- Ears -->
- <path d="M20 40 L35 20 L35 40 Z" fill="#E76F51"/>
- <path d="M80 40 L65 20 L65 40 Z" fill="#E76F51"/>
- <!-- Markings -->
- <path d="M45 35 L40 45 M55 35 L60 45" stroke="#E76F51" stroke-width="2" stroke-linecap="round"/>
- <path d="M30 50 L20 50 M70 50 L80 50" stroke="#E76F51" stroke-width="2" stroke-linecap="round"/>
- <!-- Eyes -->
- <circle cx="40" cy="55" r="4" fill="#264653"/>
- <circle cx="60" cy="55" r="4" fill="#264653"/>
- <!-- Mouth (Happy) -->
- <path d="M40 70 Q 50 80, 60 70" fill="none" stroke="#2D2B29" stroke-width="3" stroke-linecap="round"/>
- <!-- Whiskers -->
- <path d="M30 65 L15 65 M30 70 L15 75 M70 65 L85 65 M70 70 L85 75" stroke="#2D2B29" stroke-width="2" stroke-linecap="round"/>
- </svg>
- `,
- sad: `
- <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
- <!-- Head -->
- <path d="M50 90 Q 10 70, 25 40 Q 50 10, 75 40 Q 90 70, 50 90 Z" fill="#F4A261"/>
- <!-- Ears -->
- <path d="M20 40 L35 20 L35 40 Z" fill="#E76F51"/>
- <path d="M80 40 L65 20 L65 40 Z" fill="#E76F51"/>
- <!-- Markings -->
- <path d="M45 35 L40 45 M55 35 L60 45" stroke="#E76F51" stroke-width="2" stroke-linecap="round"/>
- <path d="M30 50 L20 50 M70 50 L80 50" stroke="#E76F51" stroke-width="2" stroke-linecap="round"/>
- <!-- Eyes -->
- <circle cx="40" cy="55" r="4" fill="#264653"/>
- <circle cx="60" cy="55" r="4" fill="#264653"/>
- <!-- Mouth (Sad) -->
- <path d="M40 80 Q 50 70, 60 80" fill="none" stroke="#2D2B29" stroke-width="3" stroke-linecap="round"/>
- <!-- Whiskers -->
- <path d="M30 65 L15 65 M30 70 L15 75 M70 65 L85 65 M70 70 L85 75" stroke="#2D2B29" stroke-width="2" stroke-linecap="round"/>
- </svg>
- `
- }
- };
+        let timerId;
 
- // Functions to interact with localStorage
- const getProgress = () => {
- const progress = localStorage.getItem('nightlyRoutineProgress');
- return progress ? JSON.parse(progress) : { streak: 0, restores: 5, lastCompletionDate: null, lastRestoreDate: null, character: null };
- };
+        const characters = {
+            bear: {
+                happy: `
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Head -->
+                        <path d="M50 15 C 20 15, 10 50, 50 85 C 90 50, 80 15, 50 15 Z" fill="#6A453A"/>
+                        <!-- Muzzle -->
+                        <path d="M50 75 A 15 10 0 0 0 50 55 A 15 10 0 0 0 50 75 Z" fill="#A57F6C"/>
+                        <!-- Ears -->
+                        <circle cx="20" cy="20" r="15" fill="#6A453A"/>
+                        <circle cx="80" cy="20" r="15" fill="#6A453A"/>
+                        <circle cx="20" cy="20" r="10" fill="#A57F6C"/>
+                        <circle cx="80" cy="20" r="10" fill="#A57F6C"/>
+                        <!-- Eyes -->
+                        <circle cx="40" cy="45" r="5" fill="#2D2B29"/>
+                        <circle cx="60" cy="45" r="5" fill="#2D2B29"/>
+                        <!-- Mouth (Happy) -->
+                        <path d="M 40 65 Q 50 75, 60 65" fill="none" stroke="#2D2B29" stroke-width="3" stroke-linecap="round"/>
+                        <!-- Nose -->
+                        <circle cx="50" cy="60" r="3" fill="#2D2B29"/>
+                    </svg>
+                `,
+                sad: `
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Head -->
+                        <path d="M50 15 C 20 15, 10 50, 50 85 C 90 50, 80 15, 50 15 Z" fill="#6A453A"/>
+                        <!-- Muzzle -->
+                        <path d="M50 75 A 15 10 0 0 0 50 55 A 15 10 0 0 0 50 75 Z" fill="#A57F6C"/>
+                        <!-- Ears -->
+                        <circle cx="20" cy="20" r="15" fill="#6A453A"/>
+                        <circle cx="80" cy="20" r="15" fill="#6A453A"/>
+                        <circle cx="20" cy="20" r="10" fill="#A57F6C"/>
+                        <circle cx="80" cy="20" r="10" fill="#A57F6C"/>
+                        <!-- Eyes -->
+                        <circle cx="40" cy="45" r="5" fill="#2D2B29"/>
+                        <circle cx="60" cy="45" r="5" fill="#2D2B29"/>
+                        <!-- Mouth (Sad) -->
+                        <path d="M 40 75 Q 50 65, 60 75" fill="none" stroke="#2D2B29" stroke-width="3" stroke-linecap="round"/>
+                        <!-- Nose -->
+                        <circle cx="50" cy="60" r="3" fill="#2D2B29"/>
+                    </svg>
+                `
+            },
+            bunny: {
+                happy: `
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Head -->
+                        <circle cx="50" cy="65" r="30" fill="#BCC6CC"/>
+                        <!-- Ears -->
+                        <path d="M35 15 C20 0, 15 30, 35 50" fill="#BCC6CC"/>
+                        <path d="M65 15 C80 0, 85 30, 65 50" fill="#BCC6CC"/>
+                        <path d="M35 25 C25 15, 20 30, 35 45" fill="#D3C9D5"/>
+                        <path d="M65 25 C75 15, 80 30, 65 45" fill="#D3C9D5"/>
+                        <!-- Cheeks -->
+                        <circle cx="40" cy="75" r="5" fill="#E9967A" opacity="0.8"/>
+                        <circle cx="60" cy="75" r="5" fill="#E9967A" opacity="0.8"/>
+                        <!-- Eyes -->
+                        <circle cx="40" cy="60" r="3" fill="#2D2B29"/>
+                        <circle cx="60" cy="60" r="3" fill="#2D2B29"/>
+                        <!-- Mouth (Happy) -->
+                        <path d="M45 70 Q50 75, 55 70" fill="none" stroke="#2D2B29" stroke-width="2" stroke-linecap="round"/>
+                        <!-- Nose -->
+                        <path d="M50 70 L50 72 M48 70 L52 70" stroke="#2D2B29" stroke-width="1.5"/>
+                    </svg>
+                `,
+                sad: `
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Head -->
+                        <circle cx="50" cy="65" r="30" fill="#BCC6CC"/>
+                        <!-- Ears (Droopy) -->
+                        <path d="M35 15 C20 30, 15 40, 35 50" fill="#BCC6CC"/>
+                        <path d="M65 15 C80 30, 85 40, 65 50" fill="#BCC6CC"/>
+                        <path d="M35 25 C25 35, 20 45, 35 45" fill="#D3C9D5"/>
+                        <path d="M65 25 C75 35, 80 45, 65 45" fill="#D3C9D5"/>
+                        <!-- Cheeks -->
+                        <circle cx="40" cy="75" r="5" fill="#E9967A" opacity="0.8"/>
+                        <circle cx="60" cy="75" r="5" fill="#E9967A" opacity="0.8"/>
+                        <!-- Eyes -->
+                        <circle cx="40" cy="60" r="3" fill="#2D2B29"/>
+                        <circle cx="60" cy="60" r="3" fill="#2D2B29"/>
+                        <!-- Mouth (Sad) -->
+                        <path d="M45 80 Q50 75, 55 80" fill="none" stroke="#2D2B29" stroke-width="2" stroke-linecap="round"/>
+                        <!-- Nose -->
+                        <path d="M50 70 L50 72 M48 70 L52 70" stroke="#2D2B29" stroke-width="1.5"/>
+                    </svg>
+                `
+            },
+            cat: {
+                happy: `
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Head -->
+                        <path d="M50 90 Q 10 70, 25 40 Q 50 10, 75 40 Q 90 70, 50 90 Z" fill="#F4A261"/>
+                        <!-- Ears -->
+                        <path d="M20 40 L35 20 L35 40 Z" fill="#E76F51"/>
+                        <path d="M80 40 L65 20 L65 40 Z" fill="#E76F51"/>
+                        <!-- Markings -->
+                        <path d="M45 35 L40 45 M55 35 L60 45" stroke="#E76F51" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M30 50 L20 50 M70 50 L80 50" stroke="#E76F51" stroke-width="2" stroke-linecap="round"/>
+                        <!-- Eyes -->
+                        <circle cx="40" cy="55" r="4" fill="#264653"/>
+                        <circle cx="60" cy="55" r="4" fill="#264653"/>
+                        <!-- Mouth (Happy) -->
+                        <path d="M40 70 Q 50 80, 60 70" fill="none" stroke="#2D2B29" stroke-width="3" stroke-linecap="round"/>
+                        <!-- Whiskers -->
+                        <path d="M30 65 L15 65 M30 70 L15 75 M70 65 L85 65 M70 70 L85 75" stroke="#2D2B29" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                `,
+                sad: `
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Head -->
+                        <path d="M50 90 Q 10 70, 25 40 Q 50 10, 75 40 Q 90 70, 50 90 Z" fill="#F4A261"/>
+                        <!-- Ears -->
+                        <path d="M20 40 L35 20 L35 40 Z" fill="#E76F51"/>
+                        <path d="M80 40 L65 20 L65 40 Z" fill="#E76F51"/>
+                        <!-- Markings -->
+                        <path d="M45 35 L40 45 M55 35 L60 45" stroke="#E76F51" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M30 50 L20 50 M70 50 L80 50" stroke="#E76F51" stroke-width="2" stroke-linecap="round"/>
+                        <!-- Eyes -->
+                        <circle cx="40" cy="55" r="4" fill="#264653"/>
+                        <circle cx="60" cy="55" r="4" fill="#264653"/>
+                        <!-- Mouth (Sad) -->
+                        <path d="M40 80 Q 50 70, 60 80" fill="none" stroke="#2D2B29" stroke-width="3" stroke-linecap="round"/>
+                        <!-- Whiskers -->
+                        <path d="M30 65 L15 65 M30 70 L15 75 M70 65 L85 65 M70 70 L85 75" stroke="#2D2B29" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                `
+            }
+        };
 
- const saveProgress = (progress) => {
- localStorage.setItem('nightlyRoutineProgress', JSON.stringify(progress));
- };
+        // Functions to interact with localStorage
+        const getProgress = () => {
+            const progress = localStorage.getItem('nightlyRoutineProgress');
+            return progress ? JSON.parse(progress) : { streak: 0, restores: 5, lastCompletionDate: null, lastRestoreDate: null, character: null };
+        };
 
- const setAvatarExpression = (emotion) => {
- const progress = getProgress();
- if (progress.character && characters[progress.character] && characters[progress.character][emotion]) {
- avatarContainer.innerHTML = characters[progress.character][emotion];
- }
- };
+        const saveProgress = (progress) => {
+            localStorage.setItem('nightlyRoutineProgress', JSON.stringify(progress));
+        };
 
- const updateUI = (streak, restores, characterKey) => {
- streakDisplay.textContent = streak;
- restoresDisplay.textContent = restores;
- if (restores <= 0) {
- restoresDisplay.classList.add('text-red-500');
- } else {
- restoresDisplay.classList.remove('text-red-500');
- }
+        const saveDataToFile = () => {
+            const progressJSON = localStorage.getItem('nightlyRoutineProgress');
+            if (!progressJSON) {
+                statusMessage.textContent = 'No data to save yet!';
+                statusMessage.classList.remove('hidden');
+                setTimeout(() => statusMessage.classList.add('hidden'), 3000);
+                return;
+            }
 
- if (characterKey) {
- characterSelectionContainer.classList.add('hidden');
- avatarDisplayContainer.classList.remove('hidden');
- }
- };
+            const blob = new Blob([progressJSON], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'nightly-routine-progress.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
 
- const renderCharacterOptions = () => {
- const characterOptions = document.getElementById('character-options');
- Object.keys(characters).forEach(key => {
- const button = document.createElement('button');
- button.innerHTML = characters[key].happy;
- button.className = 'w-24 h-24 p-2 rounded-full bg-pink-300 avatar-option shadow-lg';
- button.dataset.character = key;
- button.onclick = () => selectCharacter(key);
- characterOptions.appendChild(button);
- });
- };
+            statusMessage.textContent = 'Data saved to your computer!';
+            statusMessage.classList.remove('hidden');
+            setTimeout(() => statusMessage.classList.add('hidden'), 3000);
+        };
 
- const selectCharacter = (characterKey) => {
- const progress = getProgress();
- progress.character = characterKey;
- saveProgress(progress);
- updateUI(progress.streak, progress.restores, characterKey);
- setAvatarExpression('happy');
+        const importDataFromFile = (event) => {
+            const file = event.target.files[0];
+            if (!file) {
+                return;
+            }
 
- // Highlight selected avatar
- document.querySelectorAll('.avatar-option').forEach(btn => {
- btn.classList.remove('selected');
- if (btn.dataset.character === characterKey) {
- btn.classList.add('selected');
- }
- });
- };
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const content = e.target.result;
+                try {
+                    const importedProgress = JSON.parse(content);
+                    // Basic validation to make sure it's the right kind of file
+                    if (typeof importedProgress.streak !== 'number' || typeof importedProgress.restores !== 'number' || !importedProgress.hasOwnProperty('character')) {
+                        throw new Error('Invalid file format.');
+                    }
+                   
+                    saveProgress(importedProgress);
+                    refreshUIFromStorage();
+                   
+                    statusMessage.textContent = 'Data imported successfully!';
+                    statusMessage.classList.remove('hidden');
+                    setTimeout(() => statusMessage.classList.add('hidden'), 3000);
 
- const showNotification = (message, buttons) => {
- notificationContent.innerHTML = `<p class="text-3xl mb-8">${message}</p>`;
- buttons.forEach(btn => {
- const button = document.createElement('button');
- button.textContent = btn.text;
- button.className = 'bg-pink-500 text-white rounded-full py-4 px-8 font-bold shadow-lg hover:bg-pink-600 transition-colors text-2xl m-2';
- button.onclick = btn.action;
- notificationContent.appendChild(button);
- });
- notificationOverlay.classList.remove('hidden');
- };
+                } catch (error) {
+                    statusMessage.textContent = 'Error: Could not import data. The file might be invalid.';
+                    statusMessage.classList.remove('hidden');
+                    setTimeout(() => statusMessage.classList.add('hidden'), 5000);
+                    console.error("Failed to import data:", error);
+                } finally {
+                    // Reset input value to allow re-uploading the same file
+                    importDataInput.value = '';
+                }
+            };
+            reader.readAsText(file);
+        };
 
- const hideNotification = () => {
- notificationOverlay.classList.add('hidden');
- completionMessage.classList.add('hidden');
- };
+        const setAvatarExpression = (emotion) => {
+            const progress = getProgress();
+            if (progress.character && characters[progress.character] && characters[progress.character][emotion]) {
+                avatarContainer.innerHTML = characters[progress.character][emotion];
+            }
+        };
 
- const hideExtensionModal = () => {
- extensionModal.classList.add('hidden');
- };
+        const updateUI = (streak, restores, characterKey) => {
+            streakDisplay.textContent = streak;
+            restoresDisplay.textContent = restores;
+            if (restores <= 0) {
+                restoresDisplay.classList.add('text-red-500');
+            } else {
+                restoresDisplay.classList.remove('text-red-500');
+            }
 
- const showStreakResetModal = () => {
- streakResetModal.classList.remove('hidden');
- }
+            if (characterKey) {
+                characterSelectionContainer.classList.add('hidden');
+                avatarDisplayContainer.classList.remove('hidden');
+            }
+        };
 
- const hideStreakResetModal = () => {
- streakResetModal.classList.add('hidden');
- }
+        const renderCharacterOptions = () => {
+            const characterOptions = document.getElementById('character-options');
+            Object.keys(characters).forEach(key => {
+                const button = document.createElement('button');
+                button.innerHTML = characters[key].happy;
+                button.className = 'w-24 h-24 p-2 rounded-full bg-pink-300 avatar-option shadow-lg';
+                button.dataset.character = key;
+                button.onclick = () => selectCharacter(key);
+                characterOptions.appendChild(button);
+            });
+        };
 
- // Streak logic
- const updateStreak = () => {
- const progress = getProgress();
- const today = new Date().toDateString();
+        const selectCharacter = (characterKey) => {
+            const progress = getProgress();
+            progress.character = characterKey;
+            saveProgress(progress);
+            updateUI(progress.streak, progress.restores, characterKey);
+            setAvatarExpression('happy');
 
- if (progress.lastCompletionDate === today) {
- return;
- }
+            // Highlight selected avatar
+            document.querySelectorAll('.avatar-option').forEach(btn => {
+                btn.classList.remove('selected');
+                if (btn.dataset.character === characterKey) {
+                    btn.classList.add('selected');
+                }
+            });
+        };
 
- // Check if streak is broken
- const yesterday = new Date();
- yesterday.setDate(yesterday.getDate() - 1);
- const wasLastCompletedYesterday = progress.lastCompletionDate === yesterday.toDateString();
+        const showNotification = (message, buttons) => {
+            notificationContent.innerHTML = `<p class="text-3xl mb-8">${message}</p>`;
+            buttons.forEach(btn => {
+                const button = document.createElement('button');
+                button.textContent = btn.text;
+                button.className = 'bg-pink-500 text-white rounded-full py-4 px-8 font-bold shadow-lg hover:bg-pink-600 transition-colors text-2xl m-2';
+                button.onclick = btn.action;
+                notificationContent.appendChild(button);
+            });
+            notificationOverlay.classList.remove('hidden');
+        };
 
- if (progress.lastCompletionDate && !wasLastCompletedYesterday) {
- // Streak broken, reset
- progress.streak = 1;
- progress.restores = 5;
- setAvatarExpression('sad');
- showStreakResetModal();
- } else {
- progress.streak += 1;
- setAvatarExpression('happy');
- }
+        const hideNotification = () => {
+            notificationOverlay.classList.add('hidden');
+            completionMessage.classList.add('hidden');
+        };
 
- progress.lastCompletionDate = today;
- saveProgress(progress);
+        const hideExtensionModal = () => {
+            extensionModal.classList.add('hidden');
+        };
 
- updateUI(progress.streak, progress.restores, progress.character);
- completionMessage.classList.remove('hidden');
- setTimeout(() => completionMessage.classList.add('hidden'), 5000); // Hide after 5 seconds
- };
+        const showStreakResetModal = () => {
+            streakResetModal.classList.remove('hidden');
+        }
 
- // Main app logic
- routineForm.addEventListener('submit', (e) => {
- e.preventDefault();
- const setTime = setTimeInput.value;
- if (!setTime) return;
+        const hideStreakResetModal = () => {
+            streakResetModal.classList.add('hidden');
+        }
 
- const [hours, minutes] = setTime.split(':').map(Number);
- const now = new Date();
- const notificationTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes, 0);
+        // Streak logic
+        const updateStreak = () => {
+            const progress = getProgress();
+            const today = new Date().toDateString();
 
- let timeUntilNotification = notificationTime.getTime() - now.getTime();
- if (timeUntilNotification < 0) {
- notificationTime.setDate(notificationTime.getDate() + 1);
- timeUntilNotification = notificationTime.getTime() - now.getTime();
- }
+            if (progress.lastCompletionDate === today) {
+                return;
+            }
 
- clearTimeout(timerId);
- timerId = setTimeout(() => {
- checkIn();
- }, timeUntilNotification);
+            // Check if streak is broken
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            const wasLastCompletedYesterday = progress.lastCompletionDate === yesterday.toDateString();
 
- statusMessage.textContent = `Reminder set! I'll check in with you at ${setTime}.`;
- statusMessage.classList.remove('hidden');
- setTimeout(() => statusMessage.classList.add('hidden'), 5000);
- });
+            if (progress.lastCompletionDate && !wasLastCompletedYesterday) {
+                // Streak broken, reset
+                progress.streak = 1;
+                progress.restores = 5;
+                setAvatarExpression('sad');
+                showStreakResetModal();
+            } else {
+                progress.streak += 1;
+                setAvatarExpression('happy');
+            }
 
- const checkIn = () => {
- showNotification(
- "Are you ready for bed?",
- [
- { text: "Yes", action: () => {
- showNotification(
- "Awesome! Now, put your phone away. You've got this.",
- [
- { text: "Completed", action: () => {
- updateStreak();
- hideNotification();
- }}
- ]
- );
- }},
- { text: "No", action: () => {
- hideNotification();
- extensionModal.classList.remove('hidden');
- }}
- ]
- );
- };
+            progress.lastCompletionDate = today;
+            saveProgress(progress);
 
- const extendTime = () => {
- const extensionMinutes = parseInt(extendTimeInput.value, 10);
- if (isNaN(extensionMinutes) || extensionMinutes <= 0) {
- statusMessage.textContent = "Please enter a valid number of minutes.";
- statusMessage.classList.remove('hidden');
- setTimeout(() => statusMessage.classList.add('hidden'), 5000);
- return;
- }
+            updateUI(progress.streak, progress.restores, progress.character);
+            completionMessage.classList.remove('hidden');
+            setTimeout(() => completionMessage.classList.add('hidden'), 5000); // Hide after 5 seconds
+        };
 
- const progress = getProgress();
+        // Main app logic
+        routineForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const setTime = setTimeInput.value;
+            if (!setTime) return;
 
- if (progress.restores <= 0) {
- setAvatarExpression('sad');
- showStreakResetModal();
- progress.streak = 0;
- progress.restores = 5;
- progress.lastCompletionDate = null;
- progress.lastRestoreDate = new Date().toDateString();
- saveProgress(progress);
- hideExtensionModal();
- updateUI(0, 5, progress.character);
- return;
- }
+            const [hours, minutes] = setTime.split(':').map(Number);
+            const now = new Date();
+            const notificationTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes, 0);
 
- progress.restores -= 1;
- progress.lastRestoreDate = new Date().toDateString();
- saveProgress(progress);
+            let timeUntilNotification = notificationTime.getTime() - now.getTime();
+            if (timeUntilNotification < 0) {
+                notificationTime.setDate(notificationTime.getDate() + 1);
+                timeUntilNotification = notificationTime.getTime() - now.getTime();
+            }
 
- hideExtensionModal();
- clearTimeout(timerId);
- timerId = setTimeout(() => {
- checkIn();
- }, extensionMinutes * 60 * 1000);
+            clearTimeout(timerId);
+            timerId = setTimeout(() => {
+                checkIn();
+            }, timeUntilNotification);
 
- statusMessage.textContent = `Okay, I'll check in again in ${extensionMinutes} minutes.`;
- statusMessage.classList.remove('hidden');
- setTimeout(() => statusMessage.classList.add('hidden'), 5000);
- };
+            statusMessage.textContent = `Reminder set! I'll check in with you at ${setTime}.`;
+            statusMessage.classList.remove('hidden');
+            setTimeout(() => statusMessage.classList.add('hidden'), 5000);
+        });
 
- // Event listeners for modals and buttons
- document.getElementById('extend-btn').addEventListener('click', extendTime);
- document.getElementById('close-extension-modal').addEventListener('click', hideExtensionModal);
- document.getElementById('close-streak-reset-modal').addEventListener('click', hideStreakResetModal);
+        const checkIn = () => {
+            showNotification(
+                "Are you ready for bed?",
+                [
+                    { text: "Yes", action: () => {
+                        showNotification(
+                            "Awesome! Now, put your phone away. You've got this.",
+                            [
+                                { text: "Completed", action: () => {
+                                    updateStreak();
+                                    hideNotification();
+                                }}
+                            ]
+                        );
+                    }},
+                    { text: "No", action: () => {
+                        hideNotification();
+                        extensionModal.classList.remove('hidden');
+                    }}
+                ]
+            );
+        };
 
- // Initial UI setup on load
- window.onload = () => {
- renderCharacterOptions();
- const initialProgress = getProgress();
- if (initialProgress.character) {
- // If a character is already chosen, display it
- updateUI(initialProgress.streak, initialProgress.restores, initialProgress.character);
- document.getElementById('character-selection-container').classList.add('hidden');
- document.getElementById('avatar-display-container').classList.remove('hidden');
- setAvatarExpression('happy'); // Set initial expression to happy if a streak exists
- } else {
- // Otherwise, show character selection
- document.getElementById('character-selection-container').classList.remove('hidden');
- document.getElementById('avatar-display-container').classList.add('hidden');
- updateUI(initialProgress.streak, initialProgress.restores, null);
- }
- };
- </script>
+        const extendTime = () => {
+            const extensionMinutes = parseInt(extendTimeInput.value, 10);
+            if (isNaN(extensionMinutes) || extensionMinutes <= 0) {
+                statusMessage.textContent = "Please enter a valid number of minutes.";
+                statusMessage.classList.remove('hidden');
+                setTimeout(() => statusMessage.classList.add('hidden'), 5000);
+                return;
+            }
+
+            const progress = getProgress();
+
+            if (progress.restores <= 0) {
+                setAvatarExpression('sad');
+                showStreakResetModal();
+                progress.streak = 0;
+                progress.restores = 5;
+                progress.lastCompletionDate = null;
+                progress.lastRestoreDate = new Date().toDateString();
+                saveProgress(progress);
+                hideExtensionModal();
+                updateUI(0, 5, progress.character);
+                return;
+            }
+
+            progress.restores -= 1;
+            progress.lastRestoreDate = new Date().toDateString();
+            saveProgress(progress);
+
+            hideExtensionModal();
+            clearTimeout(timerId);
+            timerId = setTimeout(() => {
+                checkIn();
+            }, extensionMinutes * 60 * 1000);
+
+            statusMessage.textContent = `Okay, I'll check in again in ${extensionMinutes} minutes.`;
+            statusMessage.classList.remove('hidden');
+            setTimeout(() => statusMessage.classList.add('hidden'), 5000);
+        };
+
+        // Event listeners for modals and buttons
+        document.getElementById('extend-btn').addEventListener('click', extendTime);
+        document.getElementById('close-extension-modal').addEventListener('click', hideExtensionModal);
+        document.getElementById('close-streak-reset-modal').addEventListener('click', hideStreakResetModal);
+        saveDataBtn.addEventListener('click', saveDataToFile);
+        importDataInput.addEventListener('change', importDataFromFile);
+
+        const refreshUIFromStorage = () => {
+            const progress = getProgress();
+            if (progress.character) {
+                updateUI(progress.streak, progress.restores, progress.character);
+                characterSelectionContainer.classList.add('hidden');
+                avatarDisplayContainer.classList.remove('hidden');
+                setAvatarExpression('happy');
+
+                // Re-apply selection highlight to the chosen character
+                document.querySelectorAll('.avatar-option').forEach(btn => {
+                    btn.classList.toggle('selected', btn.dataset.character === progress.character);
+                });
+            } else {
+                updateUI(progress.streak, progress.restores, null);
+                characterSelectionContainer.classList.remove('hidden');
+                avatarDisplayContainer.classList.add('hidden');
+            }
+        };
+
+        // Initial UI setup on load
+        window.onload = () => {
+            renderCharacterOptions();
+            refreshUIFromStorage();
+        };
+    </script>
 </body>
 </html>

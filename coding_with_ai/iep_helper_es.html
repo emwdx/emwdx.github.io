@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organizador de Plazos de IEP</title>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #166088;
+            --background-color: #f0f4f8;
+            --card-background: #ffffff;
+            --text-color: #333;
+            --border-color: #d1d5db;
+            --danger-color: #d9534f;
+            --warning-color: #f0ad4e;
+            --success-color: #5cb85c;
+            --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+        }
+
+        .main-content {
+            grid-column: 2 / 3;
+        }
+
+        .sidebar {
+            grid-column: 1 / 2;
+        }
+
+        h1, h2 {
+            color: var(--secondary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+        }
+
+        .card {
+            background-color: var(--card-background);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"], input[type="date"], textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-family: var(--font-family);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+        }
+        .btn-danger:hover {
+            background-color: #c9302c;
+        }
+
+        #task-list {
+            margin-top: 20px;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            margin-bottom: 10px;
+            background-color: #fff;
+        }
+
+        .task-item.completed {
+            background-color: #e9f5e9;
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+
+        .task-item.overdue {
+            border-left: 5px solid var(--danger-color);
+        }
+        
+        .task-item.upcoming {
+            border-left: 5px solid var(--primary-color);
+        }
+        
+        .task-checkbox {
+            margin-right: 15px;
+            transform: scale(1.2);
+        }
+
+        .task-details {
+            flex-grow: 1;
+        }
+
+        .task-details .student-name {
+            font-weight: bold;
+        }
+
+        .task-details .due-date {
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        .task-section-title {
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+
+        #student-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        #student-table th, #student-table td {
+            border: 1px solid var(--border-color);
+            padding: 8px;
+            text-align: left;
+        }
+
+        #student-table th {
+            background-color: #f2f2f2;
+        }
+
+        .action-buttons button {
+            padding: 5px 8px;
+            font-size: 12px;
+            margin-right: 5px;
+        }
+        
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            .main-content, .sidebar {
+                grid-column: 1 / 2;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="sidebar">
+            <h1>Organizador de IEP</h1>
+            
+            <div class="card">
+                <h2>Añadir Estudiantes</h2>
+                <div class="form-group">
+                    <label for="bulk-add">Pegar lista de estudiantes</label>
+                    <textarea id="bulk-add" placeholder="Pega aquí los estudiantes, uno por línea.&#10;Formato: Nombre Apellido, AAAA-MM-DD&#10;Ej: Juan Pérez, 2024-10-15"></textarea>
+                    <button onclick="addStudentsInBulk()">Añadir en Lote</button>
+                </div>
+                <hr>
+                <div class="form-group">
+                    <label for="student-name">Nombre del Estudiante</label>
+                    <input type="text" id="student-name" placeholder="Nombre Apellido">
+                </div>
+                <div class="form-group">
+                    <label for="iep-date">Fecha de Vencimiento del IEP</label>
+                    <input type="date" id="iep-date">
+                </div>
+                <button onclick="addStudent()">Añadir Estudiante</button>
+            </div>
+
+            <div class="card">
+                <h2>Lista de Estudiantes</h2>
+                <div style="max-height: 400px; overflow-y: auto;">
+                    <table id="student-table">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Vencimiento IEP</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="student-list-body">
+                            <!-- Los estudiantes se añadirán aquí dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="card">
+                <h2>Controles de Visualización</h2>
+                <div class="form-group" style="display: flex; gap: 20px; align-items: flex-end;">
+                    <div style="flex: 1;">
+                        <label for="view-date">Mostrar tareas a partir de:</label>
+                        <input type="date" id="view-date">
+                    </div>
+                    <div style="flex: 1;">
+                        <label for="view-period">Ver tareas para el próximo:</label>
+                        <select id="view-period">
+                            <option value="day">Día</option>
+                            <option value="week" selected>Semana</option>
+                            <option value="month">Mes</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group" style="display: flex; gap: 20px; align-items: flex-end;">
+                     <div style="flex: 2;">
+                        <label for="student-filter">Filtrar por estudiante:</label>
+                        <select id="student-filter">
+                            <option value="all">Todos los estudiantes</option>
+                            <!-- Opciones de estudiantes se llenarán aquí -->
+                        </select>
+                    </div>
+                    <div style="flex: 1; display:flex; align-items: center; padding-bottom: 10px;">
+                        <input type="checkbox" id="show-completed" style="width: auto; margin-right: 10px;">
+                        <label for="show-completed" style="margin-bottom: 0;">Mostrar completadas</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>Lista de Tareas</h2>
+                <div id="task-list">
+                    <!-- Las tareas se generarán aquí -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA MANAGEMENT ---
+        let students = [];
+
+        function saveStudents() {
+            localStorage.setItem('iepTrackerStudents', JSON.stringify(students));
+            renderAll();
+        }
+
+        function loadStudents() {
+            const studentsData = localStorage.getItem('iepTrackerStudents');
+            students = studentsData ? JSON.parse(studentsData) : [];
+        }
+
+        // --- DATE UTILITIES ---
+        function formatDate(date) {
+            return date.toISOString().split('T')[0];
+        }
+
+        function addDays(date, days) {
+            const result = new Date(date);
+            result.setDate(result.getDate() + days);
+            return result;
+        }
+        
+        function addYears(date, years) {
+            const result = new Date(date);
+            result.setFullYear(result.getFullYear() + years);
+            return result;
+        }
+
+        // --- CORE LOGIC ---
+        function generateTasksForStudent(student) {
+            // Se usa T12:00:00Z para evitar problemas de zona horaria que puedan cambiar la fecha
+            const iepDueDate = new Date(`${student.iepDate}T12:00:00Z`);
+            
+            student.tasks = [
+                {
+                    id: `${student.id}-invite`,
+                    description: 'Enviar invitación de calendario para la reunión de IEP.',
+                    dueDate: formatDate(addDays(iepDueDate, -30)),
+                    completed: false
+                },
+                {
+                    id: `${student.id}-reminder`,
+                    description: 'Enviar recordatorio de la reunión.',
+                    dueDate: formatDate(addDays(iepDueDate, -3)),
+                    completed: false
+                },
+                {
+                    id: `${student.id}-print`,
+                    description: 'Imprimir todas las páginas de firmas.',
+                    dueDate: formatDate(addDays(iepDueDate, -1)),
+                    completed: false
+                },
+                {
+                    id: `${student.id}-reeval`,
+                    description: 'Programar nueva evaluación (Re-evaluación).',
+                    dueDate: formatDate(addYears(iepDueDate, 3)),
+                    completed: false
+                }
+            ];
+        }
+
+        function addStudent() {
+            const nameInput = document.getElementById('student-name');
+            const dateInput = document.getElementById('iep-date');
+
+            if (nameInput.value.trim() === '' || dateInput.value === '') {
+                alert('Por favor, introduce el nombre y la fecha de vencimiento del IEP.');
+                return;
+            }
+
+            const newStudent = {
+                id: Date.now(),
+                name: nameInput.value.trim(),
+                iepDate: dateInput.value,
+                tasks: []
+            };
+
+            generateTasksForStudent(newStudent);
+            students.push(newStudent);
+            saveStudents();
+
+            nameInput.value = '';
+            dateInput.value = '';
+        }
+
+        function addStudentsInBulk() {
+            const bulkInput = document.getElementById('bulk-add');
+            const lines = bulkInput.value.trim().split('\n');
+            let addedCount = 0;
+
+            lines.forEach(line => {
+                const parts = line.split(',');
+                if (parts.length === 2) {
+                    const name = parts[0].trim();
+                    const date = parts[1].trim();
+                    // Validar formato de fecha YYYY-MM-DD
+                    if (name && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
+                         const newStudent = {
+                            id: Date.now() + Math.random(), // Añadir random para evitar colisiones
+                            name: name,
+                            iepDate: date,
+                            tasks: []
+                        };
+                        generateTasksForStudent(newStudent);
+                        students.push(newStudent);
+                        addedCount++;
+                    }
+                }
+            });
+            
+            if (addedCount > 0) {
+                saveStudents();
+                bulkInput.value = '';
+                alert(`${addedCount} estudiantes añadidos correctamente.`);
+            } else {
+                alert('No se pudieron añadir estudiantes. Asegúrate de que el formato sea "Nombre Apellido, AAAA-MM-DD" en cada línea.');
+            }
+        }
+
+        function updateStudent(studentId) {
+            const student = students.find(s => s.id === studentId);
+            if (!student) return;
+
+            const newName = prompt('Introduce el nuevo nombre:', student.name);
+            const newDate = prompt('Introduce la nueva fecha de vencimiento del IEP (AAAA-MM-DD):', student.iepDate);
+
+            if (newName) student.name = newName.trim();
+            if (newDate && /^\d{4}-\d{2}-\d{2}$/.test(newDate)) {
+                student.iepDate = newDate;
+                generateTasksForStudent(student); // Regenerar tareas si la fecha cambia
+            }
+            saveStudents();
+        }
+
+        function deleteStudent(studentId) {
+            if (confirm('¿Estás seguro de que quieres eliminar a este estudiante y todas sus tareas?')) {
+                students = students.filter(s => s.id !== studentId);
+                saveStudents();
+            }
+        }
+        
+        function toggleTaskCompletion(studentId, taskId) {
+            const student = students.find(s => s.id === studentId);
+            if (student) {
+                const task = student.tasks.find(t => t.id === taskId);
+                if (task) {
+                    task.completed = !task.completed;
+                    saveStudents();
+                }
+            }
+        }
+
+        // --- RENDERING ---
+        function renderAll() {
+            renderStudentList();
+            renderStudentFilter();
+            renderTaskList();
+        }
+        
+        function renderStudentList() {
+            const tbody = document.getElementById('student-list-body');
+            tbody.innerHTML = '';
+            students.sort((a,b) => a.name.localeCompare(b.name)).forEach(student => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${student.name}</td>
+                    <td>${student.iepDate}</td>
+                    <td class="action-buttons">
+                        <button onclick="updateStudent(${student.id})">Editar</button>
+                        <button class="btn-danger" onclick="deleteStudent(${student.id})">Eliminar</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+        
+        function renderStudentFilter() {
+            const filter = document.getElementById('student-filter');
+            // Guardar el valor seleccionado
+            const selectedValue = filter.value;
+            filter.innerHTML = '<option value="all">Todos los estudiantes</option>';
+            students.sort((a,b) => a.name.localeCompare(b.name)).forEach(student => {
+                const option = document.createElement('option');
+                option.value = student.id;
+                option.textContent = student.name;
+                filter.appendChild(option);
+            });
+            // Restaurar el valor seleccionado si aún existe
+            filter.value = selectedValue;
+        }
+
+        function renderTaskList() {
+            const taskListContainer = document.getElementById('task-list');
+            const viewDateInput = document.getElementById('view-date');
+            const period = document.getElementById('view-period').value;
+            const studentFilter = document.getElementById('student-filter').value;
+            const showCompleted = document.getElementById('show-completed').checked;
+
+            const viewDate = new Date(`${viewDateInput.value}T12:00:00Z`);
+
+            let endDate;
+            switch (period) {
+                case 'day':
+                    endDate = new Date(viewDate);
+                    break;
+                case 'week':
+                    endDate = addDays(new Date(viewDate), 6);
+                    break;
+                case 'month':
+                    endDate = addDays(new Date(viewDate), 30);
+                    break;
+            }
+            
+            // Recopilar todas las tareas
+            let allTasks = [];
+            students.forEach(student => {
+                if (studentFilter === 'all' || student.id == studentFilter) {
+                    student.tasks.forEach(task => {
+                        allTasks.push({
+                            ...task,
+                            studentId: student.id,
+                            studentName: student.name
+                        });
+                    });
+                }
+            });
+
+            // Filtrar por completadas si es necesario
+            if (!showCompleted) {
+                allTasks = allTasks.filter(task => !task.completed);
+            }
+
+            // Separar tareas atrasadas y próximas
+            const overdueTasks = allTasks.filter(task => new Date(`${task.dueDate}T12:00:00Z`) < viewDate && !task.completed);
+            const upcomingTasks = allTasks.filter(task => {
+                const taskDate = new Date(`${task.dueDate}T12:00:00Z`);
+                // Para las próximas, solo incluimos las no completadas o todas si showCompleted es true
+                const isCompletedAndShouldShow = showCompleted && task.completed;
+                const isNotCompleted = !task.completed;
+                
+                return (isCompletedAndShouldShow || isNotCompleted) && taskDate >= viewDate && taskDate <= endDate;
+            });
+            
+            // Ordenar por fecha
+            overdueTasks.sort((a,b) => new Date(a.dueDate) - new Date(b.dueDate));
+            upcomingTasks.sort((a,b) => new Date(a.dueDate) - new Date(b.dueDate));
+
+            // Renderizar HTML
+            taskListContainer.innerHTML = '';
+            
+            if (overdueTasks.length > 0) {
+                const title = document.createElement('div');
+                title.className = 'task-section-title';
+                title.textContent = 'Tareas Atrasadas';
+                taskListContainer.appendChild(title);
+                overdueTasks.forEach(task => taskListContainer.appendChild(createTaskElement(task, true)));
+            }
+
+            if (upcomingTasks.length > 0) {
+                const title = document.createElement('div');
+                title.className = 'task-section-title';
+                title.textContent = `Tareas Próximas (próximo ${period === 'day' ? 'día' : (period === 'week' ? 'semana' : 'mes')})`;
+                taskListContainer.appendChild(title);
+                upcomingTasks.forEach(task => taskListContainer.appendChild(createTaskElement(task, false)));
+            }
+            
+            if(overdueTasks.length === 0 && upcomingTasks.length === 0) {
+                taskListContainer.innerHTML = '<p>No hay tareas que mostrar para los filtros seleccionados.</p>';
+            }
+        }
+        
+        function createTaskElement(task, isOverdue) {
+            const item = document.createElement('div');
+            item.className = 'task-item';
+            if (isOverdue) item.classList.add('overdue'); else item.classList.add('upcoming');
+            if (task.completed) item.classList.add('completed');
+            
+            item.innerHTML = `
+                <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''} 
+                       onclick="toggleTaskCompletion(${task.studentId}, '${task.id}')">
+                <div class="task-details">
+                    <div class="student-name">${task.studentName}</div>
+                    <div>${task.description}</div>
+                    <div class="due-date">Fecha de entrega: ${task.dueDate}</div>
+                </div>
+            `;
+            return item;
+        }
+
+        // --- INITIALIZATION AND EVENT LISTENERS ---
+        document.addEventListener('DOMContentLoaded', () => {
+            loadStudents();
+            
+            const viewDateInput = document.getElementById('view-date');
+            viewDateInput.value = formatDate(new Date());
+
+            document.getElementById('view-date').addEventListener('change', renderTaskList);
+            document.getElementById('view-period').addEventListener('change', renderTaskList);
+            document.getElementById('student-filter').addEventListener('change', renderTaskList);
+            document.getElementById('show-completed').addEventListener('change', renderTaskList);
+
+            renderAll();
+        });
+    </script>
+
+</body>
+</html>
