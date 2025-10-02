@@ -8,12 +8,13 @@
         body { font-family: sans-serif; margin: 20px; background-color: #f4f4f4; }
         .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
         h1, h2 { text-align: center; }
-        .class-manager, .student-list { margin-bottom: 20px; }
+        .class-manager, .student-section { margin-bottom: 20px; }
         .class-tabs { border-bottom: 1px solid #ccc; padding-bottom: 10px; margin-bottom: 20px; }
         .tab { background: #eee; padding: 10px 15px; border: 1px solid #ccc; border-bottom: none; cursor: pointer; display: inline-block; margin-right: 5px; border-radius: 5px 5px 0 0; }
-        .tab.active { background: #fff; border-bottom: 1px solid #fff; }
+        .tab.active { background: #fff; border-bottom: 1px solid #fff; font-weight: bold; }
         #add-class-btn { background: #28a745; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; }
-        #student-paste-area { width: 100%; min-height: 100px; margin-top: 10px; }
+        #student-paste-area { width: calc(100% - 20px); min-height: 100px; margin-top: 10px; padding: 10px; }
+        #student-filter { width: calc(100% - 22px); padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 1em; }
         .student-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; }
         .student-item:hover { background: #f0f0f0; }
         .student-name { font-weight: bold; }
@@ -21,7 +22,7 @@
         .modal { display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4); }
         .modal-content { background-color: #fefefe; margin: 5% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 600px; border-radius: 8px; }
         .close-btn { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
-        #notes { width: 100%; min-height: 80px; margin-top: 10px; }
+        #notes { width: calc(100% - 20px); min-height: 80px; margin-top: 10px; padding: 10px; }
         .rubric-section { margin-bottom: 20px; }
         .rubric-section h3 { border-bottom: 1px solid #ccc; padding-bottom: 5px; }
         .rubric-item { margin-bottom: 10px; }
@@ -38,13 +39,14 @@
             <button id="add-class-btn">+ Add Class</button>
         </div>
 
-        <div id="class-content">
-            <div class="student-list">
+        <div id="class-content" style="display: none;">
+            <div class="student-section">
                 <h2>Student List</h2>
+                <input type="text" id="student-filter" placeholder="Type to filter students...">
                 <div id="students-container"></div>
             </div>
 
-            <div>
+            <div class="student-section">
                 <h3>Add Students</h3>
                 <p>Paste a list of student names (one per line) from a spreadsheet.</p>
                 <textarea id="student-paste-area" placeholder="Paste student names here..."></textarea>
@@ -96,6 +98,7 @@
             const classTabs = document.getElementById('class-tabs');
             const addClassBtn = document.getElementById('add-class-btn');
             const studentsContainer = document.getElementById('students-container');
+            const studentFilter = document.getElementById('student-filter');
             const studentPasteArea = document.getElementById('student-paste-area');
             const addStudentsBtn = document.getElementById('add-students-btn');
             const modal = document.getElementById('student-modal');
@@ -113,6 +116,7 @@
                     tab.textContent = c;
                     tab.addEventListener('click', () => {
                         activeClass = c;
+                        studentFilter.value = '';
                         renderClasses();
                         renderStudents();
                     });
@@ -121,20 +125,23 @@
                 document.getElementById('class-content').style.display = activeClass ? 'block' : 'none';
             };
 
-            const renderStudents = () => {
+            const renderStudents = (filter = '') => {
                 if (!activeClass) return;
                 const students = db.getStudents(activeClass);
                 studentsContainer.innerHTML = '';
                 students.forEach((student, index) => {
-                    const totalItems = 10;
-                    const completedItems = Object.values(student.rubric).filter(Boolean).length;
-                    const progress = `${completedItems}/${totalItems}`;
+                    if (student.name.toLowerCase().includes(filter.toLowerCase())) {
+                        const totalItems = 10;
+                        const completedItems = Object.values(student.rubric).filter(Boolean).length;
+                        const progress = `${completedItems}/${totalItems}`;
 
-                    const item = document.createElement('div');
-                    item.className = 'student-item';
-                    item.innerHTML = `<span class="student-name">${student.name}</span> <span class="student-progress">${progress}</span>`;
-                    item.addEventListener('click', () => openModal(student, index));
-                    studentsContainer.appendChild(item);
+                        const item = document.createElement('div');
+                        item.className = 'student-item';
+                        item.dataset.index = index;
+                        item.innerHTML = `<span class="student-name">${student.name}</span> <span class="student-progress">${progress}</span>`;
+                        item.addEventListener('click', () => openModal(student, index));
+                        studentsContainer.appendChild(item);
+                    }
                 });
             };
 
@@ -186,7 +193,7 @@
                     renderStudents();
                 }
             });
-            
+
             studentPasteArea.addEventListener('paste', (event) => {
                 event.preventDefault();
                 const text = (event.clipboardData || window.clipboardData).getData('text');
@@ -195,15 +202,27 @@
                 if (names.length > 0) {
                     if (!activeClass) return;
                     let students = db.getStudents(activeClass);
-                    const newStudents = names.map(name => ({
-                        name,
-                        rubric: {},
-                        notes: ''
-                    }));
+                    const newStudents = names.map(name => ({ name, rubric: {}, notes: '' }));
                     students = students.concat(newStudents);
                     db.saveStudents(activeClass, students);
                     studentPasteArea.value = '';
                     renderStudents();
+                }
+            });
+            
+            studentFilter.addEventListener('keyup', (e) => {
+                const filterText = e.target.value;
+                renderStudents(filterText);
+                
+                if (e.key === 'Enter') {
+                    const visibleStudents = studentsContainer.querySelectorAll('.student-item');
+                    if (visibleStudents.length === 1) {
+                        const studentIndex = visibleStudents[0].dataset.index;
+                        const students = db.getStudents(activeClass);
+                        openModal(students[studentIndex], studentIndex);
+                        studentFilter.value = '';
+                        renderStudents();
+                    }
                 }
             });
 
@@ -213,7 +232,7 @@
                     const students = db.getStudents(activeClass);
                     students[index].rubric[e.target.dataset.id] = e.target.checked;
                     db.saveStudents(activeClass, students);
-                    renderStudents();
+                    renderStudents(studentFilter.value);
                 }
             });
 
@@ -223,7 +242,6 @@
                 noteTimeout = setTimeout(() => {
                     const index = modal.dataset.studentIndex;
                     const students = db.getStudents(activeClass);
-                    const timestamp = new Date().toLocaleString();
                     students[index].notes = notesTextarea.value;
                     db.saveStudents(activeClass, students);
                 }, 500);
