@@ -155,10 +155,14 @@
                 notesTextarea.value = student.notes || '';
 
                 modal.style.display = 'block';
+                notesTextarea.focus(); // Focus on notes for immediate typing
             };
 
             const closeModal = () => {
-                modal.style.display = 'none';
+                if (modal.style.display === 'block') {
+                    modal.style.display = 'none';
+                    studentFilter.focus(); // Return focus to the filter input
+                }
             };
 
             addClassBtn.addEventListener('click', () => {
@@ -182,11 +186,7 @@
                 const names = studentPasteArea.value.split('\n').map(name => name.trim()).filter(name => name);
                 if (names.length > 0) {
                     let students = db.getStudents(activeClass);
-                    const newStudents = names.map(name => ({
-                        name,
-                        rubric: {},
-                        notes: ''
-                    }));
+                    const newStudents = names.map(name => ({ name, rubric: {}, notes: '' }));
                     students = students.concat(newStudents);
                     db.saveStudents(activeClass, students);
                     studentPasteArea.value = '';
@@ -220,8 +220,6 @@
                         const studentIndex = visibleStudents[0].dataset.index;
                         const students = db.getStudents(activeClass);
                         openModal(students[studentIndex], studentIndex);
-                        studentFilter.value = '';
-                        renderStudents();
                     }
                 }
             });
@@ -250,6 +248,13 @@
             closeBtn.addEventListener('click', closeModal);
             window.addEventListener('click', (e) => {
                 if (e.target == modal) {
+                    closeModal();
+                }
+            });
+
+            // Added event listener for the Escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
                     closeModal();
                 }
             });
