@@ -5,27 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Collaboration Monitor</title>
     <style>
-        body { font-family: sans-serif; margin: 20px; background-color: #f4f4f4; }
-        .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        h1, h2 { text-align: center; }
-        .class-manager, .student-section { margin-bottom: 20px; }
-        .class-tabs { border-bottom: 1px solid #ccc; padding-bottom: 10px; margin-bottom: 20px; }
-        .tab { background: #eee; padding: 10px 15px; border: 1px solid #ccc; border-bottom: none; cursor: pointer; display: inline-block; margin-right: 5px; border-radius: 5px 5px 0 0; }
-        .tab.active { background: #fff; border-bottom: 1px solid #fff; font-weight: bold; }
-        #add-class-btn { background: #28a745; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; }
-        #student-paste-area { width: calc(100% - 20px); min-height: 100px; margin-top: 10px; padding: 10px; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; background-color: #f4f4f9; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
+        h1, h2 { text-align: center; color: #333; }
+        .class-manager, .student-section { margin-bottom: 25px; }
+        .class-tabs { border-bottom: 2px solid #ddd; padding-bottom: 10px; margin-bottom: 20px; display: flex; flex-wrap: wrap; }
+        .tab { background: #eee; padding: 10px 20px; border: 1px solid #ccc; border-bottom: none; cursor: pointer; display: inline-flex; align-items: center; margin-right: 5px; margin-bottom: 5px; border-radius: 8px 8px 0 0; position: relative; }
+        .tab.active { background: #fff; border-bottom: 2px solid #fff; font-weight: bold; transform: translateY(2px); }
+        .delete-class-btn { color: #d9534f; margin-left: 10px; font-weight: bold; display: none; }
+        .tab.active .delete-class-btn { display: inline; }
+        #add-class-btn { background: #28a745; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-size: 1em; }
+        #student-paste-area { width: calc(100% - 22px); min-height: 100px; margin-top: 10px; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
         #student-filter { width: calc(100% - 22px); padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 1em; }
-        .student-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; }
-        .student-item:hover { background: #f0f0f0; }
+        
+        .student-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 10px; border-bottom: 1px solid #eee; background-color: #fff; user-select: none; }
+        .student-item-content { flex-grow: 1; cursor: pointer; }
         .student-name { font-weight: bold; }
         .student-progress { font-size: 0.9em; color: #555; }
-        .modal { display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4); }
-        .modal-content { background-color: #fefefe; margin: 5% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 600px; border-radius: 8px; }
+        .delete-student-btn { color: #d9534f; font-size: 1.5em; font-weight: bold; cursor: pointer; padding: 0 10px; line-height: 1; }
+        
+        .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); }
+        .modal-content { background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 90%; max-width: 500px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); text-align: center; }
         .close-btn { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
-        #notes { width: calc(100% - 20px); min-height: 80px; margin-top: 10px; padding: 10px; }
-        .rubric-section { margin-bottom: 20px; }
+        #notes { width: calc(100% - 22px); min-height: 80px; margin-top: 10px; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
+        .rubric-section { margin-bottom: 20px; text-align: left; }
         .rubric-section h3 { border-bottom: 1px solid #ccc; padding-bottom: 5px; }
         .rubric-item { margin-bottom: 10px; }
+        .modal-input { width: calc(100% - 24px); padding: 10px; margin-top: 10px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 5px; }
+        .modal-buttons { margin-top: 20px; }
+        .modal-buttons button { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin: 0 10px; font-size: 1em; }
+        .confirm-btn { background-color: #d9534f; color: white; }
+        .cancel-btn { background-color: #ccc; }
+        .save-btn { background-color: #0275d8; color: white; }
     </style>
 </head>
 <body>
@@ -55,13 +66,13 @@
         </div>
     </div>
 
+    <!-- Student Rubric Modal -->
     <div id="student-modal" class="modal">
         <div class="modal-content">
             <span class="close-btn">&times;</span>
             <h2 id="modal-student-name"></h2>
             <div id="rubric-form">
-                <div class="rubric-section">
-                    <h3>Contributes to team productivity and success by:</h3>
+                <div class="rubric-section"><h3>Contributes to team productivity and success by:</h3>
                     <div class="rubric-item"><label><input type="checkbox" data-id="sharing"> Sharing information, ideas and suggestions.</label></div>
                     <div class="rubric-item"><label><input type="checkbox" data-id="expanding"> Expanding on the ideas of a peer or team member.</label></div>
                     <div class="rubric-item"><label><input type="checkbox" data-id="prepared"> Coming to group meetings prepared with the required materials and/or work complete.</label></div>
@@ -70,16 +81,37 @@
                     <div class="rubric-item"><label><input type="checkbox" data-id="asking"> Asking for help in identifying and achieving goals and solving problems.</label></div>
                     <div class="rubric-item"><label><input type="checkbox" data-id="tools"> Selecting and applying appropriate collaborative tools (including tech), skills, and strategies for productive group work.</label></div>
                 </div>
-                <div class="rubric-section">
-                    <h3>Demonstrates social intelligence by:</h3>
+                <div class="rubric-section"><h3>Demonstrates social intelligence by:</h3>
                     <div class="rubric-item"><label><input type="checkbox" data-id="opinions"> Stating personal opinions and areas of disagreement tactfully.</label></div>
                     <div class="rubric-item"><label><input type="checkbox" data-id="acknowledging"> Acknowledging others' skill, experience, creativity and contributions.</label></div>
                     <div class="rubric-item"><label><input type="checkbox" data-id="sharing_credit"> Sharing credit for good ideas with others.</label></div>
                 </div>
-                <div class="rubric-section">
-                    <h3>Notes:</h3>
-                    <textarea id="notes"></textarea>
-                </div>
+                <div class="rubric-section"><h3>Notes:</h3><textarea id="notes"></textarea></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Class Modal -->
+    <div id="add-class-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Add New Class</h2>
+            <input type="text" id="new-class-name" class="modal-input" placeholder="Enter class name">
+            <div class="modal-buttons">
+                <button id="save-class-btn" class="save-btn">Save</button>
+                <button class="cancel-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirm-modal" class="modal">
+        <div class="modal-content">
+            <h3 id="confirm-message">Are you sure?</h3>
+            <p>This action cannot be undone.</p>
+            <div class="modal-buttons">
+                <button id="confirm-delete-btn" class="confirm-btn">Delete</button>
+                <button class="cancel-btn">Cancel</button>
             </div>
         </div>
     </div>
@@ -91,6 +123,7 @@
                 saveClasses: (classes) => localStorage.setItem('classes', JSON.stringify(classes)),
                 getStudents: (className) => JSON.parse(localStorage.getItem(`students_${className}`)) || [],
                 saveStudents: (className, students) => localStorage.setItem(`students_${className}`, JSON.stringify(students)),
+                deleteClassData: (className) => localStorage.removeItem(`students_${className}`),
             };
 
             let activeClass = null;
@@ -101,11 +134,15 @@
             const studentFilter = document.getElementById('student-filter');
             const studentPasteArea = document.getElementById('student-paste-area');
             const addStudentsBtn = document.getElementById('add-students-btn');
-            const modal = document.getElementById('student-modal');
+            
+            // Modals
+            const studentModal = document.getElementById('student-modal');
+            const addClassModal = document.getElementById('add-class-modal');
+            const confirmModal = document.getElementById('confirm-modal');
+            
             const modalStudentName = document.getElementById('modal-student-name');
             const rubricForm = document.getElementById('rubric-form');
             const notesTextarea = document.getElementById('notes');
-            const closeBtn = document.querySelector('.close-btn');
 
             const renderClasses = () => {
                 const classes = db.getClasses();
@@ -114,11 +151,34 @@
                     const tab = document.createElement('div');
                     tab.className = 'tab' + (c === activeClass ? ' active' : '');
                     tab.textContent = c;
+                    
+                    const deleteBtn = document.createElement('span');
+                    deleteBtn.className = 'delete-class-btn';
+                    deleteBtn.innerHTML = '&times;';
+                    deleteBtn.title = `Delete class ${c}`;
+                    deleteBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        showConfirmationModal(`Are you sure you want to delete the class "${c}" and all its student data?`, () => {
+                            let currentClasses = db.getClasses();
+                            currentClasses = currentClasses.filter(name => name !== c);
+                            db.saveClasses(currentClasses);
+                            db.deleteClassData(c);
+                            
+                            if (activeClass === c) {
+                                activeClass = currentClasses.length > 0 ? currentClasses[0] : null;
+                            }
+                            init();
+                        });
+                    });
+                    tab.appendChild(deleteBtn);
+
                     tab.addEventListener('click', () => {
-                        activeClass = c;
-                        studentFilter.value = '';
-                        renderClasses();
-                        renderStudents();
+                        if (activeClass !== c) {
+                            activeClass = c;
+                            studentFilter.value = '';
+                            renderClasses();
+                            renderStudents();
+                        }
                     });
                     classTabs.appendChild(tab);
                 });
@@ -131,56 +191,96 @@
                 studentsContainer.innerHTML = '';
                 students.forEach((student, index) => {
                     if (student.name.toLowerCase().includes(filter.toLowerCase())) {
-                        const totalItems = 10;
-                        const completedItems = Object.values(student.rubric).filter(Boolean).length;
-                        const progress = `${completedItems}/${totalItems}`;
-
                         const item = document.createElement('div');
                         item.className = 'student-item';
                         item.dataset.index = index;
-                        item.innerHTML = `<span class="student-name">${student.name}</span> <span class="student-progress">${progress}</span>`;
-                        item.addEventListener('click', () => openModal(student, index));
+                        
+                        const content = document.createElement('div');
+                        content.className = 'student-item-content';
+                        
+                        const totalItems = 10;
+                        const completedItems = Object.values(student.rubric).filter(Boolean).length;
+                        const progress = `${completedItems}/${totalItems}`;
+                        content.innerHTML = `<span class="student-name">${student.name}</span> <span class="student-progress">${progress}</span>`;
+                        
+                        const deleteBtn = document.createElement('span');
+                        deleteBtn.className = 'delete-student-btn';
+                        deleteBtn.innerHTML = '&times;';
+
+                        item.appendChild(content);
+                        item.appendChild(deleteBtn);
                         studentsContainer.appendChild(item);
+
+                        // Event Listeners for item
+                        content.addEventListener('click', () => openStudentModal(student, index));
+                        deleteBtn.addEventListener('click', () => {
+                             showConfirmationModal(`Are you sure you want to delete ${student.name}?`, () => {
+                                let currentStudents = db.getStudents(activeClass);
+                                currentStudents.splice(index, 1);
+                                db.saveStudents(activeClass, currentStudents);
+                                renderStudents(studentFilter.value);
+                            });
+                        });
                     }
                 });
             };
+            
+            // --- MODAL LOGIC ---
+            const openModal = (modalElement) => modalElement.style.display = 'block';
+            const closeModal = (modalElement) => modalElement.style.display = 'none';
 
-            const openModal = (student, index) => {
+            // Student Modal
+            const openStudentModal = (student, index) => {
                 modalStudentName.textContent = student.name;
-                modal.dataset.studentIndex = index;
-                
+                studentModal.dataset.studentIndex = index;
                 rubricForm.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
                     checkbox.checked = !!student.rubric[checkbox.dataset.id];
                 });
                 notesTextarea.value = student.notes || '';
-
-                modal.style.display = 'block';
-                notesTextarea.focus(); // Focus on notes for immediate typing
+                openModal(studentModal);
+                notesTextarea.focus();
             };
 
-            const closeModal = () => {
-                if (modal.style.display === 'block') {
-                    modal.style.display = 'none';
-                    studentFilter.focus(); // Return focus to the filter input
-                }
+            // Confirmation Modal
+            let confirmCallback = null;
+            const showConfirmationModal = (message, callback) => {
+                document.getElementById('confirm-message').textContent = message;
+                confirmCallback = callback;
+                openModal(confirmModal);
             };
+            document.getElementById('confirm-delete-btn').addEventListener('click', () => {
+                if (confirmCallback) confirmCallback();
+                closeModal(confirmModal);
+            });
 
+            // Add Class Modal
             addClassBtn.addEventListener('click', () => {
-                const className = prompt('Enter new class name:');
-                if (className) {
+                document.getElementById('new-class-name').value = '';
+                openModal(addClassModal);
+                document.getElementById('new-class-name').focus();
+            });
+            document.getElementById('save-class-btn').addEventListener('click', () => {
+                const newClassName = document.getElementById('new-class-name').value.trim();
+                if (newClassName) {
                     const classes = db.getClasses();
-                    if (!classes.includes(className)) {
-                        classes.push(className);
+                    if (!classes.includes(newClassName)) {
+                        classes.push(newClassName);
                         db.saveClasses(classes);
-                        activeClass = className;
+                        activeClass = newClassName;
                         renderClasses();
                         renderStudents();
                     } else {
                         alert('Class name already exists.');
                     }
                 }
+                closeModal(addClassModal);
+            });
+            
+            document.querySelectorAll('.modal .close-btn, .modal .cancel-btn').forEach(btn => {
+                btn.addEventListener('click', () => closeModal(btn.closest('.modal')));
             });
 
+            // --- OTHER EVENT LISTENERS ---
             addStudentsBtn.addEventListener('click', () => {
                 if (!activeClass) return;
                 const names = studentPasteArea.value.split('\n').map(name => name.trim()).filter(name => name);
@@ -193,76 +293,59 @@
                     renderStudents();
                 }
             });
-
-            studentPasteArea.addEventListener('paste', (event) => {
-                event.preventDefault();
-                const text = (event.clipboardData || window.clipboardData).getData('text');
-                const names = text.split(/\r?\n/).map(name => name.split('\t')[0].trim()).filter(name => name);
-
-                if (names.length > 0) {
-                    if (!activeClass) return;
-                    let students = db.getStudents(activeClass);
-                    const newStudents = names.map(name => ({ name, rubric: {}, notes: '' }));
-                    students = students.concat(newStudents);
-                    db.saveStudents(activeClass, students);
-                    studentPasteArea.value = '';
-                    renderStudents();
-                }
-            });
             
             studentFilter.addEventListener('keyup', (e) => {
-                const filterText = e.target.value;
-                renderStudents(filterText);
-                
+                renderStudents(e.target.value);
                 if (e.key === 'Enter') {
                     const visibleStudents = studentsContainer.querySelectorAll('.student-item');
                     if (visibleStudents.length === 1) {
                         const studentIndex = visibleStudents[0].dataset.index;
                         const students = db.getStudents(activeClass);
-                        openModal(students[studentIndex], studentIndex);
+                        openStudentModal(students[studentIndex], studentIndex);
                     }
                 }
             });
 
             rubricForm.addEventListener('change', (e) => {
                 if (e.target.type === 'checkbox') {
-                    const index = modal.dataset.studentIndex;
+                    const index = studentModal.dataset.studentIndex;
                     const students = db.getStudents(activeClass);
                     students[index].rubric[e.target.dataset.id] = e.target.checked;
                     db.saveStudents(activeClass, students);
                     renderStudents(studentFilter.value);
                 }
             });
-
+            
             let noteTimeout;
             notesTextarea.addEventListener('input', () => {
                 clearTimeout(noteTimeout);
                 noteTimeout = setTimeout(() => {
-                    const index = modal.dataset.studentIndex;
+                    const index = studentModal.dataset.studentIndex;
                     const students = db.getStudents(activeClass);
                     students[index].notes = notesTextarea.value;
                     db.saveStudents(activeClass, students);
                 }, 500);
             });
 
-            closeBtn.addEventListener('click', closeModal);
-            window.addEventListener('click', (e) => {
-                if (e.target == modal) {
-                    closeModal();
-                }
-            });
-
-            // Added event listener for the Escape key
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape') {
-                    closeModal();
+                    if (studentModal.style.display === 'block') closeModal(studentModal);
+                    else if (addClassModal.style.display === 'block') closeModal(addClassModal);
+                    else if (confirmModal.style.display === 'block') closeModal(confirmModal);
+                    else {
+                        studentFilter.value = '';
+                        renderStudents();
+                        studentFilter.focus();
+                    }
                 }
             });
 
             const init = () => {
                 const classes = db.getClasses();
-                if (classes.length > 0) {
+                if (!activeClass && classes.length > 0) {
                     activeClass = classes[0];
+                } else if (classes.length === 0) {
+                    activeClass = null;
                 }
                 renderClasses();
                 renderStudents();
@@ -271,6 +354,5 @@
             init();
         });
     </script>
-
 </body>
 </html>
