@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classroom Presentation Tracker</title>
+    <style>
+        :root {
+            --primary-bg: #f4f7f9;
+            --secondary-bg: #ffffff;
+            --text-color: #333;
+            --primary-color: #4a90e2;
+            --primary-hover: #357abd;
+            --danger-color: #d9534f;
+            --danger-hover: #c9302c;
+            --border-color: #dce1e6;
+            --shadow-color: rgba(0,0,0,0.1);
+            --modal-overlay: rgba(0,0,0,0.6);
+            --tag-bg: #e9ecf0;
+            --tag-text: #3a4b5a;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+            overscroll-behavior: none;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: var(--secondary-bg);
+            border-radius: 8px;
+            box-shadow: 0 4px 15px var(--shadow-color);
+            overflow: hidden;
+        }
+
+        /* --- Header & Tabs --- */
+        .tabs-container { display: flex; align-items: center; background-color: #e9ecf0; padding: 10px 20px 0 20px; border-bottom: 1px solid var(--border-color); flex-wrap: wrap; }
+        .tab { padding: 12px 20px; cursor: pointer; border: 1px solid transparent; border-bottom: none; margin-bottom: -1px; position: relative; display: flex; align-items: center; }
+        .tab.active { background: var(--secondary-bg); border-color: var(--border-color); border-radius: 6px 6px 0 0; font-weight: 600; }
+        .delete-tab-btn { margin-left: 10px; color: #999; border: none; background: none; cursor: pointer; font-size: 16px; padding: 2px 4px; border-radius: 50%; }
+        .delete-tab-btn:hover { background-color: #e0e0e0; }
+        .add-class-btn { margin-left: 10px; padding: 8px 12px; background-color: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 500; }
+        .add-class-btn:hover { background-color: var(--primary-hover); }
+
+        /* --- Main Content & Drag/Drop --- */
+        .main-content { padding: 20px; }
+        .no-class-view { text-align: center; padding: 50px; }
+        .controls { display: flex; justify-content: flex-end; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+        .action-buttons button { padding: 10px 15px; border: none; border-radius: 4px; color: white; cursor: pointer; font-size: 14px; margin-left: 10px; }
+        .btn-primary { background-color: var(--primary-color); }
+        .btn-primary:hover { background-color: var(--primary-hover); }
+        .btn-secondary { background-color: #6c757d; }
+        .btn-secondary:hover { background-color: #5a6268; }
+        .grouping-workspace { display: flex; gap: 20px; }
+        #unassigned-container { flex: 1; padding: 15px; border: 1px solid var(--border-color); border-radius: 8px; background-color: #fcfcfc; min-height: 400px; }
+        #groups-container { flex: 3; display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; align-content: start; }
+        .unassigned-students-list, .group-members { min-height: 50px; padding: 5px; border-radius: 4px; }
+        .student-tag { background-color: var(--tag-bg); color: var(--tag-text); padding: 8px 12px; border-radius: 4px; margin-bottom: 8px; cursor: grab; user-select: none; transition: background-color 0.2s, opacity 0.2s; font-weight: 500; }
+        .student-tag.dragging { opacity: 0.5; background-color: var(--primary-color); }
+        .group-box { border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; background-color: var(--secondary-bg); }
+        .group-box.drag-over { border-style: dashed; border-color: var(--primary-color); background-color: #f0f6ff; }
+        .group-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .group-header h3 { margin: 0; cursor: pointer; flex-grow: 1; padding: 5px; border-radius: 4px; }
+        .group-header h3:hover { background-color: #f0f0f0; }
+        .group-actions button { background: none; border: none; cursor: pointer; font-size: 16px; color: #999; margin-left: 5px; }
+        .group-actions button:hover { color: var(--text-color); }
+        .delete-group-btn:hover { color: var(--danger-color); }
+
+        /* --- Modal Styles --- */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: var(--modal-overlay); overflow-y: auto; }
+        .modal-content { background-color: var(--secondary-bg); margin: 40px auto; border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); width: 90%; max-width: 500px; position: relative; }
+        .modal-header { padding: 15px 25px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+        .modal-header h2 { margin: 0; }
+        .close-btn { font-size: 28px; font-weight: bold; color: #aaa; cursor: pointer; border: none; background: none; }
+        .close-btn:hover { color: #333; }
+        .modal-body { padding: 25px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; }
+        .form-group textarea { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 16px; box-sizing: border-box; min-height: 100px; resize: vertical; }
+        .modal-footer { padding: 15px 25px; border-top: 1px solid var(--border-color); text-align: right; }
+        .modal-footer .btn-danger { background-color: var(--danger-color); }
+        .modal-footer .btn-danger:hover { background-color: var(--danger-hover); }
+
+        /* --- Rubric & Proficiency Modal Specifics --- */
+        #rubric-modal .modal-content, #proficiency-modal .modal-content { max-width: 950px; }
+        #rubric-modal .modal-body { max-height: calc(100vh - 150px); overflow-y: auto; }
+        
+        .rubric-section { border: 1px solid var(--border-color); border-radius: 6px; margin-bottom: 20px; }
+        .rubric-section-header { background-color: #f8f9fa; padding: 10px 15px; border-bottom: 1px solid var(--border-color); border-radius: 6px 6px 0 0;}
+        .rubric-section-header h3 { margin: 0; font-size: 18px; }
+
+        .rubric-section-grid { display: flex; padding: 15px; gap: 20px; }
+        .checkbox-pane { flex: 1; }
+        .notes-pane { flex: 1; }
+        .checkbox-pane label { display: flex; align-items: flex-start; margin-bottom: 12px; font-weight: normal; cursor: pointer; }
+        .checkbox-pane input { margin-right: 10px; margin-top: 4px; flex-shrink: 0; }
+        .notes-pane textarea { width: 100%; height: 100%; min-height: 120px; box-sizing: border-box; border: 1px solid var(--border-color); border-radius: 4px; padding: 8px; }
+
+        .members-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .members-table th, .members-table td { text-align: left; padding: 12px; border-bottom: 1px solid var(--border-color); }
+        .members-table th { background-color: #f8f9fa; }
+        .members-table input, .members-table select { width: 100%; padding: 8px; border: 1px solid var(--border-color); border-radius: 4px; }
+        
+        #proficiency-modal h4 { margin-top: 20px; margin-bottom: 5px; font-size: 1.1em; color: var(--primary-color); }
+        #proficiency-modal p { margin-top: 0; }
+        #proficiency-modal ul { padding-left: 20px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header class="tabs-container" id="tabs-container"></header>
+        <main class="main-content" id="main-content"></main>
+    </div>
+
+    <!-- Modals -->
+    <div id="add-class-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2>Create New Class</h2><button class="close-btn">&times;</button></div><div class="modal-body"><div class="form-group"><label for="class-name-input">Class Name</label><input type="text" id="class-name-input"></div></div><div class="modal-footer"><button id="save-class-btn" class="btn-primary">Save Class</button></div></div></div>
+    <div id="delete-confirm-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2>Confirm Deletion</h2><button class="close-btn">&times;</button></div><div class="modal-body"><p id="delete-confirm-message"></p></div><div class="modal-footer"><button id="cancel-delete-btn" class="btn-secondary">Cancel</button><button id="confirm-delete-btn" class="btn-danger">Delete</button></div></div></div>
+    <div id="roster-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2>Manage Student Roster</h2><button class="close-btn">&times;</button></div><div class="modal-body"><div class="form-group"><label for="roster-paste-area">Paste Student Names</label><p style="font-size:14px;color:#666;margin-top:-5px;">One name per line.</p><textarea id="roster-paste-area" rows="10"></textarea></div><button id="add-students-btn" class="btn-primary">Add Students</button><hr style="margin:20px 0;"><h3>Current Roster</h3><ul id="roster-student-list"></ul></div></div></div>
+    
+    <div id="rubric-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="rubric-modal-title">Presentation Rubric</h2>
+                <div>
+                    <button id="view-scale-btn" class="btn-secondary">View Proficiency Scale</button>
+                    <button class="close-btn">&times;</button>
+                </div>
+            </div>
+            <div class="modal-body" id="rubric-form"></div>
+        </div>
+    </div>
+    
+    <div id="proficiency-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header"><h2>FIRST YEAR SEMINAR Habits of Action Proficiency Scale</h2><button class="close-btn">&times;</button></div>
+            <div class="modal-body">
+                <p><strong>Competency:</strong> Students comprehend functional health knowledge to enhance health.</p>
+                <h4>4.0</h4> <p>In addition to exhibiting score 3.0 performance, in depth inferences and applications that show complexity and/or integration. For example: Students assess and revise goals/plans based on progress to produce a sophisticated system for supporting their academic and personal success. Students write reflections that recognize the impact of their habits on others and can speak to the impact that changes they have made have had on themselves and others.</p>
+                <h4>3.5</h4> <p>In addition to score 3.0 performance, in depth inferences and application with partial success (score 4.0 content).</p>
+                <h4>3.0</h4> <p>The learner will: Implement new strategies to make progress toward personal, academic, and health goals (e.g. tracking progress, setting reminders, taking small steps, overcoming barriers, and revising the goal based on life circumstances). Use tracked data to assess habits and revise plans to improve them.</p>
+                <h4>2.5</h4> <p>No major errors or omissions regarding the simpler details and processes (score 2.0 content) and partial knowledge of the more complex ideas and processes (score 3.0 content).</p>
+                <h4>2.0</h4> <p>Students will use the following terminology: habits, habit loop, cue, behavior, reward, SMART goal, measure, tracking, system. Students will demonstrate the following processes/understandings: Measure and track my progress on indicators of personal, academic, and health goals, with a focus on: time management, organization, prioritization. Evaluate how well personal habits support or harm academic and personal well-being. Set SMART personal and/or academic health goals about habits.</p>
+                <h4>1.5</h4> <p>Partial knowledge of the simpler details and processes (score 2.0 content), but major errors or omissions regarding the more complex ideas and processes (score 3.0 content).</p>
+                <h4>1.0</h4> <p>With help, partial understanding of some of the simpler details and processes (score 2.0 content) and some of the more complex ideas and processes (3.0 content).</p>
+                <h4>0.5</h4> <p>With help, partial understanding of some of the simpler details and processes (score 2.0 content), but not the more complex ideas and processes (score 3.0 content).</p>
+                <h4>0.0</h4> <p>Even with help, no understanding or skill demonstration.</p>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        let state = { activeClass: null, classes: [], modalOpen: false, deleteTarget: null, draggedStudent: null };
+
+        // Define the structure of the rubric for consistency
+        const rubricStructure = {
+            hookProblem: { title: "Hook / Problem", items: {
+                challenge: "What challenge do your clients face? Grab your audience’s attention by starting with a question, story, data, captivating image, etc.",
+                introduce: "Introduce yourselves, your design company, your roles."
+            }},
+            yourClients: { title: "Your Clients", items: null, description: "Describe their Habit loop." },
+            solution: { title: "Solution - Your App", items: {
+                highlight: "Highlight 2–3 best points. (Include screen shots from your technical designer)"
+            }},
+            criticalConnections: { title: "Critical Connections", items: {
+                newStrategy: "How is your group showing that this new strategy will help your clients improve their habit?",
+                specifics: "Are you being specific on your app’s functions and features and how or why they will help your client?",
+                trackData: "How will your app help your client track or create data to better understand their habits or create change?"
+            }},
+            slideDesign: { title: "Slide Design", items: {
+                simple: "Keep it simple – 1 idea per slide.",
+                visuals: "Less text, more visuals – use images, icons, and app mockups. (6X6 rule - no more than 6 lines of text, 6 words per line)",
+                consistency: "Consistency counts – same fonts, colors, and layout.",
+                contrast: "Contrast matters – text must stand out from the background."
+            }},
+            speaking: { title: "Speaking/ Presentation Tips", items: {
+                concise: "Be clear & concise – focus on your top 3 points.",
+                support: "Use slides as support, not a script. Don’t read from them - talk directly to audience",
+                passion: "Show passion – energy sells your idea!",
+                timing: "Practice timing – 2–3 minutes goes fast.",
+                engage: "Engage your audience – use “you” language: “This app will help you stay on top of your work.”"
+            }}
+        };
+
+        const getNewRubricObject = () => {
+            const newRubric = {};
+            for (const sectionKey in rubricStructure) {
+                newRubric[sectionKey] = { notes: "", items: {} };
+                if (rubricStructure[sectionKey].items) {
+                    for (const itemKey in rubricStructure[sectionKey].items) {
+                        newRubric[sectionKey].items[itemKey] = false;
+                    }
+                }
+            }
+            return newRubric;
+        };
+        
+        const loadState = () => {
+            const savedState = localStorage.getItem('presentationTrackerStateV3');
+            if (savedState) state = JSON.parse(savedState);
+        };
+        const saveState = () => localStorage.setItem('presentationTrackerStateV3', JSON.stringify(state));
+        const findActiveClass = () => state.classes.find(c => c.name === state.activeClass);
+        const generateId = () => Date.now();
+        const openModal = (modalId) => { state.modalOpen = true; document.getElementById(modalId).style.display = 'block'; };
+        const closeModal = () => { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); state.modalOpen = false; state.deleteTarget = null; };
+
+        const render = () => { renderTabs(); renderMainContent(); };
+
+        const renderTabs = () => {
+            const tabsContainer = document.getElementById('tabs-container');
+            tabsContainer.innerHTML = '';
+            state.classes.forEach(cls => {
+                const tab = document.createElement('div');
+                tab.className = `tab ${cls.name === state.activeClass ? 'active' : ''}`;
+                tab.textContent = cls.name;
+                tab.onclick = () => switchClass(cls.name);
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-tab-btn';
+                deleteBtn.innerHTML = '&times;';
+                deleteBtn.onclick = (e) => { e.stopPropagation(); confirmDelete('class', cls.name); };
+                tab.appendChild(deleteBtn);
+                tabsContainer.appendChild(tab);
+            });
+            const addBtn = document.createElement('button');
+            addBtn.className = 'add-class-btn';
+            addBtn.textContent = '+ Add Class';
+            addBtn.onclick = () => { document.getElementById('class-name-input').value = ''; openModal('add-class-modal'); };
+            tabsContainer.appendChild(addBtn);
+        };
+        
+        const renderMainContent = () => {
+            const mainContent = document.getElementById('main-content');
+            const activeClass = findActiveClass();
+            if (!activeClass) {
+                mainContent.innerHTML = `<div class="no-class-view"><h2>Welcome!</h2><p>Create a class to get started.</p></div>`;
+                return;
+            }
+            mainContent.innerHTML = `
+                <div class="controls"><div class="action-buttons"><button id="manage-roster-btn" class="btn-secondary">Manage Roster</button><button id="add-group-btn" class="btn-primary">+ Add Empty Group</button><button id="export-csv-btn" class="btn-secondary">Export to CSV</button></div></div>
+                <div class="grouping-workspace">
+                    <div id="unassigned-container"><h3>Unassigned Students</h3><div class="unassigned-students-list drop-zone" data-group-id="unassigned"></div></div>
+                    <div id="groups-container"></div>
+                </div>`;
+            renderStudentsAndGroups();
+            attachMainContentListeners();
+        };
+
+        const renderStudentsAndGroups = () => {
+            const activeClass = findActiveClass();
+            if (!activeClass) return;
+            const unassignedList = document.querySelector('.unassigned-students-list');
+            const groupsContainer = document.getElementById('groups-container');
+            unassignedList.innerHTML = ''; groupsContainer.innerHTML = '';
+            const allGroupedStudents = activeClass.groups.flatMap(g => g.members.map(m => m.name));
+            const unassignedStudents = activeClass.students.filter(s => !allGroupedStudents.includes(s));
+            unassignedStudents.forEach(name => unassignedList.appendChild(createStudentTag(name)));
+            activeClass.groups.forEach(group => {
+                const groupBox = document.createElement('div');
+                groupBox.className = 'group-box drop-zone';
+                groupBox.dataset.groupId = group.id;
+                groupBox.innerHTML = `<div class="group-header"><h3 data-group-id="${group.id}">${group.name}</h3><div class="group-actions"><button class="open-rubric-btn" title="Open Rubric">&#9776;</button><button class="delete-group-btn" title="Delete Group">&times;</button></div></div><div class="group-members"></div>`;
+                const membersContainer = groupBox.querySelector('.group-members');
+                group.members.forEach(member => membersContainer.appendChild(createStudentTag(member.name)));
+                groupsContainer.appendChild(groupBox);
+            });
+            attachDragAndDropListeners();
+        };
+
+        const createStudentTag = (name) => {
+            const tag = document.createElement('div');
+            tag.className = 'student-tag drop-zone';
+            tag.textContent = name;
+            tag.dataset.studentName = name;
+            tag.draggable = true;
+            return tag;
+        };
+        
+        const switchClass = (className) => { state.activeClass = className; saveState(); render(); };
+        const saveClass = () => {
+            const className = document.getElementById('class-name-input').value.trim();
+            if (className && !state.classes.some(c => c.name === className)) {
+                state.classes.push({ name: className, students: [], groups: [], groupCounter: 1 });
+                state.activeClass = className;
+                saveState(); render(); closeModal();
+            } else alert(className ? 'A class with this name already exists.' : 'Class name cannot be empty.');
+        };
+        const confirmDelete = (type, id) => {
+            state.deleteTarget = { type, id };
+            const msg = document.getElementById('delete-confirm-message');
+            msg.textContent = type === 'class' ? `Delete the class "${id}" and all its data?` : `Delete this group? Students will become unassigned.`;
+            openModal('delete-confirm-modal');
+        };
+        const executeDelete = () => {
+            const { type, id } = state.deleteTarget;
+            if (type === 'class') {
+                state.classes = state.classes.filter(c => c.name !== id);
+                if (state.activeClass === id) state.activeClass = state.classes[0]?.name || null;
+            } else if (findActiveClass()) {
+                findActiveClass().groups = findActiveClass().groups.filter(g => g.id !== id);
+            }
+            saveState(); render(); closeModal();
+        };
+        const showRosterModal = () => {
+            const activeClass = findActiveClass();
+            const studentList = document.getElementById('roster-student-list');
+            studentList.innerHTML = '';
+            activeClass.students.sort().forEach(s => { studentList.innerHTML += `<li>${s}</li>`; });
+            document.getElementById('roster-paste-area').value = '';
+            openModal('roster-modal');
+        };
+        const addStudentsToRoster = () => {
+            const activeClass = findActiveClass();
+            const names = document.getElementById('roster-paste-area').value.trim().split(/[\n\t]+/).map(n => n.trim()).filter(Boolean);
+            names.forEach(name => { if (!activeClass.students.includes(name)) activeClass.students.push(name); });
+            saveState(); showRosterModal(); renderStudentsAndGroups();
+        };
+
+        const addNewGroup = () => {
+            const activeClass = findActiveClass();
+            if (!activeClass) return;
+            const newGroup = { id: generateId(), name: `Group ${activeClass.groupCounter++}`, members: [], rubric: getNewRubricObject() };
+            activeClass.groups.push(newGroup);
+            saveState(); renderStudentsAndGroups();
+        };
+        
+        const makeTitleEditable = (e) => {
+            const h3 = e.target;
+            const input = document.createElement('input');
+            input.type = 'text'; input.value = h3.textContent;
+            h3.replaceWith(input); input.focus();
+            const save = () => {
+                const newName = input.value.trim() || h3.textContent;
+                const group = findActiveClass().groups.find(g => g.id === parseInt(h3.dataset.groupId));
+                if (group) group.name = newName;
+                saveState(); h3.textContent = newName; input.replaceWith(h3);
+            };
+            input.addEventListener('blur', save);
+            input.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') input.blur(); });
+        };
+
+        const handleStudentDrop = (targetZone) => {
+            if (!state.draggedStudent || !targetZone) return;
+
+            const activeClass = findActiveClass();
+            if (!activeClass) return;
+
+            const draggedStudentName = state.draggedStudent.dataset.studentName;
+
+            // --- Step 1: Remove dragged student from their original location ---
+            let sourceGroup = activeClass.groups.find(g => g.members.some(m => m.name === draggedStudentName));
+            if (sourceGroup) {
+                sourceGroup.members = sourceGroup.members.filter(m => m.name !== draggedStudentName);
+            }
+            
+            const draggedStudentObject = { name: draggedStudentName, role: '', grade: '' };
+
+            // --- Step 2: Determine drop target and add student to new location ---
+            const targetIsStudent = targetZone.classList.contains('student-tag');
+            const targetIsGroup = targetZone.classList.contains('group-box');
+            
+            // Case A: Dropped on another student tag
+            if (targetIsStudent) {
+                const targetStudentName = targetZone.dataset.studentName;
+                if (draggedStudentName === targetStudentName) return; // Dropped on self, do nothing
+
+                // Find the target student's group, if any.
+                let targetGroup = activeClass.groups.find(g => g.members.some(m => m.name === targetStudentName));
+
+                if (targetGroup) {
+                    // If the target is already in a group, add the dragged student to it.
+                    targetGroup.members.push(draggedStudentObject);
+                } else {
+                    // If the target is unassigned, create a new group with BOTH students.
+                    const newGroup = {
+                        id: generateId(),
+                        name: `Group ${activeClass.groupCounter++}`,
+                        members: [
+                            draggedStudentObject, // The student being dragged
+                            { name: targetStudentName, role: '', grade: '' } // The student being dropped on
+                        ],
+                        rubric: getNewRubricObject()
+                    };
+                    activeClass.groups.push(newGroup);
+                }
+            }
+            // Case B: Dropped on a group box
+            else if (targetIsGroup) {
+                const targetGroupId = parseInt(targetZone.dataset.groupId);
+                const destGroup = activeClass.groups.find(g => g.id === targetGroupId);
+                if (destGroup && !destGroup.members.some(m => m.name === draggedStudentName)) {
+                    destGroup.members.push(draggedStudentObject);
+                }
+            }
+            // Case C: Dropped back on the unassigned container
+            // No action needed, as the student was already removed from their source group.
+
+            // --- Step 3: Save state and re-render the UI ---
+            saveState();
+            renderStudentsAndGroups();
+        };
+
+        const showRubricModal = (groupId) => {
+            const group = findActiveClass().groups.find(g => g.id === groupId);
+            if (!group) return;
+            document.getElementById('rubric-modal-title').textContent = `${group.name} - Rubric`;
+            const form = document.getElementById('rubric-form');
+            form.dataset.groupId = groupId;
+            form.innerHTML = generateRubricHTML(group);
+            openModal('rubric-modal');
+        };
+        
+        const generateRubricHTML = (group) => {
+            const gradeOptions = ["4.0", "3.5", "3.0", "2.5", "2.0", "1.5", "1.0", "0.5", "0.0", ""];
+            let html = `
+                <table class="members-table">
+                    <thead><tr><th>Name</th><th>Role</th><th>Habits of Action Grade</th></tr></thead>
+                    <tbody>${group.members.map(member => `
+                        <tr>
+                            <td>${member.name}</td>
+                            <td><input type="text" data-member="${member.name}" data-field="role" value="${member.role || ''}"></td>
+                            <td><select data-member="${member.name}" data-field="grade">${gradeOptions.map(g => `<option value="${g}" ${member.grade === g ? 'selected' : ''}>${g || 'N/A'}</option>`).join('')}</select></td>
+                        </tr>`).join('')}
+                    </tbody>
+                </table>`;
+            
+            for (const sectionKey in rubricStructure) {
+                const section = rubricStructure[sectionKey];
+                const groupData = group.rubric[sectionKey] || { notes: "", items: {} };
+                html += `<div class="rubric-section">
+                            <div class="rubric-section-header"><h3>${section.title}</h3></div>
+                            <div class="rubric-section-grid">`;
+                if (section.items) {
+                    html += `<div class="checkbox-pane">${Object.keys(section.items).map(itemKey => `
+                        <label>
+                            <input type="checkbox" data-section="${sectionKey}" data-type="item" data-key="${itemKey}" ${groupData.items[itemKey] ? 'checked' : ''}>
+                            ${section.items[itemKey]}
+                        </label>`).join('')}
+                    </div>`;
+                } else {
+                     html += `<div class="checkbox-pane"><p>${section.description}</p></div>`;
+                }
+                html += `<div class="notes-pane"><textarea data-section="${sectionKey}" data-type="notes" placeholder="Notes...">${groupData.notes || ''}</textarea></div>
+                         </div></div>`;
+            }
+            return html;
+        };
+
+        const updateRubricData = (e) => {
+            const target = e.target, form = target.closest('#rubric-form');
+            if (!form) return;
+            const groupId = parseInt(form.dataset.groupId), group = findActiveClass().groups.find(g => g.id === groupId);
+            if (!group) return;
+            if (target.dataset.member) {
+                const member = group.members.find(m => m.name === target.dataset.member);
+                if (member) member[target.dataset.field] = target.value;
+            }
+            if (target.dataset.section) {
+                const section = target.dataset.section, type = target.dataset.type;
+                if (!group.rubric[section]) group.rubric[section] = { items: {}, notes: "" }; // Ensure section exists
+                if (type === 'item') group.rubric[section].items[target.dataset.key] = target.checked;
+                else if (type === 'notes') group.rubric[section].notes = target.value;
+            }
+            saveState();
+        };
+
+        const exportToCSV = () => {
+            const activeClass = findActiveClass();
+            if (!activeClass || activeClass.groups.length === 0) return alert('No groups to export.');
+            let headers = ['GroupName', 'StudentName', 'Role', 'HabitsOfActionGrade'];
+            for (const sKey in rubricStructure) {
+                headers.push(`${sKey}_Notes`);
+                if (rubricStructure[sKey].items) {
+                    for (const iKey in rubricStructure[sKey].items) headers.push(`${sKey}_${iKey}`);
+                }
+            }
+            let csvContent = [headers.join(',')];
+            activeClass.groups.forEach(group => {
+                group.members.forEach(member => {
+                    let row = [group.name, member.name, member.role || '', member.grade || ''].map(d => `"${(d || '').replace(/"/g, '""')}"`);
+                    for (const sKey in rubricStructure) {
+                        row.push(`"${(group.rubric[sKey]?.notes || '').replace(/"/g, '""')}"`);
+                        if (rubricStructure[sKey].items) {
+                            for (const iKey in rubricStructure[sKey].items) row.push(group.rubric[sKey]?.items?.[iKey] ? 'TRUE' : 'FALSE');
+                        }
+                    }
+                    csvContent.push(row.join(','));
+                });
+            });
+            const blob = new Blob([csvContent.join('\n')], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `${activeClass.name}_presentation_data.csv`;
+            link.click();
+        };
+        
+        // Event Listeners Setup
+        function attachMainContentListeners() {
+            document.getElementById('manage-roster-btn')?.addEventListener('click', showRosterModal);
+            document.getElementById('add-group-btn')?.addEventListener('click', addNewGroup);
+            document.getElementById('export-csv-btn')?.addEventListener('click', exportToCSV);
+            document.getElementById('groups-container')?.addEventListener('click', (e) => {
+                if (e.target.tagName === 'H3') makeTitleEditable(e);
+                const openBtn = e.target.closest('.open-rubric-btn');
+                const deleteBtn = e.target.closest('.delete-group-btn');
+                if (openBtn) showRubricModal(parseInt(openBtn.closest('.group-box').dataset.groupId));
+                if (deleteBtn) confirmDelete('group', parseInt(deleteBtn.closest('.group-box').dataset.groupId));
+            });
+        }
+        function attachDragAndDropListeners() {
+            document.querySelectorAll('.student-tag').forEach(tag => {
+                tag.addEventListener('dragstart', (e) => { state.draggedStudent = e.target; setTimeout(() => e.target.classList.add('dragging'), 0); });
+                tag.addEventListener('dragend', (e) => { e.target.classList.remove('dragging'); state.draggedStudent = null; });
+            });
+            document.querySelectorAll('.drop-zone').forEach(zone => {
+                zone.addEventListener('dragover', (e) => { e.preventDefault(); if (zone.classList.contains('group-box')) zone.classList.add('drag-over'); });
+                zone.addEventListener('dragleave', (e) => { if (zone.classList.contains('group-box')) zone.classList.remove('drag-over'); });
+                zone.addEventListener('drop', (e) => { e.preventDefault(); if (zone.classList.contains('group-box')) zone.classList.remove('drag-over'); handleStudentDrop(e.currentTarget); });
+            });
+        }
+
+        document.getElementById('save-class-btn').onclick = saveClass;
+        document.getElementById('confirm-delete-btn').onclick = executeDelete;
+        document.getElementById('cancel-delete-btn').onclick = closeModal;
+        document.getElementById('add-students-btn').onclick = addStudentsToRoster;
+        document.addEventListener('click', (e) => { 
+            if (e.target.classList.contains('close-btn')) closeModal();
+            if (e.target.id === 'view-scale-btn') openModal('proficiency-modal');
+        });
+        document.addEventListener('input', updateRubricData);
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && state.modalOpen) closeModal(); });
+
+        // Initialization
+        loadState();
+        if (state.classes.length > 0 && !state.activeClass) state.activeClass = state.classes[0].name;
+        render();
+    });
+    </script>
+</body>
+</html>
