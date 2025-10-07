@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>First Year Seminar Spark Planner</title>
+            <style>
+        .loader {
+            display: none;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #3498db;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            animation: spin 2s linear infinite;
+            margin-left: 10px;
+        }
+        .panel.loading .loader { display: block; }
+        .switch-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .panel.processing {
+            border: 1px solid #4285F4;
+            box-shadow: 0 0 5px rgba(66, 133, 244, 0.5);
+        }
+        .input-container {
+            background-color: #e9eef6;
+            border: 1px solid #d0d7e5;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .input-container .panel {
+            background-color: #ffffff;
+        }
+        .input-row {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .input-row .panel {
+            flex: 1;
+        }
+        #planner .panel textarea {
+            min-height: 300px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        body { font-family: sans-serif; margin: 0; padding: 20px; background-color: #f0f2f5; }
+        h1, h2 { text-align: center; }
+        .container { display: flex; flex-direction: column; gap: 20px; }
+        .panel { background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 20px; }
+        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .panel-title { font-size: 1.2em; font-weight: bold; }
+        textarea { width: 100%; min-height: 150px; border: 1px solid #ccc; border-radius: 4px; padding: 10px; font-family: inherit; font-size: 1em; resize: vertical; }
+        button { background-color: #4285F4; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-size: 1em; }
+        button:hover { background-color: #357ae8; }
+        .initial-inputs { display: flex; gap: 20px; margin-bottom: 20px; }
+        .initial-inputs input { flex-grow: 1; padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
+    .markdown-view {
+            display: none;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            text-align: left;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+            margin-left: 10px;
+        }
+        .switch input { 
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .switch span {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .switch span:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + span {
+            background-color: #2196F3;
+        }
+        input:checked + span:before {
+            transform: translateX(26px);
+        }
+    </style>
+</head>
+<body>
+
+    <h1>First Year Seminar Spark Planner</h1>
+
+    <div class="initial-inputs">
+        <input type="password" id="apiKey" placeholder="Enter your Gemini API Key">
+        <button onclick="saveApiKey()">Save Key</button>
+    </div>
+
+    <div class="input-container">
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-title">Number of Classes</div>
+            </div>
+            <input type="number" id="numSessions" value="20">
+        </div>
+        <div class="input-row">
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">Project Context</div>
+                </div>
+                <textarea id="projectContext">We are revising our unit on Mental health and the brain. These are things we have previously done and probably want to include:
+                    
+                Things we want to do:
+When can you trust your brain? Optical illusions, audio tricks (yanny/Laurel) & McGurk effect, false memory,, 
+How does the brain work? Areas of the brain, structures, what do they do
+Stress response, neurotransmitters
+Quiz on brain structures, stress management tools: digital organization/three spaces, journaling, walking/observing/mindfulness (2 days of tools, students choose a workshop)
+Stress management and the teen brain - netflix “the teenage brain” - making a plan for what to do when you are stressed
+Stress management plan - executive functioning - making a plan for keeping yourself from getting stressed
+Depression, intro to Forefront (day 9)
+Two days of Forefront suicide training (right after day 9)
+Anxiety video, end of semester study planner
+Project kickoff - global mental health trends, idea of a mental health space redesign (Sex education clip), empathy step of design cycle looking at global mental health data - what to you notice, wonder?
+Day 2 of empathy step - Youth Truth data, introduce inquiry areas (nature, wellbeing, social, executive functioning)for design project
+Individual research day,  individual design/sketch of space based on research
+Groups getting together to share their individual focus areas and create a group design for their project
+Final design and presentation - roles on designing slides and portions of presentation: visual designer, Copywriter & Presentation Designer, Process Manager
+Presentation prep
+Presentation day
+
+Other things to think about for a driving question: we used to use "when can we trust our brain" as the driving question, but it doesn't really match the rest of the unit very well. 
+We are considering a shift to this:
+
+The brain can do amazing things, and yet it has limitations. Stress response has advantages and disadvantages. The only way to be our best is to understand them both.
+
+When can we make our brain do what we want it to? 
+
+This also leads into a discussion about AI and how it affects our mental health, what it can and can't do, and how careful design can be used in using AI for our own goals.
+
+Do we want some greater student choice, especially around the final project?  Do we lose too much mental health in the design project?  
+Before Sarah we had the students do an inquiry look at mental health issues.  Should there be a more directed mental health edge? Individual proj that leads into the group proj?  Could this help with Knowledge Constructor?
+2. Transition from AI use to Tech impact on student mental health?
+Brain science around tech adaptation?  Evan’s Stanford student could be a neat entry?  Woman who came to MS/ES
+3. Do we want to adjust the guiding question “Can we trust our brain?”
+	What systems do you build for when you’re stressed
+
+We've also considered focusing on the "Knowledge Constructor" standard. The idea is to have students engage with semi-scholarly articles on topics like AI, social media, and mental health. 
+- The goal is for students to find data and talking points from the texts and then participate in a structured discussion, such as a Socratic seminar or Harkness-style conversation.
+
+- This activity is designed to practice communication skills and model how to use research to inform and defend a position.
+
+Assessments need to include: 
+L2 - KnowledgeConstructor(KC) - individual design role and research on the wellness space project
+
+
+L2 - MH - quiz on brain structure
+L2 - MH - mood monitor building
+L3  - MH- stress management plan
+L4  - MH- project slide
+
+L2 - ID - notebook check-in
+L4 - ID - digital process journal
+
+L4 - Collab - project observations
+L2 - process work
+
+
+
+</textarea>
+            </div>
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">Final Product</div>
+                </div>
+                <textarea id="finalProduct">Unit Deliverables: 
+Process Journal for innovative designer - what are you trying to manage your stress and executive functioning?
+Knowledge constructor standard: How are you finding information about mental health, stress?
+How do we leverage design thinking as a way to design solutions to problems?
+
+mental health assessment - a reflection on a stress management plan:
+What’s something in the way that you respond physically and/or emotionally to stress that you want to change or do better? (NOT related to organization)
+What’s something about  the way that you organize, prioritize, make decisions, and/or take risks that you want to change or do better? 
+
+Final Design Challenge 
+How can we design a “wellness space” for the teen brain?
+Students choose a focus area out of nature, wellness, social, and executive functioning, and then combine ideas into a space that improves some aspect of teen mental health.</textarea>
+            </div>
+        </div>
+    </div>
+
+    <div id="planner" class="container">
+
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-title">Agent Sequence</div>
+            </div>
+            <div class="markdown-view" id="agent-sequence-view">
+                <p>The agents run in the following sequence:</p>
+                <ol>
+                    <li><b>TimelineAgent:</b> Generates the initial timeline.</li>
+                    <li><b>DesignCycleAgent:</b> Suggests design cycle activities for each day.</li>
+                    <li><b>AssessmentAgent:</b> Proposes assessments for each day.</li>
+                    <li><b>UnitPlannerAgent:</b> Combines all the information into a cohesive unit plan.</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-title">Timeline</div>
+                <div class="loader" id="timeline-loader"></div>
+                <div class="switch-container">
+                    <span class="switch-label">Edit Mode</span>
+                    <label class="switch"><input type="checkbox" onchange="toggleView(this, 'timeline')"><span></span></label>
+                </div>
+                <button onclick="copyContent('timeline')">Copy</button>
+                <button onclick="runAgents('timeline')">Generate</button>
+            </div>
+            <div class="markdown-view" id="timeline-view"></div>
+            <textarea id="timeline-output"></textarea>
+        </div>
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-title">Design Cycle Activities</div>
+                <div class="loader" id="design-loader"></div>
+                <div class="switch-container">
+                    <span class="switch-label">Edit Mode</span>
+                    <label class="switch"><input type="checkbox" onchange="toggleView(this, 'design')"><span></span></label>
+                </div>
+                <button onclick="copyContent('design')">Copy</button>
+                <button onclick="runAgents('design')">Generate</button>
+            </div>
+            <div class="markdown-view" id="design-view"></div>
+            <textarea id="design-output"></textarea>
+        </div>
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-title">Assessments</div>
+                <div class="loader" id="assessment-loader"></div>
+                <div class="switch-container">
+                    <span class="switch-label">Edit Mode</span>
+                    <label class="switch"><input type="checkbox" onchange="toggleView(this, 'assessment')"><span></span></label>
+                </div>
+                <button onclick="copyContent('assessment')">Copy</button>
+                <button onclick="runAgents('assessment')">Generate</button>
+            </div>
+            <div class="markdown-view" id="assessment-view"></div>
+            <textarea id="assessment-output"></textarea>
+        </div>
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-title">Unit Plan</div>
+                <div class="loader" id="unit-plan-loader"></div>
+                <div class="switch-container">
+                    <span class="switch-label">Edit Mode</span>
+                    <label class="switch"><input type="checkbox" onchange="toggleView(this, 'unit-plan')"><span></span></label>
+                </div>
+                <button onclick="copyContent('unit-plan')">Copy</button>
+                <button onclick="runAgents('unit')">Generate</button>
+            </div>
+            <div class="markdown-view" id="unit-plan-view"></div>
+            <textarea id="unit-plan-output"></textarea>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="fys_proficiency_scales.js"></script>
+    <script src="geminiAgentFramework.js"></script>
+    <script src="gemini.js"></script>
+    <script>
+        const TIMELINE_PROMPT = `You are TimelineAgent. You receive an input with:
+- A project context (brief description)
+- Desired final product
+- Number of class sessions (e.g., 5)
+
+Produce a Markdown list outlining each day/session:
+Day 1: …
+Day 2: …
+...
+Use the context and final product deadline to sequence: introduction, design phases, build, reflection. Think about the time required to instruct a class of tenth graders any new skills they might need, process new information or knowledge, and complete independent tasks. This may also dictate the depth of tasks that might be possible.
+Return only the Markdown outline.`;
+
+        const DESIGN_PROMPT = `You are DesignCycleAgent. You receive:
+- Project context (same as TimelineAgent)
+- Number of class sessions
+- Timeline outline (Markdown with Day 1–Day N)
+- A menu of potential activities based in students reflecting on their own health and use of technology, and in trying new things to better manage both.  This is always in the context of the proficiency scales. This might be trying a new tool and seeing if it works for them. It might also be trying to go to bed 30 minutes earlier and seeing what happens. 
+
+This is in the context of design thinking:   Empathy: reflection, interviewing classmates or family
+  Define: what is the problem we are trying to solve for ourselves? how do we know it is a problem?
+  Ideate: brainstorming ideas, considering different options using technology (or analog solutions)
+  Prototype: building a new system, a new tool, a new habit, implementing a tool
+  Test/Reflect: taking data on how something is going, reflction, making proposals for changes
+
+For each day in the timeline, suggest 1–2 specific activities adapted to this project. Include brief instructions.
+Return only Markdown with headings Day 1–Day N and bullet activities.`;
+
+        const ASSESS_PROMPT = `You are AssessmentAgent, an expert in four FYS proficiency scales: Health, Technology, Collaboration and Knowledge Constructor.
+You receive:
+- Project context
+- Number of class sessions
+- Timeline outline
+- Design-cycle activities per day
+
+For each day, propose:
+- One L1.5 assessment activity connected to one proficiency scale
+- One L2 assessment example (foundational knowledge) for a different scale
+- Optionally, an L3 assessment if it fits (extended, longer tasks)
+Make sure activities align to the given proficiencies. Reference the scale name.
+Return only Markdown with headings Day 1–Day N.`;
+
+        const PROFICIENCY_SCALES = `Proficiency Scales for First Year Seminar course:
+- HEALTH: ${JSON.stringify(fysProficiencyScales.health)}
+- TECHNOLOGY: ${JSON.stringify(fysProficiencyScales.technology)}
+- COLLABORATION: ${JSON.stringify(fysProficiencyScales.collaboration)}
+- KNOWLEDGE_CONSTRUCTOR: ${JSON.stringify(fysProficiencyScales.knowledge_constructor)}
+`;
+
+        const PLAN_PROMPT = `You are UnitPlannerAgent. You receive:
+- Project context and final product description
+- Number of class sessions
+- Timeline outline (Markdown)
+- Design-cycle activities (Markdown)
+- Assessment suggestions (Markdown)
+
+Combine all inputs into a cohesive unit plan in Markdown for clear formatting. You can feel free to override individual elements from other agents for the purpose of a coherent and high quality unit plan that combines the best ideas from each.  
+
+Begin with the project context and output.
+
+Then build a Markdown Table showing the pacing for the full unit.
+
+Then output a day-by-day outline that includes:
+1. Design-cycle activities
+2. Assessment(s) with proficiency references
+3. Sequence of driving questions for segment of the lesson
+4. Time allocations for each activity and stage of the lesson (80-minute block)
+
+Return only that text.`;
+
+        function toggleView(checkbox, name) {
+            const view = document.getElementById(`${name}-view`);
+            const edit = document.getElementById(`${name}-output`);
+            const label = checkbox.parentElement.previousElementSibling;
+            if (checkbox.checked) {
+                view.innerHTML = marked.parse(edit.value);
+                view.style.display = 'block';
+                edit.style.display = 'none';
+                label.textContent = 'Markdown';
+            } else {
+                view.style.display = 'none';
+                edit.style.display = 'block';
+                label.textContent = 'Edit Mode';
+            }
+        }        function copyContent(name) {
+            const content = document.getElementById(`${name}-output`).value;
+            navigator.clipboard.writeText(content).then(() => {
+                alert('Copied to clipboard!');
+            });
+        }
+
+        function showLoader(name) { 
+            const panel = document.getElementById(`${name}-loader`).closest('.panel');
+            panel.classList.add('loading');
+            panel.classList.add('processing');
+        }
+        function hideLoader(name) { 
+            const panel = document.getElementById(`${name}-loader`).closest('.panel');
+            panel.classList.remove('loading');
+            panel.classList.remove('processing');
+        }
+
+        function saveApiKey() {
+            const apiKey = document.getElementById('apiKey').value;
+            if (apiKey) {
+                localStorage.setItem('geminiApiKey', apiKey);
+                alert('API Key saved.');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedKey = localStorage.getItem('geminiApiKey');
+            if (savedKey) {
+                document.getElementById('apiKey').value = savedKey;
+            }
+        });
+
+        const agentManager = new SimpleAgentManager();
+
+        // Define Agent Behaviors
+        const timelineBehavior = async (message, memory) => {
+            showLoader('timeline');
+            const { projectContext, finalProduct, numSessions } = message.content;
+            const prompt = TIMELINE_PROMPT
+                .replace('A project context (brief description)', `"${projectContext}"`)
+                .replace('Desired final product', `"${finalProduct}"`)
+                .replace('Number of class sessions (e.g., 5)', `${numSessions}`);
+            
+            const output = await runGemini(prompt);
+            document.getElementById('timeline-output').value = output;
+            hideLoader('timeline');
+            return { to: 'DesignCycleAgent', content: { ...message.content, timeline: output } };
+        };
+
+        const designBehavior = async (message, memory) => {
+            showLoader('design');
+            const { projectContext, numSessions, timeline } = message.content;
+            const prompt = DESIGN_PROMPT
+                .replace('Project context (same as TimelineAgent)', `"${projectContext}"`)
+                .replace('Number of class sessions', numSessions)
+                .replace('Timeline outline (Markdown with Day 1–Day N)', `the following timeline:\n${timeline}`);
+
+            const output = await runGemini(prompt);
+            document.getElementById('design-output').value = output;
+            hideLoader('design');
+            return { to: 'AssessmentAgent', content: { ...message.content, designActivities: output } };
+        };
+
+        const assessmentBehavior = async (message, memory) => {
+            showLoader('assessment');
+            const { projectContext, numSessions, timeline, designActivities } = message.content;
+            const prompt = `${ASSESS_PROMPT
+                .replace('Project context', `"${projectContext}"`)
+                .replace('Number of class sessions', numSessions)
+                .replace('Timeline outline', `the following timeline:\n${timeline}`)
+                .replace('Design-cycle activities per day', `the following design activities:\n${designActivities}`)}
+
+Here are the proficiency scales to use:
+${PROFICIENCY_SCALES}`;
+
+            const output = await runGemini(prompt);
+            document.getElementById('assessment-output').value = output;
+            hideLoader('assessment');
+            return { to: 'UnitPlannerAgent', content: { ...message.content, assessments: output } };
+        };
+
+        const unitPlannerBehavior = async (message, memory) => {
+            showLoader('unit-plan');
+            const { projectContext, finalProduct, numSessions, timeline, designActivities, assessments } = message.content;
+            const prompt = PLAN_PROMPT
+                .replace('Project context and final product description', `Project Context: "${projectContext}"\nFinal Product: "${finalProduct}"`)
+                .replace('Number of class sessions', numSessions)
+                .replace('Timeline outline (Markdown)', `the following timeline:\n${timeline}`)
+                .replace('Design-cycle activities (Markdown)', `the following design activities:\n${designActivities}`)
+                .replace('Assessment suggestions (Markdown)', `the following assessments:\n${assessments}`);
+
+            const output = await runGemini(prompt);
+            document.getElementById('unit-plan-output').value = output;
+            hideLoader('unit-plan');
+            // End of the chain
+        };
+
+        // Register Agents
+        agentManager.register(new Agent('TimelineAgent', timelineBehavior));
+        agentManager.register(new Agent('DesignCycleAgent', designBehavior));
+        agentManager.register(new Agent('AssessmentAgent', assessmentBehavior));
+        agentManager.register(new Agent('UnitPlannerAgent', unitPlannerBehavior));
+
+        function runAgents(startFrom) {
+            const projectContext = document.getElementById('projectContext').value;
+            const finalProduct = document.getElementById('finalProduct').value;
+            const numSessions = document.getElementById('numSessions').value;
+
+            if (!projectContext || !finalProduct || !numSessions) {
+                alert('Please fill in all initial inputs.');
+                return;
+            }
+
+            const initialContent = { projectContext, finalProduct, numSessions };
+            let startAgent;
+
+            switch(startFrom) {
+                case 'timeline':
+                    startAgent = 'TimelineAgent';
+                    break;
+                case 'design':
+                    startAgent = 'DesignCycleAgent';
+                    initialContent.timeline = document.getElementById('timeline-output').value;
+                    break;
+                case 'assessment':
+                    startAgent = 'AssessmentAgent';
+                    initialContent.timeline = document.getElementById('timeline-output').value;
+                    initialContent.designActivities = document.getElementById('design-output').value;
+                    break;
+                case 'unit':
+                    startAgent = 'UnitPlannerAgent';
+                    initialContent.timeline = document.getElementById('timeline-output').value;
+                    initialContent.designActivities = document.getElementById('design-output').value;
+                    initialContent.assessments = document.getElementById('assessment-output').value;
+                    break;
+            }
+
+            agentManager.startConversation('user', startAgent, initialContent);
+        }
+    </script>
+</body>
+</html>
