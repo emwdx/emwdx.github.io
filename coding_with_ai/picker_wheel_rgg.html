@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classroom Picker Wheel</title>
+    
+    <!-- Bootstrap CSS & Icons for styling -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+    <!-- Google Fonts for the new theme -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- New Theme Variables from Provided CSS --- */
+        :root {
+            --primary: #c5eab2;
+            --primary-light: #eafce2;
+            --primary-darker: #89be6d;
+            --box-bg-color: #f4f3e8;
+            --alert-color: #dc3545; /* Using Bootstrap's danger red for consistency */
+        }
+
+        body {
+            background-color: var(--box-bg-color);
+            font-family: 'Inter', sans-serif;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin-top: 2rem;
+        }
+
+        /* --- Component Restyling --- */
+        .card {
+            background-color: #fff;
+            border-radius: 15px;
+            border: 1px solid #e0e0e0;
+            padding: 10px;
+            box-shadow: none !important; 
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: #000;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            padding: 12px 30px;
+        }
+        .btn-primary:hover, .btn-primary:active {
+            background-color: var(--primary) !important;
+            color: #000 !important;
+            opacity: 0.8;
+            border: none;
+        }
+        .btn-secondary {
+            border-radius: 50px;
+            font-weight: 600;
+            padding: 12px 30px;
+        }
+        .btn-outline-secondary, .btn-outline-danger {
+            border-color: #ced4da;
+        }
+
+        .form-control, .form-select {
+            background-color: var(--primary-light);
+            border: 1px solid var(--primary);
+            font-weight: 400;
+        }
+        .form-control:focus, .form-select:focus {
+            background-color: var(--primary-light);
+            border-color: var(--primary-darker);
+            box-shadow: none;
+        }
+        input.form-control {
+            border-radius: 50px;
+            height: 45px;
+        }
+        textarea.form-control {
+            border-radius: 15px;
+        }
+        select.form-select {
+            border-radius: 50px;
+            height: 45px;
+        }
+
+        /* --- Wheel Specific Styles --- */
+        .wheel-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+        }
+        #wheelCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .pointer {
+            position: absolute;
+            top: 50%;
+            right: 0; /* Placed inside */
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-top: 20px solid transparent;
+            border-bottom: 20px solid transparent;
+            border-right: 30px solid var(--alert-color); /* Points left (inward) */
+            z-index: 10;
+        }
+        #spinBtn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            z-index: 10;
+            background-color: #fff;
+            border: 5px solid #212529;
+            color: #212529;
+        }
+        #resultDisplay {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #e9ecef;
+            border-radius: 15px;
+            text-align: center;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+        textarea {
+            resize: vertical;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container main-container">
+        <header class="text-center mb-4">
+            <h1>Classroom Picker Wheel</h1>
+            <p class="lead">Create and manage lists for different classes.</p>
+        </header>
+
+        <div class="row g-4">
+            <!-- Left Column: List Management -->
+            <div class="col-lg-5 d-flex flex-column gap-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">1. Manage Lists</h5>
+                        
+                        <div class="mb-3">
+                            <label for="listSelector" class="form-label">Select a Class List:</label>
+                            <div class="input-group">
+                                <select class="form-select" id="listSelector"></select>
+                                <button class="btn btn-outline-secondary" type="button" id="newListBtn" title="New List"><i class="bi bi-plus-lg"></i></button>
+                                <button class="btn btn-outline-danger" type="button" id="deleteListBtn" title="Delete Current List"><i class="bi bi-trash"></i></button>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="listNameInput" class="form-label">List Name</label>
+                            <input type="text" class="form-control" id="listNameInput" placeholder="e.g., Block F">
+                        </div>
+                        <div class="mb-3">
+                            <label for="namesTextarea" class="form-label">Student Names (one per line)</label>
+                            <textarea class="form-control" id="namesTextarea" rows="10" placeholder="*Rob\n*Evan\n*Thomas\n..."></textarea>
+                        </div>
+                        <button class="btn btn-primary w-100" id="saveListBtn">Save Current List</button>
+                         <div id="saveFeedback" class="form-text text-success mt-2"></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">2. Wheel Options</h5>
+                        <div class="form-check form-switch mb-3 p-3">
+                            <input class="form-check-input" type="checkbox" role="switch" id="removeStudentSwitch" style="height: 1.25em; width: 2.5em;">
+                            <label class="form-check-label ps-2" for="removeStudentSwitch">Remove selected student</label>
+                        </div>
+                        <button class="btn btn-secondary w-100" id="resetWheelBtn" disabled>Reset Wheel</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: The Wheel -->
+            <div class="col-lg-7">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">3. Spin to Select!</h5>
+                        <div class="wheel-container mx-auto" style="max-width: 550px;">
+                            <canvas id="wheelCanvas"></canvas>
+                            <div class="pointer"></div>
+                            <button id="spinBtn">SPIN</button>
+                        </div>
+                         <div id="resultDisplay" class="mt-4">
+                            <h3 id="resultText" class="mb-0 fw-normal">Ready to spin!</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer class="text-center text-muted mt-5 mb-3">
+            <p>A single-file application built with HTML, CSS, and JavaScript.</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const canvas = document.getElementById('wheelCanvas');
+            const ctx = canvas.getContext('2d');
+            const spinBtn = document.getElementById('spinBtn');
+            const resultText = document.getElementById('resultText');
+            const listSelector = document.getElementById('listSelector');
+            const newListBtn = document.getElementById('newListBtn');
+            const deleteListBtn = document.getElementById('deleteListBtn');
+            const listNameInput = document.getElementById('listNameInput');
+            const namesTextarea = document.getElementById('namesTextarea');
+            const saveListBtn = document.getElementById('saveListBtn');
+            const saveFeedback = document.getElementById('saveFeedback');
+            const removeStudentSwitch = document.getElementById('removeStudentSwitch');
+            const resetWheelBtn = document.getElementById('resetWheelBtn');
+            const wheelContainer = document.querySelector('.wheel-container');
+            
+            let allLists = {};
+            let currentListName = '';
+            let namesOnWheel = [];
+            let allNamesForCurrentList = [];
+            
+            let currentAngle = 0;
+            let spinVelocity = 0;
+            let isSpinning = false;
+            const friction = 0.988;
+            const minSpinVelocity = 0.002;
+
+            // New color palette from the provided CSS for group boxes
+            const colors = ['#ff5f5f', '#625fff', '#5fff6f', '#ffbf5f', '#03af8d', '#bdf', '#004b93', '#45a3ff', '#578a57', '#6e5ef8', '#69093e', '#72e268', '#ab68e2', '#710ac5'];
+            
+            const resizeCanvas = () => {
+                const size = wheelContainer.getBoundingClientRect().width;
+                if (size > 0) {
+                    canvas.width = size;
+                    canvas.height = size;
+                    drawWheel();
+                }
+            };
+
+            const drawWheel = () => {
+                const numNames = namesOnWheel.length;
+                if (numNames === 0) {
+                    drawPlaceholderWheel();
+                    return;
+                }
+                
+                const arcSize = (2 * Math.PI) / numNames;
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+                const radius = centerX - 10;
+                const fontSize = Math.max(12, Math.min(18, radius / 15));
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.save();
+                ctx.translate(centerX, centerY);
+                ctx.rotate(currentAngle);
+
+                for (let i = 0; i < numNames; i++) {
+                    const angle = i * arcSize;
+                    
+                    ctx.beginPath();
+                    ctx.fillStyle = colors[i % colors.length];
+                    ctx.moveTo(0, 0);
+                    ctx.arc(0, 0, radius, angle, angle + arcSize);
+                    ctx.closePath();
+                    ctx.fill();
+
+                    ctx.save();
+                    ctx.fillStyle = "white";
+                    ctx.font = `bold ${fontSize}px 'Inter', sans-serif`;
+                    ctx.rotate(angle + arcSize / 2);
+                    ctx.textAlign = "right";
+                    ctx.textBaseline = "middle";
+                    
+                    const displayName = namesOnWheel[i].length > 15 ? namesOnWheel[i].substring(0, 12) + "..." : namesOnWheel[i];
+                    ctx.fillText(displayName, radius - 15, 0);
+                    ctx.restore();
+                }
+                ctx.restore();
+            };
+
+            const drawPlaceholderWheel = () => {
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+                if (!centerX) return;
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#e9ecef';
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, centerX - 10, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.fillStyle = '#6c757d';
+                ctx.font = "20px 'Inter', sans-serif";
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('Select or create a list', centerX, centerY - 20);
+                ctx.fillText('to populate the wheel!', centerX, centerY + 20);
+            };
+
+            const startSpin = () => {
+                if (isSpinning || namesOnWheel.length < 2) return;
+                isSpinning = true;
+                spinBtn.disabled = true;
+                resultText.textContent = "Spinning...";
+                spinVelocity = Math.random() * 0.2 + 0.3; 
+                updateSpin();
+            };
+
+            const updateSpin = () => {
+                currentAngle += spinVelocity;
+                spinVelocity *= friction;
+                drawWheel();
+
+                if (spinVelocity > minSpinVelocity) {
+                    requestAnimationFrame(updateSpin);
+                } else {
+                    isSpinning = false;
+                    determineWinner();
+                }
+            };
+            
+            const determineWinner = () => {
+                const numNames = namesOnWheel.length;
+                const arcSize = (2 * Math.PI) / numNames;
+                const finalAngle = currentAngle % (2 * Math.PI);
+                const pointerAngle = (2 * Math.PI - finalAngle) % (2 * Math.PI);
+                const winnerIndex = Math.floor(pointerAngle / arcSize);
+                
+                const winnerName = namesOnWheel[winnerIndex];
+                resultText.innerHTML = `🎊 <strong>${winnerName}</strong> is selected! 🎉`;
+
+                if (removeStudentSwitch.checked) {
+                    setTimeout(() => {
+                        namesOnWheel.splice(winnerIndex, 1);
+                        drawWheel();
+                        updateUIState();
+                    }, 1500);
+                } else {
+                    updateUIState();
+                }
+            };
+
+            const initializeApp = () => {
+                const savedLists = localStorage.getItem('pickerWheelLists');
+                allLists = savedLists ? JSON.parse(savedLists) : {};
+                currentListName = localStorage.getItem('pickerWheelLastList') || '';
+                
+                populateListDropdown();
+                
+                if (currentListName && allLists[currentListName]) {
+                    listSelector.value = currentListName;
+                    loadList(currentListName);
+                } else if (Object.keys(allLists).length > 0) {
+                    const firstListName = Object.keys(allLists)[0];
+                    listSelector.value = firstListName;
+                    loadList(firstListName);
+                } else {
+                    loadList(null);
+                }
+            };
+            
+            const populateListDropdown = () => {
+                listSelector.innerHTML = '';
+                const listNames = Object.keys(allLists);
+                if (listNames.length === 0) {
+                    const option = document.createElement('option');
+                    option.textContent = 'No lists yet...';
+                    option.disabled = true;
+                    listSelector.appendChild(option);
+                } else {
+                    listNames.sort().forEach(name => {
+                        const option = document.createElement('option');
+                        option.value = name;
+                        option.textContent = name;
+                        listSelector.appendChild(option);
+                    });
+                }
+            };
+            
+            const loadList = (listName) => {
+                if (listName && allLists[listName]) {
+                    currentListName = listName;
+                    allNamesForCurrentList = [...allLists[listName]];
+                    listNameInput.value = listName;
+                    namesTextarea.value = allNamesForCurrentList.join('\n');
+                } else {
+                    currentListName = '';
+                    allNamesForCurrentList = [];
+                    listNameInput.value = '';
+                    namesTextarea.value = '';
+                }
+                localStorage.setItem('pickerWheelLastList', currentListName);
+                resetWheel();
+            };
+
+            const saveCurrentList = () => {
+                const newName = listNameInput.value.trim();
+                const namesFromText = namesTextarea.value.split('\n').map(name => name.trim()).filter(name => name);
+                
+                if (!newName) {
+                    alert("Please provide a name for the list.");
+                    return false;
+                }
+                
+                if (currentListName && currentListName !== newName) {
+                    delete allLists[currentListName];
+                }
+
+                allLists[newName] = namesFromText;
+                currentListName = newName;
+                
+                localStorage.setItem('pickerWheelLists', JSON.stringify(allLists));
+                localStorage.setItem('pickerWheelLastList', currentListName);
+
+                showFeedback('List saved successfully!');
+                
+                populateListDropdown();
+                listSelector.value = currentListName;
+                allNamesForCurrentList = [...namesFromText];
+                resetWheel();
+                return true;
+            };
+
+            const handleNewList = () => {
+                const newListName = prompt("Enter a name for the new list:", "New Class " + (Object.keys(allLists).length + 1));
+                if (newListName && !allLists[newListName]) {
+                    listNameInput.value = newListName;
+                    namesTextarea.value = '';
+                    saveCurrentList();
+                } else if (newListName && allLists[newListName]) {
+                    alert("A list with that name already exists.");
+                }
+            };
+
+            const handleDeleteList = () => {
+                if (!currentListName) {
+                    alert("No list selected to delete.");
+                    return;
+                }
+                if (confirm(`Are you sure you want to delete the list "${currentListName}"? This cannot be undone.`)) {
+                    delete allLists[currentListName];
+                    localStorage.setItem('pickerWheelLists', JSON.stringify(allLists));
+                    localStorage.removeItem('pickerWheelLastList');
+                    initializeApp();
+                }
+            };
+
+            const resetWheel = () => {
+                namesOnWheel = [...allNamesForCurrentList];
+                resultText.textContent = 'Ready to spin!';
+                updateUIState();
+                drawWheel();
+            };
+
+            const updateUIState = () => {
+                const canSpin = !isSpinning && namesOnWheel.length > 0;
+                spinBtn.disabled = !canSpin;
+                const isWheelPristine = namesOnWheel.length === allNamesForCurrentList.length && allNamesForCurrentList.length > 0;
+                resetWheelBtn.disabled = isWheelPristine;
+                deleteListBtn.disabled = !currentListName;
+            };
+            
+            const showFeedback = (message) => {
+                saveFeedback.textContent = message;
+                setTimeout(() => saveFeedback.textContent = '', 3000);
+            };
+
+            // --- EVENT LISTENERS & INITIALIZATION ---
+            
+            const observer = new ResizeObserver(resizeCanvas);
+            observer.observe(wheelContainer);
+
+            spinBtn.addEventListener('click', startSpin);
+            saveListBtn.addEventListener('click', saveCurrentList);
+            listSelector.addEventListener('change', (e) => loadList(e.target.value));
+            newListBtn.addEventListener('click', handleNewList);
+            deleteListBtn.addEventListener('click', handleDeleteList);
+            resetWheelBtn.addEventListener('click', resetWheel);
+            
+            initializeApp();
+        });
+    </script>
+</body>
+</html>
