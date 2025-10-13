@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>micro:bit Motor Driver Guide</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f4f7f6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3 {
+            color: #005A9C;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+        }
+        h1 {
+            text-align: center;
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        .intro {
+            text-align: center;
+            font-size: 1.1em;
+            color: #555;
+            margin-bottom: 25px;
+        }
+        .tab {
+            overflow: hidden;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+            border-radius: 5px 5px 0 0;
+        }
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 17px;
+            width: 50%;
+        }
+        .tab button:hover {
+            background-color: #ddd;
+        }
+        .tab button.active {
+            background-color: #007BFF;
+            color: white;
+        }
+        .tabcontent {
+            display: none;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-top: none;
+            border-radius: 0 0 5px 5px;
+            background-color: #ffffff;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .board-image {
+            display: block;
+            max-width: 350px;
+            height: auto;
+            margin: 20px auto;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        pre {
+            background-color: #2d2d2d;
+            color: #f1f1f1;
+            padding: 20px;
+            border-radius: 5px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            position: relative;
+        }
+        code {
+            font-family: "Courier New", Courier, monospace;
+            font-size: 0.95em;
+        }
+        .copy-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        .copy-button:hover {
+            background-color: #45a049;
+        }
+        .warning {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border: 1px solid #ffeeba;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .warning strong {
+            font-weight: bold;
+        }
+        ul, ol {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Controlling a DC Motor with the micro:bit</h1>
+    <p class="intro">
+        This guide will walk you through controlling a DC motor using your micro:bit and an external power supply. We will cover two common motor driver boards. Choose the tab below that matches the board you are using.
+    </p>
+
+    <div class="tab">
+        <button class="tablinks" onclick="openBoard(event, 'Adafruit')" id="defaultOpen">Adafruit Motor Shield (Blue)</button>
+        <button class="tablinks" onclick="openBoard(event, 'L298N')">L298N Motor Driver (Red)</button>
+    </div>
+
+    <!-- Adafruit Motor Shield Tab Content -->
+    <div id="Adafruit" class="tabcontent">
+        <h2>Adafruit-design Motor Shield (L293D)</h2>
+        <p>This blue board is an "Arduino Shield," meaning it's designed to stack perfectly on an Arduino. We can still use it with our micro:bit, but it requires more careful wiring because it uses a special chip (a 74HC595 Shift Register) to control the motors.</p>
+
+        <!-- Image Placeholder -->
+        <img src="motor_shield.png" alt="Motor Shield" class="board-image">
+
+        <h3>1. Hardware Setup & Wiring</h3>
+        <p>Follow these steps carefully. Incorrect wiring is the most common reason for this shield not working.</p>
+        
+        <div class="warning">
+            <strong>Critical Step:</strong> This board needs two separate power connections. One for the motors (<strong>Motor Power</strong>) and one for the computer chips on the board (<strong>Logic Power</strong>). We MUST keep them separate by removing the power jumper.
+        </div>
+
+        <ol>
+            <li><strong>Remove the Power Jumper:</strong> Find the small plastic jumper next to the blue motor power terminal. Pull it off and put it somewhere safe. This separates the motor power from the logic power.</li>
+            <li><strong>Connect Motor Power:</strong> Use the blue screw terminal labeled `power`. Connect your external power supply (wall wart or battery pack) here.
+                <ul>
+                    <li>Positive (+) wire to the `+` terminal.</li>
+                    <li>Negative (-) / Ground wire to the `GND` terminal.</li>
+                </ul>
+            </li>
+            <li><strong>Connect Logic Power & Control Wires:</strong> This is the tricky part! You need to connect <strong>seven</strong> wires from your micro:bit (via an expansion board) to the header pins on the shield.</li>
+        </ol>
+
+        <h4>Wiring Table: micro:bit to Adafruit Shield</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>From (micro:bit)</th>
+                    <th>Pin</th>
+                    <th>Connects To</th>
+                    <th>To (Adafruit Shield)</th>
+                    <th>Pin</th>
+                    <th>Purpose</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>micro:bit</td>
+                    <td><b>GND</b></td>
+                    <td>&rarr;</td>
+                    <td>Adafruit Shield</td>
+                    <td><b>GND</b> (in power block)</td>
+                    <td><strong>Common Ground (Essential!)</strong></td>
+                </tr>
+                 <tr>
+                    <td>micro:bit</td>
+                    <td><b>3V</b></td>
+                    <td>&rarr;</td>
+                    <td>Adafruit Shield</td>
+                    <td><b>5v</b> (in power block)</td>
+                    <td>Logic Power for the shield's chips</td>
+                </tr>
+                <tr>
+                    <td>micro:bit</td>
+                    <td><b>Pin 1</b></td>
+                    <td>&rarr;</td>
+                    <td>Adafruit Shield</td>
+                    <td>Digital I/O <b>Pin 11</b></td>
+                    <td>Motor 1 Speed (PWM)</td>
+                </tr>
+                <tr>
+                    <td>micro:bit</td>
+                    <td><b>Pin 8</b></td>
+                    <td>&rarr;</td>
+                    <td>Adafruit Shield</td>
+                    <td>Digital I/O <b>Pin 8</b></td>
+                    <td>Shift Register Data</td>
+                </tr>
+                <tr>
+                    <td>micro:bit</td>
+                    <td><b>Pin 12</b></td>
+                    <td>&rarr;</td>
+                    <td>Adafruit Shield</td>
+                    <td>Digital I/O <b>Pin 12</b></td>
+                    <td>Shift Register Latch</td>
+                </tr>
+                 <tr>
+                    <td>micro:bit</td>
+                    <td><b>Pin 13</b></td>
+                    <td>&rarr;</td>
+                    <td>Adafruit Shield</td>
+                    <td>Digital I/O <b>Pin 4</b></td>
+                    <td>Shift Register Clock</td>
+                </tr>
+                <tr>
+                    <td>micro:bit</td>
+                    <td><b>Pin 14</b></td>
+                    <td>&rarr;</td>
+                    <td>Adafruit Shield</td>
+                    <td>Digital I/O <b>Pin 7</b></td>
+                    <td>Motor Enable</td>
+                </tr>
+            </tbody>
+        </table>
+
+         <h4>Wiring Table: Power & Motor</h4>
+        <table>
+             <thead>
+                <tr>
+                    <th>Component</th>
+                    <th>Terminal</th>
+                    <th>Connects To</th>
+                    <th>Component</th>
+                    <th>Terminal</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>External Power Supply</td>
+                    <td>Positive (+)</td>
+                     <td>&rarr;</td>
+                    <td>Adafruit Shield</td>
+                    <td>'+' on Power Screw Terminal</td>
+                </tr>
+                 <tr>
+                    <td>External Power Supply</td>
+                    <td>Negative (-)</td>
+                     <td>&rarr;</td>
+                    <td>Adafruit Shield</td>
+                    <td>'GND' on Power Screw Terminal</td>
+                </tr>
+                <tr>
+                    <td>DC Motor</td>
+                    <td>Wire 1</td>
+                    <td>&rarr;</td>
+                    <td>Adafruit Shield</td>
+                    <td>One of the 'M1' terminals</td>
+                </tr>
+                 <tr>
+                    <td>DC Motor</td>
+                    <td>Wire 2</td>
+                    <td>&rarr;</td>
+                    <td>Adafruit Shield</td>
+                    <td>The other 'M1' terminal</td>
+                </tr>
+            </tbody>
+        </table>
+
+
+        <h3>2. The Code</h3>
+        <p>This code is more complex because it has to communicate with the shift register chip. Copy and paste this entire script into Mu Editor.</p>
+        <pre><button class="copy-button" onclick="copyCode(this)">Copy Code</button><code># MicroPython script for micro:bit with an Adafruit-style Motor Shield (L293D)
+from microbit import *
+
+# --- PIN DEFINITIONS for Adafruit Shield ---
+MOTOR_M1_PWM = pin1      # Speed control for Motor 1
+MOTOR_DATA = pin8        # Data pin for the shift register
+MOTOR_LATCH = pin12      # Latch pin for the shift register
+MOTOR_CLK = pin13        # Clock pin for the shift register
+MOTOR_ENABLE = pin14     # Master enable for all motors
+
+# --- LOW-LEVEL SHIFT REGISTER VARIABLES & FUNCTIONS ---
+# These bits control the direction pins for motor M1 on the shield
+M1_A = 2
+M1_B = 3
+
+# This variable stores the 8-bit state we want to send to the shift register
+latch_state = 0
+
+def update_latch():
+    """Sends the current latch_state byte to the 74HC595 shift register."""
+    MOTOR_LATCH.write_digital(0)
+    MOTOR_DATA.write_digital(0)
+    # Send the 8 bits one by one
+    for i in range(8):
+        MOTOR_CLK.write_digital(0)
+        # Get the next bit to send (from left to right)
+        bit = (latch_state >> (7 - i)) & 1
+        MOTOR_DATA.write_digital(bit)
+        MOTOR_CLK.write_digital(1)
+    # Latch the data to make it appear on the output pins
+    MOTOR_LATCH.write_digital(1)
+
+def set_pin(pin, value):
+    """Sets a 'virtual' pin on the shift register high (1) or low (0)."""
+    global latch_state
+    if value == 1:
+        latch_state |= (1 << pin)  # Set the bit
+    else:
+        latch_state &= ~(1 << pin) # Clear the bit
+    update_latch() # Send the new state to the shield
+
+# --- MOTOR CONTROL FUNCTION LIBRARY ---
+
+def motor_setup():
+    """Initializes the pins for the motor shield."""
+    MOTOR_M1_PWM.write_analog(0)
+    # IMPORTANT: The MOTOR_ENABLE pin must be LOW to turn the drivers ON.
+    # It's an "active-low" pin.
+    MOTOR_ENABLE.write_digital(0)
+    update_latch()
+
+def motor_stop():
+    """Stops Motor M1 by setting both direction pins to low."""
+    set_pin(M1_A, 0)
+    set_pin(M1_B, 0)
+    MOTOR_M1_PWM.write_analog(0)
+
+def motor_forward(power):
+    """Runs Motor M1 forward at a specified power level (0-1023)."""
+    if 0 <= power <= 1023:
+        set_pin(M1_A, 1) # Set direction pin A high
+        set_pin(M1_B, 0) # Set direction pin B low
+        MOTOR_M1_PWM.write_analog(power) # Set the speed
+    else:
+        motor_stop()
+
+def motor_backward(power):
+    """Runs Motor M1 backward at a specified power level (0-1023)."""
+    if 0 <= power <= 1023:
+        set_pin(M1_A, 0) # Set direction pin A low
+        set_pin(M1_B, 1) # Set direction pin B high
+        MOTOR_M1_PWM.write_analog(power) # Set the speed
+    else:
+        motor_stop()
+
+# --- MAIN PROGRAM ---
+motor_setup()
+print("Starting motor sequence. Press button A.")
+display.show("A")
+
+while True:
+    if button_a.is_pressed():
+        # Step 1: Full speed forward for 2 seconds
+        print("Motor forward at full power...")
+        display.show(Image.ARROW_N)
+        motor_forward(1023)
+        sleep(2000)
+        motor_stop()
+        
+        # Step 2: Wait for 1 second
+        sleep(1000)
+
+        # Step 3: Half speed backward for 3 seconds
+        print("Motor backward at half power...")
+        display.show(Image.ARROW_S)
+        motor_backward(512)
+        sleep(3000)
+        motor_stop()
+        
+        # Step 4: Wait for 1 second
+        sleep(1000)
+
+        print("Sequence complete. Press A to run again.")
+        display.show("A")
+</code></pre>
+        <h3>3. How to Run</h3>
+        <ol>
+            <li>Connect your micro:bit to your computer.</li>
+            <li>Open Mu Editor.</li>
+            <li>Copy the code above and paste it into a new file in Mu.</li>
+            <li>Click the "Flash" button to send the code to your micro:bit.</li>
+            <li>Plug in your external power supply for the motors.</li>
+            <li>The micro:bit display should show the letter "A". Press button A on the micro:bit to start the motor sequence!</li>
+        </ol>
+
+        <h3>4. Troubleshooting</h3>
+        <ul>
+            <li><strong>Motor doesn't move at all?</strong>
+                <ul>
+                    <li>Check the <strong>common ground</strong> wire between the micro:bit and the shield. This is the #1 most common problem!</li>
+                    <li>Is the external motor power supply turned on?</li>
+                    <li>Did you <strong>remove the power jumper</strong>? If it's still on, it won't work.</li>
+                    <li>Carefully double-check all 7 of the control and power wires from the micro:bit to the shield. It's very easy to get one in the wrong spot.</li>
+                </ul>
+            </li>
+            <li><strong>Motor only hums or twitches?</strong>
+                 <ul>
+                    <li>Your external power supply might not be providing enough voltage or current. Check that it is between 6V and 12V.</li>
+                    <li>The micro:bit outputs 3.3V signals, but this shield was designed for 5V signals. Usually it works, but sometimes it can be unreliable.</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <!-- L298N Motor Driver Tab Content -->
+    <div id="L298N" class="tabcontent">
+        <h2>L298N Motor Driver (Red Board)</h2>
+        <p>This red board is a very common and simple motor driver. It uses an L298N "H-Bridge" chip, which acts like a set of electronic switches to control the direction and speed of two DC motors.</p>
+
+        <!-- Image Placeholder -->
+        <img src="LM293N.png" alt="L298N Motor Driver" class="board-image">
+
+        <h3>1. Hardware Setup & Wiring</h3>
+        <p>This board is simpler to wire than the Adafruit shield. Follow these steps carefully.</p>
+
+        <div class="warning">
+            <strong>Important Jumper:</strong> This board has a jumper that controls motor speed. For our code to work correctly and allow us to control the speed, <strong>you must remove this jumper</strong>.
+        </div>
+
+        <ol>
+            <li><strong>Remove the Speed Control Jumper:</strong> Look for a small plastic jumper on the 3 pins labeled `ENA` (or sometimes `5V_EN`). Pull it off and put it somewhere safe. This allows our micro:bit to control the motor speed.</li>
+            <li><strong>Connect Motor Power:</strong> Use the blue screw terminal on the left. Connect your external power supply (wall wart or battery pack) here.
+                <ul>
+                    <li>Positive (+) wire to the `+12V` terminal.</li>
+                    <li>Negative (-) / Ground wire to the `GND` terminal.</li>
+                </ul>
+            </li>
+            <li><strong>Connect the micro:bit and Motor:</strong> Now, connect the control wires from your micro:bit and the motor wires to the board.</li>
+        </ol>
+
+        <h4>Wiring Table: micro:bit, Power, and Motor to L298N</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>From</th>
+                    <th>Pin / Terminal</th>
+                    <th>Connects To</th>
+                    <th>To (L298N)</th>
+                    <th>Pin / Terminal</th>
+                    <th>Purpose</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>micro:bit</td>
+                    <td><b>GND</b></td>
+                    <td>&rarr;</td>
+                    <td>L298N Board</td>
+                    <td><b>GND</b> (Power Terminal)</td>
+                    <td><strong>Common Ground (Essential!)</strong></td>
+                </tr>
+                <tr>
+                    <td>micro:bit</td>
+                    <td><b>Pin 0</b></td>
+                    <td>&rarr;</td>
+                    <td>L298N Board</td>
+                    <td><b>IN1</b></td>
+                    <td>Direction Control 1</td>
+                </tr>
+                <tr>
+                    <td>micro:bit</td>
+                    <td><b>Pin 1</b></td>
+                    <td>&rarr;</td>
+                    <td>L298N Board</td>
+                    <td><b>IN2</b></td>
+                    <td>Direction Control 2</td>
+                </tr>
+                <tr>
+                    <td>micro:bit</td>
+                    <td><b>Pin 2</b></td>
+                    <td>&rarr;</td>
+                    <td>L298N Board</td>
+                    <td><b>ENA</b></td>
+                    <td>Speed Control (PWM)</td>
+                </tr>
+                <tr>
+                    <td>External Power Supply</td>
+                    <td>Positive (+)</td>
+                    <td>&rarr;</td>
+                    <td>L298N Board</td>
+                    <td><b>+12V</b></td>
+                    <td>Motor Power Input</td>
+                </tr>
+                <tr>
+                    <td>External Power Supply</td>
+                    <td>Negative (-)</td>
+                    <td>&rarr;</td>
+                    <td>L298N Board</td>
+                    <td><b>GND</b></td>
+                    <td>Motor Power Ground</td>
+                </tr>
+                <tr>
+                    <td>DC Motor</td>
+                    <td>Wire 1</td>
+                    <td>&rarr;</td>
+                    <td>L298N Board</td>
+                    <td><b>OUT1</b></td>
+                    <td>Motor A Output</td>
+                </tr>
+                <tr>
+                    <td>DC Motor</td>
+                    <td>Wire 2</td>
+                    <td>&rarr;</td>
+                    <td>L298N Board</td>
+                    <td><b>OUT2</b></td>
+                    <td>Motor A Output</td>
+                </tr>
+            </tbody>
+        </table>
+        <p><strong>Note:</strong> If your motor spins in the wrong direction, just swap the `OUT1` and `OUT2` wires.</p>
+
+        <h3>2. The Code</h3>
+        <p>This code is much simpler because we are directly controlling the pins on the L298N. Copy and paste this entire script into Mu Editor.</p>
+        <pre><button class="copy-button" onclick="copyCode(this)">Copy Code</button><code># MicroPython script for micro:bit with an L298N Motor Driver
+from microbit import *
+
+# --- PIN DEFINITIONS for L298N ---
+# Pin 2 will control speed using Pulse-Width Modulation (PWM)
+MOTOR_SPEED_PIN = pin2
+# Pins 0 and 1 will control the direction
+MOTOR_DIRECTION_PIN_1 = pin0
+MOTOR_DIRECTION_PIN_2 = pin1
+
+
+# --- MOTOR CONTROL FUNCTION LIBRARY ---
+
+def motor_forward(power):
+    """
+    Spins the motor forward.
+    'power' is a value from 0 (off) to 1023 (full speed).
+    """
+    # Set the direction pins for forward motion
+    MOTOR_DIRECTION_PIN_1.write_digital(1)
+    MOTOR_DIRECTION_PIN_2.write_digital(0)
+    # Set the speed
+    MOTOR_SPEED_PIN.write_analog(power)
+
+def motor_backward(power):
+    """
+    Spins the motor backward.
+    'power' is a value from 0 (off) to 1023 (full speed).
+    """
+    # Set the direction pins for backward motion
+    MOTOR_DIRECTION_PIN_1.write_digital(0)
+    MOTOR_DIRECTION_PIN_2.write_digital(1)
+    # Set the speed
+    MOTOR_SPEED_PIN.write_analog(power)
+
+def motor_stop():
+    """Stops the motor completely (coast)."""
+    MOTOR_DIRECTION_PIN_1.write_digital(0)
+    MOTOR_DIRECTION_PIN_2.write_digital(0)
+    MOTOR_SPEED_PIN.write_analog(0)
+
+# --- MAIN PROGRAM ---
+# This is where you can experiment by calling the functions.
+
+print("Starting motor sequence. Press button A.")
+display.show("A")
+
+while True:
+    if button_a.is_pressed():
+        # Step 1: Full speed forward for 2 seconds
+        print("Motor forward at full power...")
+        display.show(Image.ARROW_N)
+        motor_forward(1023)
+        sleep(2000)
+        motor_stop()
+        
+        # Step 2: Wait for 1 second
+        sleep(1000)
+
+        # Step 3: Half speed backward for 3 seconds
+        print("Motor backward at half power...")
+        display.show(Image.ARROW_S)
+        motor_backward(512)
+        sleep(3000)
+        motor_stop()
+        
+        # Step 4: Wait for 1 second
+        sleep(1000)
+
+        print("Sequence complete. Press A to run again.")
+        display.show("A")
+</code></pre>
+
+        <h3>3. How to Run</h3>
+        <ol>
+            <li>Connect your micro:bit to your computer.</li>
+            <li>Open Mu Editor.</li>
+            <li>Copy the code above and paste it into a new file in Mu.</li>
+            <li>Click the "Flash" button to send the code to your micro:bit.</li>
+            <li>Plug in your external power supply for the motors.</li>
+            <li>The micro:bit display should show the letter "A". Press button A on the micro:bit to start the motor sequence!</li>
+        </ol>
+
+        <h3>4. Troubleshooting</h3>
+        <ul>
+            <li><strong>Motor doesn't move at all?</strong>
+                <ul>
+                    <li>Check the <strong>common ground</strong> wire between the micro:bit's GND pin and the L298N's GND terminal. This is the #1 most common problem!</li>
+                    <li>Is the external motor power supply turned on?</li>
+                    <li>Did you <strong>remove the ENA jumper</strong>? If you left it on, Pin 2 won't be able to control the speed.</li>
+                    <li>Double-check that your wires are connected to IN1, IN2, and ENA.</li>
+                </ul>
+            </li>
+            <li><strong>Motor only runs at full speed?</strong>
+                 <ul>
+                    <li>You probably forgot to remove the ENA jumper!</li>
+                 </ul>
+            </li>
+             <li><strong>Motor only hums or twitches?</strong>
+                 <ul>
+                    <li>Your external power supply might not be providing enough voltage or current. Make sure it is at least 6V.</li>
+                </ul>
+            </li>
+        </ul>
+
+    </div>
+</div>
+
+<script>
+function openBoard(evt, boardName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(boardName).style.display = "block";
+    evt.currentTarget.className += " active";
+}
+
+// Get the element with id="defaultOpen" and click on it
+document.getElementById("defaultOpen").click();
+
+function copyCode(buttonElement) {
+    const pre = buttonElement.parentElement;
+    const code = pre.querySelector('code');
+    const text = code.innerText;
+
+    navigator.clipboard.writeText(text).then(function() {
+        buttonElement.innerText = 'Copied!';
+        setTimeout(function() {
+            buttonElement.innerText = 'Copy Code';
+        }, 2000);
+    }, function(err) {
+        console.error('Could not copy text: ', err);
+    });
+}
+</script>
+
+</body>
+</html>
