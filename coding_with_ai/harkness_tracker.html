@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harkness Discussion Tracker</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            background-color: #f8f9fa;
+        }
+        .main-container {
+            flex-grow: 1;
+            overflow: hidden; /* Prevent this container from scrolling */
+        }
+        .main-row {
+            height: 100%;
+        }
+        .panel {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        #discussion-area {
+            position: relative;
+            flex-grow: 1;
+            border: 1px solid #dee2e6;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+        #right-panel-content {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+        }
+        #discussion-history-container {
+            flex-grow: 1;
+            min-height: 0; /* Critical for flexbox scrolling */
+            display: flex;
+            flex-direction: column;
+        }
+        #discussion-history {
+            flex-grow: 1;
+            overflow-y: auto;
+            border: 1px solid #dee2e6;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            background-color: #fdfdfd;
+        }
+        .contribution { margin-bottom: 0.75rem; padding: 0.75rem; background-color: #e9f7ef; border-left: 4px solid #198754; border-radius: 0.375rem; }
+        .contribution-student { font-weight: bold; color: #198754; }
+        .contribution-time { font-size: 0.8em; color: #6c757d; }
+
+        /* SVG Styles */
+        #discussion-svg { width: 100%; height: 100%; user-select: none; }
+        .student-node { cursor: grab; font-size: 1.1em; font-weight: bold; text-anchor: middle; fill: #333; }
+        .student-node.dragging-svg { opacity: 0.7; cursor: grabbing; }
+        .student-node.selected text { fill: #0d6efd; }
+        .student-node.selected circle { stroke: #0d6efd; stroke-width: 3px; }
+        .student-node circle { fill: #e9ecef; stroke: #adb5bd; }
+        .discussion-line { fill: none; stroke: #0d6efd; stroke-width: 2px; opacity: 0.7; }
+
+        /* Note Overlay */
+        #student-note-overlay { position: absolute; background-color: rgba(255, 255, 255, 0.95); border: 1px solid #ccc; border-radius: 8px; padding: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); z-index: 1000; width: 300px; display: none; flex-direction: column; left: 50%; top: 50%; transform: translate(-50%, -50%);}
+    
+        /* Autocomplete Styles */
+        .autocomplete-container { position: relative; }
+        #autocomplete-list { z-index: 1050; /* Higher than Bootstrap's default modal backdrop */ }
+    </style>
+</head>
+<body>
+    <div class="container-fluid h-100 p-3 main-container">
+        <div class="row h-100 main-row">
+            <!-- Left Panel -->
+            <div class="col-md-8 h-100">
+                <div class="panel">
+                    <h1 class="h3 text-center mb-3">Harkness Discussion Tracker</h1>
+                    <div id="discussion-area">
+                        <svg id="discussion-svg" viewBox="0 0 800 600"></svg>
+                        <div id="student-note-overlay">
+                            <strong id="note-student-name" class="mb-2"></strong>
+                            <textarea id="note-textarea" class="form-control mb-2" placeholder="Type note here..."></textarea>
+                            <div class="d-grid gap-2">
+                                <button id="save-note-btn" class="btn btn-primary">Save Note (Enter)</button>
+                                <button id="cancel-note-btn" class="btn btn-secondary">Cancel (Esc)</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel -->
+            <div class="col-md-4 h-100">
+                <div class="panel" id="right-panel-content">
+                    <div class="accordion mb-3" id="controlsAccordion">
+                        <!-- Class Management Accordion -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="classManagementHeader">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseClassManagement" aria-expanded="true" aria-controls="collapseClassManagement">
+                                    Class Management
+                                </button>
+                            </h2>
+                            <div id="collapseClassManagement" class="accordion-collapse collapse show" aria-labelledby="classManagementHeader">
+                                <div class="accordion-body">
+                                    <div class="input-group mb-2">
+                                        <select id="class-selector" class="form-select"></select>
+                                        <button id="new-class-btn" class="btn btn-outline-secondary" type="button">New</button>
+                                        <button id="delete-class-btn" class="btn btn-outline-danger" type="button">Delete</button>
+                                    </div>
+                                    <div class="input-group">
+                                        <input type="text" id="new-student-name" class="form-control" placeholder="Add new student name...">
+                                        <button id="add-student-btn" class="btn btn-outline-secondary" type="button">Add</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Discussion Controls Accordion -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="discussionControlsHeader">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDiscussionControls" aria-expanded="true" aria-controls="collapseDiscussionControls">
+                                    Discussion Controls
+                                </button>
+                            </h2>
+                            <div id="collapseDiscussionControls" class="accordion-collapse collapse show" aria-labelledby="discussionControlsHeader">
+                                <div class="accordion-body">
+                                    <div class="autocomplete-container mb-2">
+                                        <input type="text" id="student-search-input" class="form-control" placeholder="Type name to select..." autocomplete="off">
+                                        <div id="autocomplete-list" class="list-group position-absolute w-100"></div>
+                                    </div>
+                                    <div id="discussion-selection" class="mb-2" style="display: none;">
+                                        <select id="discussion-selector" class="form-select"></select>
+                                    </div>
+                                    <div class="btn-group w-100">
+                                        <button id="start-discussion-btn" class="btn btn-primary">Start New Discussion</button>
+                                        <button id="delete-discussion-btn" class="btn btn-danger">Delete Discussion</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Discussion History -->
+                    <div id="discussion-history-container">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h2 class="h5 mb-0">Discussion History</h2>
+                            <button id="export-discussion-btn" class="btn btn-sm btn-outline-secondary">Export</button>
+                        </div>
+                        <div id="discussion-history"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal fade" id="main-modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-title"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="modal-message"></p>
+                    <input type="text" id="modal-input" class="form-control" style="display: none;">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="modal-cancel-btn" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" id="modal-ok-btn" class="btn btn-primary">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // State, DOM Elements, and other variables
+        let students = [], discussionLog = [], allDiscussions = {}, selectedStudentId = null, isDiscussionActive = false, classes = {};
+        let draggingSvgNode = null, activeAutocompleteIndex = -1;
+        const classSelector = document.getElementById('class-selector');
+        const discussionSelector = document.getElementById('discussion-selector');
+        const discussionSelectionDiv = document.getElementById('discussion-selection');
+        const discussionHistoryEl = document.getElementById('discussion-history');
+        const discussionSvg = document.getElementById('discussion-svg');
+        const newStudentNameInput = document.getElementById('new-student-name');
+        const studentNoteOverlay = document.getElementById('student-note-overlay');
+        const studentSearchInput = document.getElementById('student-search-input');
+        const autocompleteList = document.getElementById('autocomplete-list');
+        const SVG_CENTER_X = 400, SVG_CENTER_Y = 300, SVG_RADIUS = 220, SVG_NODE_RADIUS = 25;
+        const mainModalEl = document.getElementById('main-modal');
+        const mainModal = new bootstrap.Modal(mainModalEl);
+
+        // Modal Helpers
+        function showModal(type, { title, message, onConfirm, defaultValue = "" }) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-message').textContent = message;
+            const okBtn = document.getElementById('modal-ok-btn');
+            const cancelBtn = document.getElementById('modal-cancel-btn');
+            const input = document.getElementById('modal-input');
+
+            input.style.display = type === 'prompt' ? 'block' : 'none';
+            cancelBtn.style.display = type === 'alert' ? 'none' : 'block';
+            okBtn.textContent = type === 'confirm' ? 'Confirm' : 'OK';
+
+            if (type === 'prompt') input.value = defaultValue;
+
+            okBtn.onclick = () => {
+                if (onConfirm) {
+                    onConfirm(type === 'prompt' ? input.value : true);
+                }
+                mainModal.hide();
+            };
+            mainModal.show();
+        }
+
+        // --- Core Functions ---
+        function saveToLocalStorage() {
+            localStorage.setItem('harknessClasses', JSON.stringify(classes));
+            localStorage.setItem('harknessDiscussions', JSON.stringify(allDiscussions));
+            localStorage.setItem('harknessIsDiscussionActive', JSON.stringify(isDiscussionActive));
+            localStorage.setItem('harknessLastLoadedClass', classSelector.value || '');
+            localStorage.setItem('harknessLastLoadedDiscussion', discussionSelector.value || '');
+        }
+
+        function loadFromLocalStorage() {
+            classes = JSON.parse(localStorage.getItem('harknessClasses')) || {};
+            allDiscussions = JSON.parse(localStorage.getItem('harknessDiscussions')) || {};
+            isDiscussionActive = JSON.parse(localStorage.getItem('harknessIsDiscussionActive')) || false;
+            
+            let wasDataMigrated = false;
+            for (const className in classes) {
+                if (classes[className].length > 0 && typeof classes[className][0] === 'string') {
+                    const studentNameIdMap = new Map();
+                    classes[className] = classes[className].map(name => {
+                        const newStudent = { id: generateUniqueId(), name };
+                        studentNameIdMap.set(name, newStudent.id);
+                        return newStudent;
+                    });
+                    if (allDiscussions[className]) {
+                        Object.values(allDiscussions[className]).forEach(discussion => {
+                            discussion.log.forEach(entry => {
+                                if (studentNameIdMap.has(entry.studentName)) {
+                                    entry.studentId = studentNameIdMap.get(entry.studentName);
+                                }
+                            });
+                        });
+                    }
+                    wasDataMigrated = true;
+                }
+            }
+            if (wasDataMigrated) {
+                showModal('alert', { title: "Data Migration", message: "Your data has been updated to a new format to improve reliability." });
+                saveToLocalStorage();
+            }
+
+            populateClassSelector();
+            const lastLoadedClass = localStorage.getItem('harknessLastLoadedClass');
+            if (lastLoadedClass && classes[lastLoadedClass]) {
+                classSelector.value = lastLoadedClass;
+                loadSelectedClass(false); 
+                const lastLoadedDiscussion = localStorage.getItem('harknessLastLoadedDiscussion');
+                if (lastLoadedDiscussion && discussionSelector.querySelector(`option[value="${lastLoadedDiscussion}"]`)) {
+                    discussionSelector.value = lastLoadedDiscussion;
+                    loadSelectedDiscussion(false);
+                }
+            } else {
+                updateUI();
+            }
+            toggleDiscussionControls(isDiscussionActive);
+        }
+
+        function generateUniqueId() { return 'id' + Date.now().toString(36) + Math.random().toString(36).substring(2, 9); }
+        
+        function updateUI() {
+            drawDiscussionCircle();
+            renderDiscussionHistory();
+            updateButtonStates();
+        }
+
+        function updateButtonStates() {
+            const isClassSelected = !!classSelector.value;
+            const isDiscussionSelected = !!discussionSelector.value;
+            document.getElementById('delete-class-btn').disabled = !isClassSelected || isDiscussionActive;
+            document.getElementById('add-student-btn').disabled = !isClassSelected || isDiscussionActive;
+            document.getElementById('new-student-name').disabled = !isClassSelected || isDiscussionActive;
+            document.getElementById('start-discussion-btn').disabled = !isClassSelected || students.length === 0;
+            document.getElementById('delete-discussion-btn').disabled = !isDiscussionSelected || isDiscussionActive;
+        }
+
+        function drawDiscussionCircle() {
+            discussionSvg.innerHTML = '';
+            if (students.length === 0) {
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', SVG_CENTER_X); text.setAttribute('y', SVG_CENTER_Y);
+                text.setAttribute('text-anchor', 'middle'); text.setAttribute('font-size', '20');
+                text.setAttribute('fill', '#6c757d'); text.textContent = 'Add or select a class to begin...';
+                discussionSvg.appendChild(text); return;
+            }
+            students.forEach((student, index) => {
+                const angle = (Math.PI / 2) - (index / students.length) * 2 * Math.PI;
+                const x = SVG_CENTER_X + SVG_RADIUS * Math.cos(angle);
+                const y = SVG_CENTER_Y - SVG_RADIUS * Math.sin(angle);
+                const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                g.setAttribute('class', 'student-node'); g.id = `node-${student.id}`;
+                g.dataset.studentId = student.id; g.setAttribute('transform', `translate(${x}, ${y})`);
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('r', SVG_NODE_RADIUS); g.appendChild(circle);
+                const textEl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                textEl.setAttribute('dy', '0.35em'); textEl.textContent = student.name;
+                g.appendChild(textEl); discussionSvg.appendChild(g);
+                g.addEventListener('mousedown', startSvgDrag);
+            });
+            drawDiscussionLines();
+        }
+
+        function drawDiscussionLines() {
+            Array.from(discussionSvg.querySelectorAll('.discussion-line')).forEach(line => line.remove());
+            if (discussionLog.length < 2) return;
+            const getPos = id => {
+                const node = discussionSvg.querySelector(`#node-${id}`);
+                if (!node) return null;
+                const [x, y] = node.getAttribute('transform').match(/translate\(([^,]+),([^)]+)\)/).slice(1).map(parseFloat);
+                return { x, y };
+            };
+            for (let i = 0; i < discussionLog.length - 1; i++) {
+                const start = getPos(discussionLog[i].studentId);
+                const end = getPos(discussionLog[i + 1].studentId);
+                if (start && end) {
+                    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    path.setAttribute('class', 'discussion-line');
+                    const midX = (start.x + end.x) / 2, midY = (start.y + end.y) / 2;
+                    const controlX = midX + (SVG_CENTER_X - midX) * 0.3;
+                    const controlY = midY + (SVG_CENTER_Y - midY) * 0.3;
+                    path.setAttribute('d', `M ${start.x} ${start.y} Q ${controlX} ${controlY} ${end.x} ${end.y}`);
+                    discussionSvg.insertBefore(path, discussionSvg.firstChild);
+                }
+            }
+        }
+
+        function renderDiscussionHistory() {
+            discussionHistoryEl.innerHTML = discussionLog.map(c => `
+                <div class="contribution">
+                    <div class="d-flex justify-content-between">
+                        <span class="contribution-student">${c.studentName}</span>
+                        <span class="contribution-time">${new Date(c.timestamp).toLocaleTimeString()}</span>
+                    </div>
+                    <div>${c.note.replace(/</g, "&lt;")}</div>
+                </div>`).join('');
+            discussionHistoryEl.scrollTop = discussionHistoryEl.scrollHeight;
+        }
+
+        function populateClassSelector() {
+            classSelector.innerHTML = '<option value="">-- Select a Class --</option>';
+            Object.keys(classes).sort().forEach(cn => classSelector.add(new Option(cn, cn)));
+        }
+
+        function loadSelectedClass(doSave = true) {
+            const className = classSelector.value;
+            discussionLog = [];
+            if (className && classes[className]) {
+                students = JSON.parse(JSON.stringify(classes[className]));
+                populateDiscussionSelector();
+                loadSelectedDiscussion(false);
+            } else {
+                students = [];
+                discussionSelectionDiv.style.display = 'none';
+            }
+            updateUI();
+            if (doSave) saveToLocalStorage();
+        }
+
+        function populateDiscussionSelector() {
+            const className = classSelector.value;
+            const discussions = allDiscussions[className] || {};
+            const discussionIds = Object.keys(discussions).sort((a,b) => b.localeCompare(a));
+            discussionSelector.innerHTML = '';
+            if (discussionIds.length > 0) {
+                discussionIds.forEach(id => {
+                    const d = discussions[id];
+                    const date = d.meta.date ? new Date(d.meta.date).toLocaleDateString() : 'Date N/A';
+                    discussionSelector.add(new Option(`${date} - ${d.meta.topic}`, id));
+                });
+                discussionSelectionDiv.style.display = 'block';
+            } else {
+                discussionSelectionDiv.style.display = 'none';
+            }
+        }
+
+        function loadSelectedDiscussion(doSave = true) {
+            const className = classSelector.value, discussionId = discussionSelector.value;
+            discussionLog = (className && discussionId && allDiscussions[className]?.[discussionId]?.log) || [];
+            updateUI();
+            if (doSave) saveToLocalStorage();
+        }
+
+        function toggleDiscussionControls(active) {
+            isDiscussionActive = active;
+            document.getElementById('start-discussion-btn').textContent = active ? 'End Current Discussion' : 'Start New Discussion';
+            document.getElementById('start-discussion-btn').classList.toggle('btn-danger', active);
+            document.getElementById('start-discussion-btn').classList.toggle('btn-primary', !active);
+            studentSearchInput.disabled = !active;
+            classSelector.disabled = active;
+            if (active) studentSearchInput.focus();
+            updateButtonStates();
+        }
+
+        function addStudent() {
+            const className = classSelector.value;
+            if (!className) return;
+            const name = newStudentNameInput.value.trim();
+            if (name && !students.some(s => s.name.toLowerCase() === name.toLowerCase())) {
+                students.push({ id: generateUniqueId(), name });
+                classes[className] = students;
+                saveToLocalStorage();
+                newStudentNameInput.value = '';
+                updateUI();
+            } else if (name) {
+                showModal('alert', { title: "Duplicate Name", message: "A student with this name already exists." });
+            }
+        }
+
+        function startNewDiscussion() {
+            const className = classSelector.value;
+            if (!className || students.length === 0) return;
+            if (isDiscussionActive) {
+                showModal('confirm', {
+                    title: "End Discussion",
+                    message: "End the current discussion? The log will be saved.",
+                    onConfirm: () => {
+                        toggleDiscussionControls(false);
+                        saveToLocalStorage();
+                    }
+                });
+                return;
+            }
+            const defaultTopic = `Discussion #${Object.keys(allDiscussions[className] || {}).length + 1}`;
+            showModal('prompt', {
+                title: "New Discussion",
+                message: "Enter a topic for this new discussion:",
+                defaultValue: defaultTopic,
+                onConfirm: (topic) => {
+                    if (!topic) return;
+                    const newDiscussionId = Date.now().toString();
+                    if (!allDiscussions[className]) allDiscussions[className] = {};
+                    allDiscussions[className][newDiscussionId] = { meta: { date: new Date().toISOString(), topic }, log: [] };
+                    discussionLog = allDiscussions[className][newDiscussionId].log;
+                    populateDiscussionSelector();
+                    discussionSelector.value = newDiscussionId;
+                    toggleDiscussionControls(true);
+                    saveToLocalStorage();
+                    updateUI();
+                }
+            });
+        }
+
+        function selectStudent(studentId) {
+            if (!isDiscussionActive) return;
+            deselectStudent(false);
+            selectedStudentId = studentId;
+            const node = discussionSvg.querySelector(`#node-${studentId}`);
+            if (node) node.classList.add('selected');
+            const student = students.find(s => s.id === studentId);
+            if (student) {
+                studentNoteOverlay.querySelector('#note-student-name').textContent = `Note for: ${student.name}`;
+                studentNoteOverlay.querySelector('#note-textarea').value = '';
+                studentNoteOverlay.style.display = 'flex';
+                studentNoteOverlay.querySelector('#note-textarea').focus();
+            }
+        }
+
+        function deselectStudent(refocus = true) {
+            if (selectedStudentId) {
+                const node = discussionSvg.querySelector(`#node-${selectedStudentId}`);
+                if (node) node.classList.remove('selected');
+            }
+            selectedStudentId = null;
+            studentNoteOverlay.style.display = 'none';
+            studentSearchInput.value = ''; 
+            if (isDiscussionActive && refocus) studentSearchInput.focus();
+        }
+
+        function saveNote() {
+            if (!selectedStudentId) return;
+            const student = students.find(s => s.id === selectedStudentId);
+            const noteContent = studentNoteOverlay.querySelector('#note-textarea').value;
+            if (student) {
+                discussionLog.push({ id: generateUniqueId(), studentId: student.id, studentName: student.name, note: noteContent, timestamp: new Date().toISOString() });
+                saveToLocalStorage();
+                updateUI();
+            }
+            deselectStudent();
+        }
+        
+        // --- Drag and Drop ---
+        function startSvgDrag(e) {
+            e.preventDefault(); if (isDiscussionActive) return;
+            draggingSvgNode = e.currentTarget; 
+            draggingSvgNode.classList.add('dragging-svg');
+            document.addEventListener('mousemove', onSvgDrag); 
+            document.addEventListener('mouseup', endSvgDrag);
+        }
+
+        function onSvgDrag(e) {
+            if (!draggingSvgNode) return;
+            const dragStartStudentIndex = students.findIndex(s => s.id === draggingSvgNode.dataset.studentId);
+            const CTM = discussionSvg.getScreenCTM();
+            const mouseX = (e.clientX - CTM.e) / CTM.a; 
+            const mouseY = (e.clientY - CTM.f) / CTM.d;
+            const angle = Math.atan2(-(mouseY - SVG_CENTER_Y), mouseX - SVG_CENTER_X);
+            let targetIndex = Math.round(((Math.PI / 2) - angle) / (2 * Math.PI / students.length));
+            targetIndex = (targetIndex + students.length) % students.length;
+            if (targetIndex !== dragStartStudentIndex) {
+                const [movedStudent] = students.splice(dragStartStudentIndex, 1);
+                students.splice(targetIndex, 0, movedStudent);
+                updateUI();
+                const newDraggingNode = discussionSvg.querySelector(`#node-${movedStudent.id}`);
+                if (newDraggingNode) {
+                    draggingSvgNode = newDraggingNode;
+                    draggingSvgNode.classList.add('dragging-svg');
+                }
+            }
+        }
+
+        function endSvgDrag() {
+            if (draggingSvgNode) draggingSvgNode.classList.remove('dragging-svg');
+            document.removeEventListener('mousemove', onSvgDrag); 
+            document.removeEventListener('mouseup', endSvgDrag);
+            const className = classSelector.value;
+            if (className) {
+                classes[className] = students;
+                saveToLocalStorage();
+            }
+        }
+
+        // --- Autocomplete Logic ---
+        function updateAutocomplete(matches) {
+            autocompleteList.innerHTML = '';
+            if (matches.length === 0) return;
+            
+            matches.forEach((student, index) => {
+                const item = document.createElement('a');
+                item.href = '#';
+                item.classList.add('list-group-item', 'list-group-item-action');
+                item.textContent = student.name;
+                item.dataset.studentId = student.id;
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    selectStudent(student.id);
+                    clearAutocomplete();
+                });
+                autocompleteList.appendChild(item);
+            });
+            activeAutocompleteIndex = -1;
+        }
+
+        function clearAutocomplete() {
+            autocompleteList.innerHTML = '';
+            activeAutocompleteIndex = -1;
+        }
+
+        function handleAutocompleteKeydown(e) {
+            const items = autocompleteList.querySelectorAll('a');
+            if (items.length === 0) return;
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (activeAutocompleteIndex >= 0) items[activeAutocompleteIndex].classList.remove('active');
+                activeAutocompleteIndex = (activeAutocompleteIndex + 1) % items.length;
+                items[activeAutocompleteIndex].classList.add('active');
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (activeAutocompleteIndex >= 0) items[activeAutocompleteIndex].classList.remove('active');
+                activeAutocompleteIndex = (activeAutocompleteIndex - 1 + items.length) % items.length;
+                items[activeAutocompleteIndex].classList.add('active');
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                if (activeAutocompleteIndex >= 0) {
+                    items[activeAutocompleteIndex].click();
+                }
+            } else if (e.key === 'Escape') {
+                clearAutocomplete();
+            }
+        }
+        
+        // --- Event Listeners ---
+        document.getElementById('add-student-btn').addEventListener('click', addStudent);
+        newStudentNameInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') addStudent(); });
+        classSelector.addEventListener('change', () => {
+            isDiscussionActive = false;
+            toggleDiscussionControls(false);
+            loadSelectedClass();
+        });
+        document.getElementById('new-class-btn').addEventListener('click', () => {
+            showModal('prompt', {
+                title: "Create New Class", message: "Enter a name for the new class:",
+                onConfirm: (name) => {
+                    if (!name) return;
+                    if (classes[name]) {
+                        showModal('alert', { title: "Error", message: `A class named "${name}" already exists.` });
+                        return;
+                    }
+                    classes[name] = []; allDiscussions[name] = {};
+                    populateClassSelector(); classSelector.value = name;
+                    loadSelectedClass();
+                }
+            });
+        });
+        document.getElementById('delete-class-btn').addEventListener('click', () => {
+            const className = classSelector.value; if (!className) return;
+            showModal('confirm', {
+                title: "Delete Class", message: `Are you sure you want to delete the class "${className}"? All students and discussions will be permanently lost.`,
+                onConfirm: () => {
+                    delete classes[className]; delete allDiscussions[className];
+                    classSelector.value = ''; loadSelectedClass(); populateClassSelector();
+                }
+            });
+        });
+        discussionSelector.addEventListener('change', () => loadSelectedDiscussion());
+        document.getElementById('start-discussion-btn').addEventListener('click', startNewDiscussion);
+        document.getElementById('delete-discussion-btn').addEventListener('click', () => {
+            const className = classSelector.value, discussionId = discussionSelector.value;
+            if(!className || !discussionId) return;
+            const discussionName = discussionSelector.options[discussionSelector.selectedIndex].text;
+            showModal('confirm', {
+                title: "Delete Discussion", message: `Are you sure you want to delete the discussion "${discussionName}"? This cannot be undone.`,
+                onConfirm: () => {
+                    delete allDiscussions[className][discussionId];
+                    discussionLog = []; populateDiscussionSelector(); loadSelectedDiscussion();
+                }
+            });
+        });
+        studentNoteOverlay.querySelector('#save-note-btn').addEventListener('click', saveNote);
+        studentNoteOverlay.querySelector('#cancel-note-btn').addEventListener('click', () => deselectStudent());
+        studentNoteOverlay.querySelector('#note-textarea').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); saveNote(); } });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') deselectStudent(); });
+        
+        studentSearchInput.addEventListener('input', function(e) {
+            const val = this.value; 
+            clearAutocomplete();
+            if (!val || !isDiscussionActive) return;
+            const matchingStudents = students.filter(s => s.name.toLowerCase().startsWith(val.toLowerCase()));
+            if (matchingStudents.length === 1 && selectedStudentId !== matchingStudents[0].id) { 
+                selectStudent(matchingStudents[0].id); 
+            } else if (matchingStudents.length > 1) {
+                updateAutocomplete(matchingStudents);
+            }
+        });
+        studentSearchInput.addEventListener('keydown', handleAutocompleteKeydown);
+        studentSearchInput.addEventListener('blur', () => setTimeout(clearAutocomplete, 150)); // Delay to allow click
+
+        document.getElementById('export-discussion-btn').addEventListener('click', () => {
+            if (discussionLog.length === 0) {
+                showModal('alert', { title: "Export", message: "There is no discussion history to export." });
+                return;
+            }
+            const exportedText = discussionLog.map(c => `[${new Date(c.timestamp).toLocaleTimeString()}] ${c.studentName}: ${c.note}`).join('\n');
+            showModal('prompt', {
+                title: "Export Discussion", message: "Select all (Ctrl/Cmd + A) and copy (Ctrl/Cmd + C) the text below.",
+                defaultValue: exportedText
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', loadFromLocalStorage);
+    </script>
+</body>
+</html>
