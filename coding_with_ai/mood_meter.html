@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mood Meter – Select a Feeling</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root{ --gap:10px; --radius:14px; --tile-padding:12px 16px; --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji"; }
+    
+    body{ 
+      /* Light theme variables set as default */
+      --bg:#f7f8fb; --fg:#0d1220; --panel:#ffffff; --panel-2:#f3f6fb; --border:#cfd9ea; --muted:#55627a; --button:#e9eef7; --button-border:#c7d3ea;
+      
+      margin:0; font-family:var(--font); background:var(--bg); color:var(--fg); display:flex; flex-direction:column; gap:16px; padding:18px;
+    }
+    body[data-theme="dark"]{ 
+      /* Dark theme overrides */
+      --bg:#0c0f14; --fg:#eef1f5; --panel:#111827; --panel-2:#0f1522; --border:#233048; --muted:#9fb0cc; --button:#1e2635; --button-border:#2f3a51; 
+    }
+
+    *{box-sizing:border-box}
+    html{height:100%}
+
+    header{width:100%; max-width:1200px; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px}
+    .title{font-weight:800; letter-spacing:.3px; font-size:clamp(22px,3.2vw,40px)}
+    .controls{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+    .btn-ghost{background:var(--button); color:var(--fg); border:1px solid var(--button-border); padding:10px 14px; border-radius:12px; cursor:pointer; font-weight:700}
+    .btn-ghost:hover{filter:brightness(1.05)}
+
+    .container-outer{width:100%; max-width:1200px; display:grid; grid-template-columns:280px 1fr; gap:18px}
+    .legend{background:var(--panel); border:1px solid var(--border); padding:14px; border-radius:16px; display:flex; flex-direction:column; gap:12px; width:100%; position:sticky; top:12px}
+    .legend h3{margin:0 0 4px 0; font-size:15px; opacity:.9}
+    .legend .current{background:var(--panel-2); border:1px solid var(--border); border-radius:14px; padding:14px}
+    .big{font-size:30px; line-height:1.05; font-weight:900; margin:0 0 6px 0}
+    .sub{font-size:12px; color:var(--muted); margin:0}
+    .notes{width:100%; min-height:86px; resize:vertical; display:block; background:var(--panel-2); color:var(--fg); border:1px solid var(--border); border-radius:12px; padding:10px 12px}
+
+    .grid{display:grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap:var(--gap); width:100%}
+    .tile{ display:flex; align-items:center; justify-content:center; text-align:center; padding:var(--tile-padding); border-radius:var(--radius); min-height:46px; font-weight:800; box-shadow:0 1px 0 rgba(255,255,255,.06) inset, 0 2px 10px rgba(0,0,0,.15); border:1px solid rgba(0,0,0,.18); cursor:pointer; user-select:none; transition:transform .08s ease, box-shadow .08s ease, filter .08s ease; outline:none; letter-spacing:.1px; text-wrap:balance; text-shadow:0 1px 2px rgba(0,0,0,.35) }
+    .tile:hover{transform:translateY(-1px); filter:brightness(1.04)}
+    .tile:focus-visible{outline:2px solid currentColor}
+    .tile[data-ink="dark"]{ text-shadow: 0 1px 0 rgba(255,255,255,.45), 0 -1px 0 rgba(255,255,255,.2) }
+    .selected{box-shadow:0 0 0 3px #fff, 0 6px 24px rgba(0,0,0,.35); transform: translateY(-2px) scale(1.02)}
+
+    .panel{background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:12px}
+
+    .history-list{display:flex; flex-direction:column; gap:10px}
+    .entry{background:var(--panel-2); border:1px solid var(--border); border-radius:12px; padding:10px 12px}
+    .entry-row{display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap}
+    .entry-actions{display:none}
+    .entry-badge{font-weight:900; padding:6px 10px; border-radius:999px; border:1px solid rgba(0,0,0,.18); background:#172032; color:#fff}
+    .entry-time{font-size:12px; color:var(--muted)}
+    .entry-note{margin-top:8px; font-size:14px; line-height:1.35; white-space:pre-wrap; word-break:break-word}
+
+    #chartWrap{background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:16px}
+
+    @media (max-width: 1000px){ .container-outer{grid-template-columns:1fr} .legend{position:relative} }
+    @media (max-width: 760px){ .grid{grid-template-columns: repeat(4, minmax(0, 1fr))} }
+  </style>
+</head>
+<body data-theme="dark">
+  <header>
+    <div class="title">Mood Meter — pick a feeling</div>
+    <div class="controls align-items-center">
+      <button id="export" class="btn-ghost">Export history (CSV)</button>
+      <div class="form-check form-switch ms-2">
+        <input class="form-check-input" type="checkbox" id="themeSwitch">
+        <label class="form-check-label" for="themeSwitch">Light mode</label>
+      </div>
+    </div>
+  </header>
+
+  <div class="container-outer">
+    <aside class="legend" aria-live="polite">
+      <h3>Selection</h3>
+      <div class="current">
+        <p class="big" id="currentFeeling">—</p>
+        <p class="sub">Click a tile to select. Your last selections are saved on this device.</p>
+      </div>
+      <label for="notes" class="form-label">Notes (optional)</label>
+      <textarea id="notes" class="notes" placeholder="Add a quick note…"></textarea>
+      <div class="d-flex gap-2">
+        <button id="save" class="btn-ghost">Save</button>
+      </div>
+          </aside>
+
+    <main>
+      <div id="grid" class="grid" role="grid" aria-label="Mood meter grid"></div>
+
+      <div id="chartWrap" class="mt-3">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h5 class="m-0">Weekly Mood by Time of Day</h5>
+          <small class="sub">Most recent entry per bucket (last 7 days)</small>
+        </div>
+        <canvas id="weekChart" height="210" aria-label="Weekly mood chart" role="img"></canvas>
+      </div>
+
+      <div class="accordion mt-3" id="historyAccordion">
+        <div class="accordion-item panel">
+          <h2 class="accordion-header" id="headingOne">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+              Saved entries
+            </button>
+          </h2>
+          <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#historyAccordion">
+            <div class="accordion-body">
+              <div class="history-list" id="historyList"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Delete Modal -->
+  <div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Delete entry</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">Are you sure you want to delete this entry?</div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-danger" id="confirmDelete">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Edit Modal -->
+  <div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit entry</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Date & time</label>
+            <input type="datetime-local" id="editDatetime" class="form-control"/>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Feeling</label>
+            <select id="editFeeling" class="form-select"></select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Note</label>
+            <textarea id="editNote" class="form-control" rows="4"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" id="saveEdit">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+// ================== DATA ==================
+const rows = [
+  ["Enraged","Furious","Frustrated","Shocked","Surprised","Up Beat","Motivated","Ecstatic"],
+  ["Livid","Frightened","Nervous","Restless","Hyper","Cheerful","Inspired","Elated"],
+  ["Fuming","Apprehensive","Worried","Annoyed","Energized","Lively","Optimistic","Thrilled"],
+  ["Repulsed","Troubled","Uneasy","Peeved","Pleasant","Joyful","Proud","Blissful"],
+  ["Disgusted","Disappointed","Glum","Ashamed","Blessed","At Ease","Content","Fulfilled"],
+  ["Mortified","Alienated","Mopey","Apathetic","Humbled","Secure","Chill","Grateful"],
+  ["Embarrassed","Excluded","Timid","Drained","Calm","Satisfied","Relaxed","Carefree"],
+  ["Alone","Down","Bored","Tired","Relieved","Restful","Tranquil","Serene"]
+];
+const FEELINGS = rows.flat();
+
+const gridEl = document.getElementById('grid');
+const currentEl = document.getElementById('currentFeeling');
+const historyList = document.getElementById('historyList');
+const notesEl = document.getElementById('notes');
+const weekCanvas = document.getElementById('weekChart');
+const themeSwitch = document.getElementById('themeSwitch');
+
+// ================== HELPERS ==================
+const lerp = (a,b,t)=>a+(b-a)*t;
+function tileColor(x, y, cols, rowsCount){
+  const tX = x/(cols-1), tY = y/(rowsCount-1);
+  const hueTL = 350, hueBL = 210, hueTR = 50, hueBR = 120;
+  const hue = lerp(lerp(hueTL, hueBL, tY), lerp(hueTR, hueBR, tY), tX);
+  const sat = 78, light = 55;
+  return `hsl(${hue}deg ${sat}% ${light}%)`;
+}
+function posForWord(word){
+  for(let r=0;r<rows.length;r++){
+    for(let c=0;c<rows[r].length;c++) if(rows[r][c].toLowerCase()===word.toLowerCase()) return {r,c};
+  }
+  return {r:0,c:0};
+}
+function colorForWord(word){ const {r,c} = posForWord(word); return tileColor(c, r, rows[0].length, rows.length); }
+function hslToRgb(h,s,l){ if(s===0) return [l,l,l]; const q = l < .5 ? l*(1+s) : l + s - l*s; const p = 2*l - q; const hk=h/360; const tc=[hk+1/3, hk, hk-1/3]; return tc.map(t=>{ if(t<0) t+=1; if(t>1) t-=1; if(6*t<1) return p+(q-p)*6*t; if(2*t<1) return q; if(3*t<2) return p+(q-p)*(2/3 - t)*6; return p;}); }
+function srgbToLinear(c){ return c<=0.04045 ? c/12.92 : Math.pow((c+0.055)/1.055, 2.4); }
+function idealTextColorForHsl(h, s, l){ const [r,g,b]=hslToRgb(h,s,l); const R=srgbToLinear(r), G=srgbToLinear(g), B=srgbToLinear(b); const L=0.2126*R + 0.7152*G + 0.0722*B; return L>0.6 ? '#0b1220' : '#ffffff'; }
+function parseHsl(bg){ const m=/hsl\(([-\d.]+)deg\s+([\d.]+)%\s+([\d.]+)%\)/.exec(bg); if(!m) return null; return {h:parseFloat(m[1]), s:parseFloat(m[2])/100, l:parseFloat(m[3])/100}; }
+const pad=n=>String(n).padStart(2,'0');
+function toLocalDatetimeValue(date){ const d=new Date(date); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`; }
+
+// ================== BUILD GRID ==================
+const totalRows = rows.length, totalCols = rows[0].length;
+rows.forEach((arr, r)=>{
+  arr.forEach((word, c)=>{
+    const btn = document.createElement('button');
+    btn.className='tile'; btn.role='gridcell'; btn.tabIndex=0; btn.textContent=word;
+    const bg = tileColor(c, r, totalCols, totalRows);
+    btn.style.background = bg; const p=parseHsl(bg); if(p){ const color=idealTextColorForHsl(p.h,p.s,p.l); btn.style.color=color; if(color!=='#ffffff') btn.dataset.ink='dark'; }
+    btn.dataset.word = word.toLowerCase(); btn.title = `Select: ${word}`; btn.addEventListener('click', ()=>select(word, bg)); gridEl.appendChild(btn);
+  });
+});
+
+let selected = null;
+function select(word, bg){
+  [...document.querySelectorAll('.tile')].forEach(el=>el.classList.remove('selected'));
+  const el=[...document.querySelectorAll('.tile')].find(t=>t.textContent===word); if(el){ el.classList.add('selected'); el.scrollIntoView({block:'nearest', behavior:'smooth'}); }
+  currentEl.textContent = word; selected = {word, at:new Date().toISOString(), note:notesEl.value||'', color:bg};
+}
+
+// ================== PERSISTENCE ==================
+const KEY='mood_meter_history_v5';
+document.getElementById('save').addEventListener('click', ()=>{
+  if(!selected){ alert('Pick a feeling first.'); return; }
+  selected.note = notesEl.value || '';
+  selected.at = new Date().toISOString();
+  const history=JSON.parse(localStorage.getItem(KEY)||'[]'); 
+  history.unshift(selected); 
+  localStorage.setItem(KEY, JSON.stringify(history.slice(0,200))); 
+  renderHistory(); 
+  updateChart(); 
+  notesEl.value = ''; // FIX: Clear notes field after saving
+  alert('Saved!'); 
+});
+
+function renderHistory(){
+  const list = JSON.parse(localStorage.getItem(KEY) || '[]');
+  historyList.innerHTML='';
+  if(list.length===0){ historyList.innerHTML = '<div class="sub">No entries yet.</div>'; return; }
+  list.forEach((item, idx)=>{
+    const entry=document.createElement('div'); entry.className='entry';
+    const row=document.createElement('div'); row.className='entry-row';
+    const badge=document.createElement('span'); badge.className='entry-badge'; badge.textContent=item.word; if(item.color){ badge.style.background=item.color; badge.style.color='#000'; badge.style.textShadow='0 1px 1px rgba(255,255,255,.6)'; }
+    const time=document.createElement('span'); time.className='entry-time'; const dt=new Date(item.at); time.textContent=dt.toLocaleString();
+
+    const actions=document.createElement('div'); 
+    actions.className='entry-actions gap-2'; // FIX: Removed d-flex to allow display:none to work
+    const btnDel=document.createElement('button'); btnDel.className='btn btn-sm btn-danger'; btnDel.innerText='🗑️'; btnDel.title='Delete'; btnDel.addEventListener('click', ()=>openDeleteModal(idx));
+    const btnEdit=document.createElement('button'); btnEdit.className='btn btn-sm btn-secondary'; btnEdit.innerText='✏️'; btnEdit.title='Edit'; btnEdit.addEventListener('click', ()=>openEditModal(idx));
+    actions.appendChild(btnDel); actions.appendChild(btnEdit);
+
+    const leftContainer=document.createElement('div'); leftContainer.style.display='flex'; leftContainer.style.gap='10px'; leftContainer.style.alignItems='center';
+    leftContainer.appendChild(badge);
+    row.appendChild(leftContainer);
+    row.appendChild(time);
+    row.appendChild(actions);
+    entry.appendChild(row);
+
+    if(item.note && item.note.trim()!==''){ const note=document.createElement('div'); note.className='entry-note'; note.textContent=item.note; entry.appendChild(note); }
+    historyList.appendChild(entry);
+  });
+}
+renderHistory();
+
+// ================== EDIT MODE (hold 'e' when accordion open) ==================
+let isEditMode = false;
+function accordionShown(){ return document.getElementById('collapseOne')?.classList.contains('show'); }
+function setEditUi(){ document.querySelectorAll('.entry-actions').forEach(el=>{ el.style.display = isEditMode && accordionShown() ? 'flex' : 'none'; }); }
+document.addEventListener('keydown', (ev)=>{ if(ev.key.toLowerCase()==='e' && accordionShown()){ if(!isEditMode){ isEditMode=true; setEditUi(); } }});
+document.addEventListener('keyup', (ev)=>{ if(ev.key.toLowerCase()==='e'){ if(isEditMode){ isEditMode=false; setEditUi(); } }});
+
+document.getElementById('historyAccordion').addEventListener('shown.bs.collapse', setEditUi);
+document.getElementById('historyAccordion').addEventListener('hidden.bs.collapse', setEditUi);
+
+// ================== MODALS (delete/edit) ==================
+let editIndex = null;
+(function populateFeelingSelect(){ const sel=document.getElementById('editFeeling'); FEELINGS.forEach(f=>{ const o=document.createElement('option'); o.value=o.textContent=f; sel.appendChild(o); }); })();
+
+function openDeleteModal(index){ editIndex = index; new bootstrap.Modal('#deleteModal').show(); }
+document.getElementById('confirmDelete').addEventListener('click', ()=>{
+  const history = JSON.parse(localStorage.getItem(KEY)||'[]');
+  if(editIndex!=null){ history.splice(editIndex,1); localStorage.setItem(KEY, JSON.stringify(history)); }
+  bootstrap.Modal.getInstance(document.getElementById('deleteModal')).hide();
+  renderHistory(); updateChart();
+});
+
+function openEditModal(index){
+  editIndex = index; const history = JSON.parse(localStorage.getItem(KEY)||'[]'); const item = history[index]; if(!item) return;
+  document.getElementById('editDatetime').value = toLocalDatetimeValue(new Date(item.at));
+  document.getElementById('editFeeling').value = item.word;
+  document.getElementById('editNote').value = item.note || '';
+  new bootstrap.Modal('#editModal').show();
+}
+document.getElementById('saveEdit').addEventListener('click', ()=>{
+  const history = JSON.parse(localStorage.getItem(KEY)||'[]'); if(editIndex==null || !history[editIndex]) return;
+  const d = new Date(document.getElementById('editDatetime').value);
+  const word = document.getElementById('editFeeling').value;
+  const note = document.getElementById('editNote').value;
+  const color = colorForWord(word);
+  history[editIndex] = { at: d.toISOString(), word, note, color };
+  localStorage.setItem(KEY, JSON.stringify(history));
+  bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();
+  renderHistory(); updateChart();
+});
+
+// ================== WEEKLY CHART (labels left, no legend) ==================
+const BUCKETS = [
+  {label:'Morning', start:5, end:12},
+  {label:'Afternoon', start:12, end:17},
+  {label:'Evening', start:17, end:21},
+  {label:'Night', start:21, end:5} // wraps
+];
+function startOfDay(d){ const x = new Date(d); x.setHours(0,0,0,0); return x; }
+function addDays(d, n){ const x = new Date(d); x.setDate(x.getDate()+n); return x; }
+function getWeekDays(){ const today = startOfDay(new Date()); const days=[]; for(let i=6;i>=0;i--){ days.push(addDays(today, -i)); } return days; }
+function whichBucketIndex(hour){ for(let i=0;i<BUCKETS.length;i++){ const b=BUCKETS[i]; if((b.start<b.end && hour>=b.start && hour<b.end) || (b.start>b.end && (hour>=b.start || hour<b.end))) return i; } return 0; }
+
+function updateChart(){
+  const ctx = weekCanvas.getContext('2d');
+  const w = weekCanvas.clientWidth || 900; weekCanvas.width = w; const h = weekCanvas.height; ctx.clearRect(0,0,w,h);
+  const days = getWeekDays();
+  const pad = 8; const cols=7; const rowsN = BUCKETS.length + 1; // header row + 4 day-parts
+  const leftGutter = 72;
+  const cellW = Math.floor((w - pad*(cols+1) - leftGutter) / cols);
+  const cellH = Math.floor((h - pad*(rowsN+1)) / rowsN);
+
+  ctx.font = '12px system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  const muted = getComputedStyle(document.body).getPropertyValue('--muted') || '#6b7280';
+  ctx.fillStyle = muted;
+  const dayNames = days.map(d=> d.toLocaleDateString(undefined,{weekday:'short'}));
+  for(let c=0;c<cols;c++){
+    const x = leftGutter + pad + c*(cellW+pad) + cellW/2;
+    const y = pad + cellH/2;
+    ctx.fillText(dayNames[c], x, y);
+  }
+
+  // row labels
+  ctx.textAlign = 'left';
+  for(let r=0;r<BUCKETS.length;r++){
+    const x = 8; const y = pad + (r+1)*(cellH+pad) + cellH/2;
+    ctx.fillText(BUCKETS[r].label, x, y);
+  }
+
+  // dashed grid
+  const border = getComputedStyle(document.body).getPropertyValue('--border') || '#cbd5e1';
+  ctx.setLineDash([5,4]); ctx.strokeStyle = border; ctx.lineWidth = 1.25;
+
+  // data (most recent per bucket/day)
+  const history = JSON.parse(localStorage.getItem(KEY) || '[]');
+  const map = new Map();
+  history.forEach(item=>{
+    const d = new Date(item.at);
+    const dayIndex = days.findIndex(day => d >= day && d < addDays(day,1));
+    if(dayIndex === -1) return;
+    const bIndex = whichBucketIndex(d.getHours());
+    const key = `${dayIndex}-${bIndex}`;
+    if(!map.has(key)) map.set(key, item.color || colorForWord(item.word));
+  });
+
+  for(let c=0;c<cols;c++){
+    for(let r=0;r<BUCKETS.length;r++){
+      const x = leftGutter + pad + c*(cellW+pad);
+      const y = pad + (r+1)*(cellH+pad);
+      ctx.strokeRect(x, y, cellW, cellH);
+      const key = `${c}-${r}`; const color = map.get(key);
+      if(color){
+        ctx.setLineDash([]);
+        roundRect(ctx, x, y, cellW, cellH, 10, true, color);
+        ctx.setLineDash([5,4]);
+      }
+    }
+  }
+}
+function roundRect(ctx, x, y, w, h, r, fill, fillStyle){
+  ctx.beginPath();
+  ctx.moveTo(x+r, y);
+  ctx.arcTo(x+w, y, x+w, y+h, r);
+  ctx.arcTo(x+w, y+h, x, y+h, r);
+  ctx.arcTo(x, y+h, x, y, r);
+  ctx.arcTo(x, y, x+w, y, r);
+  ctx.closePath();
+  if(fill){ const prev = ctx.fillStyle; ctx.fillStyle = fillStyle || prev; ctx.fill(); ctx.fillStyle = prev; }
+}
+updateChart();
+
+// ================== THEME TOGGLE ==================
+(function initTheme(){
+  const saved = localStorage.getItem('mood_meter_theme');
+  const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+  const theme = saved || (prefersLight ? 'light' : 'dark');
+  document.body.setAttribute('data-theme', theme);
+  themeSwitch.checked = theme === 'light';
+})();
+
+themeSwitch.addEventListener('change', ()=>{ const theme = themeSwitch.checked ? 'light' : 'dark'; document.body.setAttribute('data-theme', theme); localStorage.setItem('mood_meter_theme', theme); updateChart(); });
+
+// ================== COPY/EXPORT ==================
+document.getElementById('copy').addEventListener('click', async ()=>{ if(!selected){ alert('Pick a feeling first.'); return;} const dt=new Date(selected.at || Date.now()); const text=`Feeling: ${selected.word}\nWhen: ${dt.toLocaleString()}\nNote: ${notesEl.value || selected.note || '-'}`; try{ await navigator.clipboard.writeText(text); alert('Copied to clipboard.'); } catch(e){ const ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); alert('Copied.'); }});
+
+document.getElementById('export').addEventListener('click', ()=>{ const history=JSON.parse(localStorage.getItem(KEY)||'[]'); if(history.length===0){ alert('No entries to export.'); return;} const header='timestamp,local_time,feeling,note\n'; const rows=history.map(h=>{ const d=new Date(h.at); const local=d.toLocaleString().replaceAll(',', ' '); return `${h.at},${local},"${h.word.replaceAll('"','""')}","${(h.note||'').replaceAll('"','""')}"`; }); const csv=header+rows.join('\n'); const blob=new Blob([csv], {type:'text/csv'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='mood-meter-history.csv'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
