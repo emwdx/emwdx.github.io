@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Advanced Robotics Simulator</title>
+<style>
+    body {
+        font-family: sans-serif;
+        display: flex;
+        flex-direction: row;
+        padding: 10px;
+        gap: 20px;
+    }
+    #main-layout {
+        display: flex;
+        flex-direction: row;
+        gap: 20px;
+    }
+    #simulation-column, #editor-column, #reference-column {
+        display: flex;
+        flex-direction: column;
+    }
+    #simulation {
+    position: relative; /* Added for pen canvas positioning */
+        border: 2px solid #333;
+        margin-top: 10px;
+        background-color: #ffffff;
+        background-image:
+            linear-gradient(#ccc 1px, transparent 1px),
+            linear-gradient(to right, #ccc 1px, transparent 1px);
+        background-size: 50px 50px;
+    }
+    #map-selector-container {
+        margin-bottom: 10px;
+    }
+    #editor-container {
+        border: 1px solid #ccc;
+    }
+    .CodeMirror {
+        height: 500px;
+    }
+    #button-bar {
+        margin-top: 10px;
+    }
+    #info, #console-container {
+        margin-top: 10px;
+        font-family: monospace;
+    }
+    #console {
+        width: 100%;
+        height: 150px;
+        background-color: #333;
+        color: #eee;
+        border: 1px solid #ccc;
+        overflow-y: scroll;
+        white-space: pre-wrap;
+        padding: 5px;
+    }
+    #reference-column {
+        width: 350px;
+    }
+    #reference-column h3 {
+        margin-bottom: 5px;
+    }
+    .command {
+        background-color: #f0f0f0;
+        border: 1px solid #ddd;
+        padding: 8px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+    }
+    .command code {
+        font-weight: bold;
+        color: #c7254e;
+        background-color: #f9f2f4;
+        padding: 2px 4px;
+        border-radius: 3px;
+    }
+</style>
+<!-- Libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.18.0/matter.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/python/python.min.js"></script>
+<script src="https://cdn.jsdelivr.net/pyodide/v0.21.3/full/pyodide.js"></script>
+</head>
+<body>
+
+<div id="main-layout">
+    <div id="simulation-column">
+        <h2>Simulation</h2>
+        <div id="map-selector-container">
+            <label for="map-selector">Choose a Map:</label>
+            <select name="maps" id="map-selector">
+                <option value="blank">Blank Grid</option>
+                <option value="diskMover">Disk Slider</option>
+                <option value="slash">Slash Map</option>
+            </select>
+        </div>
+        <div id="simulation">
+            <canvas id="drawing-canvas" width="500" height="500" style="position: absolute; top: 0; left: 0; pointer-events: none;"></canvas>
+        </div>
+         <div id="info">
+            <h3>Robot Data</h3>
+            <p>Position: <span id="position"></span></p>
+            <p>Rotation: <span id="rotation"></span></p>
+        </div>
+    </div>
+
+    <div id="editor-column">
+        <h2>Python Code</h2>
+        <div id="editor-container">
+            <textarea id="editor"></textarea>
+        </div>
+        <div id="button-bar">
+            <button id="run">Run</button>
+            <button id="stop">Stop</button>
+            <button id="reset">Reset</button>
+            <button id="copy-code">Copy Code</button>
+        </div>
+        <div id="console-container">
+            <h3>Console Output</h3>
+            <pre id="console"></pre>
+        </div>
+    </div>
+
+    <div id="reference-column">
+        <h2>Command Reference</h2>
+        <div class="command">
+            <h3>Drive Forward / Reverse</h3>
+            <p>Drives for a distance in pixels.</p>
+            <code>drivetrain.drive_for(150)</code>
+        </div>
+        <div class="command">
+            <h3>Turn Right / Left</h3>
+            <p>Turns a relative number of degrees.</p>
+            <code>drivetrain.turn_for(90)</code>
+        </div>
+        <div class="command">
+            <h3>Turn to Heading</h3>
+            <p>Turns to an absolute heading (0-360).</p>
+            <code>drivetrain.turn_to_heading(180)</code>
+        </div>
+        <div class="command">
+            <h3>Stop Driving</h3>
+            <p>Immediately stops all motor movement.</p>
+            <code>drivetrain.stop()</code>
+        </div>
+        <div class="command">
+            <h3>Set Velocity</h3>
+            <p>Sets drive/turn speed (1-100%).</p>
+            <code>drivetrain.set_drive_velocity(100)</code>
+        </div>
+        <div class="command">
+            <h3>Wait / Pause</h3>
+            <p>Pauses the program for seconds.</p>
+            <code>sleep(1.5)</code>
+        </div>
+        <div class="command">
+            <h3>Pen Down</h3>
+            <p>Lowers the pen to start drawing.</p>
+            <code>drivetrain.pen_down()</code>
+        </div>
+        <div class="command">
+            <h3>Pen Up</h3>
+            <p>Lifts the pen to stop drawing.</p>
+            <code>drivetrain.pen_up()</code>
+        </div>
+        <div class="command">
+            <h3>Get Distance</h3>
+            <p>Reads the distance sensor (0-300 pixels).</p>
+            <code>drivetrain.get_distance()</code>
+        </div>
+        <div class="command">
+            <h3>Drive Continuously</h3>
+            <p>Drives forward indefinitely at the set velocity.</p>
+            <code>drivetrain.drive()</code>
+        </div>
+        <div class="command">
+            <h3>Turn Continuously</h3>
+            <p>Turns right indefinitely at the set velocity.</p>
+            <code>drivetrain.turn()</code>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- Setup Global Variables ---
+    const SIM_WIDTH = 500;
+    const SIM_HEIGHT = 500;
+    const GRID_SIZE = 50;
+    const ROBOT_WIDTH = 40;
+    const ROBOT_HEIGHT = 40;
+    const ROBOT_START_POS = { x: GRID_SIZE / 2, y: SIM_HEIGHT - (GRID_SIZE / 2) };
+    const ROBOT_START_ANGLE = 0;
+
+    let pyodide;
+    let isRunning = false;
+    const MAX_DRIVE_VELOCITY = 50;
+    const MAX_TURN_VELOCITY = 50;
+    let driveVelocity = MAX_DRIVE_VELOCITY;
+    let turnVelocity = MAX_TURN_VELOCITY;
+    let currentMapObstacles = [];
+
+    // --- Pen Drawing Variables ---
+    let isPenDown = false;
+    let lastPenPosition = null;
+    let drawingCtx;
+
+    // --- Matter.js Physics Setup ---
+    const { Engine, Render, Runner, Bodies, Body, Composite, Vector } = Matter;
+    const engine = Engine.create();
+    engine.world.gravity.y = 0;
+    engine.world.friction = 0.5;
+    const render = Render.create({
+        element: document.getElementById('simulation'),
+        engine: engine,
+        options: { width: SIM_WIDTH, height: SIM_HEIGHT, wireframes: false, background: 'transparent' }
+    });
+
+    const robotBody = Bodies.rectangle(0, 0, ROBOT_WIDTH, ROBOT_HEIGHT, { density: 0.05, render: { fillStyle: '#e67e22' } });
+    const frontIndicator = Bodies.rectangle(ROBOT_WIDTH / 2 - 5, 0, 10, 20, { render: { fillStyle: '#ffffff' } });
+    const robot = Body.create({ parts: [robotBody, frontIndicator] });
+    const walls = [
+        // Top Wall
+        Bodies.rectangle(SIM_WIDTH / 2, -10, SIM_WIDTH, 20, { isStatic: true, render: { fillStyle: '#333' } }),
+        // Bottom Wall
+        Bodies.rectangle(SIM_WIDTH / 2, SIM_HEIGHT + 10, SIM_WIDTH, 20, { isStatic: true, render: { fillStyle: '#333' } }),
+        // Left Wall
+        Bodies.rectangle(-10, SIM_HEIGHT / 2, 20, SIM_HEIGHT, { isStatic: true, render: { fillStyle: '#333' } }),
+        // Right Wall
+        Bodies.rectangle(SIM_WIDTH + 10, SIM_HEIGHT / 2, 20, SIM_HEIGHT, { isStatic: true, render: { fillStyle: '#333' } })
+    ];
+    Composite.add(engine.world, [robot, ...walls]);
+    Render.run(render);
+    Runner.run(Runner.create(), engine);
+
+    // --- Editor, Python, and LocalStorage Setup ---
+    const editor = CodeMirror.fromTextArea(document.getElementById('editor'), { mode: 'python', lineNumbers: true });
+    const consoleElement = document.getElementById('console');
+    drawingCtx = document.getElementById('drawing-canvas').getContext('2d');
+
+    async function setup() {
+        // Load code from LocalStorage or use default
+        const savedCode = localStorage.getItem('robotics_code');
+        if (savedCode) {
+            editor.setValue(savedCode);
+        } else {
+            editor.setValue(`# The robot starts in the bottom-left, facing RIGHT.
+# The grid squares are 50x50 pixels.
+print("Starting program...")
+drivetrain.drive_for(450)
+`);
+        }
+        // Save code to LocalStorage on any change
+        editor.on('change', () => {
+            localStorage.setItem('robotics_code', editor.getValue());
+        });
+
+        consoleElement.textContent = "Initializing Python runtime...\n";
+        pyodide = await loadPyodide();
+        consoleElement.textContent += "Python ready.\n";
+        await pyodide.runPythonAsync(`import sys, io; sys.stdout = io.StringIO()`);
+        pyodide.globals.set("drivetrain", new DrivetrainAPI());
+        pyodide.globals.set("sleep", (seconds) => new Promise(resolve => setTimeout(resolve, seconds * 1000)));
+    }
+    setup();
+
+    // --- Map Definitions and Loading ---
+    const mapDefinitions = {
+        blank: () => [], // A function that returns an empty array
+        diskMover: () => [ // A function that returns a new array of bodies
+            Bodies.rectangle(200, 250, 10, 300, { isStatic: true, render: { fillStyle: '#333' } }),
+            Bodies.rectangle(300, 250, 10, 300, { isStatic: true, render: { fillStyle: '#333' } }),
+            Bodies.circle(125, 125, 15, { friction: 1.0, restitution: 0.2, density: 0.5, isStatic: false, render: { fillStyle: '#3498db' } }),
+            Bodies.circle(125, 225, 15, { friction: 1.0, restitution: 0.2, density: 0.5, isStatic: false, render: { fillStyle: '#3498db' } }),
+            Bodies.circle(250, 125, 15, { friction: 1.0, restitution: 0.2, density: 0.5, isStatic: false, render: { fillStyle: '#e74c3c' } }),
+            Bodies.circle(250, 225, 15, { friction: 1.0, restitution: 0.2, density: 0.5, isStatic: false, render: { fillStyle: '#e74c3c' } }),
+            Bodies.circle(375, 125, 15, { friction: 1.0, restitution: 0.2, density: 0.5, isStatic: false, render: { fillStyle: '#2ecc71' } }),
+            Bodies.circle(375, 225, 15, { friction: 1.0, restitution: 0.2, density: 0.5, isStatic: false, render: { fillStyle: '#2ecc71' } })
+        ],
+        slash: () => [ // A function that returns a new array of bodies
+            // Symmetric walls oriented at 45 degrees
+            Bodies.rectangle(150, 350, 10, 250, { isStatic: true, angle: -Math.PI / 4, render: { fillStyle: '#333' } }),
+            Bodies.rectangle(350, 150, 10, 250, { isStatic: true, angle: Math.PI / 4, render: { fillStyle: '#333' } })
+        ]
+    };
+
+    function loadMap(mapName) {
+        // Clear any existing obstacles
+        if (currentMapObstacles.length > 0) {
+            Composite.remove(engine.world, currentMapObstacles);
+        }
+        currentMapObstacles = [];
+
+        // Call the map's generator function to get a fresh set of bodies
+        const newObstacles = mapDefinitions[mapName]();
+        if (newObstacles && newObstacles.length > 0) {
+            currentMapObstacles = newObstacles;
+            Composite.add(engine.world, currentMapObstacles);
+        }
+        resetRobotState(); // Reset robot whenever a map is loaded
+    }
+
+    // --- Action Management ---
+    let currentAction = { type: 'idle' };
+
+    function cancelCurrentAction() {
+        if (currentAction.type !== 'idle' && currentAction.reject) {
+            currentAction.reject('Action Interrupted by user');
+        }
+        Body.setVelocity(robot, { x: 0, y: 0 });
+        Body.setAngularVelocity(robot, 0);
+        resetActionState();
+    }
+
+    function resetActionState() {
+        currentAction = { type: 'idle' };
+        setMotorPower(0, 0);
+    }
+    
+    // --- Robot Control API ---
+    class DrivetrainAPI {
+        drive_for(distance) {
+            cancelCurrentAction();
+            return new Promise((resolve, reject) => {
+                currentAction = { type: 'drive', resolve, reject, target: distance, startValue: { ...robot.position } };
+            });
+        }
+        turn_for(angle) {
+            cancelCurrentAction();
+            return new Promise((resolve, reject) => {
+                currentAction = { type: 'turn', resolve, reject, target: angle, accumulatedRotation: 0, lastAngle: getRotationDegrees() };
+            });
+        }
+        turn_to_heading(heading) {
+            cancelCurrentAction();
+            return new Promise((resolve, reject) => {
+                currentAction = { type: 'heading', resolve, reject, target: heading };
+            });
+        }
+        set_drive_velocity(percent) { driveVelocity = Math.max(1, Math.min(MAX_DRIVE_VELOCITY, percent)); }
+        set_turn_velocity(percent) { turnVelocity = Math.max(1, Math.min(MAX_TURN_VELOCITY, percent)); }
+        stop() { cancelCurrentAction(); }
+        drive() {
+            cancelCurrentAction();
+            setMotorPower(1, 1);
+        }
+        turn() {
+            cancelCurrentAction();
+            setMotorPower(-1, 1); // Default to turning right
+        }
+        pen_down() {
+            isPenDown = true;
+            lastPenPosition = { ...robot.position };
+        }
+        pen_up() {
+            isPenDown = false;
+            lastPenPosition = null;
+        }
+        get_distance() {
+            return readDistanceSensor();
+        }
+    }
+
+    // --- Core Simulation Loop ---
+    let leftMotor = 0, rightMotor = 0;
+    function setMotorPower(left, right) { leftMotor = left; rightMotor = right; }
+
+    Matter.Events.on(engine, 'beforeUpdate', () => {
+        if (isPenDown && lastPenPosition && (robot.position.x !== lastPenPosition.x || robot.position.y !== lastPenPosition.y)) {
+            drawingCtx.beginPath();
+            drawingCtx.moveTo(lastPenPosition.x, lastPenPosition.y);
+            drawingCtx.lineTo(robot.position.x, robot.position.y);
+            drawingCtx.strokeStyle = '#0055cc'; // A nice blue
+            drawingCtx.lineWidth = 2;
+            drawingCtx.stroke();
+        }
+        if (isPenDown) {
+            lastPenPosition = { ...robot.position };
+        }
+
+        handleActionLogic();
+        
+        const forwardVector = Vector.create(Math.cos(robot.angle), Math.sin(robot.angle));
+        const forwardSpeed = Vector.dot(robot.velocity, forwardVector);
+        const newVelocity = Vector.mult(forwardVector, forwardSpeed);
+        Body.setVelocity(robot, newVelocity);
+        
+        Body.setAngularVelocity(robot, robot.angularVelocity * 0.7);
+
+        const forceMag = (leftMotor + rightMotor) * 0.0003 * driveVelocity;
+        const torqueMag = (rightMotor - leftMotor) * 0.05 * turnVelocity;
+        
+        Body.applyForce(robot, robot.position, Vector.mult(forwardVector, forceMag));
+        robot.torque = torqueMag;
+
+        document.getElementById('position').innerText = `X: ${robot.position.x.toFixed(1)}, Y: ${robot.position.y.toFixed(1)}`;
+        document.getElementById('rotation').innerText = `${getRotationDegrees().toFixed(1)} degrees`;
+    });
+    
+    function handleActionLogic() {
+        if (currentAction.type === 'idle') return;
+
+        const completeAndResolveAction = () => {
+            const resolve = currentAction.resolve;
+            resetActionState();
+            Body.setVelocity(robot, { x: 0, y: 0 });
+            Body.setAngularVelocity(robot, 0);
+            if (resolve) resolve();
+        };
+
+        const currentRotation = getRotationDegrees();
+        switch (currentAction.type) {
+            case 'drive':
+                if (Vector.magnitude(Vector.sub(robot.position, currentAction.startValue)) >= Math.abs(currentAction.target)) {
+                    completeAndResolveAction();
+                } else { setMotorPower(Math.sign(currentAction.target), Math.sign(currentAction.target)); }
+                break;
+            case 'turn':
+                let deltaAngle = currentRotation - currentAction.lastAngle;
+                if (deltaAngle < -180) deltaAngle += 360; else if (deltaAngle > 180) deltaAngle -= 360;
+                currentAction.accumulatedRotation += Math.abs(deltaAngle);
+                currentAction.lastAngle = currentRotation;
+                if (currentAction.accumulatedRotation >= Math.abs(currentAction.target)) {
+                    completeAndResolveAction();
+                } else { setMotorPower(-Math.sign(currentAction.target), Math.sign(currentAction.target)); }
+                break;
+            case 'heading':
+                let error = currentAction.target - currentRotation;
+                if (error > 180) error -= 360; else if (error < -180) error += 360;
+                if (Math.abs(error) < 1.5) {
+                    completeAndResolveAction();
+                } else { const turnPower = Math.max(-1, Math.min(1, error / 90)); setMotorPower(-turnPower, turnPower); }
+                break;
+        }
+    }
+
+    function getRotationDegrees() {
+        let angle = (robot.angle * 180 / Math.PI) % 360;
+        return angle < 0 ? angle + 360 : angle;
+    }
+
+    function readDistanceSensor() {
+        const sensorRange = 300;
+        const robotAngle = robot.angle; // Radians
+        const robotPosition = robot.position; // Center of the robot
+
+        // Calculate the world position of the front indicator
+        const localFrontX = ROBOT_WIDTH / 2 - 5; // Local x-offset of frontIndicator from robot center
+        const localFrontY = 0; // Local y-offset of frontIndicator from robot center
+
+        const sensorOriginX = robotPosition.x + localFrontX * Math.cos(robotAngle) - localFrontY * Math.sin(robotAngle);
+        const sensorOriginY = robotPosition.y + localFrontX * Math.sin(robotAngle) + localFrontY * Math.cos(robotAngle);
+        const sensorOrigin = { x: sensorOriginX, y: sensorOriginY };
+
+        const rayEndX = sensorOriginX + sensorRange * Math.cos(robotAngle);
+        const rayEndY = sensorOriginY + sensorRange * Math.sin(robotAngle);
+        const rayEnd = { x: rayEndX, y: rayEndY };
+
+        // Get all bodies in the world except the robot itself and its parts, and static bodies
+        const robotPartIds = robot.parts.map(part => part.id);
+        const bodiesToTest = Composite.allBodies(engine.world).filter(body =>
+            body && body.id && body !== robot && !robotPartIds.includes(body.id) && !body.isStatic
+        );
+
+        const collisions = Matter.Query.ray(bodiesToTest, sensorOrigin, rayEnd);
+
+        if (collisions.length > 0) {
+            // Sort collisions by distance to find the closest one
+            collisions.sort((a, b) => a.point.distance - b.point.distance);
+            const closestCollision = collisions[0];
+            // The distance is from the ray origin to the collision point
+            const distance = Vector.magnitude(Vector.sub(closestCollision.point, sensorOrigin));
+            return distance;
+        } else {
+            return sensorRange; // No collision, return max range
+        }
+    }
+
+    // --- UI Button Listeners ---
+    function transformCode(studentCode) {
+        const blockingCommands = ['drivetrain.drive_for', 'drivetrain.turn_for', 'drivetrain.turn_to_heading', 'sleep'];
+        let transformedCode = studentCode;
+        blockingCommands.forEach(cmd => {
+            const regex = new RegExp(`(?<!await\\s)${cmd.replace('.', '\\.')}`, 'g');
+            transformedCode = transformedCode.replace(regex, `await ${cmd}`);
+        });
+        return transformedCode;
+    }
+
+    async function runCode() {
+        if (isRunning) return;
+        if (!pyodide) { alert("Pyodide is not ready."); return; }
+        isRunning = true;
+        consoleElement.textContent = "Running code...\n";
+        const codeToRun = `
+import asyncio
+async def main():
+${transformCode(editor.getValue()).replace(/^/gm, '    ')}
+await main()
+`;
+        try {
+            await pyodide.runPythonAsync(codeToRun);
+        } catch (e) {
+            if (e.message.includes("Interrupted")) {
+                 consoleElement.textContent += "Execution stopped by user.\n";
+            } else {
+                 consoleElement.textContent += `ERROR: ${e.message}\n`;
+            }
+        } finally {
+            isRunning = false;
+            resetActionState();
+            const stdout = pyodide.runPython("sys.stdout.getvalue()");
+            if (stdout) consoleElement.textContent += stdout;
+            pyodide.runPython("sys.stdout.truncate(0); sys.stdout.seek(0)");
+        }
+    }
+    
+    function stopExecution() {
+        if (isRunning) {
+            cancelCurrentAction();
+        }
+    }
+    
+    function resetRobotState() {
+        cancelCurrentAction();
+        Body.setPosition(robot, ROBOT_START_POS);
+        Body.setVelocity(robot, { x: 0, y: 0 });
+        Body.setAngle(robot, ROBOT_START_ANGLE);
+        Body.setAngularVelocity(robot, 0);
+
+        // Also reset pen state
+        isPenDown = false;
+        lastPenPosition = null;
+        if (drawingCtx) {
+            drawingCtx.clearRect(0, 0, SIM_WIDTH, SIM_HEIGHT);
+        }
+    }
+
+    document.getElementById('run').addEventListener('click', runCode);
+    document.getElementById('stop').addEventListener('click', stopExecution);
+    document.getElementById('reset').addEventListener('click', () => {
+        stopExecution();
+        setTimeout(() => {
+            // Reload the currently selected map to reset everything
+            const currentMapName = document.getElementById('map-selector').value;
+            loadMap(currentMapName);
+            consoleElement.textContent = "Map and robot have been reset.\n";
+        }, 50);
+    });
+    document.getElementById('map-selector').addEventListener('change', (event) => {
+        loadMap(event.target.value);
+    });
+    document.getElementById('copy-code').addEventListener('click', () => {
+        navigator.clipboard.writeText(editor.getValue()).then(() => {
+            const btn = document.getElementById('copy-code');
+            const originalText = btn.textContent;
+            btn.textContent = 'Copied!';
+            setTimeout(() => { btn.textContent = originalText; }, 2000);
+        });
+    });
+
+    // Initial load
+    loadMap('blank');
+</script>
+
+</body>
+</html>
