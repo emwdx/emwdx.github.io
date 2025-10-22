@@ -276,8 +276,11 @@
         } else {
             editor.setValue(`# The robot starts in the bottom-left, facing RIGHT.
 # The grid squares are 50x50 pixels.
-print("Starting program...")
-drivetrain.drive_for(450)
+# Make the robot pop the balloon.
+
+drivetrain.drive_for(100)
+drivetrain.turn_for(90)
+drivetrain.drive_for(200)
 `);
         }
         // Save code to LocalStorage on any change
