@@ -14,10 +14,12 @@
         display: flex;
         flex-direction: row;
         gap: 20px;
+        flex: 1;
     }
     #simulation-column, #editor-column, #reference-column {
         display: flex;
         flex-direction: column;
+        flex: 1;
     }
     #simulation {
     position: relative; /* Added for pen canvas positioning */
@@ -103,7 +105,7 @@
          <div id="info">
             <h3>Robot Data</h3>
             <p>Position: <span id="position"></span></p>
-            <p>Heading: <span id="rotation"></span></p>
+            <p>Rotation: <span id="rotation"></span></p>
             <p>Balloons Popped: <span id="balloons-popped">0</span></p>
             <p>Elapsed Time: <span id="elapsed-time">0.00</span>s</p>
         </div>
