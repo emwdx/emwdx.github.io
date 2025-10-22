@@ -103,7 +103,7 @@
          <div id="info">
             <h3>Robot Data</h3>
             <p>Position: <span id="position"></span></p>
-            <p>Rotation: <span id="rotation"></span></p>
+            <p>Heading: <span id="rotation"></span></p>
             <p>Balloons Popped: <span id="balloons-popped">0</span></p>
             <p>Elapsed Time: <span id="elapsed-time">0.00</span>s</p>
         </div>
@@ -173,6 +173,16 @@
             <h3>Get Number</h3>
             <p>Reads the number of the grid square the robot is on (only on 'Number Grid' map).</p>
             <code>drivetrain.get_number()</code>
+        </div>
+        <div class="command">
+            <h3>Get Position</h3>
+            <p>Reads the position of the robot as an array [positionX,positionY].</p>
+            <code>drivetrain.get_position()</code>
+        </div>
+        <div class="command">
+            <h3>Get Heading</h3>
+            <p>Reads the heading of the robot in degrees.</p>
+            <code>drivetrain.get_heading()</code>
         </div>
 
     </div>
@@ -276,11 +286,8 @@
         } else {
             editor.setValue(`# The robot starts in the bottom-left, facing RIGHT.
 # The grid squares are 50x50 pixels.
-# Make the robot pop the balloon.
-
-drivetrain.drive_for(100)
-drivetrain.turn_for(90)
-drivetrain.drive_for(200)
+print("Starting program...")
+drivetrain.drive_for(450)
 `);
         }
         // Save code to LocalStorage on any change
@@ -431,6 +438,12 @@ drivetrain.drive_for(200)
                 return foundSquare.number;
             }
             return null; // Should not happen if robot is within bounds
+        }
+        get_heading(){
+            return getRotationDegrees(robot.angle)
+        }
+        get_position(){
+            return [robot.position.x,robot.position.y]
         }
     }
 
