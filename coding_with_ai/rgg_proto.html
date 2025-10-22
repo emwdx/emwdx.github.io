@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classroom Conversation Timer</title>
+    <style>
+        :root {
+            --bg-color: #2c3e50;
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --text-color: #ecf0f1;
+            --light-bg: #34495e;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --border-color: #4a627a;
+            --font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .screen {
+            background-color: var(--light-bg);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            display: none; /* All screens hidden by default */
+        }
+        #setup-screen { display: block; } /* Show setup screen initially */
+
+        h1, h2, h3 { color: var(--primary-color); }
+        h1 { margin-top: 0; }
+
+        .input-group { margin-bottom: 20px; }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            box-sizing: border-box;
+            background-color: var(--bg-color);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-color);
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        textarea { height: 200px; resize: vertical; }
+
+        .time-settings { display: flex; gap: 20px; }
+        .time-settings .input-group { flex: 1; }
+
+        .button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+            margin: 5px;
+        }
+
+        .button:hover { background-color: var(--secondary-color); }
+        .button:active { transform: scale(0.98); }
+        .button.save-btn { background-color: var(--success-color); }
+        .button.save-btn:hover { background-color: #27ae60; }
+        .button.reset-btn { background-color: var(--danger-color); }
+        .button.reset-btn:hover { background-color: #c0392b; }
+        .button.new-activity-btn { background-color: var(--warning-color); }
+        .button.new-activity-btn:hover { background-color: #e67e22; }
+
+        /* --- Live Activity Screen --- */
+        .live-grid {
+            display: grid;
+            grid-template-columns: 3fr 2fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .groups-panel { padding: 20px; border-radius: 15px; }
+
+        #groups-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+        }
+        
+        .group-card {
+            background-color: var(--bg-color);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid var(--primary-color);
+            font-size: 1.6em;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .timer-panel {
+            position: sticky;
+            top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .timer-widget, .status-widget { padding: 30px; border-radius: 15px; }
+        .timer-display { position: relative; width: 250px; height: 250px; margin: 0 auto; }
+        .timer-display svg { transform: rotate(-90deg); }
+        .timer-arc { fill: none; }
+        .timer-arc-background { stroke: var(--bg-color); stroke-width: 15; }
+        .timer-arc-progress {
+            stroke: var(--success-color);
+            stroke-width: 15;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s linear, stroke 0.3s;
+        }
+        .timer-text {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4em;
+            font-weight: bold;
+        }
+        .status-info { font-size: 1.5em; }
+        .status-info div { margin-bottom: 10px; }
+        .controls { margin-top: 20px; }
+
+        /* --- Results Screen --- */
+        #results-container {
+            text-align: left;
+            margin-top: 20px;
+            column-count: 2;
+            column-gap: 30px;
+        }
+        .result-item {
+            background: var(--bg-color);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            break-inside: avoid-column;
+        }
+        .result-item strong {
+            color: var(--primary-color);
+            font-size: 1.2em;
+        }
+
+        @media (max-width: 900px) {
+            .live-grid { grid-template-columns: 1fr; }
+            .timer-panel { position: static; flex-direction: row; justify-content: space-around; }
+        }
+        @media (max-width: 600px) {
+            #results-container { column-count: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Setup Screen -->
+        <div id="setup-screen" class="screen">
+            <h1>Classroom Conversation Timer</h1>
+            <div class="input-group">
+                <label for="class-name">Class Name</label>
+                <input type="text" id="class-name" placeholder="E.g., Period 3 English">
+            </div>
+            <div class="input-group">
+                <label for="student-names">Student Names (one per line)</label>
+                <textarea id="student-names" placeholder="Alice&#10;Bob&#10;Charlie"></textarea>
+            </div>
+            <button id="save-names-btn" class="button save-btn">Save Names for this Class</button>
+            <hr style="border-color: var(--border-color); margin: 30px 0;">
+            <div class="time-settings">
+                <div class="input-group">
+                    <label for="total-time">Total Activity Time (minutes)</label>
+                    <input type="number" id="total-time" value="10" min="1">
+                </div>
+                <div class="input-group">
+                    <label for="meeting-time">Time per Conversation (seconds)</label>
+                    <input type="number" id="meeting-time" value="90" min="10">
+                </div>
+            </div>
+            <button id="start-btn" class="button">Start Activity</button>
+        </div>
+
+        <!-- Live Activity Screen -->
+        <div id="activity-screen" class="screen">
+            <div class="live-grid">
+                <div class="groups-panel">
+                    <h2 id="round-title">Round 1 Groups</h2>
+                    <div id="groups-container"></div>
+                </div>
+                <div class="timer-panel">
+                    <div class="timer-widget">
+                        <h3>Time Left in Round</h3>
+                        <div class="timer-display">
+                            <svg width="250" height="250" viewBox="0 0 250 250">
+                                <circle class="timer-arc timer-arc-background" r="110" cx="125" cy="125"></circle>
+                                <circle class="timer-arc timer-arc-progress" id="timer-progress" r="110" cx="125" cy="125"></circle>
+                            </svg>
+                            <div class="timer-text" id="round-time-left">90</div>
+                        </div>
+                    </div>
+                    <div class="status-widget">
+                        <h3>Activity Status</h3>
+                        <div class="status-info">
+                            <div id="current-round-status">Round: 1 / 7</div>
+                            <div id="total-time-status">Total Time Left: 09:45</div>
+                        </div>
+                        <div class="controls">
+                            <button id="pause-resume-btn" class="button">Pause</button>
+                            <button id="end-early-btn" class="button reset-btn">End Activity Early</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results-screen" class="screen">
+            <h1>Activity Report</h1>
+            <h2>Meeting History</h2>
+            <div id="results-container"></div>
+            <button id="new-activity-btn" class="button new-activity-btn">Start New Activity</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // DOM Elements
+            const setupScreen = document.getElementById('setup-screen');
+            const activityScreen = document.getElementById('activity-screen');
+            const resultsScreen = document.getElementById('results-screen');
+            // ... (rest of the element selections are the same)
+            const classNameInput = document.getElementById('class-name');
+            const studentNamesTextarea = document.getElementById('student-names');
+            const saveNamesBtn = document.getElementById('save-names-btn');
+            const totalTimeInput = document.getElementById('total-time');
+            const meetingTimeInput = document.getElementById('meeting-time');
+            const startBtn = document.getElementById('start-btn');
+            const pauseResumeBtn = document.getElementById('pause-resume-btn');
+            const endEarlyBtn = document.getElementById('end-early-btn');
+            const groupsContainer = document.getElementById('groups-container');
+            const roundTitle = document.getElementById('round-title');
+            const roundTimeLeftEl = document.getElementById('round-time-left');
+            const currentRoundStatusEl = document.getElementById('current-round-status');
+            const totalTimeStatusEl = document.getElementById('total-time-status');
+            const timerProgress = document.getElementById('timer-progress');
+            const resultsContainer = document.getElementById('results-container');
+            const newActivityBtn = document.getElementById('new-activity-btn');
+
+
+            // State variables
+            let students = [];
+            let meetingHistory = new Map(); // Key: student, Value: Set of students they've met
+            let totalTimeSeconds, meetingTimeSeconds, totalRounds, currentRound;
+            let totalTimeRemaining, roundTimeRemaining;
+            let mainInterval;
+            let isPaused = false;
+            
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+            // --- Persistence Logic ---
+            const loadNames = () => {
+                const className = classNameInput.value.trim();
+                if (className) {
+                    const savedNames = localStorage.getItem(`class_names_${className}`);
+                    studentNamesTextarea.value = savedNames ? JSON.parse(savedNames).join('\n') : '';
+                }
+            };
+            const saveNames = () => {
+                const className = classNameInput.value.trim();
+                if (!className) { alert('Please enter a class name to save the list.'); return; }
+                const names = studentNamesTextarea.value.split('\n').map(name => name.trim()).filter(Boolean);
+                if (names.length > 0) {
+                    localStorage.setItem(`class_names_${className}`, JSON.stringify(names));
+                    localStorage.setItem('last_class_name', className);
+                    alert(`Names saved for class "${className}"!`);
+                } else { alert('Please enter at least one name.'); }
+            };
+            
+            const lastClassName = localStorage.getItem('last_class_name');
+            if (lastClassName) {
+                classNameInput.value = lastClassName;
+                loadNames();
+            }
+            classNameInput.addEventListener('keyup', loadNames);
+            saveNamesBtn.addEventListener('click', saveNames);
+
+            // --- Optimized Grouping Logic ---
+            const shuffleArray = (array) => {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            };
+
+            const generateOptimalGroups = () => {
+                let unpairedStudents = shuffleArray([...students]);
+                const groups = [];
+                
+                while (unpairedStudents.length >= 2) {
+                    const studentA = unpairedStudents.shift();
+                    let partnerFound = false;
+
+                    // Try to find a new partner
+                    for (let i = 0; i < unpairedStudents.length; i++) {
+                        const studentB = unpairedStudents[i];
+                        if (!meetingHistory.get(studentA).has(studentB)) {
+                            groups.push([studentA, studentB]);
+                            unpairedStudents.splice(i, 1); // Remove partner from pool
+                            partnerFound = true;
+                            break;
+                        }
+                    }
+
+                    // Fallback: If no new partner is available, pair with anyone
+                    if (!partnerFound) {
+                        const studentB = unpairedStudents.shift();
+                        groups.push([studentA, studentB]);
+                    }
+                }
+                
+                // Handle odd student out
+                if (unpairedStudents.length > 0 && groups.length > 0) {
+                    groups[0].push(unpairedStudents.pop());
+                }
+
+                // Update meeting history for this round
+                groups.forEach(group => {
+                    for (let i = 0; i < group.length; i++) {
+                        for (let j = i + 1; j < group.length; j++) {
+                            const student1 = group[i];
+                            const student2 = group[j];
+                            meetingHistory.get(student1).add(student2);
+                            meetingHistory.get(student2).add(student1);
+                        }
+                    }
+                });
+
+                return groups;
+            };
+
+            const displayGroups = (groups) => {
+                groupsContainer.innerHTML = '';
+                groups.forEach(group => {
+                    const card = document.createElement('div');
+                    card.className = 'group-card';
+                    card.textContent = group.join(' & ');
+                    groupsContainer.appendChild(card);
+                });
+            };
+
+            // --- Timer & Activity Logic ---
+            const formatTime = (seconds) => {
+                const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+                const secs = (seconds % 60).toString().padStart(2, '0');
+                return `${mins}:${secs}`;
+            };
+            
+            const updateTimerArc = () => {
+                const radius = timerProgress.r.baseVal.value;
+                const circumference = 2 * Math.PI * radius;
+                const offset = circumference - (roundTimeRemaining / meetingTimeSeconds) * circumference;
+                timerProgress.style.strokeDasharray = circumference;
+                timerProgress.style.strokeDashoffset = offset;
+                timerProgress.style.stroke = roundTimeRemaining <= 10 ? 'var(--danger-color)' : 'var(--success-color)';
+            };
+
+            const playSound = () => {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(880, audioContext.currentTime); // A5 note
+                gainNode.gain.setValueAtTime(0.5, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.5);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.5);
+            };
+
+            const tick = () => {
+                if (isPaused) return;
+
+                totalTimeRemaining--;
+                roundTimeRemaining--;
+                
+                totalTimeStatusEl.textContent = `Total Time Left: ${formatTime(totalTimeRemaining)}`;
+                roundTimeLeftEl.textContent = roundTimeRemaining;
+                updateTimerArc();
+
+                if (roundTimeRemaining <= 0) {
+                    playSound();
+                    startNewRound();
+                }
+
+                if (totalTimeRemaining <= 0) {
+                    endActivity("Time's up!");
+                }
+            };
+            
+            const startNewRound = () => {
+                currentRound++;
+                if (currentRound > totalRounds) {
+                    endActivity("All rounds complete!");
+                    return;
+                }
+                
+                roundTimeRemaining = meetingTimeSeconds;
+                
+                roundTitle.textContent = `Round ${currentRound} Groups`;
+                currentRoundStatusEl.textContent = `Round: ${currentRound} / ${totalRounds}`;
+                roundTimeLeftEl.textContent = roundTimeRemaining;
+                updateTimerArc();
+                
+                const newGroups = generateOptimalGroups();
+                displayGroups(newGroups);
+            };
+
+            const startActivity = () => {
+                students = studentNamesTextarea.value.split('\n').map(name => name.trim()).filter(Boolean);
+                if (students.length < 2) {
+                    alert('Please enter at least 2 student names.');
+                    return;
+                }
+                
+                totalTimeSeconds = parseInt(totalTimeInput.value) * 60;
+                meetingTimeSeconds = parseInt(meetingTimeInput.value);
+                if (isNaN(totalTimeSeconds) || totalTimeSeconds <= 0 || isNaN(meetingTimeSeconds) || meetingTimeSeconds <= 0) {
+                    alert('Please enter valid times.'); return;
+                }
+                if(meetingTimeSeconds > totalTimeSeconds){
+                    alert('Meeting time cannot be longer than total activity time.'); return;
+                }
+
+                // Initialize state for new activity
+                totalRounds = Math.floor(totalTimeSeconds / meetingTimeSeconds);
+                totalTimeRemaining = totalTimeSeconds;
+                currentRound = 0;
+                isPaused = false;
+                meetingHistory.clear();
+                students.forEach(student => meetingHistory.set(student, new Set()));
+                
+                setupScreen.style.display = 'none';
+                activityScreen.style.display = 'block';
+                pauseResumeBtn.textContent = 'Pause';
+                
+                startNewRound();
+                mainInterval = setInterval(tick, 1000);
+            };
+            
+            const togglePause = () => {
+                isPaused = !isPaused;
+                pauseResumeBtn.textContent = isPaused ? 'Resume' : 'Pause';
+            };
+            
+            const endActivity = (message) => {
+                clearInterval(mainInterval);
+                mainInterval = null;
+                alert(message);
+                displayResults();
+            };
+
+            const displayResults = () => {
+                activityScreen.style.display = 'none';
+                resultsScreen.style.display = 'block';
+                resultsContainer.innerHTML = '';
+                
+                const sortedStudents = [...students].sort();
+
+                sortedStudents.forEach(student => {
+                    const metSet = meetingHistory.get(student);
+                    const metList = metSet && metSet.size > 0 ? [...metSet].sort().join(', ') : 'Nobody yet.';
+                    
+                    const resultItem = document.createElement('div');
+                    resultItem.className = 'result-item';
+                    resultItem.innerHTML = `<strong>${student}</strong> met with: ${metList}`;
+                    resultsContainer.appendChild(resultItem);
+                });
+            };
+
+            const resetToSetup = () => {
+                clearInterval(mainInterval);
+                mainInterval = null;
+                resultsScreen.style.display = 'none';
+                activityScreen.style.display = 'none';
+                setupScreen.style.display = 'block';
+            };
+
+            // Event Listeners
+            startBtn.addEventListener('click', startActivity);
+            pauseResumeBtn.addEventListener('click', togglePause);
+            endEarlyBtn.addEventListener('click', () => {
+                if (confirm('Are you sure you want to end the activity and see the results?')) {
+                    endActivity('Activity ended early.');
+                }
+            });
+            newActivityBtn.addEventListener('click', resetToSetup);
+        });
+    </script>
+</body>
+</html>
