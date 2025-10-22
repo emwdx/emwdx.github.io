@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Advanced Robotics Simulator</title>
+<title>EMW Robot Simulator</title>
 <style>
     body {
         font-family: sans-serif;
@@ -92,17 +92,20 @@
             <label for="map-selector">Choose a Map:</label>
             <select name="maps" id="map-selector">
                 <option value="blank">Blank Grid</option>
-                <option value="diskMover">Disk Slider</option>
+                <!--option value="diskMover">Disk Slider</option>-->
                 <option value="slash">Slash Map</option>
+                <option value="numberGrid">Number Grid</option>
             </select>
         </div>
         <div id="simulation">
-            <canvas id="drawing-canvas" width="500" height="500" style="position: absolute; top: 0; left: 0; pointer-events: none;"></canvas>
+            <canvas id="drawing-canvas" width="500" height="500" style="position: absolute; top: 0; left: 0; z-index: 1;"></canvas>
         </div>
          <div id="info">
             <h3>Robot Data</h3>
             <p>Position: <span id="position"></span></p>
             <p>Rotation: <span id="rotation"></span></p>
+            <p>Balloons Popped: <span id="balloons-popped">0</span></p>
+            <p>Elapsed Time: <span id="elapsed-time">0.00</span>s</p>
         </div>
     </div>
 
@@ -165,21 +168,13 @@
             <p>Lifts the pen to stop drawing.</p>
             <code>drivetrain.pen_up()</code>
         </div>
+        
         <div class="command">
-            <h3>Get Distance</h3>
-            <p>Reads the distance sensor (0-300 pixels).</p>
-            <code>drivetrain.get_distance()</code>
+            <h3>Get Number</h3>
+            <p>Reads the number of the grid square the robot is on (only on 'Number Grid' map).</p>
+            <code>drivetrain.get_number()</code>
         </div>
-        <div class="command">
-            <h3>Drive Continuously</h3>
-            <p>Drives forward indefinitely at the set velocity.</p>
-            <code>drivetrain.drive()</code>
-        </div>
-        <div class="command">
-            <h3>Turn Continuously</h3>
-            <p>Turns right indefinitely at the set velocity.</p>
-            <code>drivetrain.turn()</code>
-        </div>
+
     </div>
 </div>
 
@@ -190,8 +185,8 @@
     const GRID_SIZE = 50;
     const ROBOT_WIDTH = 40;
     const ROBOT_HEIGHT = 40;
-    const ROBOT_START_POS = { x: GRID_SIZE / 2, y: SIM_HEIGHT - (GRID_SIZE / 2) };
-    const ROBOT_START_ANGLE = 0;
+        const ROBOT_START_POS = { x: GRID_SIZE / 2, y: SIM_HEIGHT - (GRID_SIZE / 2) };
+    const ROBOT_START_ANGLE = 0; // Start facing East (90 degrees)
 
     let pyodide;
     let isRunning = false;
@@ -204,7 +199,17 @@
     // --- Pen Drawing Variables ---
     let isPenDown = false;
     let lastPenPosition = null;
-    let drawingCtx;
+
+    // --- Balloon Variables ---
+    let balloons = [];
+    let balloonsPopped = 0;
+
+    // --- Timer Variables ---
+    let startTime = 0;
+    let timerInterval;
+
+    // --- Number Grid Variables ---
+    let numberGridData = [];
 
     // --- Matter.js Physics Setup ---
     const { Engine, Render, Runner, Bodies, Body, Composite, Vector } = Matter;
@@ -233,13 +238,37 @@
     Composite.add(engine.world, [robot, ...walls]);
     Render.run(render);
     Runner.run(Runner.create(), engine);
+    render.canvas.style.zIndex = '0'; // Explicitly set Matter.js canvas z-index
+
+    Matter.Events.on(engine, 'collisionStart', (event) => {
+        const pairs = event.pairs;
+        pairs.forEach(pair => {
+            const { bodyA, bodyB } = pair;
+
+            const isRobotA = (bodyA === robot || robot.parts.includes(bodyA));
+            const isRobotB = (bodyB === robot || robot.parts.includes(bodyB));
+
+            const isBalloonA = (bodyA.label === 'balloon');
+            const isBalloonB = (bodyB.label === 'balloon');
+
+            if ((isRobotA && isBalloonB) || (isRobotB && isBalloonA)) {
+                const balloonBody = isBalloonA ? bodyA : bodyB;
+                if (Composite.get(engine.world, balloonBody.id, 'body')) { // Check if the balloon is still in the world
+                    Composite.remove(engine.world, balloonBody);
+                    balloonsPopped++;
+                    document.getElementById('balloons-popped').innerText = balloonsPopped;
+                }
+            }
+        });
+    });
 
     // --- Editor, Python, and LocalStorage Setup ---
     const editor = CodeMirror.fromTextArea(document.getElementById('editor'), { mode: 'python', lineNumbers: true });
     const consoleElement = document.getElementById('console');
-    drawingCtx = document.getElementById('drawing-canvas').getContext('2d');
+    let drawingCtx;
 
     async function setup() {
+        drawingCtx = document.getElementById('drawing-canvas').getContext('2d');
         // Load code from LocalStorage or use default
         const savedCode = localStorage.getItem('robotics_code');
         if (savedCode) {
@@ -267,7 +296,9 @@ drivetrain.drive_for(450)
 
     // --- Map Definitions and Loading ---
     const mapDefinitions = {
-        blank: () => [], // A function that returns an empty array
+        blank: () => [
+            Bodies.circle(250, 250, 20, { isStatic: false, density: 0.001, friction: 0.1, restitution: 0.8, render: { fillStyle: '#ff0000' }, label: 'balloon' })
+        ],
         diskMover: () => [ // A function that returns a new array of bodies
             Bodies.rectangle(200, 250, 10, 300, { isStatic: true, render: { fillStyle: '#333' } }),
             Bodies.rectangle(300, 250, 10, 300, { isStatic: true, render: { fillStyle: '#333' } }),
@@ -281,8 +312,17 @@ drivetrain.drive_for(450)
         slash: () => [ // A function that returns a new array of bodies
             // Symmetric walls oriented at 45 degrees
             Bodies.rectangle(150, 350, 10, 250, { isStatic: true, angle: -Math.PI / 4, render: { fillStyle: '#333' } }),
-            Bodies.rectangle(350, 150, 10, 250, { isStatic: true, angle: Math.PI / 4, render: { fillStyle: '#333' } })
-        ]
+            Bodies.rectangle(350, 150, 10, 250, { isStatic: true, angle: Math.PI / 4, render: { fillStyle: '#333' } }),
+            Bodies.circle(200, 200, 20, { isStatic: false, density: 0.001, friction: 0.1, restitution: 0.8, render: { fillStyle: '#ff0000' }, label: 'balloon' }),
+            Bodies.circle(475, 25, 20, { isStatic: false, density: 0.001, friction: 0.1, restitution: 0.8, render: { fillStyle: '#ff0000' }, label: 'balloon' }),
+            Bodies.circle(475, 425, 20, { isStatic: false, density: 0.001, friction: 0.1, restitution: 0.8, render: { fillStyle: '#ff0000' }, label: 'balloon' })
+
+        ],
+        numberGrid: () => {
+            // This map has no Matter.js bodies, but triggers drawing of numbers
+            drawNumberGrid();
+            return [];
+        }
     };
 
     function loadMap(mapName) {
@@ -292,13 +332,30 @@ drivetrain.drive_for(450)
         }
         currentMapObstacles = [];
 
+        // Clear any existing balloons
+        if (balloons.length > 0) {
+            Composite.remove(engine.world, balloons);
+        }
+        balloons = [];
+        balloonsPopped = 0;
+        document.getElementById('balloons-popped').innerText = balloonsPopped;
+
+        // Reset robot state and clear drawing canvas BEFORE drawing new map elements
+        resetRobotState(); // This will clear the drawing canvas
+
         // Call the map's generator function to get a fresh set of bodies
         const newObstacles = mapDefinitions[mapName]();
         if (newObstacles && newObstacles.length > 0) {
-            currentMapObstacles = newObstacles;
-            Composite.add(engine.world, currentMapObstacles);
+            // Separate balloons from other obstacles if map returns mixed
+            newObstacles.forEach(body => {
+                if (body.label === 'balloon') {
+                    balloons.push(body);
+                } else {
+                    currentMapObstacles.push(body);
+                }
+            });
+            Composite.add(engine.world, [...currentMapObstacles, ...balloons]);
         }
-        resetRobotState(); // Reset robot whenever a map is loaded
     }
 
     // --- Action Management ---
@@ -341,14 +398,6 @@ drivetrain.drive_for(450)
         set_drive_velocity(percent) { driveVelocity = Math.max(1, Math.min(MAX_DRIVE_VELOCITY, percent)); }
         set_turn_velocity(percent) { turnVelocity = Math.max(1, Math.min(MAX_TURN_VELOCITY, percent)); }
         stop() { cancelCurrentAction(); }
-        drive() {
-            cancelCurrentAction();
-            setMotorPower(1, 1);
-        }
-        turn() {
-            cancelCurrentAction();
-            setMotorPower(-1, 1); // Default to turning right
-        }
         pen_down() {
             isPenDown = true;
             lastPenPosition = { ...robot.position };
@@ -359,6 +408,26 @@ drivetrain.drive_for(450)
         }
         get_distance() {
             return readDistanceSensor();
+        }
+        get_number() {
+            if (document.getElementById('map-selector').value !== 'numberGrid') {
+                console.warn("drivetrain.get_number() only works on 'Number Grid' map.");
+                return null;
+            }
+
+            const robotX = robot.position.x;
+            const robotY = robot.position.y;
+
+            const robotGridX = Math.floor(robotX / GRID_SIZE);
+            const robotGridY = Math.floor(robotY / GRID_SIZE);
+
+            // Find the number in numberGridData
+            const foundSquare = numberGridData.find(item => item.gridX === robotGridX && item.gridY === robotGridY);
+
+            if (foundSquare) {
+                return foundSquare.number;
+            }
+            return null; // Should not happen if robot is within bounds
         }
     }
 
@@ -423,76 +492,140 @@ drivetrain.drive_for(450)
                 currentAction.lastAngle = currentRotation;
                 if (currentAction.accumulatedRotation >= Math.abs(currentAction.target)) {
                     completeAndResolveAction();
-                } else { setMotorPower(-Math.sign(currentAction.target), Math.sign(currentAction.target)); }
+                } else { setMotorPower(Math.sign(currentAction.target), -Math.sign(currentAction.target)); }
                 break;
             case 'heading':
                 let error = currentAction.target - currentRotation;
                 if (error > 180) error -= 360; else if (error < -180) error += 360;
-                if (Math.abs(error) < 1.5) {
+                if (Math.abs(error) < 5) {
                     completeAndResolveAction();
-                } else { const turnPower = Math.max(-1, Math.min(1, error / 90)); setMotorPower(-turnPower, turnPower); }
+                } else {
+                    const turnPower = Math.max(-1, Math.min(1, error / 90));
+                    // A positive error requires a counter-clockwise turn.
+                    // To get counter-clockwise (positive) torque, we need setMotorPower(-, +).
+                    setMotorPower(-turnPower, turnPower);
+                }
                 break;
         }
     }
 
     function getRotationDegrees() {
-        let angle = (robot.angle * 180 / Math.PI) % 360;
-        return angle < 0 ? angle + 360 : angle;
+        let angleDegrees = (robot.angle * 180 / Math.PI);
+        // Convert from Matter.js angle (0 is East) to compass heading (0 is North)
+        let heading = angleDegrees + 90;
+        // Normalize to a 0-360 degree range
+        return (heading % 360 + 360) % 360;
     }
+    function drawNumberGrid() {
+        if (!drawingCtx) return;
+        drawingCtx.clearRect(0, 0, SIM_WIDTH, SIM_HEIGHT);
+        numberGridData = []; // Clear previous data
+        let number = 1;
+        for (let y = (SIM_HEIGHT / GRID_SIZE) - 1; y >= 0; y--) {
+            for (let x = 0; x < SIM_WIDTH / GRID_SIZE; x++) {
+                const gridX = x;
+                const gridY = y;
+                const worldX = gridX * GRID_SIZE + GRID_SIZE / 2;
+                const worldY = gridY * GRID_SIZE + GRID_SIZE / 2;
 
-    function readDistanceSensor() {
-        const sensorRange = 300;
-        const robotAngle = robot.angle; // Radians
-        const robotPosition = robot.position; // Center of the robot
+                numberGridData.push({ gridX, gridY, number });
 
-        // Calculate the world position of the front indicator
-        const localFrontX = ROBOT_WIDTH / 2 - 5; // Local x-offset of frontIndicator from robot center
-        const localFrontY = 0; // Local y-offset of frontIndicator from robot center
-
-        const sensorOriginX = robotPosition.x + localFrontX * Math.cos(robotAngle) - localFrontY * Math.sin(robotAngle);
-        const sensorOriginY = robotPosition.y + localFrontX * Math.sin(robotAngle) + localFrontY * Math.cos(robotAngle);
-        const sensorOrigin = { x: sensorOriginX, y: sensorOriginY };
-
-        const rayEndX = sensorOriginX + sensorRange * Math.cos(robotAngle);
-        const rayEndY = sensorOriginY + sensorRange * Math.sin(robotAngle);
-        const rayEnd = { x: rayEndX, y: rayEndY };
-
-        // Get all bodies in the world except the robot itself and its parts, and static bodies
-        const robotPartIds = robot.parts.map(part => part.id);
-        const bodiesToTest = Composite.allBodies(engine.world).filter(body =>
-            body && body.id && body !== robot && !robotPartIds.includes(body.id) && !body.isStatic
-        );
-
-        const collisions = Matter.Query.ray(bodiesToTest, sensorOrigin, rayEnd);
-
-        if (collisions.length > 0) {
-            // Sort collisions by distance to find the closest one
-            collisions.sort((a, b) => a.point.distance - b.point.distance);
-            const closestCollision = collisions[0];
-            // The distance is from the ray origin to the collision point
-            const distance = Vector.magnitude(Vector.sub(closestCollision.point, sensorOrigin));
-            return distance;
-        } else {
-            return sensorRange; // No collision, return max range
+                drawingCtx.font = '20px sans-serif';
+                drawingCtx.fillStyle = '#333';
+                drawingCtx.textAlign = 'center';
+                drawingCtx.fillText(number.toString(), worldX, worldY);
+                number++;
+            }
         }
     }
 
-    // --- UI Button Listeners ---
-    function transformCode(studentCode) {
-        const blockingCommands = ['drivetrain.drive_for', 'drivetrain.turn_for', 'drivetrain.turn_to_heading', 'sleep'];
-        let transformedCode = studentCode;
-        blockingCommands.forEach(cmd => {
-            const regex = new RegExp(`(?<!await\\s)${cmd.replace('.', '\\.')}`, 'g');
-            transformedCode = transformedCode.replace(regex, `await ${cmd}`);
-        });
-        return transformedCode;
+function readDistanceSensor() {
+        const sensorStart = robot.position;
+        const sensorEnd = Vector.add(sensorStart, Vector.mult(Vector.create(Math.cos(robot.angle), Math.sin(robot.angle)), 300));
+
+        const bodies = [...new Set([...Composite.allBodies(engine.world), ...walls])];
+
+        const collisions = Matter.Query.ray(bodies, sensorStart, sensorEnd);
+
+        const filteredCollisions = collisions;
+
+        console.log('filtered collisions', filteredCollisions);
+
+        if (filteredCollisions.length > 0) {
+            // Find the closest collision point
+            let closestCollision = filteredCollisions[filteredCollisions.length-1];
+            return closestCollision.depth//minDistance;
+            let minDistance = Vector.magnitude(Vector.sub(closestCollision.point, sensorStart));
+
+            for (let i = 1; i < filteredCollisions.length; i++) {
+                const distance = Vector.magnitude(Vector.sub(filteredCollisions[i].point, sensorStart));
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    closestCollision = filteredCollisions[i];
+                }
+            }
+            return closestCollision.depth//minDistance;
+        }
+
+        return 300; // No collision detected within 300px
     }
 
+
+
+    // --- UI Button Listeners ---
+    function transformCode(studentCode) {
+        // A list of the built-in, blocking API commands
+        const blockingCommands = ['drivetrain.drive_for', 'drivetrain.turn_for', 'drivetrain.turn_to_heading', 'sleep'];
+        let transformedCode = studentCode;
+
+        // Step 1: Find all user-defined function names from the original code
+        const userFunctionNames = [];
+        const funcDefRegex = /^\s*def\s+([a-zA-Z_]\w*)/gm; // Matches 'def function_name'
+        let match;
+        while ((match = funcDefRegex.exec(studentCode)) !== null) {
+            userFunctionNames.push(match[1]);
+        }
+
+        // Step 2: Convert all standard function definitions to async definitions
+        const defToAsyncDefRegex = /^\s*def\s+/gm;
+        transformedCode = transformedCode.replace(defToAsyncDefRegex, 'async def ');
+
+        // Step 3: Combine built-in commands and user functions into a single list
+        const allCommandsToAwait = [...blockingCommands, ...userFunctionNames];
+
+        // Step 4: Add 'await' ONLY to function CALLS, not definitions.
+        allCommandsToAwait.forEach(cmd => {
+            // REGEX EXPLANATION:
+            // (?<!...)         - This is a "Negative Lookbehind". It ensures the text before our match IS NOT what's inside.
+            // async\\s+def\\s+ - Matches "async def "
+            // |                 - An "OR" condition
+            // await\\s+         - Matches "await "
+            //
+            // So, (?<!async\\s+def\\s+|await\\s+) means:
+            // "Match only if the text immediately before is NOT 'async def ' and is NOT 'await '".
+            // This prevents us from matching a function definition or a call that already has await.
+            const commandCallRegex = new RegExp(`(?<!async\\s+def\\s+|await\\s+)(${cmd.replace('.', '\\.')})\\s*\\(`, 'g');
+            
+            // The replacement adds 'await ' before the captured group ($1), which is the function name.
+            transformedCode = transformedCode.replace(commandCallRegex, `await $1(`);
+        });
+
+        return transformedCode;
+    }
     async function runCode() {
         if (isRunning) return;
         if (!pyodide) { alert("Pyodide is not ready."); return; }
         isRunning = true;
         consoleElement.textContent = "Running code...\n";
+
+        // Start timer
+        startTime = performance.now();
+        timerInterval = setInterval(() => {
+            const currentTime = performance.now();
+            const elapsed = (currentTime - startTime) / 1000;
+            document.getElementById('elapsed-time').innerText = elapsed.toFixed(2);
+        }, 100); // Update every 100ms
+
         const codeToRun = `
 import asyncio
 async def main():
@@ -510,6 +643,10 @@ await main()
         } finally {
             isRunning = false;
             resetActionState();
+            clearInterval(timerInterval); // Stop timer
+            const finalElapsedTime = (performance.now() - startTime) / 1000;
+            document.getElementById('elapsed-time').innerText = finalElapsedTime.toFixed(2); // Display final time
+
             const stdout = pyodide.runPython("sys.stdout.getvalue()");
             if (stdout) consoleElement.textContent += stdout;
             pyodide.runPython("sys.stdout.truncate(0); sys.stdout.seek(0)");
@@ -519,6 +656,7 @@ await main()
     function stopExecution() {
         if (isRunning) {
             cancelCurrentAction();
+            clearInterval(timerInterval); // Stop timer if execution is stopped
         }
     }
     
@@ -535,6 +673,11 @@ await main()
         if (drawingCtx) {
             drawingCtx.clearRect(0, 0, SIM_WIDTH, SIM_HEIGHT);
         }
+        numberGridData = []; // Clear number grid data
+
+        // Reset timer display
+        clearInterval(timerInterval);
+        document.getElementById('elapsed-time').innerText = '0.00';
     }
 
     document.getElementById('run').addEventListener('click', runCode);
