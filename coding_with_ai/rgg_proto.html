@@ -1,627 +1,733 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Classroom Conversation Timer</title>
-    <style>
-        :root {
-            --bg-color: #2c3e50;
-            --primary-color: #3498db;
-            --secondary-color: #2980b9;
-            --text-color: #ecf0f1;
-            --light-bg: #34495e;
-            --success-color: #2ecc71;
-            --warning-color: #f39c12;
-            --danger-color: #e74c3c;
-            --border-color: #4a627a;
-            --font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Speed Meeting</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    :root {
+      --custom-primary-light: #eafce2;
+      --custom-primary: #c5eab2;
+      --custom-primary-bright: #b2ff8b;
+      --custom-primary-darker: #89be6d;
+      --custom-box-bg: #f4f3e8;
+    }
 
-        body {
-            font-family: var(--font-family);
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            text-align: center;
-        }
+    body {
+      background-color: var(--bs-white);
+      font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+        Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    }
 
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+    h1 {
+      font-weight: 800;
+    }
 
-        .screen {
-            background-color: var(--light-bg);
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-            display: none; /* All screens hidden by default */
-        }
-        #setup-screen { display: block; } /* Show setup screen initially */
+    .setup-card,
+    .controls-card,
+    .content-card {
+      background-color: var(--custom-box-bg);
+      border: none;
+      border-radius: 1rem;
+    }
 
-        h1, h2, h3 { color: var(--primary-color); }
-        h1 { margin-top: 0; }
+    .setup-card .form-control,
+    .setup-card .form-select,
+    .setup-card .input-group-text {
+      border-radius: 0.5rem;
+      border: 1px solid var(--bs-white);
+    }
 
-        .input-group { margin-bottom: 20px; }
+    .setup-card .form-control:focus,
+    .setup-card .form-select:focus {
+      border-color: var(--custom-primary-darker);
+      box-shadow: 0 0 0 0.25rem rgba(137, 190, 109, 0.5);
+    }
 
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            font-size: 1.1em;
-        }
+    #studentNames.form-control {
+      border-radius: 1rem;
+      background-color: #fff;
+      border: 1px solid #fff;
+      padding: 1rem;
+      min-height: 260px;
+    }
 
-        input[type="text"],
-        input[type="number"],
-        textarea {
-            width: 100%;
-            padding: 12px;
-            box-sizing: border-box;
-            background-color: var(--bg-color);
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            color: var(--text-color);
-            font-size: 1em;
-            transition: border-color 0.3s;
-        }
+    #studentNames::-webkit-scrollbar {
+      width: 10px;
+    }
 
-        input[type="text"]:focus,
-        input[type="number"]:focus,
-        textarea:focus {
-            outline: none;
-            border-color: var(--primary-color);
-        }
-        
-        textarea { height: 200px; resize: vertical; }
+    #studentNames::-webkit-scrollbar-track {
+      background: transparent;
+    }
 
-        .time-settings { display: flex; gap: 20px; }
-        .time-settings .input-group { flex: 1; }
+    #studentNames::-webkit-scrollbar-thumb {
+      background-color: var(--custom-primary);
+      border-radius: 20px;
+      border: 3px solid var(--bs-white);
+    }
 
-        .button {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 15px 25px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.2em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.1s;
-            margin: 5px;
-        }
+    .btn {
+      border-radius: 50rem;
+      font-weight: 600;
+      padding: 0.75rem 1.25rem;
+    }
 
-        .button:hover { background-color: var(--secondary-color); }
-        .button:active { transform: scale(0.98); }
-        .button.save-btn { background-color: var(--success-color); }
-        .button.save-btn:hover { background-color: #27ae60; }
-        .button.reset-btn { background-color: var(--danger-color); }
-        .button.reset-btn:hover { background-color: #c0392b; }
-        .button.new-activity-btn { background-color: var(--warning-color); }
-        .button.new-activity-btn:hover { background-color: #e67e22; }
+    .btn-start-activity {
+      background-color: var(--custom-primary-bright);
+      color: var(--bs-black);
+      border: none;
+    }
 
-        /* --- Live Activity Screen --- */
-        .live-grid {
-            display: grid;
-            grid-template-columns: 3fr 2fr;
-            gap: 30px;
-            align-items: start;
-        }
+    .btn-start-activity:hover {
+      background-color: var(--custom-primary-darker);
+      color: var(--bs-black);
+    }
 
-        .groups-panel { padding: 20px; border-radius: 15px; }
+    .btn-save {
+      background-color: transparent;
+      border: none;
+      color: var(--custom-primary-darker);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.5rem 1rem;
+    }
 
-        #groups-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 15px;
-        }
-        
-        .group-card {
-            background-color: var(--bg-color);
-            padding: 20px;
-            border-radius: 10px;
-            border-left: 5px solid var(--primary-color);
-            font-size: 1.6em;
-            font-weight: bold;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            animation: fadeIn 0.5s ease-out;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+    .btn-save:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+      color: var(--custom-primary-darker);
+    }
 
-        .timer-panel {
-            position: sticky;
-            top: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
+    .btn-pulse {
+      padding: 1rem 2rem;
+      font-size: 1.25rem;
+      box-shadow: 0 0 0 0 rgba(178, 255, 139, 1);
+      animation: pulse 2s infinite;
+    }
 
-        .timer-widget, .status-widget { padding: 30px; border-radius: 15px; }
-        .timer-display { position: relative; width: 250px; height: 250px; margin: 0 auto; }
-        .timer-display svg { transform: rotate(-90deg); }
-        .timer-arc { fill: none; }
-        .timer-arc-background { stroke: var(--bg-color); stroke-width: 15; }
-        .timer-arc-progress {
-            stroke: var(--success-color);
-            stroke-width: 15;
-            stroke-linecap: round;
-            transition: stroke-dashoffset 1s linear, stroke 0.3s;
-        }
-        .timer-text {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 4em;
-            font-weight: bold;
-        }
-        .status-info { font-size: 1.5em; }
-        .status-info div { margin-bottom: 10px; }
-        .controls { margin-top: 20px; }
+    @keyframes pulse {
+      0% {
+        transform: scale(0.97);
+        box-shadow: 0 0 0 0 rgba(178, 255, 139, 0.7);
+      }
+      70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 25px rgba(178, 255, 139, 0);
+      }
+      100% {
+        transform: scale(0.97);
+        box-shadow: 0 0 0 0 rgba(178, 255, 139, 0);
+      }
+    }
 
-        /* --- Results Screen --- */
-        #results-container {
-            text-align: left;
-            margin-top: 20px;
-            column-count: 2;
-            column-gap: 30px;
-        }
-        .result-item {
-            background: var(--bg-color);
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            break-inside: avoid-column;
-        }
-        .result-item strong {
-            color: var(--primary-color);
-            font-size: 1.2em;
-        }
+    /* Pairing grid + cards */
+    #pairingContainer {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.5rem;
+      min-height: 50vh;
+      align-content: start;
+    }
 
-        @media (max-width: 900px) {
-            .live-grid { grid-template-columns: 1fr; }
-            .timer-panel { position: static; flex-direction: row; justify-content: space-around; }
-        }
-        @media (max-width: 600px) {
-            #results-container { column-count: 1; }
-        }
-    </style>
+    .group-card {
+      border-radius: 0.5rem;
+      border: none;
+      background-color: #fff;
+      height: 100%;
+    }
+
+    .group-card .card-header {
+      border-radius: 0.5rem 0.5rem 0 0;
+      height: 8px;
+      padding: 0;
+      border-bottom: none;
+    }
+
+    .group-card .card-title {
+      font-weight: 700;
+      margin-top: 0.5rem;
+      font-size: 1.1rem;
+      text-align: center;
+    }
+
+    .group-card .list-unstyled li {
+      text-align: left;
+      font-size: 1.05rem;
+      padding-left: 1.25rem;
+      margin-top: 0.25rem;
+    }
+
+    .final-message-container {
+      grid-column: 1 / -1;
+    }
+
+    /* Timer */
+    .timer-wrap {
+      position: relative;
+      width: 260px;
+      height: 260px;
+      margin: 0 auto;
+    }
+
+    #timer-canvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    #timer-display {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 2.25rem;
+    }
+
+    .status-pill {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      font-weight: 700;
+      border-radius: 2rem;
+    }
+
+    .status-transition {
+      background: #ffe8a3;
+      color: #5f4c00;
+    }
+
+    .status-meet {
+      background: #c7ffd0;
+      color: #0d5b1f;
+    }
+
+    /* Report tables */
+    .report-card .list-group-item,
+    #reportModal .list-group-item {
+      background-color: var(--custom-box-bg);
+    }
+  </style>
 </head>
-<body>
+<body class="p-3">
+  <div class="container">
+    <h1 class="text-center my-4">Student Pairing Tool</h1>
 
-    <div class="container">
-        <!-- Setup Screen -->
-        <div id="setup-screen" class="screen">
-            <h1>Classroom Conversation Timer</h1>
-            <div class="input-group">
-                <label for="class-name">Class Name</label>
-                <input type="text" id="class-name" placeholder="E.g., Period 3 English">
-            </div>
-            <div class="input-group">
-                <label for="student-names">Student Names (one per line)</label>
-                <textarea id="student-names" placeholder="Alice&#10;Bob&#10;Charlie"></textarea>
-            </div>
-            <button id="save-names-btn" class="button save-btn">Save Names for this Class</button>
-            <hr style="border-color: var(--border-color); margin: 30px 0;">
-            <div class="time-settings">
+    <!-- SETUP SCREEN -->
+    <section id="setupScreen">
+      <div class="card setup-card p-4 mx-auto" style="max-width: 980px;">
+        <div class="row g-4">
+          <div class="col-md-7">
+            <div class="d-flex flex-column h-100">
+              <div class="mb-3">
+                <label class="form-label fw-bold">Choose Class</label>
                 <div class="input-group">
-                    <label for="total-time">Total Activity Time (minutes)</label>
-                    <input type="number" id="total-time" value="10" min="1">
+                  <select class="form-select" id="classDropdown">
+                    <option selected>New Class</option>
+                  </select>
+                  <button class="btn btn-outline-secondary btn-sm" id="addNewClassButton" type="button" title="Add New Class">+</button>
+                  <button class="btn btn-outline-danger btn-sm" id="deleteClassButton" type="button" title="Delete Selected Class">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/><path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/></svg>
+                  </button>
                 </div>
-                <div class="input-group">
-                    <label for="meeting-time">Time per Conversation (seconds)</label>
-                    <input type="number" id="meeting-time" value="90" min="10">
-                </div>
+              </div>
+              <label for="studentNames" class="form-label fw-bold">Enter Students</label>
+              <textarea id="studentNames" class="form-control flex-grow-1" placeholder="Olivia&#10;Liam&#10;Sophia&#10;Jackson&#10;Ava"></textarea>
             </div>
-            <button id="start-btn" class="button">Start Activity</button>
-        </div>
-
-        <!-- Live Activity Screen -->
-        <div id="activity-screen" class="screen">
-            <div class="live-grid">
-                <div class="groups-panel">
-                    <h2 id="round-title">Round 1 Groups</h2>
-                    <div id="groups-container"></div>
-                </div>
-                <div class="timer-panel">
-                    <div class="timer-widget">
-                        <h3>Time Left in Round</h3>
-                        <div class="timer-display">
-                            <svg width="250" height="250" viewBox="0 0 250 250">
-                                <circle class="timer-arc timer-arc-background" r="110" cx="125" cy="125"></circle>
-                                <circle class="timer-arc timer-arc-progress" id="timer-progress" r="110" cx="125" cy="125"></circle>
-                            </svg>
-                            <div class="timer-text" id="round-time-left">90</div>
-                        </div>
-                    </div>
-                    <div class="status-widget">
-                        <h3>Activity Status</h3>
-                        <div class="status-info">
-                            <div id="current-round-status">Round: 1 / 7</div>
-                            <div id="total-time-status">Total Time Left: 09:45</div>
-                        </div>
-                        <div class="controls">
-                            <button id="pause-resume-btn" class="button">Pause</button>
-                            <button id="end-early-btn" class="button reset-btn">End Activity Early</button>
-                        </div>
-                    </div>
-                </div>
+          </div>
+          <div class="col-md-5 d-flex flex-column">
+            <div>
+              <label class="form-label fw-bold">Total Activity Time</label>
+              <div class="input-group mb-3">
+                <input type="number" id="totalTimeMinutes" value="1" min="0" class="form-control text-center" />
+                <span class="input-group-text">min</span>
+                <input type="number" id="totalTimeSeconds" value="0" min="0" max="59" class="form-control text-center" />
+                <span class="input-group-text">sec</span>
+              </div>
             </div>
+            <div>
+              <label class="form-label fw-bold">Group Meeting Time</label>
+              <div class="input-group mb-3">
+                <input type="number" id="groupTimeMinutes" value="0" min="0" class="form-control text-center" />
+                <span class="input-group-text">min</span>
+                <input type="number" id="groupTimeSeconds" value="25" min="0" max="59" class="form-control text-center" />
+                <span class="input-group-text">sec</span>
+              </div>
+            </div>
+            <div>
+              <label class="form-label fw-bold">Transition Time</label>
+              <div class="input-group mb-3">
+                <input type="number" id="transitionTimeSeconds" value="10" min="0" max="120" class="form-control text-center" />
+                <span class="input-group-text">sec</span>
+              </div>
+            </div>
+            <div class="mt-auto">
+              <button class="btn btn-start-activity btn-lg w-100" id="startButton">Start Activity</button>
+              <button class="btn btn-save w-100 mt-2" id="saveClassButton">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v4.5h2a.5.5 0 0 1 .354.854l-2.5 2.5a.5.5 0 0 1-.708 0l-2.5-2.5A.5.5 0 0 1 5.5 6.5h2V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1z"/></svg>
+                Save Class
+              </button>
+            </div>
+          </div>
         </div>
+      </div>
+    </section>
 
-        <!-- Results Screen -->
-        <div id="results-screen" class="screen">
-            <h1>Activity Report</h1>
-            <h2>Meeting History</h2>
-            <div id="results-container"></div>
-            <button id="new-activity-btn" class="button new-activity-btn">Start New Activity</button>
+    <!-- ACTIVITY SCREEN -->
+    <section id="activityScreen" class="d-none">
+      <div class="row g-4">
+        <aside class="col-lg-3 d-flex flex-column gap-3">
+          <div class="card controls-card text-center p-3">
+            <div class="timer-wrap">
+              <canvas id="timer-canvas" width="280" height="280"></canvas>
+              <div id="timer-display">00:00</div>
+            </div>
+            <div class="mt-3">
+              <span id="statusPill" class="status-pill status-transition">Get Ready</span>
+            </div>
+          </div>
+
+          <div class="card controls-card text-center p-3">
+            <div class="d-grid gap-2">
+              <button class="btn btn-secondary" id="pauseResumeBtn">Pause</button>
+              <button class="btn btn-secondary" id="regroupBtn">Regroup Now</button>
+              <button class="btn btn-danger" id="endActivityBtn">End Activity</button>
+            </div>
+          </div>
+        </aside>
+        <main class="col-lg-9">
+          <div class="card content-card p-4 h-100">
+            <div id="pairingContainer">
+              <!-- dynamic groups -->
+              <div id="startOverlay" class="final-message-container d-flex flex-column justify-content-center align-items-center h-100">
+                <h3 class="mb-3">Your activity is ready!</h3>
+                <button id="startRoundBtn" class="btn btn-start-activity btn-pulse">Start First Round</button>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </section>
+
+    <!-- REPORT SCREEN -->
+    <section id="reportScreen" class="d-none">
+      <div class="card content-card p-4 mx-auto" style="max-width: 1000px;">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <h3 class="mb-0">Activity Report</h3>
+          <button id="runAgainBtn" class="btn btn-secondary">Run Again</button>
         </div>
-    </div>
+        <div class="row g-4">
+          <div class="col-lg-6">
+            <div class="card report-card h-100">
+              <div class="card-body">
+                <h5 class="card-title">Pairings by Round</h5>
+                <div id="roundsReport" class="list-group list-group-flush"></div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="card report-card h-100">
+              <div class="card-body">
+                <h5 class="card-title">Individual Meeting Summary</h5>
+                <ul id="individualReport" class="list-group list-group-flush"></ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // DOM Elements
-            const setupScreen = document.getElementById('setup-screen');
-            const activityScreen = document.getElementById('activity-screen');
-            const resultsScreen = document.getElementById('results-screen');
-            // ... (rest of the element selections are the same)
-            const classNameInput = document.getElementById('class-name');
-            const studentNamesTextarea = document.getElementById('student-names');
-            const saveNamesBtn = document.getElementById('save-names-btn');
-            const totalTimeInput = document.getElementById('total-time');
-            const meetingTimeInput = document.getElementById('meeting-time');
-            const startBtn = document.getElementById('start-btn');
-            const pauseResumeBtn = document.getElementById('pause-resume-btn');
-            const endEarlyBtn = document.getElementById('end-early-btn');
-            const groupsContainer = document.getElementById('groups-container');
-            const roundTitle = document.getElementById('round-title');
-            const roundTimeLeftEl = document.getElementById('round-time-left');
-            const currentRoundStatusEl = document.getElementById('current-round-status');
-            const totalTimeStatusEl = document.getElementById('total-time-status');
-            const timerProgress = document.getElementById('timer-progress');
-            const resultsContainer = document.getElementById('results-container');
-            const newActivityBtn = document.getElementById('new-activity-btn');
+  <script>
+    // ---------- STATE + DOM -----------
+    const STORAGE_KEY = 'studentPairingClasses_v2';
 
+    const setupScreen = document.getElementById('setupScreen');
+    const activityScreen = document.getElementById('activityScreen');
+    const reportScreen = document.getElementById('reportScreen');
 
-            // State variables
-            let students = [];
-            let meetingHistory = new Map(); // Key: student, Value: Set of students they've met
-            let totalTimeSeconds, meetingTimeSeconds, totalRounds, currentRound;
-            let totalTimeRemaining, roundTimeRemaining;
-            let mainInterval;
-            let isPaused = false;
-            
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const startButton = document.getElementById('startButton');
+    const saveClassButton = document.getElementById('saveClassButton');
+    const deleteClassButton = document.getElementById('deleteClassButton');
+    const addNewClassButton = document.getElementById('addNewClassButton');
+    const classDropdown = document.getElementById('classDropdown');
+    const studentNamesTextarea = document.getElementById('studentNames');
 
-            // --- Persistence Logic ---
-            const loadNames = () => {
-                const className = classNameInput.value.trim();
-                if (className) {
-                    const savedNames = localStorage.getItem(`class_names_${className}`);
-                    studentNamesTextarea.value = savedNames ? JSON.parse(savedNames).join('\n') : '';
-                }
-            };
-            const saveNames = () => {
-                const className = classNameInput.value.trim();
-                if (!className) { alert('Please enter a class name to save the list.'); return; }
-                const names = studentNamesTextarea.value.split('\n').map(name => name.trim()).filter(Boolean);
-                if (names.length > 0) {
-                    localStorage.setItem(`class_names_${className}`, JSON.stringify(names));
-                    localStorage.setItem('last_class_name', className);
-                    alert(`Names saved for class "${className}"!`);
-                } else { alert('Please enter at least one name.'); }
-            };
-            
-            const lastClassName = localStorage.getItem('last_class_name');
-            if (lastClassName) {
-                classNameInput.value = lastClassName;
-                loadNames();
-            }
-            classNameInput.addEventListener('keyup', loadNames);
-            saveNamesBtn.addEventListener('click', saveNames);
+    const startRoundBtn = document.getElementById('startRoundBtn');
+    const pauseResumeBtn = document.getElementById('pauseResumeBtn');
+    const regroupBtn = document.getElementById('regroupBtn');
+    const endActivityBtn = document.getElementById('endActivityBtn');
+    const runAgainBtn = document.getElementById('runAgainBtn');
 
-            // --- Optimized Grouping Logic ---
-            const shuffleArray = (array) => {
-                for (let i = array.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [array[i], array[j]] = [array[j], array[i]];
-                }
-                return array;
-            };
+    const timerCanvas = document.getElementById('timer-canvas');
+    const ctx = timerCanvas.getContext('2d');
+    const timerDisplay = document.getElementById('timer-display');
+    const statusPill = document.getElementById('statusPill');
 
-            const generateOptimalGroups = () => {
-                let unpairedStudents = shuffleArray([...students]);
-                const groups = [];
-                
-                while (unpairedStudents.length >= 2) {
-                    const studentA = unpairedStudents.shift();
-                    let partnerFound = false;
+    const pairingContainer = document.getElementById('pairingContainer');
 
-                    // Try to find a new partner
-                    for (let i = 0; i < unpairedStudents.length; i++) {
-                        const studentB = unpairedStudents[i];
-                        if (!meetingHistory.get(studentA).has(studentB)) {
-                            groups.push([studentA, studentB]);
-                            unpairedStudents.splice(i, 1); // Remove partner from pool
-                            partnerFound = true;
-                            break;
-                        }
-                    }
+    let totalTimeInSeconds = 0,
+      groupTimeInSeconds = 0,
+      transitionTimeInSeconds = 0,
+      currentPhaseTime = 0,
+      totalRemaining = 0,
+      phase = 'transition', // 'transition' | 'meet'
+      round = 0,
+      paused = true,
+      loopInterval = null;
 
-                    // Fallback: If no new partner is available, pair with anyone
-                    if (!partnerFound) {
-                        const studentB = unpairedStudents.shift();
-                        groups.push([studentA, studentB]);
-                    }
-                }
-                
-                // Handle odd student out
-                if (unpairedStudents.length > 0 && groups.length > 0) {
-                    groups[0].push(unpairedStudents.pop());
-                }
+    const cardColors = ['#ff5f5f', '#625fff', '#5fff6f', '#ffbf5f', '#03af8d', '#6e5ef8', '#45a3ff', '#ab68e2'];
 
-                // Update meeting history for this round
-                groups.forEach(group => {
-                    for (let i = 0; i < group.length; i++) {
-                        for (let j = i + 1; j < group.length; j++) {
-                            const student1 = group[i];
-                            const student2 = group[j];
-                            meetingHistory.get(student1).add(student2);
-                            meetingHistory.get(student2).add(student1);
-                        }
-                    }
-                });
+    let students = [];
+    let pairingHistory = {}; // per-student set
+    let roundsHistory = []; // array of arrays of groups per round
 
-                return groups;
-            };
+    // ---------- CLASS STORAGE -----------
+    function getSavedClasses() {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+    }
+    function saveClasses(classes) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(classes));
+    }
+    function populateClassDropdown() {
+      const classes = getSavedClasses();
+      const currentVal = classDropdown.value;
+      classDropdown.innerHTML = '<option selected>New Class</option>';
+      for (const className in classes) {
+        const option = document.createElement('option');
+        option.value = className;
+        option.textContent = className;
+        classDropdown.appendChild(option);
+      }
+      if (classes[currentVal]) classDropdown.value = currentVal;
+    }
 
-            const displayGroups = (groups) => {
-                groupsContainer.innerHTML = '';
-                groups.forEach(group => {
-                    const card = document.createElement('div');
-                    card.className = 'group-card';
-                    card.textContent = group.join(' & ');
-                    groupsContainer.appendChild(card);
-                });
-            };
+    function handleSaveClass() {
+      const list = studentNamesTextarea.value
+        .split('\n')
+        .map((n) => n.trim())
+        .filter(Boolean);
+      if (list.length === 0) {
+        alert('Please enter student names before saving.');
+        return;
+      }
+      const className = prompt(
+        'Enter a name for this class:',
+        classDropdown.value !== 'New Class' ? classDropdown.value : ''
+      );
+      if (!className) return;
+      const classes = getSavedClasses();
+      classes[className] = list;
+      saveClasses(classes);
+      populateClassDropdown();
+      classDropdown.value = className;
+      alert(`Class "${className}" saved!`);
+    }
 
-            // --- Timer & Activity Logic ---
-            const formatTime = (seconds) => {
-                const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
-                const secs = (seconds % 60).toString().padStart(2, '0');
-                return `${mins}:${secs}`;
-            };
-            
-            const updateTimerArc = () => {
-                const radius = timerProgress.r.baseVal.value;
-                const circumference = 2 * Math.PI * radius;
-                const offset = circumference - (roundTimeRemaining / meetingTimeSeconds) * circumference;
-                timerProgress.style.strokeDasharray = circumference;
-                timerProgress.style.strokeDashoffset = offset;
-                timerProgress.style.stroke = roundTimeRemaining <= 10 ? 'var(--danger-color)' : 'var(--success-color)';
-            };
+    function handleDeleteClass() {
+      const selectedClass = classDropdown.value;
+      if (selectedClass === 'New Class') {
+        alert("Cannot delete 'New Class'. Select a saved class to delete.");
+        return;
+      }
+      if (confirm(`Delete the class "${selectedClass}"? This cannot be undone.`)) {
+        const classes = getSavedClasses();
+        delete classes[selectedClass];
+        saveClasses(classes);
+        classDropdown.innerHTML = '<option selected>New Class</option>';
+        populateClassDropdown();
+        studentNamesTextarea.value = '';
+      }
+    }
+    function handleAddNewClass() {
+      classDropdown.value = 'New Class';
+      studentNamesTextarea.value = '';
+      studentNamesTextarea.focus();
+    }
+    function handleClassChange() {
+      const selectedClass = classDropdown.value;
+      if (selectedClass === 'New Class') {
+        studentNamesTextarea.value = '';
+      } else {
+        const classes = getSavedClasses();
+        studentNamesTextarea.value = (classes[selectedClass] || []).join('\n');
+      }
+    }
 
-            const playSound = () => {
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                oscillator.type = 'sine';
-                oscillator.frequency.setValueAtTime(880, audioContext.currentTime); // A5 note
-                gainNode.gain.setValueAtTime(0.5, audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.5);
-                oscillator.start(audioContext.currentTime);
-                oscillator.stop(audioContext.currentTime + 0.5);
-            };
+    // ---------- ACTIVITY LIFECYCLE -----------
+    function initActivity() {
+      const totalMinutes = parseInt(document.getElementById('totalTimeMinutes').value) || 0;
+      const totalSeconds = parseInt(document.getElementById('totalTimeSeconds').value) || 0;
+      const groupMinutes = parseInt(document.getElementById('groupTimeMinutes').value) || 0;
+      const groupSeconds = parseInt(document.getElementById('groupTimeSeconds').value) || 0;
+      const transitionSeconds = parseInt(document.getElementById('transitionTimeSeconds').value) || 0;
 
-            const tick = () => {
-                if (isPaused) return;
+      totalTimeInSeconds = totalMinutes * 60 + totalSeconds;
+      groupTimeInSeconds = groupMinutes * 60 + groupSeconds;
+      transitionTimeInSeconds = transitionSeconds;
 
-                totalTimeRemaining--;
-                roundTimeRemaining--;
-                
-                totalTimeStatusEl.textContent = `Total Time Left: ${formatTime(totalTimeRemaining)}`;
-                roundTimeLeftEl.textContent = roundTimeRemaining;
-                updateTimerArc();
+      const names = studentNamesTextarea.value
+        .split('\n')
+        .map((n) => n.trim())
+        .filter(Boolean);
 
-                if (roundTimeRemaining <= 0) {
-                    playSound();
-                    startNewRound();
-                }
+      if (groupTimeInSeconds <= 0 || totalTimeInSeconds <= 0) {
+        alert('Timers must be set to a value greater than zero.');
+        return;
+      }
+      if (totalTimeInSeconds < groupTimeInSeconds) {
+        alert('Total activity time must be \u2265 group time.');
+        return;
+      }
+      if (names.length < 2) {
+        alert('Please enter at least two student names.');
+        return;
+      }
 
-                if (totalTimeRemaining <= 0) {
-                    endActivity("Time's up!");
-                }
-            };
-            
-            const startNewRound = () => {
-                currentRound++;
-                if (currentRound > totalRounds) {
-                    endActivity("All rounds complete!");
-                    return;
-                }
-                
-                roundTimeRemaining = meetingTimeSeconds;
-                
-                roundTitle.textContent = `Round ${currentRound} Groups`;
-                currentRoundStatusEl.textContent = `Round: ${currentRound} / ${totalRounds}`;
-                roundTimeLeftEl.textContent = roundTimeRemaining;
-                updateTimerArc();
-                
-                const newGroups = generateOptimalGroups();
-                displayGroups(newGroups);
-            };
+      students = names;
+      pairingHistory = {};
+      students.forEach((s) => (pairingHistory[s] = new Set()));
+      roundsHistory = [];
 
-            const startActivity = () => {
-                students = studentNamesTextarea.value.split('\n').map(name => name.trim()).filter(Boolean);
-                if (students.length < 2) {
-                    alert('Please enter at least 2 student names.');
-                    return;
-                }
-                
-                totalTimeSeconds = parseInt(totalTimeInput.value) * 60;
-                meetingTimeSeconds = parseInt(meetingTimeInput.value);
-                if (isNaN(totalTimeSeconds) || totalTimeSeconds <= 0 || isNaN(meetingTimeSeconds) || meetingTimeSeconds <= 0) {
-                    alert('Please enter valid times.'); return;
-                }
-                if(meetingTimeSeconds > totalTimeSeconds){
-                    alert('Meeting time cannot be longer than total activity time.'); return;
-                }
+      // Screen switch
+      setupScreen.classList.add('d-none');
+      reportScreen.classList.add('d-none');
+      activityScreen.classList.remove('d-none');
 
-                // Initialize state for new activity
-                totalRounds = Math.floor(totalTimeSeconds / meetingTimeSeconds);
-                totalTimeRemaining = totalTimeSeconds;
-                currentRound = 0;
-                isPaused = false;
-                meetingHistory.clear();
-                students.forEach(student => meetingHistory.set(student, new Set()));
-                
-                setupScreen.style.display = 'none';
-                activityScreen.style.display = 'block';
-                pauseResumeBtn.textContent = 'Pause';
-                
-                startNewRound();
-                mainInterval = setInterval(tick, 1000);
-            };
-            
-            const togglePause = () => {
-                isPaused = !isPaused;
-                pauseResumeBtn.textContent = isPaused ? 'Resume' : 'Pause';
-            };
-            
-            const endActivity = (message) => {
-                clearInterval(mainInterval);
-                mainInterval = null;
-                alert(message);
-                displayResults();
-            };
+      // Timer + UI reset
+      totalRemaining = totalTimeInSeconds;
+      paused = true; // wait for Start First Round
+      phase = 'transition';
+      round = 0;
+      currentPhaseTime = transitionTimeInSeconds || 3; // tiny pre-roll
+      setStatus('transition');
+      drawTimer(1, '#ffc107');
+      timerDisplay.textContent = formatTime(totalRemaining);
 
-            const displayResults = () => {
-                activityScreen.style.display = 'none';
-                resultsScreen.style.display = 'block';
-                resultsContainer.innerHTML = '';
-                
-                const sortedStudents = [...students].sort();
+      // Prepare pairing container
+      pairingContainer.innerHTML = `
+        <div id="startOverlay" class="final-message-container d-flex flex-column justify-content-center align-items-center h-100">
+          <h3 class="mb-3">Your activity is ready!</h3>
+          <button id="startRoundBtn" class="btn btn-start-activity btn-pulse">Start First Round</button>
+        </div>`;
+      document.getElementById('startRoundBtn').addEventListener('click', () => {
+        paused = false;
+        nextRound(); // creates round + sets transition
+        if (loopInterval) clearInterval(loopInterval);
+        loopInterval = setInterval(mainLoop, 1000);
+      });
+    }
 
-                sortedStudents.forEach(student => {
-                    const metSet = meetingHistory.get(student);
-                    const metList = metSet && metSet.size > 0 ? [...metSet].sort().join(', ') : 'Nobody yet.';
-                    
-                    const resultItem = document.createElement('div');
-                    resultItem.className = 'result-item';
-                    resultItem.innerHTML = `<strong>${student}</strong> met with: ${metList}`;
-                    resultsContainer.appendChild(resultItem);
-                });
-            };
+    function mainLoop() {
+      if (paused) return;
 
-            const resetToSetup = () => {
-                clearInterval(mainInterval);
-                mainInterval = null;
-                resultsScreen.style.display = 'none';
-                activityScreen.style.display = 'none';
-                setupScreen.style.display = 'block';
-            };
+      // totalRemaining only ticks during meet or transition (not after finished)
+      if (totalRemaining > 0) totalRemaining--;
+      timerDisplay.textContent = formatTime(totalRemaining);
 
-            // Event Listeners
-            startBtn.addEventListener('click', startActivity);
-            pauseResumeBtn.addEventListener('click', togglePause);
-            endEarlyBtn.addEventListener('click', () => {
-                if (confirm('Are you sure you want to end the activity and see the results?')) {
-                    endActivity('Activity ended early.');
-                }
-            });
-            newActivityBtn.addEventListener('click', resetToSetup);
+      currentPhaseTime--;
+      if (currentPhaseTime <= 0) {
+        if (phase === 'transition') {
+          // start the meet phase
+          phase = 'meet';
+          setStatus('meet');
+          currentPhaseTime = groupTimeInSeconds;
+        } else if (phase === 'meet') {
+          // End of a meeting window
+          if (totalRemaining <= 0) {
+            endActivity();
+            return;
+          }
+          nextRound();
+        }
+      }
+      // Draw timer according to phase
+      const pct = phase === 'transition'
+        ? Math.max(currentPhaseTime / Math.max(transitionTimeInSeconds, 1), 0)
+        : Math.max(currentPhaseTime / groupTimeInSeconds, 0);
+      drawTimer(pct, phase === 'transition' ? '#ffc107' : '#28a745');
+    }
+
+    function endActivity() {
+      clearInterval(loopInterval);
+      activityScreen.classList.add('d-none');
+      buildReport();
+      reportScreen.classList.remove('d-none');
+    }
+
+    function runAgain() {
+      reportScreen.classList.add('d-none');
+      setupScreen.classList.remove('d-none');
+    }
+
+    // ---------- PAIRS + ROUNDS -----------
+    function nextRound() {
+      round++;
+      phase = 'transition';
+      setStatus('transition');
+      currentPhaseTime = Math.max(transitionTimeInSeconds, 1);
+
+      // Create pairings for the upcoming round and render
+      const groups = generateGroupsAvoidingRepeats();
+      roundsHistory.push(groups.map((g) => [...g]));
+      renderGroups(groups);
+    }
+
+    function generateGroupsAvoidingRepeats() {
+      const unpaired = [...students];
+      const groups = [];
+
+      while (unpaired.length > 0) {
+        if (unpaired.length === 3) {
+          groups.push([...unpaired]);
+          unpaired.length = 0;
+          break;
+        }
+        const student1 = unpaired.shift();
+        // Prefer fresh partners
+        const fresh = unpaired.filter((p) => !pairingHistory[student1].has(p));
+        const partner = (fresh.length > 0 ? fresh : unpaired)[
+          Math.floor(Math.random() * (fresh.length > 0 ? fresh.length : unpaired.length))
+        ];
+        groups.push([student1, partner]);
+        // remove partner from unpaired
+        const idx = unpaired.indexOf(partner);
+        if (idx !== -1) unpaired.splice(idx, 1);
+      }
+
+      // Update history
+      groups.forEach((group) => {
+        group.forEach((s1) =>
+          group.forEach((s2) => {
+            if (s1 !== s2) pairingHistory[s1].add(s2);
+          })
+        );
+      });
+
+      return groups;
+    }
+
+    function renderGroups(groups) {
+      pairingContainer.innerHTML = '';
+      groups.forEach((group, index) => {
+        const color = cardColors[index % cardColors.length];
+        const card = document.createElement('div');
+        card.className = 'group-card card';
+        card.innerHTML = `
+          <div class="card-header" style="background-color:${color}"></div>
+          <div class="card-body">
+            <h5 class="card-title">Group ${index + 1}</h5>
+            <ul class="list-unstyled mb-0">${group
+              .map((n) => `<li>${n}</li>`)
+              .join('')}</ul>
+          </div>`;
+        pairingContainer.appendChild(card);
+      });
+    }
+
+    // ---------- TIMER DRAWING -----------
+    function drawTimer(percentage, color = '#28a745') {
+      const dpr = window.devicePixelRatio || 1;
+      const sizeCSS = 280; // css px
+      timerCanvas.width = sizeCSS * dpr;
+      timerCanvas.height = sizeCSS * dpr;
+      timerCanvas.style.width = sizeCSS + 'px';
+      timerCanvas.style.height = sizeCSS + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      ctx.clearRect(0, 0, sizeCSS, sizeCSS);
+      const cx = sizeCSS / 2;
+      const cy = sizeCSS / 2;
+      const radius = sizeCSS / 2 - 16;
+
+      // background ring
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius, 0, 2 * Math.PI);
+      ctx.strokeStyle = '#e9ecef';
+      ctx.lineWidth = 16;
+      ctx.stroke();
+
+      // progress arc
+      ctx.beginPath();
+      const startAngle = -Math.PI / 2;
+      const endAngle = startAngle + 2 * Math.PI * Math.max(Math.min(percentage, 1), 0);
+      ctx.arc(cx, cy, radius, startAngle, endAngle);
+      ctx.strokeStyle = color;
+      ctx.lineCap = 'round';
+      ctx.lineWidth = 16;
+      ctx.stroke();
+    }
+
+    function setStatus(type) {
+      if (type === 'transition') {
+        statusPill.className = 'status-pill status-transition';
+        statusPill.textContent = `Round ${Math.max(round, 1)}: Find your partner!`;
+      } else {
+        statusPill.className = 'status-pill status-meet';
+        statusPill.textContent = `Round ${round}: Meet!`;
+      }
+    }
+
+    // ---------- REPORT -----------
+    function buildReport() {
+      const roundsReport = document.getElementById('roundsReport');
+      roundsReport.innerHTML = '';
+
+      roundsHistory.forEach((groups, i) => {
+        const item = document.createElement('div');
+        item.className = 'list-group-item';
+        item.innerHTML = `<div class="fw-bold mb-1">Round ${i + 1}</div>
+          ${groups.map((g) => g.join(' & ')).join('<br>')}`;
+        roundsReport.appendChild(item);
+      });
+
+      // Individual summary
+      const byStudent = {};
+      students.forEach((s) => (byStudent[s] = new Set()));
+      roundsHistory.forEach((groups) => {
+        groups.forEach((g) => {
+          g.forEach((s1) => g.forEach((s2) => s1 !== s2 && byStudent[s1].add(s2)));
         });
-    </script>
+      });
+
+      const individualReport = document.getElementById('individualReport');
+      individualReport.innerHTML = '';
+      Object.keys(byStudent)
+        .sort((a, b) => a.localeCompare(b))
+        .forEach((name) => {
+          const li = document.createElement('li');
+          li.className = 'list-group-item d-flex justify-content-between align-items-center';
+          li.innerHTML = `<span class="fw-bold">${name}</span><span>${Array.from(byStudent[name]).join(', ') || '—'}</span>`;
+          individualReport.appendChild(li);
+        });
+    }
+
+    // ---------- HELPERS -----------
+    function formatTime(sec) {
+      const m = Math.floor(Math.max(sec, 0) / 60);
+      const s = Math.max(sec, 0) % 60;
+      return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    }
+
+    // ---------- EVENTS -----------
+    startButton.addEventListener('click', initActivity);
+    pauseResumeBtn.addEventListener('click', () => {
+      paused = !paused;
+      pauseResumeBtn.textContent = paused ? 'Resume' : 'Pause';
+    });
+    regroupBtn.addEventListener('click', () => {
+      if (paused) paused = false;
+      nextRound();
+    });
+    endActivityBtn.addEventListener('click', endActivity);
+    runAgainBtn.addEventListener('click', runAgain);
+
+    saveClassButton.addEventListener('click', handleSaveClass);
+    deleteClassButton.addEventListener('click', handleDeleteClass);
+    addNewClassButton.addEventListener('click', handleAddNewClass);
+    classDropdown.addEventListener('change', handleClassChange);
+
+    // boot
+    populateClassDropdown();
+  </script>
 </body>
 </html>
-<!------
-
-# Project Brief: Classroom Conversation Timer
-
-## 1. Overview & Purpose
-
-**Project Name:** Classroom Conversation Timer
-**Primary User:** Teacher in a classroom setting
-**Core Problem:** Teachers need a simple tool to manage structured, timed, paired student conversations. The goal is to maximize the number of unique interactions each student has within a defined class period or activity block.
-
-This single-page web application provides a real-time display, suitable for projection, that automates the process of creating groups, timing conversations, and transitioning between rounds. It also provides a post-activity report detailing who met with whom.
-
-## 2. Core Features & Functionality
-
-The application is divided into three main screens: Setup, Live Activity, and Results.
-
-### 2.1. Setup Screen (`#setup-screen`)
-
-This is the initial configuration interface for the teacher.
-
-*   **Class Name Input:** A text field to name the current class (e.g., "Period 3 English"). This name is used as a key for saving and retrieving the student list.
-*   **Student Roster Input:** A large textarea where the teacher can paste a list of student names, with one name per line.
-*   **Persistence:**
-    *   **Save Names:** A button that saves the current student list to the browser's `localStorage` under the provided Class Name.
-    *   **Auto-Load:** The application automatically loads the student list associated with the Class Name as the teacher types it. It also remembers and loads the last used class on page load.
-*   **Time Configuration:**
-    *   **Total Activity Time:** A number input for the entire duration of the activity (in minutes).
-    *   **Time per Conversation:** A number input for the duration of each individual round (in seconds).
-*   **Start Button:** A primary action button that validates the inputs and transitions the view to the Live Activity Screen.
-
-### 2.2. Live Activity Screen (`#activity-screen`)
-
-This screen is designed to be projected at the front of the classroom.
-
-*   **Optimized Group Generation:**
-    *   **Algorithm:** When a new round begins, the application runs an optimized pairing algorithm. It maintains a `meetingHistory` for each student. The algorithm prioritizes pairing students with someone they have **not** met in a previous round.
-    *   **Fallback:** If a student has met all other available students, the algorithm will create a repeat pairing as a fallback.
-    *   **Odd Numbers:** It automatically handles an odd number of students by creating one group of three.
-*   **Group Display Panel:**
-    *   A clean, card-based layout (`.group-card`) displays the current pairings for the round.
-    *   The title dynamically updates with the current round number (e.g., "Round 3 Groups").
-*   **Visual Timer Panel:**
-    *   **SVG Arc Timer:** A large, circular progress bar that visually depletes as the round timer counts down. The color changes to red in the last 10 seconds as a visual warning.
-    *   **Digital Countdown:** A large numerical display showing the seconds remaining in the current round.
-*   **Status Panel:**
-    *   Displays the current round vs. total calculated rounds (e.g., "Round: 3 / 7").
-    *   Displays the total time remaining for the entire activity in `MM:SS` format.
-*   **Teacher Controls:**
-    *   **Pause/Resume Button:** Allows the teacher to pause the countdowns for both the round and the total activity.
-    *   **End Activity Early Button:** A button to stop the activity prematurely and proceed directly to the Results screen.
-*   **Audio Cue:** A simple "ding" sound is played via the `AudioContext` API at the end of each round to signal students that it's time to switch partners.
-
-### 2.3. Results Screen (`#results-screen`)
-
-This screen appears after the activity concludes (either by running out of time or by being ended early).
-
-*   **Meeting History Report:**
-    *   Lists every student from the roster alphabetically.
-    *   Next to each student's name, it provides a comma-separated list of all the other students they were paired with during the activity.
-*   **Restart Button:** A "Start New Activity" button that returns the user to the Setup screen, ready to configure a new session.
-
-## 3. User Flow
-
-1.  **Open:** The teacher opens the `.html` file in a web browser. The **Setup Screen** is displayed.
-2.  **Configure:** The teacher enters a Class Name, pastes the student roster, sets the total and per-conversation times.
-3.  **Save (Optional):** The teacher clicks "Save Names" to persist the roster for future use with that class name.
-4.  **Start:** The teacher clicks "Start Activity."
-5.  **Run Activity:** The view switches to the **Live Activity Screen**.
-    *   Round 1 groups are generated and displayed. The timer begins.
-    *   At the end of each round, an audio cue plays.
-    *   The application automatically generates new, optimized groups for the next round and resets the round timer.
-    *   The teacher can pause or end the activity at any time.
-6.  **Conclude:** The activity ends when the total time runs out or the teacher ends it early.
-7.  **Review:** The view switches to the **Results Screen**, displaying the meeting history report.
-8.  **Reset:** The teacher clicks "Start New Activity" to return to the Setup Screen.
-
-
-
-
-
-!>
