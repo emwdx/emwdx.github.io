@@ -4,19 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Group Arranger</title>
-
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
     <style>
         body { background-color: #f8f9fa; }
         .nav-tabs .nav-link { color: #6c757d; }
         .nav-tabs .nav-link.active { color: #000; font-weight: bold; }
         .group-card {
-            background-color: white; border: 1px solid #dee2e6; border-radius: .375rem;
+            position: relative; background-color: white; border: 1px solid #dee2e6; border-radius: .375rem;
             min-height: 200px; padding: 1rem; margin-bottom: 1.5rem;
-            transition: border-color 0.2s ease-in-out; display: flex; flex-direction: column;
+            transition: border-color 0.2s ease-in-out, background-color 0.2s ease-in-out; 
+            display: flex; flex-direction: column;
         }
+        #unassigned-pool-card { border-style: dashed; }
         .group-card h5 { border-bottom: 1px solid #eee; padding-bottom: 0.5rem; margin-bottom: 1rem; }
         .student-list { flex-grow: 1; }
         .student-item {
@@ -25,6 +26,10 @@
         }
         .student-item:active { cursor: grabbing; opacity: 0.8; }
         .student-status { font-size: 0.8em; color: #6c757d; display: block; }
+        .delete-group-btn {
+            position: absolute; top: 8px; right: 10px;
+            padding: 0.1rem 0.4rem; line-height: 1;
+        }
         .dragging { opacity: 0.5; }
         .droppable-valid { border: 2px dashed #198754 !important; background-color: #e9f9f0; }
         .droppable-invalid { border: 2px dashed #dc3545 !important; background-color: #fdeeee; }
@@ -36,85 +41,81 @@
     <div class="container-fluid mt-4">
         <h1 class="mb-4">Student Group Arranger</h1>
 
-        <!-- Bootstrap Tabs -->
         <ul class="nav nav-tabs" id="myTab" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="setup-tab" data-bs-toggle="tab" data-bs-target="#setup-tab-pane" type="button" role="tab" aria-controls="setup-tab-pane" aria-selected="true">1. Setup</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="groups-tab" data-bs-toggle="tab" data-bs-target="#groups-tab-pane" type="button" role="tab" aria-controls="groups-tab-pane" aria-selected="false">2. Arrange Groups</button>
-            </li>
+            <li class="nav-item" role="presentation"><button class="nav-link active" id="setup-tab" data-bs-toggle="tab" data-bs-target="#setup-tab-pane" type="button">1. Setup / Reset</button></li>
+            <li class="nav-item" role="presentation"><button class="nav-link" id="groups-tab" data-bs-toggle="tab" data-bs-target="#groups-tab-pane" type="button">2. Arrange Groups</button></li>
         </ul>
 
-        <!-- Tab Content -->
         <div class="tab-content bg-white p-4 border border-top-0" id="myTabContent">
-            <!-- Setup Tab Pane -->
-            <div class="tab-pane fade show active" id="setup-tab-pane" role="tabpanel" aria-labelledby="setup-tab" tabindex="0">
-                <h3>Import Data</h3>
-                <p>Paste data from your Google Sheets. Your work will be saved automatically to this browser.</p>
+            <div class="tab-pane fade show active" id="setup-tab-pane">
+                <h3>Import New Data</h3>
+                <p>Paste data from your sheets to start a new session or reset your current arrangement. Your work on the "Arrange Groups" tab is saved automatically.</p>
                 <div class="row">
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="requestsData" class="form-label"><strong>Step 1: Paste Requests Data</strong></label>
-                            <textarea class="form-control" id="requestsData" rows="10" placeholder="Timestamp	Student Name..."></textarea>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="groupingData" class="form-label"><strong>Step 2: Paste Grouping Data</strong></label>
-                            <textarea class="form-control" id="groupingData" rows="10" placeholder="Group 1..."></textarea>
-                        </div>
-                    </div>
+                    <div class="col-md-6 mb-3"><label for="requestsData" class="form-label"><strong>Step 1: Paste Requests Data (INCLUDING HEADERS)</strong></label><textarea class="form-control" id="requestsData" rows="10" placeholder="Timestamp	Student Name..."></textarea></div>
+                    <div class="col-md-6 mb-3"><label for="groupingData" class="form-label"><strong>Step 2: Paste Initial Grouping Data</strong></label><textarea class="form-control" id="groupingData" rows="10" placeholder="Group 1..."></textarea></div>
                 </div>
-                <button id="visualizeBtn" class="btn btn-primary">Visualize Groups</button>
+                <button id="visualizeBtn" class="btn btn-primary">Visualize New Groups</button>
             </div>
 
-            <!-- Groups Tab Pane -->
-            <div class="tab-pane fade" id="groups-tab-pane" role="tabpanel" aria-labelledby="groups-tab" tabindex="0">
-                <h3>Drag and Drop Students</h3>
-                <p>Move students between groups to refine the arrangement. Hover over a group title to see survey responses.</p>
-                <div id="groups-container" class="row mt-4"></div>
-                <hr>
-                <div class="mt-3">
-                    <button id="exportBtn" class="btn btn-success">Export Grouping for Google Sheets</button>
-                    <div id="export-container" class="mt-3" style="display: none;">
-                        <label for="exportData" class="form-label"><strong>Copy the text below:</strong></label>
-                        <textarea class="form-control" id="exportData" rows="8"></textarea>
+            <div class="tab-pane fade" id="groups-tab-pane">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h3>Drag and Drop Students</h3>
+                        <p class="mb-0">Your arrangement is saved as you work. Hover over a group title to see survey responses.</p>
                     </div>
+                    <div>
+                        <button id="addGroupBtn" class="btn btn-outline-primary"><i class="bi bi-plus-circle"></i> Add New Group</button>
+                        <button id="exportBtn" class="btn btn-success"><i class="bi bi-clipboard-check"></i> Export Grouping</button>
+                    </div>
+                </div>
+                <div id="groups-container" class="row mt-4"></div>
+                <div id="export-container" class="mt-3" style="display: none;">
+                    <label for="exportData" class="form-label"><strong>Copy the text below:</strong></label>
+                    <textarea class="form-control" id="exportData" rows="8"></textarea>
                 </div>
             </div>
         </div>
     </div>
+    
+    <div class="modal fade" id="deleteGroupModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header"><h1 class="modal-title fs-5">Confirm Deletion</h1><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body" id="deleteModalBody"></div>
+                <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete Group</button></div>
+            </div>
+        </div>
+    </div>
 
-    <!-- Bootstrap JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         let studentData = {};
         let popoverList = [];
+        let groupToDelete = null;
+        let deleteModal = null;
 
         function parseRequestsData(text) {
             if (!text) return false;
             studentData = {};
             const rows = text.split('\n');
             const headers = rows[0].split('\t').map(h => h.trim());
-            const nameIdx = headers.indexOf('Student Name');
-            const wantIdx = headers.indexOf('Would like...');
-            const dontWantIdx = headers.indexOf('WOuld not like...');
-            const surveyIdx = headers.indexOf('Survey answer');
-            
-            if (nameIdx === -1 || wantIdx === -1 || dontWantIdx === -1 || surveyIdx === -1) {
-                alert("Error: Could not find required headers in requests data.");
+            const requiredHeaders = ['Student Name', 'Would like...', 'WOuld not like...', 'Survey answer'];
+            const missingHeaders = requiredHeaders.filter(h => !headers.includes(h));
+
+            if (missingHeaders.length > 0) {
+                alert(`Error: The pasted requests data is missing the following required headers: ${missingHeaders.join(', ')}.\n\nPlease ensure you copy the entire data range, including the header row.`);
                 return false;
             }
+            
+            const [nameIdx, wantIdx, dontWantIdx, surveyIdx] = requiredHeaders.map(h => headers.indexOf(h));
             for (let i = 1; i < rows.length; i++) {
                 const rowData = rows[i].split('\t');
                 const name = rowData[nameIdx]?.trim();
                 if (name) {
                     studentData[name] = {
                         name: name,
-                        wantWith: rowData[wantIdx] ? rowData[wantIdx].split(',').map(n => n.trim()).filter(Boolean) : [],
-                        dontWantWith: rowData[dontWantIdx] ? rowData[dontWantIdx].split(',').map(n => n.trim()).filter(Boolean) : [],
+                        wantWith: (rowData[wantIdx] || '').split(',').map(n => n.trim()).filter(Boolean),
+                        dontWantWith: (rowData[dontWantIdx] || '').split(',').map(n => n.trim()).filter(Boolean),
                         surveyAnswer: rowData[surveyIdx]?.trim() || 'N/A'
                     };
                 }
@@ -124,20 +125,15 @@
 
         function parseGroupingData(text) {
             if (!text) return [];
-            let grouping = [];
-            const lines = text.split('\n');
-            let currentGroup = null;
-            lines.forEach(line => {
+            let grouping = [], currentGroup = null;
+            text.split('\n').forEach(line => {
                 const trimmedLine = line.trim();
                 if (trimmedLine.toLowerCase().startsWith('group')) {
                     if (currentGroup) grouping.push(currentGroup);
                     currentGroup = [];
                 } else if (currentGroup && trimmedLine) {
-                    const parts = trimmedLine.split('\t');
-                    const name = parts[1] || parts[2];
-                    if (name && name.toLowerCase() !== 'name') {
-                       currentGroup.push(name.trim());
-                    }
+                    const name = (trimmedLine.split('\t')[1] || trimmedLine.split('\t')[2])?.trim();
+                    if (name && name.toLowerCase() !== 'name') currentGroup.push(name);
                 }
             });
             if (currentGroup) grouping.push(currentGroup);
@@ -147,6 +143,7 @@
         function calculateStudentStatus(studentName, groupNames) {
             const data = studentData[studentName];
             if (!data) return { emoji: '❓', text: '(Data not found)' };
+            if (!groupNames) return { emoji: '—', text: '(Unassigned)' };
             const otherGroupMembers = groupNames.filter(name => name !== studentName);
             const avoidedPartner = data.dontWantWith.find(avoidName => otherGroupMembers.includes(avoidName));
             if (avoidedPartner) return { emoji: '❌', text: `(With ${avoidedPartner})` };
@@ -158,39 +155,76 @@
             return { emoji: '—', text: '(No preferences)' };
         }
 
-        function renderGroups(grouping) {
+        function renderGroups(grouping, unassigned) {
             const container = document.getElementById('groups-container');
-            container.innerHTML = '';
+            container.innerHTML = `<div class="col-lg-3 col-md-4"><div class="group-card" id="unassigned-pool-card"><h5 class="group-title"><i class="bi bi-people"></i> Unassigned Students</h5><div class="student-list"></div></div></div>`;
+            const unassignedList = container.querySelector('#unassigned-pool-card .student-list');
+            unassigned.forEach(name => unassignedList.appendChild(createStudentItem(name)));
+            updateGroupStatuses(document.getElementById('unassigned-pool-card'));
+            
             popoverList.forEach(p => p.dispose());
             popoverList = [];
-
-            grouping.forEach((group, index) => {
-                const groupCol = document.createElement('div');
-                groupCol.className = 'col-lg-3 col-md-4'; // 4 columns on large screens, 3 on medium
-                groupCol.innerHTML = `
-                    <div class="group-card" id="group-${index}" data-group-index="${index}">
-                        <h5 class="group-title">Group ${index + 1}</h5>
-                        <div class="student-list"></div>
-                    </div>`;
-                container.appendChild(groupCol);
-                const studentList = groupCol.querySelector('.student-list');
-                group.forEach(studentName => {
-                    if (studentName) {
-                        const studentItem = document.createElement('div');
-                        studentItem.className = 'student-item';
-                        studentItem.setAttribute('draggable', true);
-                        studentItem.dataset.studentName = studentName;
-                        studentList.appendChild(studentItem);
-                    }
-                });
-                updateGroupStatuses(groupCol.querySelector('.group-card'));
-                initGroupPopover(groupCol.querySelector('.group-card'));
-            });
+            grouping.forEach(group => createGroupCard(group));
             initDragAndDrop();
         }
 
+        function createGroupCard(students = []) {
+            const container = document.getElementById('groups-container');
+            const groupCol = document.createElement('div');
+            groupCol.className = 'col-lg-3 col-md-4';
+            const groupCard = document.createElement('div');
+            groupCard.className = 'group-card';
+            groupCard.innerHTML = `<button class="btn-close delete-group-btn" aria-label="Delete Group"></button><h5 class="group-title"></h5><div class="student-list"></div>`;
+            groupCol.appendChild(groupCard);
+            container.appendChild(groupCol);
+            
+            students.forEach(name => groupCard.querySelector('.student-list').appendChild(createStudentItem(name)));
+            
+            updateGroupStatuses(groupCard);
+            initGroupPopover(groupCard);
+            groupCard.querySelector('.delete-group-btn').addEventListener('click', handleDeleteClick);
+            renumberGroups();
+            return groupCard;
+        }
+
+        function createStudentItem(studentName) {
+            const studentItem = document.createElement('div');
+            studentItem.className = 'student-item';
+            studentItem.setAttribute('draggable', true);
+            studentItem.dataset.studentName = studentName;
+            return studentItem;
+        }
+
+        function renumberGroups() {
+            document.querySelectorAll('.group-card:not(#unassigned-pool-card)').forEach((card, index) => {
+                card.querySelector('.group-title').textContent = `Group ${index + 1}`;
+                card.dataset.groupIndex = index;
+            });
+        }
+
+        function handleDeleteClick(event) {
+            groupToDelete = event.target.closest('.group-card');
+            const groupTitle = groupToDelete.querySelector('.group-title').textContent;
+            document.getElementById('deleteModalBody').textContent = `Are you sure you want to delete ${groupTitle}? All students will be moved to the Unassigned pool.`;
+            deleteModal.show();
+        }
+
+        function confirmDeleteGroup() {
+            if (!groupToDelete) return;
+            const unassignedList = document.getElementById('unassigned-pool-card').querySelector('.student-list');
+            groupToDelete.querySelectorAll('.student-item').forEach(studentEl => unassignedList.appendChild(studentEl));
+            groupToDelete.closest('.col-lg-3').remove();
+            
+            updateGroupStatuses(document.getElementById('unassigned-pool-card'));
+            renumberGroups();
+            saveCurrentGrouping();
+            deleteModal.hide();
+            groupToDelete = null;
+        }
+
         function updateGroupStatuses(groupCard) {
-            const groupNames = Array.from(groupCard.querySelectorAll('.student-item')).map(el => el.dataset.studentName);
+            const isUnassigned = groupCard.id === 'unassigned-pool-card';
+            const groupNames = isUnassigned ? null : Array.from(groupCard.querySelectorAll('.student-item')).map(el => el.dataset.studentName);
             groupCard.querySelectorAll('.student-item').forEach(studentEl => {
                 const status = calculateStudentStatus(studentEl.dataset.studentName, groupNames);
                 studentEl.innerHTML = `${studentEl.dataset.studentName}<span class="student-status">${status.emoji} ${status.text}</span>`;
@@ -200,7 +234,7 @@
 
         function initGroupPopover(groupCard) {
              const popover = new bootstrap.Popover(groupCard.querySelector('.group-title'), {
-                trigger: 'hover', placement: 'top', title: 'Survey Responses', html: true, content: 'Loading...'
+                trigger: 'hover', placement: 'top', title: 'Survey Responses', html: true, content: '...'
             });
             popoverList.push(popover);
             updateGroupPopover(groupCard);
@@ -217,60 +251,29 @@
             popoverInstance.setContent({ '.popover-body': content });
         }
 
-        // --- DRAG-AND-DROP LOGIC ---
         function initDragAndDrop() {
-            const students = document.querySelectorAll('.student-item');
             const groups = document.querySelectorAll('.group-card');
             let draggedStudent = null, sourceGroup = null;
-
-            students.forEach(student => {
+            
+            document.querySelectorAll('.student-item').forEach(student => {
                 student.addEventListener('dragstart', (e) => {
                     draggedStudent = student;
                     sourceGroup = student.closest('.group-card');
                     setTimeout(() => student.classList.add('dragging'), 0);
-                    
-                    const draggedStudentName = draggedStudent.dataset.studentName;
-                    const draggedStudentInfo = studentData[draggedStudentName];
-                    if (!draggedStudentInfo) return;
+                    const draggedName = draggedStudent.dataset.studentName;
+                    const draggedInfo = studentData[draggedName];
+                    if (!draggedInfo) return;
 
-                    // *** MODIFIED LOGIC STARTS HERE ***
                     groups.forEach(group => {
                         if (group !== sourceGroup) {
-                            const groupStudentNames = Array.from(group.querySelectorAll('.student-item')).map(s => s.dataset.studentName);
-
-                            // CHECK 1: Is the move INVALID (red)?
-                            // This is true if the dragged student avoids someone in the group,
-                            // OR if someone in the group avoids the dragged student.
-                            const isMoveInvalid =
-                                draggedStudentInfo.dontWantWith.some(avoid => groupStudentNames.includes(avoid)) ||
-                                groupStudentNames.some(existingMember => 
-                                    studentData[existingMember]?.dontWantWith.includes(draggedStudentName)
-                                );
-
-                            if (isMoveInvalid) {
-                                group.classList.add('droppable-invalid');
-                                return; // Stop here, invalid takes precedence
-                            }
-
-                            // CHECK 2: Is the move POSITIVE (green)?
-                            // This is true if the dragged student wants someone in the group,
-                            // OR if someone in the group wants the dragged student.
-                            const isMovePositive =
-                                draggedStudentInfo.wantWith.some(want => groupStudentNames.includes(want)) ||
-                                groupStudentNames.some(existingMember => 
-                                    studentData[existingMember]?.wantWith.includes(draggedStudentName)
-                                );
-                            
-                            if (isMovePositive) {
-                                group.classList.add('droppable-valid');
-                            } else {
-                                group.classList.add('droppable-neutral');
-                            }
+                            const groupNames = Array.from(group.querySelectorAll('.student-item')).map(s => s.dataset.studentName);
+                            const isInvalid = draggedInfo.dontWantWith.some(avoid => groupNames.includes(avoid)) || groupNames.some(member => studentData[member]?.dontWantWith.includes(draggedName));
+                            if (isInvalid) { group.classList.add('droppable-invalid'); return; }
+                            const isPositive = draggedInfo.wantWith.some(want => groupNames.includes(want)) || groupNames.some(member => studentData[member]?.wantWith.includes(draggedName));
+                            group.classList.add(isPositive ? 'droppable-valid' : 'droppable-neutral');
                         }
                     });
-                     // *** MODIFIED LOGIC ENDS HERE ***
                 });
-
                 student.addEventListener('dragend', () => {
                     draggedStudent?.classList.remove('dragging');
                     draggedStudent = null; sourceGroup = null;
@@ -286,21 +289,19 @@
                         group.querySelector('.student-list').appendChild(draggedStudent);
                         updateGroupStatuses(sourceGroup);
                         updateGroupStatuses(group);
+                        saveCurrentGrouping();
                     }
                 });
             });
         }
         
-        // --- EXPORT & LOCALSTORAGE ---
         function exportGrouping() {
             let output = '';
-            document.querySelectorAll('.group-card').forEach((group, index) => {
-                output += `Group ${index + 1}\nStatus\tName\tSurvey Answer\n`;
+            document.querySelectorAll('.group-card:not(#unassigned-pool-card)').forEach(group => {
+                output += `${group.querySelector('.group-title').textContent}\nStatus\tName\tSurvey Answer\n`;
                 group.querySelectorAll('.student-item').forEach(student => {
                     const name = student.dataset.studentName;
-                    const statusText = student.querySelector('.student-status').textContent.trim();
-                    const survey = studentData[name]?.surveyAnswer || 'N/A';
-                    output += `${statusText}\t${name}\t${survey}\n`;
+                    output += `${student.querySelector('.student-status').textContent.trim()}\t${name}\t${studentData[name]?.surveyAnswer || 'N/A'}\n`;
                 });
                 output += '\n';
             });
@@ -312,14 +313,39 @@
             exportTextarea.setSelectionRange(0, 99999);
         }
 
-        function loadFromLocalStorage() {
-            document.getElementById('requestsData').value = localStorage.getItem('requestsData') || '';
-            document.getElementById('groupingData').value = localStorage.getItem('groupingData') || '';
+        function saveCurrentGrouping() {
+            const allGroups = Array.from(document.querySelectorAll('.group-card'));
+            const unassigned = Array.from(allGroups.find(g => g.id === 'unassigned-pool-card').querySelectorAll('.student-item')).map(s => s.dataset.studentName);
+            const assigned = allGroups.filter(g => g.id !== 'unassigned-pool-card').map(g => 
+                Array.from(g.querySelectorAll('.student-item')).map(s => s.dataset.studentName)
+            );
+            const state = { unassigned, assigned };
+            localStorage.setItem('currentGroupingState', JSON.stringify(state));
         }
 
-        // --- EVENT LISTENERS ---
-        document.addEventListener('DOMContentLoaded', loadFromLocalStorage);
+        function loadStateAndRender() {
+            const requests = localStorage.getItem('requestsData');
+            const savedStateJSON = localStorage.getItem('currentGroupingState');
 
+            // Load text area content regardless
+            document.getElementById('requestsData').value = requests || '';
+            
+            if (requests && savedStateJSON) {
+                if (!parseRequestsData(requests)) {
+                    // If parsing fails (e.g., bad headers in saved data), clear bad state and stop
+                    localStorage.removeItem('currentGroupingState');
+                    return;
+                };
+                const savedState = JSON.parse(savedStateJSON);
+                renderGroups(savedState.assigned, savedState.unassigned);
+                new bootstrap.Tab(document.getElementById('groups-tab')).show();
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            deleteModal = new bootstrap.Modal(document.getElementById('deleteGroupModal'));
+            loadStateAndRender();
+        });
         document.getElementById('requestsData').addEventListener('input', e => localStorage.setItem('requestsData', e.target.value));
         document.getElementById('groupingData').addEventListener('input', e => localStorage.setItem('groupingData', e.target.value));
         
@@ -328,17 +354,32 @@
                 const requestsText = document.getElementById('requestsData').value.trim();
                 const groupingText = document.getElementById('groupingData').value.trim();
                 if (!requestsText || !groupingText) return alert('Please paste data into both text areas.');
+
+                // The parseRequestsData function now contains the alert for missing headers
                 if (!parseRequestsData(requestsText)) return;
-                renderGroups(parseGroupingData(groupingText));
+
+                const initialGroups = parseGroupingData(groupingText);
+                const totalStudentsInGroups = initialGroups.reduce((acc, group) => acc + group.length, 0);
+                if (totalStudentsInGroups === 0) {
+                   alert("Warning: No students were found in the pasted grouping data. This usually means the data is not tab-separated or does not start with lines like 'Group 1'.");
+                }
+                
+                renderGroups(initialGroups, []); // Start with an empty unassigned pool
+                saveCurrentGrouping();
                 new bootstrap.Tab(document.getElementById('groups-tab')).show();
             } catch (error) {
-                alert("An error occurred. Please check the format of your pasted text.\n\n" + error.message);
+                alert("An unexpected error occurred. Please check the console for details.\n\n" + error.message);
                 console.error(error);
             }
         });
 
         document.getElementById('exportBtn').addEventListener('click', exportGrouping);
+        document.getElementById('addGroupBtn').addEventListener('click', () => {
+            createGroupCard();
+            initDragAndDrop();
+            saveCurrentGrouping();
+        });
+        document.getElementById('confirmDeleteBtn').addEventListener('click', confirmDeleteGroup);
     </script>
-
 </body>
 </html>
