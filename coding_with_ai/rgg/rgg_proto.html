@@ -27,10 +27,29 @@
       }
     }
 
+    html,
+    body {
+      height: 100%;
+    }
+
     body {
       background-color: var(--bs-white);
       font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
         Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    }
+
+    body.activity-active {
+      overflow-y: auto;
+    }
+    body.activity-active > .container {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    body.activity-active h1 {
+      margin-top: 0.5rem !important;
+      margin-bottom: 1rem !important;
     }
 
     h1 {
@@ -242,10 +261,16 @@
       }
     }
     #timerCard {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: clamp(1rem, 2.5vh, 2rem);
       transition: transform 0.4s ease, box-shadow 0.4s ease, opacity 0.3s ease;
       width: 100%;
       margin: 0 auto;
       padding: clamp(1.25rem, 3.5vw, 3rem);
+      max-width: 860px;
     }
     #groupsPanelWrapper {
       transition: transform 0.4s ease, box-shadow 0.4s ease, opacity 0.3s ease;
@@ -294,6 +319,10 @@
       width: 100%;
       height: 100%;
       position: relative;
+    }
+    #groupsPanel {
+      max-width: 560px;
+      width: 100%;
     }
     .groups-header {
       position: sticky;
@@ -372,11 +401,22 @@
       top: 0.5rem;
     }
 
+    #activityScreen.layout-ready {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      min-height: calc(100vh - 2rem);
+    }
+    #activityScreen.layout-ready #activityLayout {
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+
     .timer-wrap {
       position: relative;
-      width: clamp(260px, 56vw, 560px);
-      height: clamp(260px, 56vw, 560px);
-      margin: clamp(8px, 4vh, 36px) auto;
+      width: clamp(240px, min(48vw, 60vh), 520px);
+      height: clamp(240px, min(48vw, 60vh), 520px);
+      margin: clamp(4px, 2vh, 20px) auto;
     }
     .timer-stack {
       flex: 1 1 auto;
@@ -386,6 +426,16 @@
       justify-content: center;
       gap: clamp(0.75rem, 2vw, 1.5rem);
       width: 100%;
+      position: relative;
+      padding-top: clamp(1.75rem, 4vh, 3rem);
+      padding-bottom: clamp(0.75rem, 3vh, 2rem);
+    }
+
+    .timer-stack #statusPill {
+      position: absolute;
+      top: clamp(-0.5rem, 1vh, 0.75rem);
+      left: 50%;
+      transform: translateX(-50%);
     }
 
     #timer-canvas {
@@ -738,6 +788,7 @@
     let totalPlannedDuration = 0;
     let nextRoundNumber = 1;
     let groupsPanelCollapsed = false;
+    let lastIgnitionRound = 0;
 
     const cardColors = ['#ff5f5f', '#625fff', '#5fff6f', '#ffbf5f', '#03af8d', '#6e5ef8', '#45a3ff', '#ab68e2'];
 
@@ -871,6 +922,8 @@
       setupScreen.classList.add('d-none');
       reportScreen.classList.add('d-none');
       activityScreen.classList.remove('d-none');
+      activityScreen.classList.add('layout-ready');
+      document.body.classList.add('activity-active');
 
       // Timer + UI reset
       totalRemaining = totalTimeInSeconds;
@@ -901,6 +954,7 @@
       beginRoundBtn.classList.remove('btn-pulse');
 
       pendingGroups = null;
+      lastIgnitionRound = 0;
       prepareTransition(currentPhaseTime);
 
       if (loopInterval) clearInterval(loopInterval);
@@ -975,6 +1029,12 @@
       drawTimer(0, phase === 'transition' ? '#ffc107' : '#28a745');
       updateTimelineProgress();
       activityScreen.classList.add('d-none');
+      activityScreen.classList.remove('layout-ready');
+      document.body.classList.remove('activity-active');
+      setGroupsPanelCollapsed(false);
+      activityLayout.classList.remove('groups-focus', 'groups-collapsed');
+      activityLayout.classList.add('timer-focus');
+      lastIgnitionRound = 0;
       buildReport();
       reportScreen.classList.remove('d-none');
     }
@@ -982,6 +1042,8 @@
     function runAgain() {
       reportScreen.classList.add('d-none');
       setupScreen.classList.remove('d-none');
+      activityScreen.classList.remove('layout-ready');
+      document.body.classList.remove('activity-active');
       pendingGroups = null;
       transitionCountdownStarted = false;
       activeTransitionDuration = 0;
@@ -998,6 +1060,7 @@
       setGroupsPanelCollapsed(false);
       activityLayout.classList.remove('groups-focus', 'groups-collapsed');
       activityLayout.classList.add('timer-focus');
+      lastIgnitionRound = 0;
     }
 
     // ---------- PAIRS + ROUNDS -----------
@@ -1055,7 +1118,11 @@
       pauseResumeBtn.textContent = 'Pause';
       regroupBtn.disabled = false;
       stopSound('ten');
-      playSound('ignition');
+      if (lastIgnitionRound !== round) {
+        stopSound('ignition');
+        playSound('ignition');
+        lastIgnitionRound = round;
+      }
       if (!pendingGroups) pendingGroups = generateGroupsAvoidingRepeats();
       roundsHistory.push(pendingGroups.map((g) => [...g]));
       renderGroups(pendingGroups);
@@ -1390,11 +1457,10 @@
       toggleGroupsPaneBtn.addEventListener('click', () => {
         const nextState = !groupsPanelCollapsed;
         setGroupsPanelCollapsed(nextState);
-        if (!nextState && phase === 'transition') {
+        if (!nextState) {
           activityLayout.classList.remove('timer-focus');
           activityLayout.classList.add('groups-focus');
-        }
-        if (nextState && phase === 'transition') {
+        } else {
           activityLayout.classList.remove('groups-focus');
           activityLayout.classList.add('timer-focus');
         }
