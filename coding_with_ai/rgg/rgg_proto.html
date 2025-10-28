@@ -13,6 +13,19 @@
       --custom-primary-darker: #89be6d;
       --custom-box-bg: #f4f3e8;
     }
+    @media (max-width: 991.98px) {
+      .layout-swapper {
+        grid-template-columns: 1fr;
+      }
+      #activityLayout #timerCard,
+      #activityLayout #groupsPanelWrapper {
+        grid-column: 1 / -1;
+      }
+      #activityLayout.groups-collapsed #groupsPanelWrapper {
+        max-width: 100%;
+        min-width: 100%;
+      }
+    }
 
     body {
       background-color: var(--bs-white);
@@ -124,14 +137,16 @@
     /* Pairing grid + cards */
     #pairingContainer {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 1.25rem;
       min-height: 40vh;
       align-content: start;
       perspective: 1200px;
+      transition: opacity 0.3s ease;
     }
     #pairingContainer.groups-hidden {
-      display: none;
+      opacity: 0;
+      pointer-events: none;
     }
     #groupsWrapper {
       display: contents;
@@ -197,11 +212,180 @@
     }
 
     /* Timer */
+    .layout-swapper {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1.5rem;
+      transition: grid-template-columns 0.4s ease;
+    }
+    @media (min-width: 992px) {
+      .layout-swapper {
+        grid-template-columns: repeat(12, 1fr);
+      }
+      .layout-swapper.timer-focus #timerCard {
+        grid-column: 1 / span 8;
+      }
+      .layout-swapper.timer-focus #groupsPanelWrapper {
+        grid-column: 9 / span 4;
+      }
+      .layout-swapper.groups-focus #timerCard {
+        grid-column: 1 / span 5;
+      }
+      .layout-swapper.groups-focus #groupsPanelWrapper {
+        grid-column: 6 / span 7;
+      }
+      .layout-swapper.groups-collapsed #timerCard {
+        grid-column: 1 / span 12;
+      }
+      .layout-swapper.groups-collapsed #groupsPanelWrapper {
+        grid-column: 12 / span 1;
+      }
+    }
+    #timerCard {
+      transition: transform 0.4s ease, box-shadow 0.4s ease, opacity 0.3s ease;
+      width: 100%;
+      margin: 0 auto;
+      padding: clamp(1.25rem, 3.5vw, 3rem);
+    }
+    #groupsPanelWrapper {
+      transition: transform 0.4s ease, box-shadow 0.4s ease, opacity 0.3s ease;
+    }
+    .layout-swapper.timer-focus #timerCard {
+      transform: scale(1);
+      box-shadow: 0 2rem 4rem -3rem rgba(0, 0, 0, 0.4);
+    }
+    .layout-swapper.timer-focus #groupsPanelWrapper {
+      transform: scale(0.96);
+      opacity: 0.85;
+    }
+    .layout-swapper.groups-focus #timerCard {
+      transform: scale(0.9);
+      opacity: 0.85;
+    }
+    .layout-swapper.groups-focus #groupsPanelWrapper {
+      transform: scale(1.02);
+      box-shadow: 0 2rem 4rem -2.5rem rgba(0, 0, 0, 0.35);
+    }
+    .layout-swapper.groups-collapsed #timerCard {
+      transform: scale(1);
+      opacity: 1;
+    }
+    .layout-swapper.groups-collapsed #groupsPanelWrapper {
+      transform: none;
+      opacity: 1;
+    }
+    .layout-swapper.timer-focus.groups-collapsed #pairingContainer {
+      pointer-events: none;
+    }
+    .layout-swapper.timer-focus:not(.groups-collapsed) #pairingContainer,
+    .layout-swapper.groups-focus #pairingContainer {
+      pointer-events: auto;
+    }
+
+    #groupsPanelWrapper {
+      display: flex;
+      align-items: stretch;
+      height: 100%;
+    }
+    .groups-panel-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+    .groups-header {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: inherit;
+      padding-bottom: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+    .groups-collapse-btn {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      background: #fff;
+      color: #4a4a4a;
+      transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .groups-collapse-btn:hover {
+      background: rgba(0, 0, 0, 0.05);
+      color: #000;
+      box-shadow: 0 0.75rem 1.5rem -1rem rgba(0, 0, 0, 0.2);
+    }
+    .groups-collapse-btn .chevron {
+      font-size: 1.15rem;
+      line-height: 1;
+      transition: transform 0.3s ease;
+      display: inline-block;
+    }
+    .groups-header-text h4 {
+      margin-bottom: 0.35rem;
+    }
+    #groupsPanelContent {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      overflow-y: auto;
+      padding-right: 0.25rem;
+    }
+    #groupsPanelContent > #pairingContainer {
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+    #activityLayout.groups-collapsed #groupsPanelWrapper {
+      max-width: 64px;
+      min-width: 52px;
+      justify-self: end;
+    }
+    #activityLayout.groups-collapsed #groupsPanelContent,
+    #activityLayout.groups-collapsed .groups-header-text {
+      display: none !important;
+    }
+    #activityLayout.groups-collapsed .groups-panel-inner {
+      align-items: center;
+      justify-content: flex-start;
+      padding: 0.75rem 0.5rem;
+      gap: 0.5rem;
+    }
+    #activityLayout.groups-collapsed #groupsPanel {
+      background: transparent;
+      box-shadow: none;
+      border: none;
+      padding: 0.5rem;
+    }
+    #activityLayout.groups-collapsed .groups-collapse-btn .chevron {
+      transform: rotate(180deg);
+    }
+    #activityLayout.groups-collapsed .groups-collapse-btn {
+      position: sticky;
+      top: 0.5rem;
+    }
+
     .timer-wrap {
       position: relative;
-      width: clamp(260px, 45vw, 420px);
-      height: clamp(260px, 45vw, 420px);
-      margin: 0 auto;
+      width: clamp(260px, 56vw, 560px);
+      height: clamp(260px, 56vw, 560px);
+      margin: clamp(8px, 4vh, 36px) auto;
+    }
+    .timer-stack {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(0.75rem, 2vw, 1.5rem);
+      width: 100%;
     }
 
     #timer-canvas {
@@ -243,7 +427,7 @@
 
     #timelineWrapper {
       width: 100%;
-      margin-top: 1.75rem;
+      margin-top: 1.25rem;
     }
     .timeline-track {
       position: relative;
@@ -366,49 +550,56 @@
 
     <!-- ACTIVITY SCREEN -->
     <section id="activityScreen" class="d-none">
-      <div class="row g-4 align-items-stretch">
-        <div class="col-lg-7 col-xl-8 d-flex">
-          <div id="timerCard" class="card controls-card p-4 flex-grow-1 d-flex flex-column align-items-center timer-card">
-            <div class="w-100 d-flex flex-column align-items-center gap-3">
-              <span id="statusPill" class="status-pill status-transition">Get ready</span>
-              <div class="timer-wrap" id="conversationTimerWrap">
-                <canvas id="timer-canvas" width="420" height="420"></canvas>
-                <div id="timer-display">00:00</div>
-              </div>
-              <div id="timerMessage" class="text-center">
-                <div id="actionHeadline" class="action-headline mb-2">Prepare to find your partner</div>
-                <p id="actionSubtext" class="action-subtext">Click “Reveal Groups” to show everyone where to go.</p>
-              </div>
+      <div id="activityLayout" class="layout-swapper timer-focus">
+        <div id="timerCard" class="card controls-card flex-grow-1 d-flex flex-column align-items-center timer-card">
+          <div class="timer-stack w-100 d-flex flex-column align-items-center gap-3">
+            <span id="statusPill" class="status-pill status-transition">Get ready</span>
+            <div class="timer-wrap" id="conversationTimerWrap">
+              <canvas id="timer-canvas" width="520" height="520"></canvas>
+              <div id="timer-display">00:00</div>
             </div>
-            <div id="timelineWrapper">
-              <div class="timeline-track">
-                <div id="timelineSegments"></div>
-                <div id="timelineProgress" class="timeline-progress"></div>
-                <div id="timelineDots"></div>
-              </div>
-              <div class="d-flex justify-content-between small text-muted mt-2">
-                <span id="timelineLabelStart">00:00</span>
-                <span id="timelineLabelEnd">00:00 total</span>
-              </div>
-            </div>
-            <div class="d-flex flex-wrap gap-2 justify-content-center mt-4 w-100">
-              <button class="btn btn-secondary" id="pauseResumeBtn">Pause</button>
-              <button class="btn btn-secondary" id="regroupBtn">Regroup Now</button>
-              <button class="btn btn-outline-secondary" id="toggleDigitsBtn">Show Digits</button>
-              <button class="btn btn-danger" id="endActivityBtn">End Activity</button>
+            <div id="timerMessage" class="text-center">
+              <div id="actionHeadline" class="action-headline mb-2">Prepare to find your partner</div>
+              <p id="actionSubtext" class="action-subtext">Click “Reveal Groups” to show everyone where to go.</p>
             </div>
           </div>
-        </div>
-        <div class="col-lg-5 col-xl-4 d-flex">
-          <div class="card content-card p-4 flex-grow-1 d-flex flex-column" id="groupsPanel">
-            <div class="mb-3 text-center">
-              <h4 class="mb-1" id="groupsPanelHeading">Group Finder</h4>
-              <p class="text-muted small mb-0" id="groupsHelperText">Reveal the cards when you are ready.</p>
+          <div id="timelineWrapper">
+            <div class="timeline-track">
+              <div id="timelineSegments"></div>
+              <div id="timelineProgress" class="timeline-progress"></div>
+              <div id="timelineDots"></div>
             </div>
-            <div id="pairingContainer"></div>
-            <div class="mt-auto d-flex flex-column gap-2">
-              <button class="btn btn-start-activity" id="revealGroupsBtn">Reveal Groups</button>
-              <button class="btn btn-start-activity d-none" id="beginRoundBtn">Start Round</button>
+            <div class="d-flex justify-content-between small text-muted mt-2">
+              <span id="timelineLabelStart">00:00</span>
+              <span id="timelineLabelEnd">00:00 total</span>
+            </div>
+          </div>
+          <div class="d-flex flex-wrap gap-2 justify-content-center mt-4 w-100">
+            <button class="btn btn-secondary" id="pauseResumeBtn">Pause</button>
+            <button class="btn btn-secondary" id="regroupBtn">Regroup Now</button>
+            <button class="btn btn-outline-secondary" id="toggleDigitsBtn">Show Digits</button>
+            <button class="btn btn-danger" id="endActivityBtn">End Activity</button>
+          </div>
+        </div>
+        <div id="groupsPanelWrapper" class="d-flex">
+          <div class="card content-card p-4 flex-grow-1 groups-panel-inner" id="groupsPanel">
+            <div class="groups-header">
+              <button class="groups-collapse-btn" id="toggleGroupsPaneBtn" type="button" aria-expanded="true" aria-label="Hide groups">
+                <span class="chevron">&#9654;</span>
+              </button>
+              <div class="groups-header-text">
+                <h4 class="mb-1" id="groupsPanelHeading">Group Finder</h4>
+                <p class="text-muted small mb-0" id="groupsHelperText">Reveal the cards when you are ready.</p>
+              </div>
+            </div>
+            <div id="groupsPanelContent">
+              <div class="d-flex justify-content-end">
+                <button class="btn btn-start-activity" id="revealGroupsBtn">Reveal Groups</button>
+              </div>
+              <div id="pairingContainer"></div>
+              <div class="pt-2">
+                <button class="btn btn-start-activity d-none w-100" id="beginRoundBtn">Start Round</button>
+              </div>
             </div>
           </div>
         </div>
@@ -466,6 +657,7 @@
     const endActivityBtn = document.getElementById('endActivityBtn');
     const runAgainBtn = document.getElementById('runAgainBtn');
     const toggleDigitsBtn = document.getElementById('toggleDigitsBtn');
+    const toggleGroupsPaneBtn = document.getElementById('toggleGroupsPaneBtn');
 
     const timerCanvas = document.getElementById('timer-canvas');
     const ctx = timerCanvas.getContext('2d');
@@ -473,14 +665,15 @@
     const statusPill = document.getElementById('statusPill');
     const actionHeadline = document.getElementById('actionHeadline');
     const actionSubtext = document.getElementById('actionSubtext');
+    const activityLayout = document.getElementById('activityLayout');
     const timerCard = document.getElementById('timerCard');
     const timelineProgress = document.getElementById('timelineProgress');
     const timelineSegments = document.getElementById('timelineSegments');
     const timelineDots = document.getElementById('timelineDots');
     const timelineLabelStart = document.getElementById('timelineLabelStart');
     const timelineLabelEnd = document.getElementById('timelineLabelEnd');
+    const groupsPanelWrapper = document.getElementById('groupsPanelWrapper');
     const pairingContainer = document.getElementById('pairingContainer');
-    const groupsPanel = document.getElementById('groupsPanel');
     const groupsHelperText = document.getElementById('groupsHelperText');
     const groupsPanelHeading = document.getElementById('groupsPanelHeading');
 
@@ -544,6 +737,7 @@
     let timelineSegmentsData = [];
     let totalPlannedDuration = 0;
     let nextRoundNumber = 1;
+    let groupsPanelCollapsed = false;
 
     const cardColors = ['#ff5f5f', '#625fff', '#5fff6f', '#ffbf5f', '#03af8d', '#6e5ef8', '#45a3ff', '#ab68e2'];
 
@@ -699,7 +893,6 @@
       groupsRevealed = false;
       timeUpPlaying = false;
       pairingContainer.classList.remove('groups-hidden');
-      groupsPanel.classList.remove('d-none');
       groupsHelperText.textContent = 'Reveal the cards when you are ready.';
       groupsPanelHeading.textContent = 'Group Finder';
       revealGroupsBtn.classList.remove('d-none');
@@ -802,6 +995,9 @@
       toggleDigitsBtn.textContent = 'Show Digits';
       if (timelineLabelStart) timelineLabelStart.textContent = '00:00';
       if (timelineLabelEnd) timelineLabelEnd.textContent = '00:00 total';
+      setGroupsPanelCollapsed(false);
+      activityLayout.classList.remove('groups-focus', 'groups-collapsed');
+      activityLayout.classList.add('timer-focus');
     }
 
     // ---------- PAIRS + ROUNDS -----------
@@ -810,8 +1006,11 @@
       setStatus('transition');
       transitionCountdownStarted = false;
       groupsRevealed = false;
+      setGroupsPanelCollapsed(false);
       pairingContainer.classList.remove('groups-hidden');
-      groupsPanel.classList.remove('d-none');
+      activityLayout.classList.remove('timer-focus');
+      activityLayout.classList.add('groups-focus');
+      groupsPanelWrapper.classList.remove('d-none');
       revealGroupsBtn.classList.remove('d-none');
       revealGroupsBtn.disabled = false;
       beginRoundBtn.classList.add('d-none');
@@ -862,7 +1061,9 @@
       renderGroups(pendingGroups);
       pendingGroups = null;
       pairingContainer.classList.add('groups-hidden');
-      groupsPanel.classList.add('d-none');
+      setGroupsPanelCollapsed(true);
+      activityLayout.classList.remove('groups-focus');
+      activityLayout.classList.add('timer-focus');
       groupsHelperText.textContent = 'Next groups will appear after this round.';
       revealGroupsBtn.classList.add('d-none');
       beginRoundBtn.classList.add('d-none');
@@ -1030,7 +1231,18 @@
       if (typeof subtext === 'string') actionSubtext.textContent = subtext;
     }
 
+    function setGroupsPanelCollapsed(collapsed) {
+      groupsPanelCollapsed = collapsed;
+      activityLayout.classList.toggle('groups-collapsed', collapsed);
+      if (toggleGroupsPaneBtn) {
+        toggleGroupsPaneBtn.setAttribute('aria-expanded', String(!collapsed));
+        toggleGroupsPaneBtn.setAttribute('aria-label', collapsed ? 'Show groups' : 'Hide groups');
+        toggleGroupsPaneBtn.title = collapsed ? 'Show groups' : 'Hide groups';
+      }
+    }
+
     function handleReveal() {
+      if (groupsPanelCollapsed) setGroupsPanelCollapsed(false);
       if (groupsRevealed) return;
       setGroupsRevealed(true);
       revealGroupsBtn.disabled = true;
@@ -1055,13 +1267,14 @@
           transitionCountdownStarted = false;
         }
       }
+      groupsRevealed = true;
     }
 
     // ---------- TIMER DRAWING -----------
     function drawTimer(percentage, color = '#28a745') {
       const dpr = window.devicePixelRatio || 1;
       const cardWidth = timerCard ? timerCard.clientWidth : 420;
-      const sizeCSS = Math.max(280, Math.min(cardWidth * 0.7, 420));
+      const sizeCSS = Math.max(280, Math.min(cardWidth * 0.78, 520));
       timerCanvas.width = sizeCSS * dpr;
       timerCanvas.height = sizeCSS * dpr;
       timerCanvas.style.width = sizeCSS + 'px';
@@ -1166,11 +1379,27 @@
       stopSound('timeUp');
       prepareTransition();
     });
-    toggleDigitsBtn.addEventListener('click', () => {
-      timerDigitsVisible = !timerDigitsVisible;
-      timerCard.classList.toggle('show-digits', timerDigitsVisible);
-      toggleDigitsBtn.textContent = timerDigitsVisible ? 'Hide Digits' : 'Show Digits';
-    });
+    if (toggleDigitsBtn) {
+      toggleDigitsBtn.addEventListener('click', () => {
+        timerDigitsVisible = !timerDigitsVisible;
+        timerCard.classList.toggle('show-digits', timerDigitsVisible);
+        toggleDigitsBtn.textContent = timerDigitsVisible ? 'Hide Digits' : 'Show Digits';
+      });
+    }
+    if (toggleGroupsPaneBtn) {
+      toggleGroupsPaneBtn.addEventListener('click', () => {
+        const nextState = !groupsPanelCollapsed;
+        setGroupsPanelCollapsed(nextState);
+        if (!nextState && phase === 'transition') {
+          activityLayout.classList.remove('timer-focus');
+          activityLayout.classList.add('groups-focus');
+        }
+        if (nextState && phase === 'transition') {
+          activityLayout.classList.remove('groups-focus');
+          activityLayout.classList.add('timer-focus');
+        }
+      });
+    }
     endActivityBtn.addEventListener('click', () => endActivity());
     runAgainBtn.addEventListener('click', runAgain);
 
