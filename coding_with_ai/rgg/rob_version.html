@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Pairing Tool</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom Styles to Match Design -->
+    <style>
+      :root {
+          --custom-primary-light: #eafce2;
+          --custom-primary: #c5eab2;
+          --custom-primary-bright: #b2ff8b;
+          --custom-primary-darker: #89be6d;
+          --custom-box-bg: #F4F3E8;
+      }
+      body {
+          background-color: var(--bs-white); 
+          font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;
+      }
+      .setup-card, .controls-card {
+          background-color: var(--custom-box-bg);
+          border: none;
+          border-radius: 1rem; /* --bs-border-radius-xl */
+      }
+      .setup-card .form-control, .setup-card .form-select, .setup-card .input-group-text {
+          border-radius: .5rem; /* --bs-border-radius-lg */
+          border: 1px solid var(--bs-white);
+      }
+      .setup-card .form-control:focus, .setup-card .form-select:focus {
+          border-color: var(--custom-primary-darker);
+          box-shadow: 0 0 0 .25rem rgba(137, 190, 109, .5);
+      }
+      #studentNames.form-control {
+        border-radius: 1rem; /* --bs-border-radius-xl */
+        background-color: white;
+        border: 1px solid white;
+        padding: 1rem;
+      }
+      .btn {
+          border-radius: 50rem; /* --bs-border-radius-pill */
+          font-weight: 600;
+          padding: 0.75rem 1.5rem;
+      }
+      .btn-start-activity {
+          background-color: var(--custom-primary-bright);
+          color: var(--bs-black);
+          border: none;
+      }
+      .btn-start-activity:hover {
+          background-color: var(--custom-primary-darker);
+          color: var(--bs-black);
+      }
+      .btn-save {
+          background-color: transparent; border: none; color: var(--custom-primary-darker);
+          display: flex; align-items: center; justify-content: center; padding: .5rem 1rem;
+      }
+      .btn-save:hover { background-color: rgba(0,0,0,0.05); color: var(--custom-primary-darker); }
+      .btn-save svg { margin-right: 8px; }
+      #studentNames::-webkit-scrollbar { width: 10px; }
+      #studentNames::-webkit-scrollbar-track { background: transparent; }
+      #studentNames::-webkit-scrollbar-thumb {
+          background-color: var(--custom-primary); border-radius: 20px; border: 3px solid var(--bs-white);
+      }
+      #pairingContainer {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+          gap: 1.5rem; perspective: 1000px; min-height: 60vh; align-content: start;
+      }
+      .flip-card {
+          background-color: transparent; min-height: 190px; position: relative;
+          transform-style: preserve-3d; transition: transform 0.8s;
+      }
+      .flip-card.is-flipped { transform: rotateY(180deg); }
+      .card-face {
+          position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden;
+      }
+      .card-face--back { transform: rotateY(180deg); }
+      .group-card { border-radius: .5rem; border: none; background-color: var(--bs-white); }
+      .group-card .card-header { border-radius: .5rem .5rem 0 0; height: 8px; padding: 0; border-bottom: none; }
+      .group-card .card-title { font-weight: 700; margin-top: 0.5rem; font-size: 1.1rem; }
+      .group-card .list-unstyled li { text-align: left; font-size: 1.1rem; padding-left: 1.25rem; margin-top: 0.25rem; }
+      .final-message-container { grid-column: 1 / -1; }
+      .btn-pulse { padding: 1rem 2rem; font-size: 1.5rem; box-shadow: 0 0 0 0 rgba(178, 255, 139, 1); animation: pulse 2s infinite; }
+      @keyframes pulse {
+          0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(178, 255, 139, 0.7); }
+          70% { transform: scale(1); box-shadow: 0 0 0 25px rgba(178, 255, 139, 0); }
+          100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(178, 255, 139, 0); }
+      }
+      #reportModal .list-group-item {
+        background-color: var(--custom-box-bg);
+      }
+    </style>
+</head>
+<body class="p-3">
+
+    <div class="container">
+        <h1 class="text-center my-4">Student Pairing Tool</h1>
+
+        <!-- Setup Screen -->
+        <div id="setupScreen">
+          <div class="card setup-card p-4 mx-auto" style="max-width: 800px;">
+            <div class="row g-4">
+              <div class="col-md-7">
+                <div class="d-flex flex-column h-100">
+                  <div class="mb-3">
+                    <label class="form-label fw-bold">Choose Class</label>
+                    <div class="input-group">
+                      <select class="form-select" id="classDropdown">
+                        <option selected>New Class</option>
+                      </select>
+                      <button class="btn btn-outline-secondary btn-sm" id="addNewClassButton" type="button" title="Add New Class">+</button>
+                      <button class="btn btn-outline-danger btn-sm" id="deleteClassButton" type="button" title="Delete Selected Class">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/><path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/></svg>
+                      </button>
+                    </div>
+                  </div>
+                  <label for="studentNames" class="form-label fw-bold">Enter Students</label>
+                  <textarea id="studentNames" class="form-control flex-grow-1" placeholder="Olivia&#10;Liam&#10;Sophia&#10;Jackson&#10;Ava"></textarea>
+                </div>
+              </div>
+              <div class="col-md-5 d-flex flex-column">
+                <div>
+                  <label class="form-label fw-bold">Total Activity Time</label>
+                  <div class="input-group mb-3">
+                    <input type="number" id="totalTimeMinutes" value="1" min="0" class="form-control text-center">
+                    <span class="input-group-text">min</span>
+                    <input type="number" id="totalTimeSeconds" value="0" min="0" max="59" class="form-control text-center">
+                    <span class="input-group-text">sec</span>
+                  </div>
+                </div>
+                <div>
+                  <label class="form-label fw-bold">Group Rotation Time</label>
+                  <div class="input-group mb-3">
+                    <input type="number" id="groupTimeMinutes" value="0" min="0" class="form-control text-center">
+                    <span class="input-group-text">min</span>
+                    <input type="number" id="groupTimeSeconds" value="25" min="0" max="59" class="form-control text-center">
+                    <span class="input-group-text">sec</span>
+                  </div>
+                </div>
+                <div class="mt-auto">
+                  <button class="btn btn-start-activity btn-lg w-100" id="startButton">Start Activity</button>
+                  <button class="btn btn-save w-100 mt-2" id="saveClassButton">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v4.5h2a.5.5 0 0 1 .354.854l-2.5 2.5a.5.5 0 0 1-.708 0l-2.5-2.5A.5.5 0 0 1 5.5 6.5h2V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1z"/></svg>
+                    Save Class
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Activity Screen -->
+        <div class="row g-4 d-none" id="activityScreen">
+            <aside class="col-lg-3 d-flex flex-column gap-3">
+                <div id="timersWrapper" class="d-flex flex-column gap-3 w-100">
+                    <div class="card controls-card text-center">
+                        <div class="card-body">
+                          <h2 id="totalTimerHeader" class="card-title h6 text-uppercase">Total Time</h2>
+                          <div id="totalTimerDisplay" class="display-4 fw-bold">00:00</div>
+                        </div>
+                    </div>
+                    <div class="card controls-card text-center">
+                        <div class="card-body">
+                          <h2 class="card-title h6 text-uppercase">Group Time</h2>
+                          <div id="groupTimerDisplay" class="display-4 fw-bold">00:00</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="controlsCountdown" class="card text-center text-white bg-dark d-none" style="min-height: 226px;">
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                      <h5 class="card-title">New Groups!</h5>
+                      <div id="controlsCountdownNumber" class="display-1 fw-bolder">10</div>
+                    </div>
+                </div>
+
+                <div class="mt-auto d-grid gap-2">
+                    <button class="btn btn-secondary" id="manualRegroupButton">Regroup Now</button>
+                    <button class="btn btn-danger" id="resetButton">Reset Activity</button>
+                </div>
+            </aside>
+            <main class="col-lg-9">
+              <div class="card controls-card p-4 h-100">
+                <div id="pairingContainer">
+                    <!-- Pairing cards are generated here -->
+                </div>
+              </div>
+            </main>
+        </div>
+    </div>
+    
+    <!-- Report Modal -->
+    <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="reportModalLabel">Pairing Report</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" id="reportModalBody">
+            <!-- Report content will be injected here -->
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Bootstrap JS for Modal functionality -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const STORAGE_KEY = 'studentPairingClasses';
+        
+        const setupScreen = document.getElementById('setupScreen');
+        const activityScreen = document.getElementById('activityScreen');
+        const startButton = document.getElementById('startButton');
+        const manualRegroupButton = document.getElementById('manualRegroupButton');
+        const resetButton = document.getElementById('resetButton');
+        const pairingContainer = document.getElementById('pairingContainer');
+        const totalTimerHeader = document.getElementById('totalTimerHeader');
+        const totalTimerDisplay = document.getElementById('totalTimerDisplay');
+        const groupTimerDisplay = document.getElementById('groupTimerDisplay');
+        const timersWrapper = document.getElementById('timersWrapper');
+        const controlsCountdown = document.getElementById('controlsCountdown');
+        const controlsCountdownNumber = document.getElementById('controlsCountdownNumber');
+        const saveClassButton = document.getElementById('saveClassButton');
+        const deleteClassButton = document.getElementById('deleteClassButton');
+        const addNewClassButton = document.getElementById('addNewClassButton');
+        const classDropdown = document.getElementById('classDropdown');
+        const studentNamesTextarea = document.getElementById('studentNames');
+        const reportModalEl = document.getElementById('reportModal');
+        const reportModalBody = document.getElementById('reportModalBody');
+        
+        const reportModal = new bootstrap.Modal(reportModalEl);
+
+        let totalTimeInSeconds, groupTimeInSeconds, totalInterval, groupInterval, countdownInterval;
+        let studentList = [];
+        let isActivityOver = false;
+        let pairingHistory = {};
+        const cardColors = ['#ff5f5f', '#625fff', '#5fff6f', '#ffbf5f', '#03af8d', '#6e5ef8', '#45a3ff', '#ab68e2'];
+        
+        function getSavedClasses() { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+        function saveClasses(classes) { localStorage.setItem(STORAGE_KEY, JSON.stringify(classes)); }
+
+        function populateClassDropdown() {
+          const classes = getSavedClasses();
+          const currentVal = classDropdown.value;
+          classDropdown.innerHTML = '<option selected>New Class</option>';
+          for (const className in classes) {
+            const option = document.createElement('option');
+            option.value = className;
+            option.textContent = className;
+            classDropdown.appendChild(option);
+          }
+          if(classes[currentVal]) classDropdown.value = currentVal;
+        }
+
+        function handleSaveClass() {
+          const students = studentNamesTextarea.value.trim().split('\n').filter(name => name);
+          if (students.length === 0) { alert("Please enter student names before saving."); return; }
+          const className = prompt("Enter a name for this class:", classDropdown.value !== 'New Class' ? classDropdown.value : '');
+          if (!className) return;
+
+          const classes = getSavedClasses();
+          classes[className] = students;
+          saveClasses(classes);
+          populateClassDropdown();
+          classDropdown.value = className;
+          alert(`Class "${className}" saved!`);
+        }
+        
+        function handleDeleteClass() {
+            const selectedClass = classDropdown.value;
+            if (selectedClass === 'New Class') { alert("Cannot delete 'New Class'. Select a saved class to delete."); return; }
+            if (confirm(`Are you sure you want to delete the class "${selectedClass}"? This cannot be undone.`)) {
+                const classes = getSavedClasses();
+                delete classes[selectedClass];
+                saveClasses(classes);
+                classDropdown.innerHTML = '<option selected>New Class</option>';
+                populateClassDropdown();
+                studentNamesTextarea.value = '';
+            }
+        }
+        
+        function handleAddNewClass() {
+            classDropdown.value = 'New Class';
+            studentNamesTextarea.value = '';
+            studentNamesTextarea.focus();
+        }
+
+        function handleClassChange() {
+          const selectedClass = classDropdown.value;
+          if (selectedClass === 'New Class') { studentNamesTextarea.value = ''; } 
+          else { const classes = getSavedClasses(); studentNamesTextarea.value = classes[selectedClass].join('\n'); }
+        }
+        
+        function initializeActivity() {
+            isActivityOver = false;
+            pairingHistory = {};
+            const totalMinutes = parseInt(document.getElementById('totalTimeMinutes').value) || 0;
+            const totalSeconds = parseInt(document.getElementById('totalTimeSeconds').value) || 0;
+            const groupMinutes = parseInt(document.getElementById('groupTimeMinutes').value) || 0;
+            const groupSeconds = parseInt(document.getElementById('groupTimeSeconds').value) || 0;
+            totalTimerHeader.textContent = "Total Activity Time";
+            totalTimeInSeconds = (totalMinutes * 60) + totalSeconds;
+            groupTimeInSeconds = (groupMinutes * 60) + groupSeconds;
+            const names = studentNamesTextarea.value.trim();
+            if (groupTimeInSeconds <= 0 || totalTimeInSeconds <= 0) { alert("Timers must be set to a value greater than zero."); return; }
+            if (totalTimeInSeconds < groupTimeInSeconds) { alert("Total activity time must be greater than or equal to group time."); return; }
+            studentList = names.split('\n').map(name => name.trim()).filter(name => name.length > 0);
+            if (studentList.length < 2) { alert("Please enter at least two student names."); return; }
+            
+            studentList.forEach(student => { pairingHistory[student] = new Set(); });
+            
+            setupScreen.classList.add('d-none');
+            activityScreen.classList.remove('d-none');
+            totalTimerDisplay.textContent = formatTime(totalTimeInSeconds);
+            groupTimerDisplay.textContent = formatTime(groupTimeInSeconds);
+            
+            pairingContainer.innerHTML = `
+              <div id="startStateOverlay" class="d-flex flex-column justify-content-center align-items-center h-100 pt-5" style="grid-column: 1 / -1;">
+                  <h3 class="mb-4">Your activity is ready!</h3>
+                  <button class="btn btn-start-activity btn-lg btn-pulse" id="startFirstRoundButton">Start First Round</button>
+              </div>`;
+            document.getElementById('startFirstRoundButton').addEventListener('click', startFirstRound);
+        }
+        
+        function startFirstRound() { startTotalTimer(); generateNewGroups(); }
+        
+        function resetActivity() {
+            clearInterval(totalInterval); clearInterval(groupInterval); clearInterval(countdownInterval);
+            activityScreen.classList.add('d-none');
+            setupScreen.classList.remove('d-none');
+            pairingContainer.innerHTML = '';
+            controlsCountdown.classList.add('d-none');
+            timersWrapper.classList.remove('d-none');
+        }
+
+        function showFinalScreen() {
+            groupTimerDisplay.textContent = "00:00";
+            pairingContainer.innerHTML = `
+                <div class="final-message-container d-flex flex-column justify-content-center align-items-center h-100">
+                    <h2 class="display-4">Activity Complete!</h2>
+                    <button id="viewReportBtn" class="btn btn-info mt-3">View Report</button>
+                </div>`;
+            document.getElementById('viewReportBtn').addEventListener('click', showReport);
+        }
+        
+        function showReport() {
+            let reportHTML = '<ul class="list-group">';
+            for(const student in pairingHistory) {
+                const partners = Array.from(pairingHistory[student]);
+                reportHTML += `<li class="list-group-item">
+                    <span class="fw-bold">${student}</span> worked with: 
+                    ${partners.length > 0 ? partners.join(', ') : 'No one'}
+                </li>`;
+            }
+            reportHTML += '</ul>';
+            reportModalBody.innerHTML = reportHTML;
+            reportModal.show();
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+
+        function startPreTimerCountdown() {
+            clearInterval(groupInterval); clearInterval(countdownInterval);
+            groupTimerDisplay.textContent = formatTime(groupTimeInSeconds);
+            timersWrapper.classList.add('d-none');
+            controlsCountdown.classList.remove('d-none');
+            let count = 10;
+            controlsCountdownNumber.textContent = count;
+            countdownInterval = setInterval(() => {
+                count--;
+                controlsCountdownNumber.textContent = count;
+                if (count <= 0) {
+                    clearInterval(countdownInterval);
+                    controlsCountdown.classList.add('d-none');
+                    timersWrapper.classList.remove('d-none');
+                    startGroupTimer();
+                }
+            }, 1000);
+        }
+
+        function startTotalTimer() {
+            totalTimerDisplay.textContent = formatTime(totalTimeInSeconds);
+            totalInterval = setInterval(() => {
+                totalTimeInSeconds--;
+                totalTimerDisplay.textContent = formatTime(totalTimeInSeconds);
+                if (totalTimeInSeconds <= 0) {
+                    clearInterval(totalInterval);
+                    totalTimerDisplay.textContent = "00:00";
+                    totalTimerHeader.textContent = "Finishing Round...";
+                    isActivityOver = true;
+                }
+            }, 1000);
+        }
+
+        function startGroupTimer() {
+            clearInterval(groupInterval);
+            let currentGroupTime = groupTimeInSeconds;
+            groupTimerDisplay.textContent = formatTime(currentGroupTime);
+            groupInterval = setInterval(() => {
+                currentGroupTime--;
+                groupTimerDisplay.textContent = formatTime(currentGroupTime);
+                if (currentGroupTime <= 0) {
+                    clearInterval(groupInterval);
+                    if (isActivityOver) { showFinalScreen(); } 
+                    else { flipAndRegroup(); }
+                }
+            }, 1000);
+        }
+        
+        function generateNewGroups() {
+            pairingContainer.innerHTML = '';
+            let unpairedStudents = [...studentList];
+            const newGroups = [];
+
+            while (unpairedStudents.length > 0) {
+                if (unpairedStudents.length === 3) {
+                    newGroups.push([...unpairedStudents]);
+                    unpairedStudents = [];
+                    break;
+                }
+
+                const student1 = unpairedStudents.shift();
+                let bestPartner = null;
+
+                const freshPartners = unpairedStudents.filter(p => !pairingHistory[student1].has(p));
+                
+                if (freshPartners.length > 0) {
+                    bestPartner = freshPartners[Math.floor(Math.random() * freshPartners.length)];
+                } else {
+                    bestPartner = unpairedStudents[Math.floor(Math.random() * unpairedStudents.length)];
+                }
+                
+                newGroups.push([student1, bestPartner]);
+                unpairedStudents = unpairedStudents.filter(p => p !== bestPartner);
+            }
+
+            newGroups.forEach((group, index) => {
+                group.forEach(student1 => {
+                    group.forEach(student2 => {
+                        if (student1 !== student2) {
+                            pairingHistory[student1].add(student2);
+                        }
+                    });
+                });
+                createCard(group, index + 1);
+            });
+            startPreTimerCountdown();
+        }
+        
+        function createCard(group, groupNumber) {
+            const flipCard = document.createElement('div');
+            flipCard.className = 'flip-card';
+            const color = cardColors[(groupNumber - 1) % cardColors.length];
+            flipCard.innerHTML = `
+                <div class="card-face card-face--front">
+                    <div class="card group-card h-100">
+                        <div class="card-header color-bar" style="background-color: ${color};"></div>
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Group ${groupNumber}</h5>
+                            <ul class="list-unstyled mb-0">
+                                ${group.map(name => `<li>${name}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-face card-face--back">
+                    <div class="card group-card h-100">
+                         <div class="card-header color-bar" style="background-color: ${color};"></div>
+                    </div>
+                </div>
+            `;
+            pairingContainer.appendChild(flipCard);
+        }
+
+        function flipAndRegroup() {
+            if (isActivityOver) return;
+            const cards = document.querySelectorAll('.flip-card');
+            cards.forEach(card => card.classList.add('is-flipped'));
+            setTimeout(generateNewGroups, 1000);
+        }
+        
+        // Initial setup
+        startButton.addEventListener('click', initializeActivity);
+        manualRegroupButton.addEventListener('click', flipAndRegroup);
+        resetButton.addEventListener('click', resetActivity);
+        saveClassButton.addEventListener('click', handleSaveClass);
+        deleteClassButton.addEventListener('click', handleDeleteClass);
+        addNewClassButton.addEventListener('click', handleAddNewClass);
+        classDropdown.addEventListener('change', handleClassChange);
+        populateClassDropdown();
+      });
+    </script>
+</body>
+</html>
