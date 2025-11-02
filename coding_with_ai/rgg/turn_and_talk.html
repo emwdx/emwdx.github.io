@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Turn & Talk Facilitator — Unified</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    :root {
+      --primary: #c5eab2;
+      --primary-light: #eafce2;
+      --primary-bright: #b2ff8b;
+      --primary-darker: #89be6d;
+      --box-bg-color: #f4f3e8;
+      --text: #1d1d1d;
+      --muted: #6a6a6a;
+      --radius-lg: 14px;
+      --shadow-sm: 0 0.125rem 0.25rem rgba(0,0,0,.06);
+      --shadow-lg: 0 1.2rem 3rem rgba(0,0,0,.12);
+      --transition: .25s ease;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--box-bg-color);
+      font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",sans-serif;
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      background: #fff;
+      box-shadow: 0 1px 0 rgba(0,0,0,.08);
+      z-index: 50;
+    }
+    .tab-btn {
+      border: none;
+      background: transparent;
+      padding: 1rem 1.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: var(--transition);
+      border-bottom: 3px solid transparent;
+      display: flex;
+      gap: .5rem;
+      align-items: center;
+    }
+    .tab-btn.active {
+      border-bottom-color: var(--primary-darker);
+      background: rgba(197,234,178,0.15);
+    }
+
+    /* Pages */
+    .page {
+      flex: 1;
+      display: none;
+      overflow-y: auto;
+      padding: 1.5rem 1.5rem 5rem;
+    }
+    .page.active { display: block; }
+
+    /* Setup layout */
+    .setup-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 1.5rem;
+    }
+    @media (max-width: 1000px) {
+      .setup-grid { grid-template-columns: 1fr; }
+    }
+    .panel {
+      background: #fff;
+      border-radius: var(--radius-lg);
+      padding: 1.2rem 1.25rem 1.4rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .panel h2 {
+      margin: 0 0 .75rem;
+      font-weight: 600;
+      font-size: 1.05rem;
+    }
+    .muted { color: var(--muted); font-size: .9rem; }
+
+    .source-toggle {
+      display: flex;
+      gap: .5rem;
+      margin-bottom: 1rem;
+    }
+    .source-pill {
+      flex: 1;
+      border: 1px solid rgba(0,0,0,.08);
+      background: #fff;
+      border-radius: 999px;
+      padding: .5rem .75rem;
+      text-align: center;
+      cursor: pointer;
+      font-weight: 500;
+      transition: var(--transition);
+    }
+    .source-pill.active {
+      background: var(--primary);
+      border-color: transparent;
+    }
+
+    .card-grid {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .cat-card, .level-card {
+      background: #fff;
+      border: 2px solid transparent;
+      border-radius: 1rem;
+      padding: 1rem;
+      flex: 1 0 150px;
+      min-height: 120px;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+    }
+    .cat-card.active, .level-card.active {
+      border-color: var(--primary-darker);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+    .cat-card h3, .level-card h3 { margin: .25rem 0 .5rem; }
+
+    .button-row {
+      display: flex;
+      gap: .5rem;
+      margin-top: 1rem;
+    }
+    .btn {
+      border: none;
+      background: var(--primary);
+      color: #000;
+      border-radius: .8rem;
+      padding: .5rem 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .btn:hover { filter: brightness(.97); }
+    .btn-secondary {
+      background: #f1f1f1;
+      color: #000;
+    }
+    .full { width: 100%; }
+
+    input[type="number"], select, textarea {
+      width: 100%;
+      border-radius: .6rem;
+      border: 1px solid rgba(0,0,0,.12);
+      padding: .4rem .5rem;
+      font-size: 1rem;
+      background: #fff;
+    }
+    textarea { resize: vertical; min-height: 80px; }
+
+    /* Display view */
+    #display-view {
+      background: radial-gradient(circle at top, rgba(197,234,178,.3) 0%, rgba(244,243,232,1) 48%, rgba(244,243,232,1) 100%);
+      position: relative;
+    }
+    .display-phase {
+      display: none;
+      height: 100%;
+      text-align: center;
+      padding: 3rem 1.5rem 5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .display-phase.active { display: flex; flex-direction: column; justify-content: center; gap: 1.75rem; }
+
+    .phase-title {
+      font-size: clamp(2.2rem, 4vw, 3rem);
+      margin: 0;
+      color: #2f4f2f;
+      font-weight: 700;
+    }
+    .prompt-main {
+      font-size: clamp(2.1rem, 3.6vw, 3.1rem);
+      font-weight: 600;
+      line-height: 1.3;
+    }
+    .prompt-secondary {
+      font-size: clamp(1.1rem, 2.4vw, 1.5rem);
+      color: #234;
+      opacity: .85;
+    }
+    .twist {
+      background: rgba(137,190,109,.12);
+      border: 1px solid rgba(137,190,109,.3);
+      padding: 1rem 1.2rem;
+      border-radius: 1rem;
+      font-weight: 500;
+      max-width: 720px;
+      margin: 0 auto;
+      opacity: 0;
+      transition: .5s ease;
+    }
+    .twist.visible { opacity: 1; }
+    .timer-big {
+      font-size: clamp(4rem, 7vw, 6rem);
+      font-weight: 700;
+      letter-spacing: .03em;
+    }
+    .progress-bar-wrap {
+      height: 40px;
+      background: rgba(0,0,0,.04);
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #89be6d 0%, #c5eab2 100%);
+      transition: width 1s linear;
+    }
+    .top-right {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      display: flex;
+      gap: .5rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      z-index: 100;
+    }
+    .wrap-notes {
+      width: min(850px,100%);
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .wrap-notes textarea {
+      min-height: 200px;
+      font-size: 1rem;
+      background: rgba(255,255,255,.7);
+    }
+    #bonus-phase {
+      background: radial-gradient(circle at center, rgba(178,255,139,.2) 0%, rgba(197,234,178,0) 65%);
+    }
+    .small-btn {
+      padding: .35rem .65rem;
+      border-radius: .5rem;
+    }
+
+    /* NEXT BUTTON - make it super obvious */
+    #advance-btn {
+      position: fixed;
+      bottom: 4.5rem;
+      right: 1.25rem;
+      background: #89be6d;
+      color: #000;
+      font-size: 1.05rem;
+      padding: .75rem 1.1rem;
+      border-radius: 999px;
+      box-shadow: 0 14px 28px rgba(0,0,0,.18);
+      display: none;
+      z-index: 101;
+    }
+    #advance-btn:hover { filter: brightness(.95); }
+    @media (max-width: 650px) {
+      #advance-btn { bottom: 5.4rem; right: .7rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="tabs">
+    <button class="tab-btn active" data-view="setup-view">⚙️ Setup</button>
+    <button class="tab-btn" data-view="display-view">🪩 Display</button>
+  </div>
+
+  <!-- SETUP VIEW -->
+  <div id="setup-view" class="page active">
+    <div class="setup-grid">
+      <!-- LEFT: PROMPT ENGINE -->
+      <div class="panel">
+        <h2>1. Choose Prompt Source</h2>
+        <p class="muted">Pick how you want to feed the activity with prompts.</p>
+        <div class="source-toggle">
+          <div class="source-pill active" data-source="leveled">Leveled Deck (Cat → Lvl)</div>
+          <div class="source-pill" data-source="flat">Flat List (⭐ + Custom)</div>
+        </div>
+
+        <!-- LEVELED ENGINE -->
+        <div id="leveled-config">
+          <p class="muted" style="margin-bottom:.5rem">Step A — category</p>
+          <div class="card-grid" id="category-cards">
+            <div class="cat-card active" data-cat="Interests"><h3>Interests</h3><p class="muted">Hobbies, media, culture.</p></div>
+            <div class="cat-card" data-cat="Feelings"><h3>Feelings</h3><p class="muted">SEL, perspective.</p></div>
+            <div class="cat-card" data-cat="Experiences"><h3>Experiences</h3><p class="muted">Stories, travel, family.</p></div>
+          </div>
+          <p class="muted" style="margin:.9rem 0 .5rem">Step B — complexity</p>
+          <div class="card-grid" id="level-cards">
+            <div class="level-card active" data-lvl="1"><h3>Level 1</h3><p class="muted">Low stakes, rapport.</p></div>
+            <div class="level-card" data-lvl="2"><h3>Level 2</h3><p class="muted">Values, dilemmas.</p></div>
+            <div class="level-card" data-lvl="3"><h3>Level 3</h3><p class="muted">Connect to global.</p></div>
+          </div>
+          <div class="button-row">
+            <button class="btn btn-secondary" id="leveled-preview-btn">Preview prompt</button>
+            <button class="btn" id="leveled-next-btn">Next in deck</button>
+          </div>
+          <p class="muted" id="leveled-current" style="margin-top:.85rem;"></p>
+        </div>
+
+        <!-- FLAT ENGINE -->
+        <div id="flat-config" style="display:none; margin-top:1rem;">
+          <label class="muted" for="flat-select">Prompt list</label>
+          <select id="flat-select"></select>
+          <div class="button-row" style="margin-top:.6rem;">
+            <button class="btn btn-secondary" id="flat-random-btn">Random</button>
+            <button class="btn btn-secondary" id="flat-star-btn">⭐ Star</button>
+          </div>
+          <p class="muted" style="margin-top:1rem">Add your own:</p>
+          <textarea id="flat-custom" placeholder="Type a prompt students will discuss..."></textarea>
+          <button class="btn full" id="flat-add-btn" style="margin-top:.5rem;">Add & select</button>
+        </div>
+      </div>
+
+      <!-- RIGHT: TIMERS & START -->
+      <div class="panel">
+        <h2>2. Timing & Activity</h2>
+        <p class="muted">Think → Talk → (15% Bonus) → Wrap</p>
+        <label>Individual reflection (seconds)</label>
+        <input type="number" id="indiv-seconds" value="60" min="10" step="5" />
+        <label style="margin-top:.7rem;">Group discussion (seconds)</label>
+        <input type="number" id="group-seconds" value="180" min="20" step="5" />
+        <p class="muted" style="margin-top:.7rem;">Bonus round is auto: 30 seconds.</p>
+        <button class="btn full" id="start-activity" style="margin-top:1rem;">Start & Show Display →</button>
+        <p class="muted" style="margin-top:1rem;">Notes are taken in the wrap-up screen; you can copy them out.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- DISPLAY VIEW -->
+  <div id="display-view" class="page">
+    <div class="top-right">
+      <button class="btn btn-secondary small-btn" id="mute-btn" title="Toggle sound">🔈</button>
+      <button class="btn btn-secondary small-btn" id="back-to-setup-btn" style="display:none;">← Back</button>
+    </div>
+
+    <!-- INDIVIDUAL -->
+    <div id="phase-individual" class="display-phase active">
+      <h2 class="phase-title">Think on your own...</h2>
+      <div class="prompt-main" id="indiv-prompt">Prompt will appear here.</div>
+      <div class="timer-big" id="indiv-timer">00:00</div>
+      <div class="twist" id="indiv-twist"><strong>Twist:</strong> add another example or explain why this matters.</div>
+    </div>
+
+    <!-- GROUP -->
+    <div id="phase-group" class="display-phase">
+      <h2 class="phase-title">Turn & Talk!</h2>
+      <div class="prompt-secondary" id="group-prompt">Prompt will stay visible here.</div>
+      <div class="timer-big" id="group-timer">00:00</div>
+      <div class="twist" id="group-twist"><strong>Deepener:</strong> Find one thing you all agree on.</div>
+    </div>
+
+    <!-- BONUS -->
+    <div id="phase-bonus" class="display-phase">
+      <h2 class="phase-title">✨ Bonus Round! ✨</h2>
+      <div class="prompt-main" id="bonus-text">In 30 seconds, summarize the class' best idea in 5 words.</div>
+      <div class="timer-big" id="bonus-timer">00:30</div>
+    </div>
+
+    <!-- WRAP -->
+    <div id="phase-wrap" class="display-phase">
+      <div class="wrap-notes">
+        <h2 class="phase-title">Time’s up — let’s share.</h2>
+        <p class="prompt-secondary" id="wrap-prompt"></p>
+        <textarea id="wrap-notes" placeholder="What did students say that was smart, surprising, or worth revisiting?"></textarea>
+        
+      </div>
+    </div>
+
+    <!-- PROGRESS -->
+    <div class="progress-bar-wrap" id="progress-wrap" style="display:none;">
+      <div class="progress-bar" id="progress-bar"></div>
+    </div>
+
+    <!-- BIG NEXT -->
+    <button class="btn" id="advance-btn">Next →</button>
+  </div>
+
+  <script>
+    // ====== PROMPT DATA ======
+    const leveledPrompts = {
+      "Interests": {
+        1: [
+          { q: "If you could only listen to one album for a month, which would it be and why?", h: "Pick something you don’t get tired of, or that connects to a memory." },
+          { q: "What's a movie or TV show you think everyone should watch?", h: "It doesn’t have to be a classic — just meaningful or fun." },
+          { q: "Describe a hobby you love and what makes it so special to you.", h: "Gaming, sports, drawing — tell the story behind it." },
+          { q: "What is one food you could never get tired of eating?", h: "Think comfort food or celebration food." },
+          { q: "If you could have any fictional character as a friend, who would you choose?", h: "Think about personality, not power." }
+        ],
+        2: [
+          { q: "Think about a book, movie, or song that taught you an important lesson. What was it?", h: "What did it change in how you think?" },
+          { q: "How do your favorite hobbies or interests shape the way you see the world?", h: "Does your hobby make you notice things other people don’t?" },
+          { q: "How has a hobby or interest helped you overcome a challenge?", h: "Tell the mini-story of that challenge." }
+        ],
+        3: [
+          { q: "How could your favorite hobby bring people from different backgrounds together?", h: "Imagine it being used for a community goal." },
+          { q: "If you made a movie about a global issue, what message would it send?", h: "Think feeling + action." },
+          { q: "Does the media we love have a responsibility to show different cultures? Why?", h: "Connect representation → belonging." }
+        ]
+      },
+      "Feelings": {
+        1: [
+          { q: "Describe a time you felt proud of something small.", h: "What made it feel big to you?" },
+          { q: "What is something simple that always makes you calm?", h: "Think sensory stuff: smells, music, places." },
+          { q: "What does 'courage' look like in everyday life?", h: "Small risks count." }
+        ],
+        2: [
+          { q: "Think about a time you had to apologize. What made it hard or easy?", h: "Focus on the feeling after you apologized." },
+          { q: "Describe a situation where you felt misunderstood. How did you handle it?", h: "What would you do differently now?" }
+        ],
+        3: [
+          { q: "Tell a story about feeling empathy — how does that scale to bigger issues?", h: "One person → whole group → world." },
+          { q: "Describe the feeling of fairness. How does that connect to global issues?", h: "Use your own life as the example." }
+        ]
+      },
+      "Experiences": {
+        1: [
+          { q: "What is one of your favorite family or holiday memories?", h: "Add what you heard, saw, smelled." },
+          { q: "If you could relive one day, which would it be and why?", h: "Pick a specific day, not a whole year." }
+        ],
+        2: [
+          { q: "Describe a time you took a small risk that paid off.", h: "What did you learn about trying new things?" },
+          { q: "Share an experience where you collaborated to achieve a goal.", h: "How did the group help you?" }
+        ],
+        3: [
+          { q: "Think of a time you had limited resources. How does that relate to sustainability?", h: "What did you do instead of buying something new?" },
+          { q: "Share a story about working in a team. How does that connect to global cooperation?", h: "Your team = mini version of countries." }
+        ]
+      }
+    };
+
+    const baseFlatPrompts = [
+      "If you could have any superpower but for something boring, what would it be?",
+      "What's a food you love that almost everyone else hates?",
+      "If animals could talk, which would be the rudest?",
+      "Invent a new holiday — how do we celebrate?",
+      "What’s the best smell in the world?",
+      "Lightning round: explain your weekend in 10 words.",
+      "If you could interview anyone in history, who and what’s the first question?",
+      "What’s a small thing that made your week better?"
+    ];
+    const flatStorageKey = "ttf_custom_prompts_v3";
+    const flatFavKey = "ttf_fav_prompts_v3";
+
+    // ====== STATE ======
+    let currentSource = "leveled";
+    let currentCategory = "Interests";
+    let currentLevel = 1;
+    let currentLeveledDeck = [];
+    let currentPromptObj = null;
+    let flatPrompts = [];
+    let flatFavorites = [];
+    let currentPhase = "individual";
+    let timerInterval = null;
+    const KISMET_CHANCE = 0.15;
+    const BONUS_SECONDS = 30;
+    let audioCtx = null;
+    let muted = false;
+
+    // ====== DOM ======
+    const tabs = document.querySelectorAll(".tab-btn");
+    const pages = document.querySelectorAll(".page");
+    const sourcePills = document.querySelectorAll(".source-pill");
+    const leveledConfig = document.getElementById("leveled-config");
+    const flatConfig = document.getElementById("flat-config");
+    const catCards = document.querySelectorAll(".cat-card");
+    const levelCards = document.querySelectorAll(".level-card");
+    const leveledPreviewBtn = document.getElementById("leveled-preview-btn");
+    const leveledNextBtn = document.getElementById("leveled-next-btn");
+    const leveledCurrent = document.getElementById("leveled-current");
+    const flatSelect = document.getElementById("flat-select");
+    const flatRandomBtn = document.getElementById("flat-random-btn");
+    const flatStarBtn = document.getElementById("flat-star-btn");
+    const flatCustom = document.getElementById("flat-custom");
+    const flatAddBtn = document.getElementById("flat-add-btn");
+    const indivSecondsInput = document.getElementById("indiv-seconds");
+    const groupSecondsInput = document.getElementById("group-seconds");
+    const startActivityBtn = document.getElementById("start-activity");
+
+    const indivPhase = document.getElementById("phase-individual");
+    const groupPhase = document.getElementById("phase-group");
+    const bonusPhase = document.getElementById("phase-bonus");
+    const wrapPhase = document.getElementById("phase-wrap");
+    const indivPromptEl = document.getElementById("indiv-prompt");
+    const groupPromptEl = document.getElementById("group-prompt");
+    const wrapPromptEl = document.getElementById("wrap-prompt");
+    const indivTimerEl = document.getElementById("indiv-timer");
+    const groupTimerEl = document.getElementById("group-timer");
+    const bonusTimerEl = document.getElementById("bonus-timer");
+    const indivTwistEl = document.getElementById("indiv-twist");
+    const groupTwistEl = document.getElementById("group-twist");
+    const bonusTextEl = document.getElementById("bonus-text");
+    const progressWrap = document.getElementById("progress-wrap");
+    const progressBar = document.getElementById("progress-bar");
+    const advanceBtn = document.getElementById("advance-btn");
+    const backToSetupBtn = document.getElementById("back-to-setup-btn");
+    const copyNotesBtn = document.getElementById("copy-notes-btn");
+    const wrapNotesEl = document.getElementById("wrap-notes");
+    const muteBtn = document.getElementById("mute-btn");
+
+    // ====== AUDIO ======
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+    function playTone(freq = 660, dur = 0.25) {
+      if (muted) return;
+      initAudio();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.frequency.value = freq;
+      gain.gain.value = 0.3;
+      osc.start();
+      osc.stop(audioCtx.currentTime + dur);
+    }
+
+    // ====== FLAT PROMPTS ======
+    function loadFlatPrompts() {
+      const stored = JSON.parse(localStorage.getItem(flatStorageKey) || "[]");
+      const favs = JSON.parse(localStorage.getItem(flatFavKey) || "[]");
+      flatPrompts = [...baseFlatPrompts, ...stored];
+      flatFavorites = favs;
+      renderFlatSelect();
+    }
+    function saveFlatCustom(newList) {
+      const customs = newList.slice(baseFlatPrompts.length);
+      localStorage.setItem(flatStorageKey, JSON.stringify(customs));
+    }
+    function renderFlatSelect() {
+      flatSelect.innerHTML = "";
+      const sorted = [...flatPrompts].sort((a,b) => {
+        const af = flatFavorites.includes(a);
+        const bf = flatFavorites.includes(b);
+        if (af && !bf) return -1;
+        if (!af && bf) return 1;
+        return 0;
+      });
+      flatPrompts = sorted;
+      flatPrompts.forEach((p,idx) => {
+        const opt = document.createElement("option");
+        opt.value = idx;
+        opt.textContent = (flatFavorites.includes(p) ? "⭐ " : "") + (p.length > 80 ? p.substring(0,80) + "..." : p);
+        flatSelect.appendChild(opt);
+      });
+      updateFlatStarButton();
+    }
+    function updateFlatStarButton() {
+      const selPrompt = flatPrompts[flatSelect.value];
+      if (!selPrompt) return;
+      if (flatFavorites.includes(selPrompt)) {
+        flatStarBtn.textContent = "⭐ Un-star";
+      } else {
+        flatStarBtn.textContent = "⭐ Star";
+      }
+    }
+
+    // ====== LEVELED HELPERS ======
+    function rebuildLeveledDeck() {
+      const arr = leveledPrompts[currentCategory][currentLevel] || [];
+      currentLeveledDeck = arr.slice().sort(() => Math.random() - 0.5);
+    }
+    function pickLeveledPrompt() {
+      if (currentLeveledDeck.length === 0) rebuildLeveledDeck();
+      const p = currentLeveledDeck.pop();
+      currentPromptObj = p;
+      leveledCurrent.textContent = "Current: " + p.q;
+      return p;
+    }
+
+    // ====== PHASES ======
+    function showDisplayPhase(phase) {
+      currentPhase = phase;
+      indivPhase.classList.remove("active");
+      groupPhase.classList.remove("active");
+      bonusPhase.classList.remove("active");
+      wrapPhase.classList.remove("active");
+      if (phase === "individual") indivPhase.classList.add("active");
+      if (phase === "group") groupPhase.classList.add("active");
+      if (phase === "bonus") bonusPhase.classList.add("active");
+      if (phase === "wrap") wrapPhase.classList.add("active");
+
+      // show big next only when we are in a timed phase
+      advanceBtn.style.display = (phase === "individual" || phase === "group" || phase === "bonus") ? "inline-block" : "none";
+      backToSetupBtn.style.display = (phase === "wrap") ? "inline-block" : "none";
+      progressWrap.style.display = (phase !== "wrap") ? "block" : "none";
+    }
+
+    function startProgress(seconds) {
+      progressBar.style.transition = "none";
+      progressBar.style.width = "0%";
+      setTimeout(() => {
+        progressBar.style.transition = `width ${seconds}s linear`;
+        progressBar.style.width = "100%";
+      }, 50);
+    }
+
+    function formatTime(sec) {
+      const m = Math.floor(sec / 60);
+      const s = sec % 60;
+      return m + ":" + String(s).padStart(2, "0");
+    }
+
+    const groupDeepeners = [
+      "Find one thing you all agree on.",
+      "Connect this to something we learned last week.",
+      "Switch speakers: new person summarizes the group.",
+      "Argue the opposite side — just for practice.",
+      "How would a younger student answer this?",
+      "What’s the real-world version of this?"
+    ];
+    const bonusChallenges = [
+      "Summarize your idea in ONE word.",
+      "Point to the person with the most unusual answer.",
+      "Vote: serious answer vs silly answer.",
+      "Teach your idea in 15 seconds to an imaginary student.",
+      "Stand up if your group changed your mind."
+    ];
+
+    function runIndividualPhase() {
+      const total = parseInt(indivSecondsInput.value) || 60;
+      showDisplayPhase("individual");
+      indivTwistEl.classList.remove("visible");
+      indivPromptEl.textContent = currentPromptObj ? currentPromptObj.q : "No prompt selected.";
+      startTimer(total, (left) => {
+        indivTimerEl.textContent = formatTime(left);
+      }, () => {
+        playTone(880,0.25);
+        runGroupPhase();
+      }, () => {
+        if (currentPromptObj && currentPromptObj.h) {
+          indivTwistEl.innerHTML = "<strong>Twist:</strong> " + currentPromptObj.h;
+        } else {
+          indivTwistEl.innerHTML = "<strong>Twist:</strong> Add an example or a ‘why.’";
+        }
+        indivTwistEl.classList.add("visible");
+        playTone(520,0.15);
+      });
+    }
+
+    function runGroupPhase() {
+      const total = parseInt(groupSecondsInput.value) || 180;
+      showDisplayPhase("group");
+      groupPromptEl.textContent = currentPromptObj ? currentPromptObj.q : "Discuss the previous idea.";
+      groupTwistEl.classList.remove("visible");
+      startTimer(total, (left) => {
+        groupTimerEl.textContent = formatTime(left);
+      }, () => {
+        // timer-based end → do kismet
+        if (Math.random() < KISMET_CHANCE) {
+          playTone(750,0.3);
+          runBonusPhase();
+        } else {
+          playTone(660,0.25);
+          runWrapPhase();
+        }
+      }, () => {
+        groupTwistEl.innerHTML = "<strong>Deepener:</strong> " + groupDeepeners[Math.floor(Math.random() * groupDeepeners.length)];
+        groupTwistEl.classList.add("visible");
+        playTone(520,0.15);
+      });
+    }
+
+    function runBonusPhase() {
+      showDisplayPhase("bonus");
+      bonusTextEl.textContent = bonusChallenges[Math.floor(Math.random() * bonusChallenges.length)];
+      startTimer(BONUS_SECONDS, (left) => {
+        bonusTimerEl.textContent = formatTime(left);
+      }, () => {
+        playTone(660,0.25);
+        runWrapPhase();
+      });
+    }
+
+    function runWrapPhase() {
+      showDisplayPhase("wrap");
+      wrapPromptEl.textContent = currentPromptObj ? currentPromptObj.q : "";
+      clearTimer();
+      progressBar.style.width = "0%";
+    }
+
+    function startTimer(totalSeconds, onTick, onEnd, onHalfway) {
+      clearTimer();
+      startProgress(totalSeconds);
+      let secs = totalSeconds;
+      onTick(secs);
+      const halfway = Math.floor(totalSeconds / 2);
+      timerInterval = setInterval(() => {
+        secs--;
+        onTick(secs);
+        if (secs === halfway && onHalfway) onHalfway();
+        if (secs <= 0) {
+          clearTimer();
+          onEnd && onEnd();
+        }
+      }, 1000);
+    }
+    function clearTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+      timerInterval = null;
+    }
+
+    // ====== EVENTS ======
+    // Tabs
+    tabs.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const viewId = btn.dataset.view;
+        tabs.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        pages.forEach(p => p.classList.remove("active"));
+        document.getElementById(viewId).classList.add("active");
+      });
+    });
+
+    // Prompt source toggle
+    sourcePills.forEach(pill => {
+      pill.addEventListener("click", () => {
+        sourcePills.forEach(p => p.classList.remove("active"));
+        pill.classList.add("active");
+        currentSource = pill.dataset.source;
+        if (currentSource === "leveled") {
+          leveledConfig.style.display = "block";
+          flatConfig.style.display = "none";
+        } else {
+          leveledConfig.style.display = "none";
+          flatConfig.style.display = "block";
+        }
+      });
+    });
+
+    // Category cards
+    catCards.forEach(card => {
+      card.addEventListener("click", () => {
+        catCards.forEach(c => c.classList.remove("active"));
+        card.classList.add("active");
+        currentCategory = card.dataset.cat;
+        rebuildLeveledDeck();
+        pickLeveledPrompt();
+      });
+    });
+
+    // Level cards
+    levelCards.forEach(card => {
+      card.addEventListener("click", () => {
+        levelCards.forEach(c => c.classList.remove("active"));
+        card.classList.add("active");
+        currentLevel = parseInt(card.dataset.lvl);
+        rebuildLeveledDeck();
+        pickLeveledPrompt();
+      });
+    });
+
+    // Leveled preview
+    leveledPreviewBtn.addEventListener("click", () => {
+      if (!currentPromptObj) pickLeveledPrompt();
+      alert("Current prompt:\n\n" + currentPromptObj.q + (currentPromptObj.h ? "\n\nHelper: " + currentPromptObj.h : ""));
+    });
+    // Leveled next
+    leveledNextBtn.addEventListener("click", () => {
+      pickLeveledPrompt();
+    });
+
+    // Flat prompt events
+    flatSelect.addEventListener("change", updateFlatStarButton);
+    flatRandomBtn.addEventListener("click", () => {
+      const idx = Math.floor(Math.random() * flatPrompts.length);
+      flatSelect.value = idx;
+      updateFlatStarButton();
+    });
+    flatStarBtn.addEventListener("click", () => {
+      const p = flatPrompts[flatSelect.value];
+      if (!p) return;
+      if (flatFavorites.includes(p)) {
+        flatFavorites = flatFavorites.filter(x => x !== p);
+      } else {
+        flatFavorites.push(p);
+      }
+      localStorage.setItem(flatFavKey, JSON.stringify(flatFavorites));
+      renderFlatSelect();
+    });
+    flatAddBtn.addEventListener("click", () => {
+      const val = flatCustom.value.trim();
+      if (!val) return;
+      if (!flatPrompts.includes(val)) {
+        flatPrompts.push(val);
+        saveFlatCustom(flatPrompts);
+        renderFlatSelect();
+        flatSelect.value = flatPrompts.indexOf(val);
+      }
+      flatCustom.value = "";
+    });
+
+    // Start activity
+    startActivityBtn.addEventListener("click", () => {
+      if (currentSource === "leveled") {
+        if (!currentPromptObj) pickLeveledPrompt();
+      } else {
+        const p = flatPrompts[flatSelect.value];
+        if (!p) { alert("Pick or add a prompt first."); return; }
+        currentPromptObj = { q: p, h: "" };
+      }
+      tabs.forEach(b => b.classList.remove("active"));
+      document.querySelector('.tab-btn[data-view="display-view"]').classList.add("active");
+      pages.forEach(p => p.classList.remove("active"));
+      document.getElementById("display-view").classList.add("active");
+      runIndividualPhase();
+    });
+
+    // Manual advance (big green bottom-right)
+    advanceBtn.addEventListener("click", () => {
+      clearTimer();
+      if (currentPhase === "individual") {
+        playTone(880,0.25);
+        runGroupPhase();
+      } else if (currentPhase === "group") {
+        // manual → follow same branching as timer
+        if (Math.random() < KISMET_CHANCE) {
+          playTone(750,0.3);
+          runBonusPhase();
+        } else {
+          playTone(660,0.25);
+          runWrapPhase();
+        }
+      } else if (currentPhase === "bonus") {
+        playTone(660,0.25);
+        runWrapPhase();
+      }
+    });
+
+    // Back to setup
+    backToSetupBtn.addEventListener("click", () => {
+      clearTimer();
+      progressBar.style.width = "0%";
+      tabs.forEach(b => b.classList.remove("active"));
+      document.querySelector('.tab-btn[data-view="setup-view"]').classList.add("active");
+      pages.forEach(p => p.classList.remove("active"));
+      document.getElementById("setup-view").classList.add("active");
+    });
+
+    // Copy notes
+    copyNotesBtn.addEventListener("click", async () => {
+      const txt = wrapNotesEl.value || "";
+      try {
+        await navigator.clipboard.writeText(txt);
+        copyNotesBtn.textContent = "Copied ✅";
+        setTimeout(() => copyNotesBtn.textContent = "Copy notes", 1600);
+      } catch (e) {
+        alert("Could not copy — select and copy manually.");
+      }
+    });
+
+    // Mute
+    muteBtn.addEventListener("click", () => {
+      muted = !muted;
+      muteBtn.textContent = muted ? "🔇" : "🔈";
+    });
+
+    // ====== INIT ======
+    loadFlatPrompts();
+    rebuildLeveledDeck();
+    pickLeveledPrompt();
+  </script>
+</body>
+</html>
