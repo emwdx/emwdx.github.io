@@ -258,6 +258,34 @@
     @media (max-width: 650px) {
       #advance-btn { bottom: 5.4rem; right: .7rem; }
     }
+
+    /* SECRET MODAL */
+    #share-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.28);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 300;
+    }
+    #share-modal {
+      background: #fff;
+      width: min(540px,90vw);
+      border-radius: 1rem;
+      box-shadow: 0 20px 40px rgba(0,0,0,.14);
+      padding: 1.25rem 1.4rem 1.2rem;
+    }
+    #share-modal h3 { margin-top: 0; }
+    #share-url {
+      width: 100%;
+      border: 1px solid rgba(0,0,0,.15);
+      border-radius: .6rem;
+      padding: .35rem .5rem;
+      font-family: ui-monospace, SFMono-Regular, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: .8rem;
+      margin-bottom: .5rem;
+    }
   </style>
 </head>
 <body>
@@ -301,15 +329,15 @@
 
         <!-- FLAT ENGINE -->
         <div id="flat-config" style="display:none; margin-top:1rem;">
-          <label class="muted" for="flat-select">Prompt list</label>
-          <select id="flat-select"></select>
-          <div class="button-row" style="margin-top:.6rem;">
-            <button class="btn btn-secondary" id="flat-random-btn">Random</button>
-            <button class="btn btn-secondary" id="flat-star-btn">⭐ Star</button>
-          </div>
-          <p class="muted" style="margin-top:1rem">Add your own:</p>
-          <textarea id="flat-custom" placeholder="Type a prompt students will discuss..."></textarea>
-          <button class="btn full" id="flat-add-btn" style="margin-top:.5rem;">Add & select</button>
+            <label class="muted" for="flat-select">Prompt list</label>
+            <select id="flat-select"></select>
+            <div class="button-row" style="margin-top:.6rem;">
+              <button class="btn btn-secondary" id="flat-random-btn">Random</button>
+              <button class="btn btn-secondary" id="flat-star-btn">⭐ Star</button>
+            </div>
+            <p class="muted" style="margin-top:1rem">Add your own:</p>
+            <textarea id="flat-custom" placeholder="Type a prompt students will discuss..."></textarea>
+            <button class="btn full" id="flat-add-btn" style="margin-top:.5rem;">Add & select</button>
         </div>
       </div>
 
@@ -324,6 +352,7 @@
         <p class="muted" style="margin-top:.7rem;">Bonus round is auto: 30 seconds.</p>
         <button class="btn full" id="start-activity" style="margin-top:1rem;">Start & Show Display →</button>
         <p class="muted" style="margin-top:1rem;">Notes are taken in the wrap-up screen; you can copy them out.</p>
+        <p class="muted" style="margin-top:.5rem; font-size:.7rem; opacity:.4;">(secret: Alt+S)</p>
       </div>
     </div>
   </div>
@@ -374,6 +403,20 @@
 
     <!-- BIG NEXT -->
     <button class="btn" id="advance-btn">Next →</button>
+  </div>
+
+  <!-- SECRET SHARE MODAL -->
+  <div id="share-modal-backdrop">
+    <div id="share-modal">
+      <h3>Share this activity</h3>
+      <p class="muted" style="margin-bottom:.6rem;">This link encodes source, prompt, and timers.</p>
+      <input id="share-url" readonly />
+      <div class="button-row">
+        <button class="btn" id="share-copy-btn">Copy</button>
+        <button class="btn btn-secondary" id="share-close-btn">Close</button>
+      </div>
+      <p class="muted" style="margin-top:.5rem; font-size:.7rem;">(open with no <code>?p=</code> to go back to normal)</p>
+    </div>
   </div>
 
   <script>
@@ -500,6 +543,12 @@
     const wrapNotesEl = document.getElementById("wrap-notes");
     const muteBtn = document.getElementById("mute-btn");
 
+    // secret modal dom
+    const shareBackdrop = document.getElementById("share-modal-backdrop");
+    const shareUrlInput = document.getElementById("share-url");
+    const shareCopyBtn = document.getElementById("share-copy-btn");
+    const shareCloseBtn = document.getElementById("share-close-btn");
+
     // ====== AUDIO ======
     function initAudio() {
       if (!audioCtx) {
@@ -523,21 +572,17 @@
     function loadFlatPrompts() {
       const stored = JSON.parse(localStorage.getItem(flatStorageKey) || "[]");
       const favs = JSON.parse(localStorage.getItem(flatFavKey) || "[]");
-      // stored = customs only
       flatPrompts = [...baseFlatPrompts, ...stored];
       flatFavorites = favs;
       renderFlatSelect();
     }
-
-    // FIXED: don't slice after sorting; filter out base prompts
+    // filter out base prompts when saving (fixed)
     function saveFlatCustom(fullList) {
       const customs = fullList.filter(p => !baseFlatPrompts.includes(p));
       localStorage.setItem(flatStorageKey, JSON.stringify(customs));
     }
-
     function renderFlatSelect() {
       flatSelect.innerHTML = "";
-      // sort for display, but don't break base/custom separation when saving
       const sorted = [...flatPrompts].sort((a,b) => {
         const af = flatFavorites.includes(a);
         const bf = flatFavorites.includes(b);
@@ -547,17 +592,13 @@
       });
       sorted.forEach((p,idx) => {
         const opt = document.createElement("option");
-        opt.value = p; // store actual prompt as value
+        opt.value = p;
         opt.textContent = (flatFavorites.includes(p) ? "⭐ " : "") + (p.length > 80 ? p.substring(0,80) + "..." : p);
         flatSelect.appendChild(opt);
       });
-      // select first
-      if (sorted.length > 0) {
-        flatSelect.value = sorted[0];
-      }
+      if (sorted.length > 0) flatSelect.value = sorted[0];
       updateFlatStarButton();
     }
-
     function updateFlatStarButton() {
       const selPrompt = flatSelect.value;
       if (!selPrompt) return;
@@ -576,9 +617,9 @@
     function pickLeveledPrompt() {
       if (currentLeveledDeck.length === 0) rebuildLeveledDeck();
       const p = currentLeveledDeck.pop();
-      currentPromptObj = p;
-      leveledCurrent.textContent = "Current: " + p.q;
-      return p;
+      currentPromptObj = { ...p, source: "leveled" };
+      leveledCurrent.textContent = "Current: " + currentPromptObj.q;
+      return currentPromptObj;
     }
 
     // ====== PHASES ======
@@ -711,6 +752,143 @@
       timerInterval = null;
     }
 
+    // ====== URL ENCODE/DECODE ======
+    function encodeStateToURL() {
+      // short keys to keep it tight
+      const state = {};
+      // source: 'l' or 'f'
+      state.s = currentSource === "leveled" ? "l" : "f";
+      // timers
+      state.it = parseInt(indivSecondsInput.value) || 60;
+      state.gt = parseInt(groupSecondsInput.value) || 180;
+
+      if (currentSource === "leveled") {
+        // category + level + current prompt text (so you can override deck)
+        state.c = currentCategory;   // "Interests"
+        state.lvl = currentLevel;    // 1,2,3
+        if (currentPromptObj && currentPromptObj.source === "leveled" && currentPromptObj.q) {
+          state.p = currentPromptObj.q;
+          if (currentPromptObj.h) state.h = currentPromptObj.h;
+        }
+      } else {
+        // flat: just capture text
+        let selectedFlat = null;
+        if (currentPromptObj && currentPromptObj.source === "flat" && currentPromptObj.q) {
+          selectedFlat = currentPromptObj.q;
+        } else if (flatSelect.value) {
+          selectedFlat = flatSelect.value;
+        }
+        if (selectedFlat) {
+          state.p = selectedFlat;
+        }
+      }
+
+      const json = JSON.stringify(state);
+      const b64 = btoa(encodeURIComponent(json));
+      const base = window.location.origin + window.location.pathname;
+      return base + "?p=" + b64;
+    }
+
+    function tryLoadStateFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      const p = params.get("p");
+      if (!p) return;
+      try {
+        const json = decodeURIComponent(atob(p));
+        const state = JSON.parse(json);
+        // source
+        if (state.s === "l") {
+          currentSource = "leveled";
+          sourcePills.forEach(p => p.classList.remove("active"));
+          document.querySelector('.source-pill[data-source="leveled"]').classList.add("active");
+          leveledConfig.style.display = "block";
+          flatConfig.style.display = "none";
+
+          if (state.c) {
+            currentCategory = state.c;
+            catCards.forEach(c => {
+              c.classList.toggle("active", c.dataset.cat === currentCategory);
+            });
+          }
+          if (state.lvl) {
+            currentLevel = parseInt(state.lvl);
+            levelCards.forEach(c => {
+              c.classList.toggle("active", parseInt(c.dataset.lvl) === currentLevel);
+            });
+          }
+          rebuildLeveledDeck();
+          pickLeveledPrompt();
+
+          // override with explicit prompt if present
+          if (state.p) {
+            currentPromptObj = { q: state.p, h: state.h || "", source: "leveled" };
+            leveledCurrent.textContent = "Current: " + state.p;
+          }
+        } else if (state.s === "f") {
+          currentSource = "flat";
+          sourcePills.forEach(p => p.classList.remove("active"));
+          document.querySelector('.source-pill[data-source="flat"]').classList.add("active");
+          leveledConfig.style.display = "none";
+          flatConfig.style.display = "block";
+
+          if (state.p) {
+            // ensure it's in list
+            if (!flatPrompts.includes(state.p)) {
+              flatPrompts.push(state.p);
+              saveFlatCustom(flatPrompts);
+              renderFlatSelect();
+            }
+            flatSelect.value = state.p;
+            updateFlatStarButton();
+            currentPromptObj = { q: state.p, h: "", source: "flat" };
+          }
+        }
+
+        if (typeof state.it === "number") indivSecondsInput.value = state.it;
+        if (typeof state.gt === "number") groupSecondsInput.value = state.gt;
+      } catch (e) {
+        console.warn("could not decode shared state", e);
+      }
+    }
+
+    async function copyTextToClipboard(text) {
+      if (!text) return false;
+      if (navigator.clipboard && window.isSecureContext) {
+        try {
+          await navigator.clipboard.writeText(text);
+          return true;
+        } catch (err) {
+          // fall back below
+        }
+      }
+      const temp = document.createElement("textarea");
+      temp.value = text;
+      temp.setAttribute("readonly", "");
+      temp.style.position = "fixed";
+      temp.style.top = "-9999px";
+      document.body.appendChild(temp);
+      temp.focus();
+      temp.select();
+      let success = false;
+      try {
+        success = document.execCommand("copy");
+      } catch (err) {
+        success = false;
+      }
+      document.body.removeChild(temp);
+      return success;
+    }
+
+    function openShareModal() {
+      const url = encodeStateToURL();
+      shareUrlInput.value = url;
+      shareBackdrop.style.display = "flex";
+      shareUrlInput.select();
+    }
+    function closeShareModal() {
+      shareBackdrop.style.display = "none";
+    }
+
     // ====== EVENTS ======
     tabs.forEach(btn => {
       btn.addEventListener("click", () => {
@@ -729,7 +907,6 @@
         currentSource = pill.dataset.source;
         if (currentSource === "leveled") {
           leveledConfig.style.display = "block";
-          flatConfig.style.display = "block"; // keep visible? no, we hide
           flatConfig.style.display = "none";
         } else {
           leveledConfig.style.display = "none";
@@ -809,7 +986,7 @@
       } else {
         const p = flatSelect.value;
         if (!p) { alert("Pick or add a prompt first."); return; }
-        currentPromptObj = { q: p, h: "" };
+        currentPromptObj = { q: p, h: "", source: "flat" };
       }
       tabs.forEach(b => b.classList.remove("active"));
       document.querySelector('.tab-btn[data-view="display-view"]').classList.add("active");
@@ -862,10 +1039,43 @@
       muteBtn.textContent = muted ? "🔇" : "🔈";
     });
 
+    // secret modal handlers
+    shareCloseBtn.addEventListener("click", closeShareModal);
+    shareCopyBtn.addEventListener("click", async () => {
+      const text = shareUrlInput.value;
+      if (!text) return;
+      shareUrlInput.focus();
+      shareUrlInput.select();
+      const success = await copyTextToClipboard(text);
+      if (success) {
+        shareCopyBtn.textContent = "Copied ✅";
+        setTimeout(() => shareCopyBtn.textContent = "Copy", 1400);
+      } else {
+        alert("Could not copy — select and copy manually.");
+      }
+    });
+
+    // KEY HANDLER: Alt+S to open share
+    document.addEventListener("keydown", (e) => {
+      if (e.shiftKey && (e.key === "s" || e.key === "S")) {
+        e.preventDefault(); 
+        openShareModal();
+      }
+    });
+
+    // click outside to close
+    shareBackdrop.addEventListener("click", (e) => {
+      if (e.target === shareBackdrop) {
+        closeShareModal();
+      }
+    });
+
     // ====== INIT ======
     loadFlatPrompts();
     rebuildLeveledDeck();
     pickLeveledPrompt();
+    // load from URL if present
+    tryLoadStateFromURL();
   </script>
 </body>
 </html>
