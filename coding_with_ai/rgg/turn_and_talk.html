@@ -28,8 +28,6 @@
       display: flex;
       flex-direction: column;
     }
-
-    /* Tabs */
     .tabs {
       display: flex;
       background: #fff;
@@ -52,8 +50,6 @@
       border-bottom-color: var(--primary-darker);
       background: rgba(197,234,178,0.15);
     }
-
-    /* Pages */
     .page {
       flex: 1;
       display: none;
@@ -61,8 +57,6 @@
       padding: 1.5rem 1.5rem 5rem;
     }
     .page.active { display: block; }
-
-    /* Setup layout */
     .setup-grid {
       max-width: 1200px;
       margin: 0 auto;
@@ -85,7 +79,6 @@
       font-size: 1.05rem;
     }
     .muted { color: var(--muted); font-size: .9rem; }
-
     .source-toggle {
       display: flex;
       gap: .5rem;
@@ -106,7 +99,6 @@
       background: var(--primary);
       border-color: transparent;
     }
-
     .card-grid {
       display: flex;
       gap: 1rem;
@@ -129,7 +121,6 @@
       box-shadow: var(--shadow-lg);
     }
     .cat-card h3, .level-card h3 { margin: .25rem 0 .5rem; }
-
     .button-row {
       display: flex;
       gap: .5rem;
@@ -151,7 +142,6 @@
       color: #000;
     }
     .full { width: 100%; }
-
     input[type="number"], select, textarea {
       width: 100%;
       border-radius: .6rem;
@@ -161,8 +151,6 @@
       background: #fff;
     }
     textarea { resize: vertical; min-height: 80px; }
-
-    /* Display view */
     #display-view {
       background: radial-gradient(circle at top, rgba(197,234,178,.3) 0%, rgba(244,243,232,1) 48%, rgba(244,243,232,1) 100%);
       position: relative;
@@ -176,7 +164,6 @@
       margin: 0 auto;
     }
     .display-phase.active { display: flex; flex-direction: column; justify-content: center; gap: 1.75rem; }
-
     .phase-title {
       font-size: clamp(2.2rem, 4vw, 3rem);
       margin: 0;
@@ -253,8 +240,7 @@
       padding: .35rem .65rem;
       border-radius: .5rem;
     }
-
-    /* NEXT BUTTON - make it super obvious */
+    /* NEXT BUTTON */
     #advance-btn {
       position: fixed;
       bottom: 4.5rem;
@@ -378,11 +364,10 @@
         <h2 class="phase-title">Time’s up — let’s share.</h2>
         <p class="prompt-secondary" id="wrap-prompt"></p>
         <textarea id="wrap-notes" placeholder="What did students say that was smart, surprising, or worth revisiting?"></textarea>
-        
+        <button class="btn btn-secondary" id="copy-notes-btn" style="align-self:flex-start;">Copy notes</button>
       </div>
     </div>
 
-    <!-- PROGRESS -->
     <div class="progress-bar-wrap" id="progress-wrap" style="display:none;">
       <div class="progress-bar" id="progress-bar"></div>
     </div>
@@ -463,8 +448,10 @@
     let currentLevel = 1;
     let currentLeveledDeck = [];
     let currentPromptObj = null;
+
     let flatPrompts = [];
     let flatFavorites = [];
+
     let currentPhase = "individual";
     let timerInterval = null;
     const KISMET_CHANCE = 0.15;
@@ -536,16 +523,21 @@
     function loadFlatPrompts() {
       const stored = JSON.parse(localStorage.getItem(flatStorageKey) || "[]");
       const favs = JSON.parse(localStorage.getItem(flatFavKey) || "[]");
+      // stored = customs only
       flatPrompts = [...baseFlatPrompts, ...stored];
       flatFavorites = favs;
       renderFlatSelect();
     }
-    function saveFlatCustom(newList) {
-      const customs = newList.slice(baseFlatPrompts.length);
+
+    // FIXED: don't slice after sorting; filter out base prompts
+    function saveFlatCustom(fullList) {
+      const customs = fullList.filter(p => !baseFlatPrompts.includes(p));
       localStorage.setItem(flatStorageKey, JSON.stringify(customs));
     }
+
     function renderFlatSelect() {
       flatSelect.innerHTML = "";
+      // sort for display, but don't break base/custom separation when saving
       const sorted = [...flatPrompts].sort((a,b) => {
         const af = flatFavorites.includes(a);
         const bf = flatFavorites.includes(b);
@@ -553,17 +545,21 @@
         if (!af && bf) return 1;
         return 0;
       });
-      flatPrompts = sorted;
-      flatPrompts.forEach((p,idx) => {
+      sorted.forEach((p,idx) => {
         const opt = document.createElement("option");
-        opt.value = idx;
+        opt.value = p; // store actual prompt as value
         opt.textContent = (flatFavorites.includes(p) ? "⭐ " : "") + (p.length > 80 ? p.substring(0,80) + "..." : p);
         flatSelect.appendChild(opt);
       });
+      // select first
+      if (sorted.length > 0) {
+        flatSelect.value = sorted[0];
+      }
       updateFlatStarButton();
     }
+
     function updateFlatStarButton() {
-      const selPrompt = flatPrompts[flatSelect.value];
+      const selPrompt = flatSelect.value;
       if (!selPrompt) return;
       if (flatFavorites.includes(selPrompt)) {
         flatStarBtn.textContent = "⭐ Un-star";
@@ -574,7 +570,7 @@
 
     // ====== LEVELED HELPERS ======
     function rebuildLeveledDeck() {
-      const arr = leveledPrompts[currentCategory][currentLevel] || [];
+      const arr = (leveledPrompts[currentCategory] && leveledPrompts[currentCategory][currentLevel]) || [];
       currentLeveledDeck = arr.slice().sort(() => Math.random() - 0.5);
     }
     function pickLeveledPrompt() {
@@ -597,7 +593,6 @@
       if (phase === "bonus") bonusPhase.classList.add("active");
       if (phase === "wrap") wrapPhase.classList.add("active");
 
-      // show big next only when we are in a timed phase
       advanceBtn.style.display = (phase === "individual" || phase === "group" || phase === "bonus") ? "inline-block" : "none";
       backToSetupBtn.style.display = (phase === "wrap") ? "inline-block" : "none";
       progressWrap.style.display = (phase !== "wrap") ? "block" : "none";
@@ -663,7 +658,6 @@
       startTimer(total, (left) => {
         groupTimerEl.textContent = formatTime(left);
       }, () => {
-        // timer-based end → do kismet
         if (Math.random() < KISMET_CHANCE) {
           playTone(750,0.3);
           runBonusPhase();
@@ -718,7 +712,6 @@
     }
 
     // ====== EVENTS ======
-    // Tabs
     tabs.forEach(btn => {
       btn.addEventListener("click", () => {
         const viewId = btn.dataset.view;
@@ -729,7 +722,6 @@
       });
     });
 
-    // Prompt source toggle
     sourcePills.forEach(pill => {
       pill.addEventListener("click", () => {
         sourcePills.forEach(p => p.classList.remove("active"));
@@ -737,6 +729,7 @@
         currentSource = pill.dataset.source;
         if (currentSource === "leveled") {
           leveledConfig.style.display = "block";
+          flatConfig.style.display = "block"; // keep visible? no, we hide
           flatConfig.style.display = "none";
         } else {
           leveledConfig.style.display = "none";
@@ -745,7 +738,6 @@
       });
     });
 
-    // Category cards
     catCards.forEach(card => {
       card.addEventListener("click", () => {
         catCards.forEach(c => c.classList.remove("active"));
@@ -756,7 +748,6 @@
       });
     });
 
-    // Level cards
     levelCards.forEach(card => {
       card.addEventListener("click", () => {
         levelCards.forEach(c => c.classList.remove("active"));
@@ -767,25 +758,26 @@
       });
     });
 
-    // Leveled preview
     leveledPreviewBtn.addEventListener("click", () => {
       if (!currentPromptObj) pickLeveledPrompt();
       alert("Current prompt:\n\n" + currentPromptObj.q + (currentPromptObj.h ? "\n\nHelper: " + currentPromptObj.h : ""));
     });
-    // Leveled next
+
     leveledNextBtn.addEventListener("click", () => {
       pickLeveledPrompt();
     });
 
-    // Flat prompt events
     flatSelect.addEventListener("change", updateFlatStarButton);
+
     flatRandomBtn.addEventListener("click", () => {
       const idx = Math.floor(Math.random() * flatPrompts.length);
-      flatSelect.value = idx;
+      const p = flatPrompts[idx];
+      flatSelect.value = p;
       updateFlatStarButton();
     });
+
     flatStarBtn.addEventListener("click", () => {
-      const p = flatPrompts[flatSelect.value];
+      const p = flatSelect.value;
       if (!p) return;
       if (flatFavorites.includes(p)) {
         flatFavorites = flatFavorites.filter(x => x !== p);
@@ -794,7 +786,10 @@
       }
       localStorage.setItem(flatFavKey, JSON.stringify(flatFavorites));
       renderFlatSelect();
+      flatSelect.value = p;
+      updateFlatStarButton();
     });
+
     flatAddBtn.addEventListener("click", () => {
       const val = flatCustom.value.trim();
       if (!val) return;
@@ -802,17 +797,17 @@
         flatPrompts.push(val);
         saveFlatCustom(flatPrompts);
         renderFlatSelect();
-        flatSelect.value = flatPrompts.indexOf(val);
+        flatSelect.value = val;
       }
       flatCustom.value = "";
+      updateFlatStarButton();
     });
 
-    // Start activity
     startActivityBtn.addEventListener("click", () => {
       if (currentSource === "leveled") {
         if (!currentPromptObj) pickLeveledPrompt();
       } else {
-        const p = flatPrompts[flatSelect.value];
+        const p = flatSelect.value;
         if (!p) { alert("Pick or add a prompt first."); return; }
         currentPromptObj = { q: p, h: "" };
       }
@@ -823,14 +818,12 @@
       runIndividualPhase();
     });
 
-    // Manual advance (big green bottom-right)
     advanceBtn.addEventListener("click", () => {
       clearTimer();
       if (currentPhase === "individual") {
         playTone(880,0.25);
         runGroupPhase();
       } else if (currentPhase === "group") {
-        // manual → follow same branching as timer
         if (Math.random() < KISMET_CHANCE) {
           playTone(750,0.3);
           runBonusPhase();
@@ -844,7 +837,6 @@
       }
     });
 
-    // Back to setup
     backToSetupBtn.addEventListener("click", () => {
       clearTimer();
       progressBar.style.width = "0%";
@@ -854,7 +846,6 @@
       document.getElementById("setup-view").classList.add("active");
     });
 
-    // Copy notes
     copyNotesBtn.addEventListener("click", async () => {
       const txt = wrapNotesEl.value || "";
       try {
@@ -866,7 +857,6 @@
       }
     });
 
-    // Mute
     muteBtn.addEventListener("click", () => {
       muted = !muted;
       muteBtn.textContent = muted ? "🔇" : "🔈";
