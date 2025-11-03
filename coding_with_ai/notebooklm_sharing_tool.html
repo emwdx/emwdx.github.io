@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Copy Helper</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0 auto;
+            max-width: 800px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        h2 {
+            text-align: center;
+            color: #005a9c;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-top: 15px;
+            margin-bottom: 5px;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            box-sizing: border-box; 
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        button#generateButton {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button#generateButton:hover {
+            background-color: #0056b3;
+        }
+        
+        /* Styles for the generated list */
+        #outputList {
+            margin-top: 25px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .email-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            border-bottom: 1px solid #eee;
+        }
+        .email-item:last-child {
+            border-bottom: none;
+        }
+        .email-text {
+            font-family: monospace;
+            font-size: 15px;
+            padding: 5px;
+            flex-grow: 1;
+            /* Allow text to break and wrap if needed */
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .copy-btn {
+            padding: 8px 12px;
+            font-size: 14px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            min-width: 80px; /* Give button a consistent width */
+            margin-left: 10px;
+        }
+        .copy-btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Email Copy Helper</h2>
+    <p>Paste your semicolon-separated list below to generate a one-click copy list.</p>
+
+    <label for="inputEmails">Input Emails:</label>
+    <textarea id="inputEmails" placeholder="e.g., email1@example.com; email2@example.com; ..."></textarea>
+
+    <button id="generateButton">Generate List</button>
+
+    <div id="outputList"></div>
+
+    <script>
+        // Store a reference to the last clicked button
+        let lastClickedButton = null;
+
+        document.getElementById('generateButton').addEventListener('click', function() {
+            const inputText = document.getElementById('inputEmails').value;
+            const outputList = document.getElementById('outputList');
+            
+            // Clear any previous list
+            outputList.innerHTML = '';
+            lastClickedButton = null;
+
+            // 1. Split by semicolon
+            const emailArray = inputText.split(';');
+            
+            // 2. Clean up spaces and remove empty entries
+            const cleanedEmails = emailArray
+                .map(email => email.trim())
+                .filter(email => email.length > 0);
+            
+            // 3. Create a list item for each email
+            cleanedEmails.forEach(email => {
+                // Create elements
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'email-item';
+                
+                const emailSpan = document.createElement('span');
+                emailSpan.className = 'email-text';
+                emailSpan.textContent = email;
+                
+                const copyButton = document.createElement('button');
+                copyButton.className = 'copy-btn';
+                copyButton.textContent = 'Copy';
+                
+                // Add the copy-to-clipboard logic to each button
+                copyButton.addEventListener('click', function() {
+                    navigator.clipboard.writeText(email).then(() => {
+                        // Reset the last button if there was one
+                        if(lastClickedButton) {
+                            lastClickedButton.textContent = 'Copy';
+                        }
+                        
+                        // Set this button's text to "Copied!"
+                        copyButton.textContent = 'Copied!';
+                        lastClickedButton = copyButton; // Remember this button
+
+                    }).catch(err => {
+                        alert('Failed to copy: ' + err);
+                    });
+                });
+                
+                // Add elements to the page
+                itemDiv.appendChild(emailSpan);
+                itemDiv.appendChild(copyButton);
+                outputList.appendChild(itemDiv);
+            });
+        });
+    </script>
+
+</body>
+</html>
