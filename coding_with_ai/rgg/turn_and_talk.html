@@ -192,6 +192,8 @@
       transition: .5s ease;
     }
     .twist.visible { opacity: 1; }
+    #group-bonus { display: none; }
+    #group-bonus.visible { display: block; }
     .timer-big {
       font-size: clamp(4rem, 7vw, 6rem);
       font-weight: 700;
@@ -232,9 +234,6 @@
       min-height: 200px;
       font-size: 1rem;
       background: rgba(255,255,255,.7);
-    }
-    #bonus-phase {
-      background: radial-gradient(circle at center, rgba(178,255,139,.2) 0%, rgba(197,234,178,0) 65%);
     }
     .small-btn {
       padding: .35rem .65rem;
@@ -288,19 +287,10 @@
     }
   </style>
 </head>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-N67EP99YJK"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-N67EP99YJK');
-</script>
 <body>
   <div class="tabs">
-    <button class="tab-btn active" data-view="setup-view">⚙️ Setup</button>
-    <button class="tab-btn" data-view="display-view">🪩 Display</button>
+    <button class="tab-btn active" data-view="setup-view">Setup</button>
+    <button class="tab-btn" data-view="display-view">Display</button>
   </div>
 
   <!-- SETUP VIEW -->
@@ -311,8 +301,8 @@
         <h2>1. Choose Prompt Source</h2>
         <p class="muted">Pick how you want to feed the activity with prompts.</p>
         <div class="source-toggle">
-          <div class="source-pill active" data-source="leveled">Leveled Deck (Cat → Lvl)</div>
-          <div class="source-pill" data-source="flat">Flat List (⭐ + Custom)</div>
+          <div class="source-pill active" data-source="leveled">Choose a Category and Level</div>
+          <div class="source-pill" data-source="flat">Pick from a List</div>
         </div>
 
         <!-- LEVELED ENGINE -->
@@ -353,15 +343,14 @@
       <!-- RIGHT: TIMERS & START -->
       <div class="panel">
         <h2>2. Timing & Activity</h2>
-        <p class="muted">Think → Talk → (15% Bonus) → Wrap</p>
+        
         <label>Individual reflection (seconds)</label>
         <input type="number" id="indiv-seconds" value="60" min="10" step="5" />
         <label style="margin-top:.7rem;">Group discussion (seconds)</label>
         <input type="number" id="group-seconds" value="180" min="20" step="5" />
-        <p class="muted" style="margin-top:.7rem;">Bonus round is auto: 30 seconds.</p>
+        
         <button class="btn full" id="start-activity" style="margin-top:1rem;">Start & Show Display →</button>
-        <p class="muted" style="margin-top:1rem;">Notes are taken in the wrap-up screen; you can copy them out.</p>
-        <p class="muted" style="margin-top:.5rem; font-size:.7rem; opacity:.4;">(secret: Alt+S)</p>
+        
       </div>
     </div>
   </div>
@@ -387,13 +376,7 @@
       <div class="prompt-secondary" id="group-prompt">Prompt will stay visible here.</div>
       <div class="timer-big" id="group-timer">00:00</div>
       <div class="twist" id="group-twist"><strong>Deepener:</strong> Find one thing you all agree on.</div>
-    </div>
-
-    <!-- BONUS -->
-    <div id="phase-bonus" class="display-phase">
-      <h2 class="phase-title">✨ Bonus Round! ✨</h2>
-      <div class="prompt-main" id="bonus-text">In 30 seconds, summarize the class' best idea in 5 words.</div>
-      <div class="timer-big" id="bonus-timer">00:30</div>
+      <div class="twist" id="group-bonus"></div>
     </div>
 
     <!-- WRAP -->
@@ -533,17 +516,15 @@
 
     const indivPhase = document.getElementById("phase-individual");
     const groupPhase = document.getElementById("phase-group");
-    const bonusPhase = document.getElementById("phase-bonus");
     const wrapPhase = document.getElementById("phase-wrap");
     const indivPromptEl = document.getElementById("indiv-prompt");
     const groupPromptEl = document.getElementById("group-prompt");
     const wrapPromptEl = document.getElementById("wrap-prompt");
     const indivTimerEl = document.getElementById("indiv-timer");
     const groupTimerEl = document.getElementById("group-timer");
-    const bonusTimerEl = document.getElementById("bonus-timer");
     const indivTwistEl = document.getElementById("indiv-twist");
     const groupTwistEl = document.getElementById("group-twist");
-    const bonusTextEl = document.getElementById("bonus-text");
+    const groupBonusEl = document.getElementById("group-bonus");
     const progressWrap = document.getElementById("progress-wrap");
     const progressBar = document.getElementById("progress-bar");
     const advanceBtn = document.getElementById("advance-btn");
@@ -636,14 +617,12 @@
       currentPhase = phase;
       indivPhase.classList.remove("active");
       groupPhase.classList.remove("active");
-      bonusPhase.classList.remove("active");
       wrapPhase.classList.remove("active");
       if (phase === "individual") indivPhase.classList.add("active");
       if (phase === "group") groupPhase.classList.add("active");
-      if (phase === "bonus") bonusPhase.classList.add("active");
       if (phase === "wrap") wrapPhase.classList.add("active");
 
-      advanceBtn.style.display = (phase === "individual" || phase === "group" || phase === "bonus") ? "inline-block" : "none";
+      advanceBtn.style.display = (phase === "individual" || phase === "group") ? "inline-block" : "none";
       backToSetupBtn.style.display = (phase === "wrap") ? "inline-block" : "none";
       progressWrap.style.display = (phase !== "wrap") ? "block" : "none";
     }
@@ -705,31 +684,29 @@
       showDisplayPhase("group");
       groupPromptEl.textContent = currentPromptObj ? currentPromptObj.q : "Discuss the previous idea.";
       groupTwistEl.classList.remove("visible");
+      groupBonusEl.classList.remove("visible");
+      groupBonusEl.innerHTML = "";
+
+      const bonusPossible = total > BONUS_SECONDS;
+      const bonusActivated = bonusPossible && Math.random() < KISMET_CHANCE;
+      const bonusText = bonusActivated ? bonusChallenges[Math.floor(Math.random() * bonusChallenges.length)] : "";
+      let bonusShown = false;
+
       startTimer(total, (left) => {
         groupTimerEl.textContent = formatTime(left);
-      }, () => {
-        if (Math.random() < KISMET_CHANCE) {
-          playTone(750,0.3);
-          runBonusPhase();
-        } else {
-          playTone(660,0.25);
-          runWrapPhase();
+        if (bonusActivated && !bonusShown && left <= BONUS_SECONDS) {
+          bonusShown = true;
+          groupTwistEl.classList.remove("visible");
+          groupBonusEl.innerHTML = "<strong>Bonus:</strong> " + bonusText;
+          groupBonusEl.classList.add("visible");
         }
+      }, () => {
+        playTone(660,0.25);
+        runWrapPhase();
       }, () => {
         groupTwistEl.innerHTML = "<strong>Deepener:</strong> " + groupDeepeners[Math.floor(Math.random() * groupDeepeners.length)];
         groupTwistEl.classList.add("visible");
         playTone(520,0.15);
-      });
-    }
-
-    function runBonusPhase() {
-      showDisplayPhase("bonus");
-      bonusTextEl.textContent = bonusChallenges[Math.floor(Math.random() * bonusChallenges.length)];
-      startTimer(BONUS_SECONDS, (left) => {
-        bonusTimerEl.textContent = formatTime(left);
-      }, () => {
-        playTone(660,0.25);
-        runWrapPhase();
       });
     }
 
@@ -860,16 +837,29 @@
       }
     }
 
-    async function copyTextToClipboard(text) {
+    async function copyTextToClipboard(text, preferredField) {
       if (!text) return false;
       if (navigator.clipboard && window.isSecureContext) {
         try {
           await navigator.clipboard.writeText(text);
           return true;
         } catch (err) {
-          // fall back below
+          // fall through to legacy methods
         }
       }
+      if (preferredField && typeof document.execCommand === "function") {
+        preferredField.focus();
+        preferredField.select();
+        preferredField.setSelectionRange(0, text.length);
+        try {
+          if (document.execCommand("copy")) {
+            return true;
+          }
+        } catch (err) {
+          // try hidden textarea fallback below
+        }
+      }
+      if (typeof document.execCommand !== "function") return false;
       const temp = document.createElement("textarea");
       temp.value = text;
       temp.setAttribute("readonly", "");
@@ -1010,14 +1000,6 @@
         playTone(880,0.25);
         runGroupPhase();
       } else if (currentPhase === "group") {
-        if (Math.random() < KISMET_CHANCE) {
-          playTone(750,0.3);
-          runBonusPhase();
-        } else {
-          playTone(660,0.25);
-          runWrapPhase();
-        }
-      } else if (currentPhase === "bonus") {
         playTone(660,0.25);
         runWrapPhase();
       }
@@ -1034,11 +1016,11 @@
 
     copyNotesBtn.addEventListener("click", async () => {
       const txt = wrapNotesEl.value || "";
-      try {
-        await navigator.clipboard.writeText(txt);
+      const success = await copyTextToClipboard(txt, wrapNotesEl);
+      if (success) {
         copyNotesBtn.textContent = "Copied ✅";
         setTimeout(() => copyNotesBtn.textContent = "Copy notes", 1600);
-      } catch (e) {
+      } else {
         alert("Could not copy — select and copy manually.");
       }
     });
@@ -1053,9 +1035,7 @@
     shareCopyBtn.addEventListener("click", async () => {
       const text = shareUrlInput.value;
       if (!text) return;
-      shareUrlInput.focus();
-      shareUrlInput.select();
-      const success = await copyTextToClipboard(text);
+      const success = await copyTextToClipboard(text, shareUrlInput);
       if (success) {
         shareCopyBtn.textContent = "Copied ✅";
         setTimeout(() => shareCopyBtn.textContent = "Copy", 1400);
