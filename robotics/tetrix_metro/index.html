@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Metro RP2040 + L298N + Tetrix Encoder Motor — Build Guide</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root{
+      --brand:#2d7ef7;
+    }
+    body{background:#f7f8fb}
+    pre{background:#0e1116;color:#e6e9ef;border-radius:12px;padding:1rem;border:1px solid #22262e}
+    code{font-family: ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace}
+    .kbd{border:1px solid #ced4da;border-bottom-width:2px;padding:.1rem .35rem;border-radius:.35rem;background:#fff;font-family: ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace}
+    .callout{border-left: .4rem solid var(--brand); background:#eef4ff}
+    .callout-warn{border-left-color:#f0ad00;background:#fff8e1}
+    .callout-bad{border-left-color:#dc3545;background:#fff3f4}
+    .pin{font-weight:600}
+    .img-note{font-size:.925rem;color:#6c757d}
+    .footer{color:#6c757d}
+    .sticky-top-offset{top:1rem}
+    .img-frame{border:1px solid #e9ecef;border-radius:12px;overflow:hidden}
+  </style>
+</head>
+<body>
+
+<header class="bg-white border-bottom py-3 mb-4">
+  <div class="container">
+    <div class="d-flex align-items-center justify-content-between">
+      <h1 class="h3 mb-0">Metro RP2040 + L298N + Tetrix Encoder Motor — Build Guide</h1>
+      <a class="btn btn-primary" id="downloadBtn">Download this page</a>
+    </div>
+    <p class="text-muted mb-0">One‑stop page for wiring, code, and troubleshooting.</p>
+  </div>
+</header>
+
+<main class="container">
+  <div class="row g-4">
+    <aside class="col-lg-4 order-lg-2">
+      <div class="position-sticky sticky-top sticky-top-offset">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Bill of Materials</h5>
+            <ul class="mb-0 small">
+              <li>Adafruit <strong>Metro RP2040</strong></li>
+              <li>Red <strong>L298N</strong> dual H‑bridge board</li>
+              <li>12 V DC Tetrix‑style motor with 4‑wire quadrature encoder</li>
+              <li>External 12 V supply (battery pack or bench supply)</li>
+              <li>Jumper wires, screw‑terminal driver</li>
+            </ul>
+          </div>
+        </div>
+        <div class="card mt-3">
+          <div class="card-body">
+            <h6 class="card-title">Pin Map (defaults in code)</h6>
+            <table class="table table-sm align-middle mb-0">
+              <thead><tr><th>Thing</th><th>Connects to</th></tr></thead>
+              <tbody>
+                <tr><td class="pin">L298N ENA</td><td>Metro <span class="pin">D5</span> (PWM)</td></tr>
+                <tr><td class="pin">L298N IN1</td><td>Metro <span class="pin">D6</span></td></tr>
+                <tr><td class="pin">L298N IN2</td><td>Metro <span class="pin">D7</span></td></tr>
+                <tr><td class="pin">Encoder A (yellow)</td><td>Metro <span class="pin">D2</span></td></tr>
+                <tr><td class="pin">Encoder B (blue)</td><td>Metro <span class="pin">D3</span></td></tr>
+                <tr><td class="pin">Encoder V+</td><td>Metro <span class="pin">3V3</span> (preferred)</td></tr>
+                <tr><td class="pin">Encoder GND</td><td>Metro <span class="pin">GND</span></td></tr>
+                <tr><td class="pin">Motor</td><td>L298N <span class="pin">OUT1</span> & <span class="pin">OUT2</span></td></tr>
+                <tr><td class="pin">Battery +</td><td>L298N <span class="pin">+12V</span></td></tr>
+                <tr><td class="pin">Battery −</td><td>L298N <span class="pin">GND</span></td></tr>
+                <tr><td class="pin">Common ground</td><td><strong>Metro GND ↔ L298N GND</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <section class="col-lg-8 order-lg-1">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="h4">1) What we’re building</h2>
+          <p>Run a 12 V Tetrix DC motor (with a wooden‑dowel arm) from a Metro RP2040 via an L298N driver, read the quadrature encoder in CircuitPython, and control direction/speed with simple functions: <code>forward()</code>, <code>backward()</code>, <code>stop()</code> (coast), and <code>active_brake()</code>. Mu’s serial console shows live counts and degrees.</p>
+          <div class="callout p-3 rounded">
+            <strong>Encoder wire colors (typical Tetrix):</strong> Orange = V+, Brown = GND, Yellow = Channel A, Blue = Channel B. If your encoder is <em>5 V‑only</em>, use a level shifter or resistor dividers into D2/D3.
+          </div>
+        </div>
+      </div>
+
+      <div class="card mt-3">
+        <div class="card-body">
+          <h2 class="h4">2) Wiring overview</h2>
+          <div class="row g-3">
+            <div class="col-12">
+              <h6 class="mb-2">Power + grounds</h6>
+              <ul>
+                <li><strong>L298N +12V</strong> → your battery/supply +12 V.</li>
+                <li><strong>L298N GND</strong> → battery − <em>and</em> Metro GND (common ground).</li>
+                <li>Keep the L298N 5V‑EN jumper in place to power its logic; do not tie Metro 5 V to L298N 5 V.</li>
+              </ul>
+            </div>
+            <div class="col-12">
+              <h6 class="mb-2">Motor → L298N</h6>
+              <ul>
+                <li>Motor leads to <strong>OUT1</strong> and <strong>OUT2</strong> (channel A).</li>
+              </ul>
+            </div>
+            <div class="col-12">
+              <h6 class="mb-2">L298N control pins → Metro</h6>
+              <ul>
+                <li>Remove the small <strong>ENA</strong> jumper so the pin can be PWM controlled.</li>
+                <li><strong>ENA</strong> → D5, <strong>IN1</strong> → D6, <strong>IN2</strong> → D7.</li>
+              </ul>
+            </div>
+            <div class="col-12">
+              <h6 class="mb-2">Encoder → Metro</h6>
+              <ul>
+                <li>Orange → 3V3 (if your encoder supports 3.3 V; otherwise power at 5 V and <em>level‑shift A/B</em>).</li>
+                <li>Brown → GND, Yellow → D2, Blue → D3 (adjacent pins are best on RP2040).</li>
+              </ul>
+            </div>
+          </div>
+          <div class="mt-3 img-note">If you provided photos, rename them to <code>l298n-back.jpg</code>, <code>l298n-front.jpg</code>, <code>metro-wiring.jpg</code>, <code>encoder-tail.jpg</code>, etc., and place next to this HTML file. They will render below automatically.</div>
+        </div>
+      </div>
+
+      <div class="card mt-3">
+        <div class="card-body">
+          <h2 class="h4">3) Photos</h2>
+          <p class="text-muted">Local images with these exact filenames will be shown if present in the same folder as this HTML file.</p>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <figure class="img-frame">
+                <img src="l298n-back.jpg" alt="Back of L298N board showing +12V/GND/+5V terminals" class="w-100">
+              </figure>
+              <div class="img-note">Back of the L298N: sharing the GND terminal for both battery and Metro ground is fine.</div>
+            </div>
+            <div class="col-md-6">
+              <figure class="img-frame"><img src="l298n-front.jpg" alt="Front of L298N board with ENA/IN1/IN2 and outputs" class="w-100"></figure>
+            </div>
+            <div class="col-md-6">
+              <figure class="img-frame"><img src="metro-wiring.jpg" alt="Metro RP2040 wired to ENA/IN1/IN2 and encoder" class="w-100"></figure>
+            </div>
+            <div class="col-md-6">
+              <figure class="img-frame"><img src="encoder-tail.jpg" alt="Encoder tail with orange/brown/yellow/blue wires" class="w-100"></figure>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mt-3">
+        <div class="card-body">
+          <h2 class="h4">4) Paste‑in code (<code>code.py</code>)</h2>
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <button class="btn btn-primary btn-sm" id="copyBtn">Copy code</button>
+            <span class="text-muted small">Drop this file onto the CIRCUITPY drive as <code>code.py</code>.</span>
+          </div>
+          <pre id="codeBlock"><code></code></pre>
+        </div>
+      </div>
+
+      <div class="card mt-3">
+        <div class="card-body">
+          <h2 class="h4">5) Bring‑up checklist</h2>
+          <ol>
+            <li>Power L298N from 12 V; LED on the board should light.</li>
+            <li>Connect <strong>Metro GND ↔ L298N GND</strong> (common ground).</li>
+            <li>Wire ENA→D5, IN1→D6, IN2→D7; remove ENA jumper on the L298N.</li>
+            <li>Wire encoder: Orange→3V3 (or 5 V with level shift), Brown→GND, Yellow→D2, Blue→D3.</li>
+            <li>Copy the code and open Mu’s serial console. Counts should change when you spin the motor shaft by hand.</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="card mt-3">
+        <div class="card-body">
+          <h2 class="h4">6) Troubleshooting</h2>
+          <div class="callout-bad p-3 rounded mb-2"><strong>No movement:</strong> Confirm +12 V and GND on L298N; check ENA jumper removed; verify ENA (D5) is PWM‑capable; ensure IN1/IN2 aren’t swapped.</div>
+          <div class="callout p-3 rounded mb-2"><strong>Counts don’t change:</strong> Check encoder power; keep A/B on adjacent GPIOs (D2/D3); swap A and B in code if direction is negative; verify common ground.</div>
+          <div class="callout-warn p-3 rounded mb-2"><strong>Jerky or weak:</strong> L298N has ~2–3 V drop. Try higher duty cycle, charge battery, or upgrade to TB6612/DRV8833 later.</div>
+          <div class="callout p-3 rounded"><strong>Too much coast:</strong> Use <code>active_brake(1.0)</code> briefly to stop faster. Avoid long hard‑brakes at full speed (current spikes).</div>
+        </div>
+      </div>
+
+      <div class="footer my-4">Draft • You can customize pins and <code>COUNTS_PER_REV</code> at the top of the code. Built for Metro RP2040 + CircuitPython.</div>
+    </section>
+  </div>
+</main>
+
+<script>
+// ---------- Embed the full code.py into the page ----------
+const code = String.raw`# CircuitPython motor + encoder helper for Metro RP2040 + L298N
+# Drop this as code.py, open Mu's serial console to see counts.
+# v1.1: adds active_brake() and keeps stop() as coast.
+
+import time
+import board
+import digitalio
+import pwmio
+import rotaryio
+
+# ---------- Pin assignments (adjust if you wired differently) ----------
+PIN_ENA = board.D5     # L298N ENA (PWM)
+PIN_IN1 = board.D6     # L298N IN1
+PIN_IN2 = board.D7     # L298N IN2
+
+PIN_ENC_A = board.D2   # Encoder channel A
+PIN_ENC_B = board.D3   # Encoder channel B
+
+PWM_FREQ = 20000       # 20 kHz => quieter
+
+# If you know your encoder's counts/rev at x4 (post-quadrature), set it here.
+# Many Tetrix encoders are 360 CPR (=> 1440 counts/rev at x4).
+COUNTS_PER_REV = 1440  # adjust as needed for your specific motor/encoder
+
+
+class DCMotorL298N:
+    def __init__(self, ena_pin, in1_pin, in2_pin, pwm_freq=20000):
+        self.in1 = digitalio.DigitalInOut(in1_pin)
+        self.in1.direction = digitalio.Direction.OUTPUT
+        self.in2 = digitalio.DigitalInOut(in2_pin)
+        self.in2.direction = digitalio.Direction.OUTPUT
+
+        self.ena = pwmio.PWMOut(ena_pin, frequency=pwm_freq, duty_cycle=0)
+        self.coast()  # start safe
+
+    def _set_dir(self, forward=True):
+        # IN1=1, IN2=0 -> forward ; IN1=0, IN2=1 -> backward
+        self.in1.value = forward
+        self.in2.value = not forward
+
+    def _set_pwm01(self, x):
+        if x < 0: x = 0
+        if x > 1: x = 1
+        self.ena.duty_cycle = int(65535 * x)
+
+    def forward(self, speed=1.0):
+        self._set_dir(True)
+        self._set_pwm01(speed)
+
+    def backward(self, speed=1.0):
+        self._set_dir(False)
+        self._set_pwm01(speed)
+
+    def coast(self):
+        """Outputs OFF (coast)."""
+        self._set_pwm01(0)        # ENA=0 turns outputs off
+
+    def brake(self, strength=1.0):
+        """
+        Active (short) brake: ties both motor leads together.
+        Using LOW/LOW here; HIGH/HIGH also brakes. 'strength' PWM-modulates it.
+        1.0 = hard brake, 0.3 = softer brake.
+        """
+        self.in1.value = False     # both low => short to GND
+        self.in2.value = False
+        self._set_pwm01(strength)
+
+
+class QuadEncoder:
+    def __init__(self, pin_a, pin_b, counts_per_rev=1440):
+        # divisor=1 -> x4 decoding (max resolution)
+        self._enc = rotaryio.IncrementalEncoder(pin_a, pin_b, divisor=1)
+        self.cpr = counts_per_rev
+
+    @property
+    def counts(self):
+        return self._enc.position
+
+    def reset(self):
+        self._enc.position = 0
+
+    def revolutions(self):
+        return self.counts / float(self.cpr)
+
+    def degrees(self):
+        return self.revolutions() * 360.0
+
+
+# ---------- Instantiate hardware ----------
+motor = DCMotorL298N(PIN_ENA, PIN_IN1, PIN_IN2, pwm_freq=PWM_FREQ)
+encoder = QuadEncoder(PIN_ENC_A, PIN_ENC_B, counts_per_rev=COUNTS_PER_REV)
+
+
+# ---------- Student-facing helper functions ----------
+def forward(speed=1.0):
+    """Run motor forward at speed 0..1"""
+    motor.forward(speed)
+
+# NOTE: function intentionally named 'backward' (not 'backwards')
+def backward(speed=1.0):
+    """Run motor backward at speed 0..1"""
+    motor.backward(speed)
+
+# keep API from lesson: stop() == coast
+
+def stop():
+    """Coast to stop"""
+    motor.coast()
+
+
+def active_brake(strength=1.0):
+    """Active brake: 0..1 (1.0 = hard)."""
+    motor.brake(strength)
+
+
+def reset_counts():
+    encoder.reset()
+
+
+def get_counts():
+    """Return quadrature counts (post-quadrature)"""
+    return encoder.counts
+
+
+def get_degrees():
+    """Approx degrees turned (set COUNTS_PER_REV correctly)"""
+    return encoder.degrees()
+
+
+# ---------- Demo: jog forward/back, brake, and print encoder ----------
+if __name__ == "__main__":
+    print("Motor/Encoder demo starting...")
+    reset_counts()
+
+    print("Forward @ 60%...")
+    forward(0.60)
+    t0 = time.monotonic()
+    while time.monotonic() - t0 < 2.0:
+        print("counts:", get_counts(), "deg:", round(get_degrees(), 1))
+        time.sleep(0.1)
+
+    print("Hard brake…")      # brief active brake
+    active_brake(1.0)
+    time.sleep(0.5)
+
+    print("Backward @ 60%…")
+    backward(0.60)
+    t0 = time.monotonic()
+    while time.monotonic() - t0 < 2.0:
+        print("counts:", get_counts(), "deg:", round(get_degrees(), 1))
+        time.sleep(0.1)
+
+    stop()
+    print("Done. Final counts:", get_counts(), "deg:", round(get_degrees(), 1))`;
+
+const codeEl = document.querySelector('#codeBlock code');
+codeEl.textContent = code;
+
+// Copy button
+const copyBtn = document.getElementById('copyBtn');
+copyBtn.addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(code);
+    copyBtn.textContent = 'Copied!';
+    setTimeout(()=> copyBtn.textContent = 'Copy code', 1200);
+  } catch(err){
+    // fallback
+    const ta = document.createElement('textarea'); ta.value = code; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+    copyBtn.textContent = 'Copied!'; setTimeout(()=> copyBtn.textContent = 'Copy code', 1200);
+  }
+});
+
+// Self-download button (saves the HTML itself)
+const downloadBtn = document.getElementById('downloadBtn');
+downloadBtn.addEventListener('click', () => {
+  const blob = new Blob([document.documentElement.outerHTML], {type:'text/html'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'metro-rp2040-l298n-guide.html'; a.click(); URL.revokeObjectURL(a.href);
+});
+</script>
+
+</body>
+</html>
