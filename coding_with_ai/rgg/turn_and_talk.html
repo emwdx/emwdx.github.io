@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Turn & Talk Facilitator</title>
+  <title>Turn & Talk Facilitator — Unified</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <style>
     :root {
@@ -27,28 +27,6 @@
       height: 100vh;
       display: flex;
       flex-direction: column;
-    }
-    .tabs {
-      display: flex;
-      background: #fff;
-      box-shadow: 0 1px 0 rgba(0,0,0,.08);
-      z-index: 50;
-    }
-    .tab-btn {
-      border: none;
-      background: transparent;
-      padding: 1rem 1.5rem;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: var(--transition);
-      border-bottom: 3px solid transparent;
-      display: flex;
-      gap: .5rem;
-      align-items: center;
-    }
-    .tab-btn.active {
-      border-bottom-color: var(--primary-darker);
-      background: rgba(197,234,178,0.15);
     }
     .page {
       flex: 1;
@@ -126,6 +104,30 @@
       gap: .5rem;
       margin-top: 1rem;
     }
+    .prompt-preview {
+      background: rgba(255,255,255,.92);
+      border: 1px solid rgba(0,0,0,.08);
+      border-radius: 1rem;
+      padding: .9rem 1rem;
+      font-size: 1.05rem;
+      line-height: 1.55;
+      color: #1f331d;
+      box-shadow: var(--shadow-sm);
+    }
+    .prompt-preview::before {
+      content: attr(data-label);
+      display: block;
+      font-size: .7rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: .35rem;
+    }
+    .time-hint {
+      font-size: .8rem;
+      margin: .25rem 0 0;
+      color: var(--muted);
+    }
     .btn {
       border: none;
       background: var(--primary);
@@ -180,6 +182,14 @@
       color: #234;
       opacity: .85;
     }
+    #group-prompt {
+      font-size: clamp(1.4rem, 3vw, 2.1rem);
+      font-weight: 600;
+    }
+    #wrap-prompt {
+      font-size: clamp(1.2rem, 2.6vw, 1.8rem);
+      font-weight: 500;
+    }
     .twist {
       background: rgba(137,190,109,.12);
       border: 1px solid rgba(137,190,109,.3);
@@ -190,14 +200,23 @@
       margin: 0 auto;
       opacity: 0;
       transition: .5s ease;
+      font-size: clamp(1.15rem, 2.3vw, 1.7rem);
+      line-height: 1.55;
     }
     .twist.visible { opacity: 1; }
-    #group-bonus { display: none; }
+    #group-bonus {
+      display: none;
+      background: rgba(178,255,139,.2);
+      border-color: rgba(137,190,109,.6);
+    }
     #group-bonus.visible { display: block; }
     .timer-big {
       font-size: clamp(4rem, 7vw, 6rem);
       font-weight: 700;
       letter-spacing: .03em;
+    }
+    .timer-big.warning {
+      color: #c03030;
     }
     .progress-bar-wrap {
       height: 40px;
@@ -234,6 +253,54 @@
       min-height: 200px;
       font-size: 1rem;
       background: rgba(255,255,255,.7);
+    }
+    .phase-track {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1.5rem;
+      margin: 1.5rem auto 0;
+      width: min(680px, 90%);
+      flex-wrap: wrap;
+    }
+    .phase-track-step {
+      position: relative;
+      border: none;
+      background: #fff;
+      color: #234;
+      font-weight: 600;
+      padding: .5rem 1.1rem;
+      border-radius: 999px;
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .phase-track-step::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      right: -2.2rem;
+      width: 2rem;
+      height: 3px;
+      transform: translateY(-50%);
+      background: rgba(137,190,109,.35);
+    }
+    .phase-track-step:last-child::after { display: none; }
+    .phase-track-step.active {
+      background: var(--primary);
+      color: #0f2910;
+      box-shadow: var(--shadow-lg);
+    }
+    .phase-track-step.completed::after {
+      background: var(--primary-darker);
+    }
+    .phase-track-step.completed {
+      background: rgba(197,234,178,0.55);
+    }
+    .phase-track-step:hover { filter: brightness(.97); }
+    @media (max-width: 520px) {
+      .phase-track { gap: .8rem; }
+      .phase-track-step::after { display: none; }
     }
     .small-btn {
       padding: .35rem .65rem;
@@ -287,12 +354,16 @@
     }
   </style>
 </head>
-<body>
-  <div class="tabs">
-    <button class="tab-btn active" data-view="setup-view">Setup</button>
-    <button class="tab-btn" data-view="display-view">Display</button>
-  </div>
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-N67EP99YJK"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
+  gtag('config', 'G-N67EP99YJK');
+</script>
+<body>
   <!-- SETUP VIEW -->
   <div id="setup-view" class="page active">
     <div class="setup-grid">
@@ -317,13 +388,10 @@
           <div class="card-grid" id="level-cards">
             <div class="level-card active" data-lvl="1"><h3>Level 1</h3><p class="muted">Low stakes, rapport.</p></div>
             <div class="level-card" data-lvl="2"><h3>Level 2</h3><p class="muted">Values, dilemmas.</p></div>
-            <div class="level-card" data-lvl="3"><h3>Level 3</h3><p class="muted">Connect to global.</p></div>
+            <div class="level-card" data-lvl="3"><h3>Level 3</h3><p class="muted">Connect to a global issue.</p></div>
           </div>
-          <div class="button-row">
-            <button class="btn btn-secondary" id="leveled-preview-btn">Preview prompt</button>
-            <button class="btn" id="leveled-next-btn">Next in deck</button>
-          </div>
-          <p class="muted" id="leveled-current" style="margin-top:.85rem;"></p>
+          <button class="btn" id="leveled-next-btn" style="margin-top:.8rem;">Next in deck</button>
+          <div id="leveled-current" class="prompt-preview" data-label="Current prompt"></div>
         </div>
 
         <!-- FLAT ENGINE -->
@@ -337,6 +405,7 @@
             <p class="muted" style="margin-top:1rem">Add your own:</p>
             <textarea id="flat-custom" placeholder="Type a prompt students will discuss..."></textarea>
             <button class="btn full" id="flat-add-btn" style="margin-top:.5rem;">Add & select</button>
+            <div id="flat-current" class="prompt-preview" data-label="Selected prompt" style="display:none; margin-top:1rem;"></div>
         </div>
       </div>
 
@@ -346,8 +415,10 @@
         
         <label>Individual reflection (seconds)</label>
         <input type="number" id="indiv-seconds" value="60" min="10" step="5" />
+        <p class="muted time-hint" id="indiv-time-hint"></p>
         <label style="margin-top:.7rem;">Group discussion (seconds)</label>
         <input type="number" id="group-seconds" value="180" min="20" step="5" />
+        <p class="muted time-hint" id="group-time-hint"></p>
         
         <button class="btn full" id="start-activity" style="margin-top:1rem;">Start & Show Display →</button>
         
@@ -360,6 +431,11 @@
     <div class="top-right">
       <button class="btn btn-secondary small-btn" id="mute-btn" title="Toggle sound">🔈</button>
       <button class="btn btn-secondary small-btn" id="back-to-setup-btn" style="display:none;">← Back</button>
+    </div>
+    <div class="phase-track">
+      <button type="button" class="phase-track-step active" data-phase="individual">Think</button>
+      <button type="button" class="phase-track-step" data-phase="group">Discuss</button>
+      <button type="button" class="phase-track-step" data-phase="wrap">Share</button>
     </div>
 
     <!-- INDIVIDUAL -->
@@ -425,41 +501,62 @@
         2: [
           { q: "Think about a book, movie, or song that taught you an important lesson. What was it?", h: "What did it change in how you think?" },
           { q: "How do your favorite hobbies or interests shape the way you see the world?", h: "Does your hobby make you notice things other people don’t?" },
-          { q: "How has a hobby or interest helped you overcome a challenge?", h: "Tell the mini-story of that challenge." }
+          { q: "How has a hobby or interest helped you overcome a challenge?", h: "Tell the mini-story of that challenge." },
+          { q: "What’s something you love that most adults don’t understand yet?", h: "Explain what makes it awesome." },
+          { q: "If you started a club for one of your interests, what would the first meeting look like?", h: "Who shows up and what do you do?" }
         ],
         3: [
           { q: "How could your favorite hobby bring people from different backgrounds together?", h: "Imagine it being used for a community goal." },
           { q: "If you made a movie about a global issue, what message would it send?", h: "Think feeling + action." },
-          { q: "Does the media we love have a responsibility to show different cultures? Why?", h: "Connect representation → belonging." }
+          { q: "Does the media we love have a responsibility to show different cultures? Why?", h: "Connect representation → belonging." },
+          { q: "How can your favorite interest inspire others to take action on an issue?", h: "Connect your hobby to a real problem." },
+          { q: "If you shared your interest with leaders worldwide, what would you teach first?", h: "Show the link between the interest and global change." }
         ]
       },
       "Feelings": {
         1: [
           { q: "Describe a time you felt proud of something small.", h: "What made it feel big to you?" },
           { q: "What is something simple that always makes you calm?", h: "Think sensory stuff: smells, music, places." },
-          { q: "What does 'courage' look like in everyday life?", h: "Small risks count." }
+          { q: "What does 'courage' look like in everyday life?", h: "Small risks count." },
+          { q: "What song matches your mood today and why?", h: "Connect the lyrics or sound to your feeling." },
+          { q: "When do you feel most confident during the school day?", h: "Describe the moment or routine." }
         ],
         2: [
           { q: "Think about a time you had to apologize. What made it hard or easy?", h: "Focus on the feeling after you apologized." },
-          { q: "Describe a situation where you felt misunderstood. How did you handle it?", h: "What would you do differently now?" }
+          { q: "Describe a situation where you felt misunderstood. How did you handle it?", h: "What would you do differently now?" },
+          { q: "Describe a time you helped a friend through a tough feeling.", h: "What did you say or do?" },
+          { q: "How do you reset after a stressful day?", h: "Share the steps you take to feel better." },
+          { q: "When have you had to balance your feelings with someone else's?", h: "What compromise did you make?" }
         ],
         3: [
           { q: "Tell a story about feeling empathy — how does that scale to bigger issues?", h: "One person → whole group → world." },
-          { q: "Describe the feeling of fairness. How does that connect to global issues?", h: "Use your own life as the example." }
+          { q: "Describe the feeling of fairness. How does that connect to global issues?", h: "Use your own life as the example." },
+          { q: "How can listening to emotions make a community fairer?", h: "Start from a local example." },
+          { q: "When people share feelings online, how can it spark real change?", h: "Think about movements you’ve noticed." },
+          { q: "How might empathy help solve a global challenge you care about?", h: "Pick an issue and connect it to a feeling." }
         ]
       },
       "Experiences": {
         1: [
           { q: "What is one of your favorite family or holiday memories?", h: "Add what you heard, saw, smelled." },
-          { q: "If you could relive one day, which would it be and why?", h: "Pick a specific day, not a whole year." }
+          { q: "If you could relive one day, which would it be and why?", h: "Pick a specific day, not a whole year." },
+          { q: "What routine do you secretly enjoy?", h: "Walk us through the steps." },
+          { q: "Tell about a small adventure you had close to home.", h: "What tiny details made it memorable?" },
+          { q: "What experience made you laugh way harder than expected?", h: "Give the quick play-by-play." }
         ],
         2: [
           { q: "Describe a time you took a small risk that paid off.", h: "What did you learn about trying new things?" },
-          { q: "Share an experience where you collaborated to achieve a goal.", h: "How did the group help you?" }
+          { q: "Share an experience where you collaborated to achieve a goal.", h: "How did the group help you?" },
+          { q: "Share a time you tried something new with friends or family.", h: "What surprised you most?" },
+          { q: "Describe a project where planning ahead mattered.", h: "How did teamwork or preparation help?" },
+          { q: "When did you learn from a mistake during an activity?", h: "What did you do differently afterward?" }
         ],
         3: [
           { q: "Think of a time you had limited resources. How does that relate to sustainability?", h: "What did you do instead of buying something new?" },
-          { q: "Share a story about working in a team. How does that connect to global cooperation?", h: "Your team = mini version of countries." }
+          { q: "Share a story about working in a team. How does that connect to global cooperation?", h: "Your team = mini version of countries." },
+          { q: "How can a local experience teach you about a global issue?", h: "Zoom out from your personal story." },
+          { q: "Describe a moment when you saw cooperation in action.", h: "Connect it to how communities or countries work together." },
+          { q: "What everyday experience shows why sustainability matters?", h: "Link your story to using resources wisely." }
         ]
       }
     };
@@ -486,26 +583,29 @@
 
     let flatPrompts = [];
     let flatFavorites = [];
+    let lastFlatSelection = "";
+    let lastLeveledPrompt = null;
 
     let currentPhase = "individual";
     let timerInterval = null;
     const KISMET_CHANCE = 0.15;
     const BONUS_SECONDS = 30;
+    const WARNING_SECONDS = 10;
     let audioCtx = null;
     let muted = false;
 
     // ====== DOM ======
-    const tabs = document.querySelectorAll(".tab-btn");
-    const pages = document.querySelectorAll(".page");
+    const setupView = document.getElementById("setup-view");
+    const displayView = document.getElementById("display-view");
     const sourcePills = document.querySelectorAll(".source-pill");
     const leveledConfig = document.getElementById("leveled-config");
     const flatConfig = document.getElementById("flat-config");
     const catCards = document.querySelectorAll(".cat-card");
     const levelCards = document.querySelectorAll(".level-card");
-    const leveledPreviewBtn = document.getElementById("leveled-preview-btn");
     const leveledNextBtn = document.getElementById("leveled-next-btn");
     const leveledCurrent = document.getElementById("leveled-current");
     const flatSelect = document.getElementById("flat-select");
+    const flatCurrent = document.getElementById("flat-current");
     const flatRandomBtn = document.getElementById("flat-random-btn");
     const flatStarBtn = document.getElementById("flat-star-btn");
     const flatCustom = document.getElementById("flat-custom");
@@ -513,6 +613,8 @@
     const indivSecondsInput = document.getElementById("indiv-seconds");
     const groupSecondsInput = document.getElementById("group-seconds");
     const startActivityBtn = document.getElementById("start-activity");
+    const indivTimeHint = document.getElementById("indiv-time-hint");
+    const groupTimeHint = document.getElementById("group-time-hint");
 
     const indivPhase = document.getElementById("phase-individual");
     const groupPhase = document.getElementById("phase-group");
@@ -532,12 +634,27 @@
     const copyNotesBtn = document.getElementById("copy-notes-btn");
     const wrapNotesEl = document.getElementById("wrap-notes");
     const muteBtn = document.getElementById("mute-btn");
+    const phaseTrackButtons = document.querySelectorAll(".phase-track-step");
+    const phaseOrder = ["individual","group","wrap"];
 
     // secret modal dom
     const shareBackdrop = document.getElementById("share-modal-backdrop");
     const shareUrlInput = document.getElementById("share-url");
     const shareCopyBtn = document.getElementById("share-copy-btn");
     const shareCloseBtn = document.getElementById("share-close-btn");
+
+    function showSetupView() {
+      setupView.classList.add("active");
+      displayView.classList.remove("active");
+      backToSetupBtn.style.display = "none";
+      updatePhaseTrack("individual");
+    }
+    function showDisplayView() {
+      setupView.classList.remove("active");
+      displayView.classList.add("active");
+      backToSetupBtn.style.display = "inline-flex";
+      updatePhaseTrack("individual");
+    }
 
     // ====== AUDIO ======
     function initAudio() {
@@ -558,6 +675,16 @@
       osc.stop(audioCtx.currentTime + dur);
     }
 
+    function updatePhaseTrack(activePhase) {
+      const activeIndex = phaseOrder.indexOf(activePhase);
+      phaseTrackButtons.forEach(btn => {
+        const targetPhase = btn.dataset.phase;
+        const idx = phaseOrder.indexOf(targetPhase);
+        btn.classList.toggle("active", idx === activeIndex);
+        btn.classList.toggle("completed", idx !== -1 && idx < activeIndex);
+      });
+    }
+
     // ====== FLAT PROMPTS ======
     function loadFlatPrompts() {
       const stored = JSON.parse(localStorage.getItem(flatStorageKey) || "[]");
@@ -572,6 +699,7 @@
       localStorage.setItem(flatStorageKey, JSON.stringify(customs));
     }
     function renderFlatSelect() {
+      const previous = lastFlatSelection || flatSelect.value || "";
       flatSelect.innerHTML = "";
       const sorted = [...flatPrompts].sort((a,b) => {
         const af = flatFavorites.includes(a);
@@ -586,8 +714,16 @@
         opt.textContent = (flatFavorites.includes(p) ? "⭐ " : "") + (p.length > 80 ? p.substring(0,80) + "..." : p);
         flatSelect.appendChild(opt);
       });
-      if (sorted.length > 0) flatSelect.value = sorted[0];
+      if (sorted.length > 0) {
+        const selection = sorted.includes(previous) ? previous : sorted[0];
+        flatSelect.value = selection;
+        lastFlatSelection = selection;
+      } else {
+        flatSelect.value = "";
+        lastFlatSelection = "";
+      }
       updateFlatStarButton();
+      refreshFlatPreview();
     }
     function updateFlatStarButton() {
       const selPrompt = flatSelect.value;
@@ -596,6 +732,27 @@
         flatStarBtn.textContent = "⭐ Un-star";
       } else {
         flatStarBtn.textContent = "⭐ Star";
+      }
+    }
+    function refreshFlatPreview() {
+      if (!flatCurrent) return;
+      const val = flatSelect.value;
+      if (val) {
+        flatCurrent.style.display = "block";
+        flatCurrent.textContent = val;
+      } else {
+        flatCurrent.style.display = "none";
+        flatCurrent.textContent = "";
+      }
+    }
+    function updateTimeHints() {
+      if (indivTimeHint) {
+        const secs = Math.max(parseInt(indivSecondsInput.value, 10) || 0, 0);
+        indivTimeHint.textContent = "= " + formatTime(secs) + " (" + secs + "s)";
+      }
+      if (groupTimeHint) {
+        const secs = Math.max(parseInt(groupSecondsInput.value, 10) || 0, 0);
+        groupTimeHint.textContent = "= " + formatTime(secs) + " (" + secs + "s)";
       }
     }
 
@@ -608,7 +765,8 @@
       if (currentLeveledDeck.length === 0) rebuildLeveledDeck();
       const p = currentLeveledDeck.pop();
       currentPromptObj = { ...p, source: "leveled" };
-      leveledCurrent.textContent = "Current: " + currentPromptObj.q;
+      leveledCurrent.textContent = currentPromptObj.q;
+      lastLeveledPrompt = { ...currentPromptObj };
       return currentPromptObj;
     }
 
@@ -622,8 +780,8 @@
       if (phase === "group") groupPhase.classList.add("active");
       if (phase === "wrap") wrapPhase.classList.add("active");
 
+      updatePhaseTrack(phase);
       advanceBtn.style.display = (phase === "individual" || phase === "group") ? "inline-block" : "none";
-      backToSetupBtn.style.display = (phase === "wrap") ? "inline-block" : "none";
       progressWrap.style.display = (phase !== "wrap") ? "block" : "none";
     }
 
@@ -662,20 +820,29 @@
       const total = parseInt(indivSecondsInput.value) || 60;
       showDisplayPhase("individual");
       indivTwistEl.classList.remove("visible");
+      indivTimerEl.classList.remove("warning");
       indivPromptEl.textContent = currentPromptObj ? currentPromptObj.q : "No prompt selected.";
-      startTimer(total, (left) => {
-        indivTimerEl.textContent = formatTime(left);
-      }, () => {
-        playTone(880,0.25);
-        runGroupPhase();
-      }, () => {
-        if (currentPromptObj && currentPromptObj.h) {
-          indivTwistEl.innerHTML = "<strong>Twist:</strong> " + currentPromptObj.h;
-        } else {
-          indivTwistEl.innerHTML = "<strong>Twist:</strong> Add an example or a ‘why.’";
+      startTimer(total, {
+        onTick: (left) => {
+          indivTimerEl.textContent = formatTime(Math.max(left, 0));
+        },
+        onEnd: () => {
+          indivTimerEl.classList.remove("warning");
+          playTone(880,0.25);
+          runGroupPhase();
+        },
+        onHalfway: () => {
+          if (currentPromptObj && currentPromptObj.h) {
+            indivTwistEl.innerHTML = "<strong>Twist:</strong> " + currentPromptObj.h;
+          } else {
+            indivTwistEl.innerHTML = "<strong>Twist:</strong> Add an example or a ‘why.’";
+          }
+          indivTwistEl.classList.add("visible");
+        },
+        onWarning: () => {
+          indivTimerEl.classList.add("warning");
+          playTone(440,0.18);
         }
-        indivTwistEl.classList.add("visible");
-        playTone(520,0.15);
       });
     }
 
@@ -686,46 +853,65 @@
       groupTwistEl.classList.remove("visible");
       groupBonusEl.classList.remove("visible");
       groupBonusEl.innerHTML = "";
+      groupTimerEl.classList.remove("warning");
 
       const bonusPossible = total > BONUS_SECONDS;
       const bonusActivated = bonusPossible && Math.random() < KISMET_CHANCE;
       const bonusText = bonusActivated ? bonusChallenges[Math.floor(Math.random() * bonusChallenges.length)] : "";
       let bonusShown = false;
 
-      startTimer(total, (left) => {
-        groupTimerEl.textContent = formatTime(left);
-        if (bonusActivated && !bonusShown && left <= BONUS_SECONDS) {
-          bonusShown = true;
-          groupTwistEl.classList.remove("visible");
-          groupBonusEl.innerHTML = "<strong>Bonus:</strong> " + bonusText;
-          groupBonusEl.classList.add("visible");
+      startTimer(total, {
+        onTick: (left) => {
+          groupTimerEl.textContent = formatTime(Math.max(left, 0));
+          if (bonusActivated && !bonusShown && left <= BONUS_SECONDS) {
+            bonusShown = true;
+            groupTwistEl.classList.remove("visible");
+            groupBonusEl.innerHTML = "<strong>Bonus:</strong> " + bonusText;
+            groupBonusEl.classList.add("visible");
+          }
+        },
+        onEnd: () => {
+          groupTimerEl.classList.remove("warning");
+          playTone(660,0.25);
+          runWrapPhase();
+        },
+        onHalfway: () => {
+          groupTwistEl.innerHTML = "<strong>Deepener:</strong> " + groupDeepeners[Math.floor(Math.random() * groupDeepeners.length)];
+          groupTwistEl.classList.add("visible");
+        },
+        onWarning: () => {
+          groupTimerEl.classList.add("warning");
+          playTone(440,0.18);
         }
-      }, () => {
-        playTone(660,0.25);
-        runWrapPhase();
-      }, () => {
-        groupTwistEl.innerHTML = "<strong>Deepener:</strong> " + groupDeepeners[Math.floor(Math.random() * groupDeepeners.length)];
-        groupTwistEl.classList.add("visible");
-        playTone(520,0.15);
       });
     }
 
     function runWrapPhase() {
       showDisplayPhase("wrap");
       wrapPromptEl.textContent = currentPromptObj ? currentPromptObj.q : "";
+      indivTimerEl.classList.remove("warning");
+      groupTimerEl.classList.remove("warning");
+      groupBonusEl.classList.remove("visible");
+      groupBonusEl.innerHTML = "";
       clearTimer();
       progressBar.style.width = "0%";
     }
 
-    function startTimer(totalSeconds, onTick, onEnd, onHalfway) {
+    function startTimer(totalSeconds, { onTick, onEnd, onHalfway, onWarning } = {}) {
       clearTimer();
       startProgress(totalSeconds);
       let secs = totalSeconds;
-      onTick(secs);
+      if (onTick) onTick(secs);
       const halfway = Math.floor(totalSeconds / 2);
+      const warningAt = totalSeconds > WARNING_SECONDS ? WARNING_SECONDS : null;
+      let warningSent = false;
       timerInterval = setInterval(() => {
         secs--;
-        onTick(secs);
+        if (onTick) onTick(secs);
+        if (!warningSent && warningAt !== null && secs === warningAt) {
+          warningSent = true;
+          if (onWarning) onWarning();
+        }
         if (secs === halfway && onHalfway) onHalfway();
         if (secs <= 0) {
           clearTimer();
@@ -808,7 +994,8 @@
           // override with explicit prompt if present
           if (state.p) {
             currentPromptObj = { q: state.p, h: state.h || "", source: "leveled" };
-            leveledCurrent.textContent = "Current: " + state.p;
+            leveledCurrent.textContent = state.p;
+            lastLeveledPrompt = { ...currentPromptObj };
           }
         } else if (state.s === "f") {
           currentSource = "flat";
@@ -827,39 +1014,36 @@
             flatSelect.value = state.p;
             updateFlatStarButton();
             currentPromptObj = { q: state.p, h: "", source: "flat" };
+            lastFlatSelection = state.p;
+            refreshFlatPreview();
           }
         }
 
         if (typeof state.it === "number") indivSecondsInput.value = state.it;
         if (typeof state.gt === "number") groupSecondsInput.value = state.gt;
+        updateTimeHints();
       } catch (e) {
         console.warn("could not decode shared state", e);
       }
     }
 
-    async function copyTextToClipboard(text, preferredField) {
-      if (!text) return false;
-      if (navigator.clipboard && window.isSecureContext) {
-        try {
-          await navigator.clipboard.writeText(text);
-          return true;
-        } catch (err) {
-          // fall through to legacy methods
-        }
-      }
-      if (preferredField && typeof document.execCommand === "function") {
+    function legacyCopy(text, preferredField) {
+      if (typeof document.execCommand !== "function") return false;
+      if (preferredField) {
+        const previousReadOnly = preferredField.hasAttribute("readonly");
+        if (previousReadOnly) preferredField.removeAttribute("readonly");
         preferredField.focus();
         preferredField.select();
         preferredField.setSelectionRange(0, text.length);
+        let success = false;
         try {
-          if (document.execCommand("copy")) {
-            return true;
-          }
+          success = document.execCommand("copy");
         } catch (err) {
-          // try hidden textarea fallback below
+          success = false;
         }
+        if (previousReadOnly) preferredField.setAttribute("readonly", "");
+        if (success) return true;
       }
-      if (typeof document.execCommand !== "function") return false;
       const temp = document.createElement("textarea");
       temp.value = text;
       temp.setAttribute("readonly", "");
@@ -878,6 +1062,16 @@
       return success;
     }
 
+    function copyTextToClipboard(text, preferredField) {
+      if (!text) return Promise.resolve(false);
+      const legacyResult = legacyCopy(text, preferredField);
+      if (legacyResult) return Promise.resolve(true);
+      if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+        return navigator.clipboard.writeText(text).then(() => true).catch(() => false);
+      }
+      return Promise.resolve(false);
+    }
+
     function openShareModal() {
       const url = encodeStateToURL();
       shareUrlInput.value = url;
@@ -889,30 +1083,63 @@
     }
 
     // ====== EVENTS ======
-    tabs.forEach(btn => {
+    phaseTrackButtons.forEach(btn => {
       btn.addEventListener("click", () => {
-        const viewId = btn.dataset.view;
-        tabs.forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        pages.forEach(p => p.classList.remove("active"));
-        document.getElementById(viewId).classList.add("active");
+        if (!displayView.classList.contains("active")) return;
+        const target = btn.dataset.phase;
+        if (target === currentPhase) return;
+        clearTimer();
+        if (target === "individual") runIndividualPhase();
+        else if (target === "group") runGroupPhase();
+        else if (target === "wrap") runWrapPhase();
       });
     });
 
     sourcePills.forEach(pill => {
       pill.addEventListener("click", () => {
+        const nextSource = pill.dataset.source;
+        if (currentSource === nextSource) return;
+        const previousSource = currentSource;
+        currentSource = nextSource;
         sourcePills.forEach(p => p.classList.remove("active"));
         pill.classList.add("active");
-        currentSource = pill.dataset.source;
+        if (previousSource === "flat") {
+          lastFlatSelection = flatSelect.value || lastFlatSelection;
+        } else if (previousSource === "leveled" && currentPromptObj && currentPromptObj.source === "leveled") {
+          lastLeveledPrompt = { ...currentPromptObj };
+        }
         if (currentSource === "leveled") {
           leveledConfig.style.display = "block";
           flatConfig.style.display = "none";
+          if (lastLeveledPrompt) {
+            currentPromptObj = { ...lastLeveledPrompt };
+            leveledCurrent.textContent = currentPromptObj.q;
+          } else {
+            pickLeveledPrompt();
+          }
         } else {
           leveledConfig.style.display = "none";
           flatConfig.style.display = "block";
+          if (lastFlatSelection && flatPrompts.includes(lastFlatSelection)) {
+            flatSelect.value = lastFlatSelection;
+          } else if (flatSelect.options.length) {
+            flatSelect.value = flatSelect.options[0].value;
+            lastFlatSelection = flatSelect.value;
+          } else {
+            flatSelect.value = "";
+            lastFlatSelection = "";
+          }
+          if (flatSelect.value) {
+            currentPromptObj = { q: flatSelect.value, h: "", source: "flat" };
+          }
+          updateFlatStarButton();
+          refreshFlatPreview();
         }
       });
     });
+
+    indivSecondsInput.addEventListener("input", updateTimeHints);
+    groupSecondsInput.addEventListener("input", updateTimeHints);
 
     catCards.forEach(card => {
       card.addEventListener("click", () => {
@@ -934,22 +1161,34 @@
       });
     });
 
-    leveledPreviewBtn.addEventListener("click", () => {
-      if (!currentPromptObj) pickLeveledPrompt();
-      alert("Current prompt:\n\n" + currentPromptObj.q + (currentPromptObj.h ? "\n\nHelper: " + currentPromptObj.h : ""));
-    });
-
     leveledNextBtn.addEventListener("click", () => {
       pickLeveledPrompt();
     });
 
-    flatSelect.addEventListener("change", updateFlatStarButton);
+    flatSelect.addEventListener("change", () => {
+      if (flatSelect.value) {
+        lastFlatSelection = flatSelect.value;
+        if (currentSource === "flat") {
+          currentPromptObj = { q: flatSelect.value, h: "", source: "flat" };
+        }
+      } else {
+        lastFlatSelection = "";
+      }
+      updateFlatStarButton();
+      refreshFlatPreview();
+    });
 
     flatRandomBtn.addEventListener("click", () => {
+      if (!flatPrompts.length) return;
       const idx = Math.floor(Math.random() * flatPrompts.length);
       const p = flatPrompts[idx];
       flatSelect.value = p;
+      lastFlatSelection = p;
+      if (currentSource === "flat") {
+        currentPromptObj = { q: p, h: "", source: "flat" };
+      }
       updateFlatStarButton();
+      refreshFlatPreview();
     });
 
     flatStarBtn.addEventListener("click", () => {
@@ -961,9 +1200,11 @@
         flatFavorites.push(p);
       }
       localStorage.setItem(flatFavKey, JSON.stringify(flatFavorites));
+      lastFlatSelection = p;
       renderFlatSelect();
       flatSelect.value = p;
       updateFlatStarButton();
+      refreshFlatPreview();
     });
 
     flatAddBtn.addEventListener("click", () => {
@@ -972,11 +1213,19 @@
       if (!flatPrompts.includes(val)) {
         flatPrompts.push(val);
         saveFlatCustom(flatPrompts);
+        lastFlatSelection = val;
         renderFlatSelect();
         flatSelect.value = val;
       }
+      if (flatSelect.value) {
+        lastFlatSelection = flatSelect.value;
+        if (currentSource === "flat") {
+          currentPromptObj = { q: flatSelect.value, h: "", source: "flat" };
+        }
+      }
       flatCustom.value = "";
       updateFlatStarButton();
+      refreshFlatPreview();
     });
 
     startActivityBtn.addEventListener("click", () => {
@@ -986,11 +1235,9 @@
         const p = flatSelect.value;
         if (!p) { alert("Pick or add a prompt first."); return; }
         currentPromptObj = { q: p, h: "", source: "flat" };
+        lastFlatSelection = p;
       }
-      tabs.forEach(b => b.classList.remove("active"));
-      document.querySelector('.tab-btn[data-view="display-view"]').classList.add("active");
-      pages.forEach(p => p.classList.remove("active"));
-      document.getElementById("display-view").classList.add("active");
+      showDisplayView();
       runIndividualPhase();
     });
 
@@ -1008,10 +1255,7 @@
     backToSetupBtn.addEventListener("click", () => {
       clearTimer();
       progressBar.style.width = "0%";
-      tabs.forEach(b => b.classList.remove("active"));
-      document.querySelector('.tab-btn[data-view="setup-view"]').classList.add("active");
-      pages.forEach(p => p.classList.remove("active"));
-      document.getElementById("setup-view").classList.add("active");
+      showSetupView();
     });
 
     copyNotesBtn.addEventListener("click", async () => {
@@ -1063,6 +1307,7 @@
     loadFlatPrompts();
     rebuildLeveledDeck();
     pickLeveledPrompt();
+    updateTimeHints();
     // load from URL if present
     tryLoadStateFromURL();
   </script>
