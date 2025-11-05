@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Changemakers Trello — Master → Child List Manager</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+  <style>
+    .board-list { max-height: 300px; overflow: auto; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .smallcaps { font-variant: small-caps; letter-spacing: .5px; }
+    .op-card { border-left: 4px solid #0d6efd; }
+    .template-list { border: 1px solid rgba(0, 0, 0, .1); border-radius: .5rem; padding: .75rem; margin-bottom: .75rem; background: #fff; }
+    .template-list.selected { border-color: #0d6efd; box-shadow: 0 0 0 .15rem rgba(13, 110, 253, .25); }
+    .template-list .header { display: flex; justify-content: space-between; align-items: center; gap: .5rem; }
+    .template-cards { margin-top: .5rem; max-height: 220px; overflow-y: auto; }
+  </style>
+</head>
+<body class="container py-4">
+  <h1 class="mb-3">Changemakers Trello — Master → Child List Manager</h1>
+  <p class="text-muted">Copy a list from a master board into many child boards. Existing lists are renamed and archived (hidden), preserving position if desired. Use <strong>Preview</strong> to verify before writing.</p>
+
+  <!-- Credentials & Controls -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <div class="row g-2 align-items-end">
+        <div class="col-md-3">
+          <label class="form-label">API Key</label>
+          <input id="apiKey" class="form-control" placeholder="key" />
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Token</label>
+          <input id="token" class="form-control" placeholder="token" />
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Current Board (optional)</label>
+          <input id="boardId" class="form-control" placeholder="board id to inspect" />
+        </div>
+        <div class="col-md-3 d-flex gap-2">
+          <button id="saveCreds" class="btn btn-outline-secondary w-50">Save</button>
+          <button id="loadBoards" class="btn btn-success w-50">Load Boards</button>
+        </div>
+      </div>
+      <div class="form-check form-switch mt-3">
+        <input class="form-check-input" type="checkbox" id="dryRun" checked>
+        <label class="form-check-label" for="dryRun">Preview only (no writes)</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Board selector -->
+  <div class="row g-4">
+    <div class="col-lg-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h5 class="card-title mb-0">Boards</h5>
+            <div class="btn-group">
+              <button id="selectAll" class="btn btn-sm btn-outline-primary">Select all</button>
+              <button id="selectNone" class="btn btn-sm btn-outline-secondary">None</button>
+            </div>
+          </div>
+          <input id="boardFilter" class="form-control form-control-sm mb-2" placeholder="Filter boards by name" />
+          <div id="boardsContainer" class="board-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-8">
+      <!-- Template Browser -->
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5 class="card-title smallcaps">Template Browser</h5>
+          <p class="mb-2">Load your master board, select a list or specific cards, then copy them into the boards you selected in the sidebar.</p>
+          <div class="row g-3 align-items-end">
+            <div class="col-md-6">
+              <label class="form-label">Template board ID</label>
+              <input id="templateBoardId" class="form-control" placeholder="defaults to Current Board field" />
+            </div>
+            <div class="col-md-6 d-grid gap-2">
+              <button id="loadTemplate" class="btn btn-outline-primary">Load Template</button>
+              <button id="clearTemplate" class="btn btn-outline-secondary">Clear Selection</button>
+            </div>
+          </div>
+          <div id="templateContent" class="mt-3"></div>
+          <div id="templateActions" class="mt-3" hidden>
+            <div class="row g-3 align-items-end">
+              <div class="col-md-4">
+                <label class="form-label">New list name (optional)</label>
+                <input id="templateListNameOverride" class="form-control" placeholder="Defaults to template list name" />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Destination list name</label>
+                <input id="templateTargetListName" class="form-control" placeholder="Required when copying cards" />
+              </div>
+              <div class="col-md-2">
+                <label class="form-label">Card position</label>
+                <select id="templateCardPosition" class="form-select">
+                  <option value="bottom">Bottom</option>
+                  <option value="top">Top</option>
+                </select>
+              </div>
+              <div class="col-md-2 d-grid gap-2">
+                <button id="previewTemplateCopy" class="btn btn-outline-primary">Preview</button>
+                <button id="runTemplateCopy" class="btn btn-primary">Copy Selection</button>
+              </div>
+            </div>
+            <small class="text-muted d-block mt-2">When a list is selected the destination list and card position fields are ignored. For cards, destination list is required.</small>
+          </div>
+          <div id="templateStatus" class="text-muted small mt-3"></div>
+          <pre id="templateLog" class="mt-2 mono small" style="white-space:pre-wrap"></pre>
+        </div>
+      </div>
+
+      <!-- Replace List Across Boards -->
+      <div class="card op-card mb-4">
+        <div class="card-body">
+          <h5 class="card-title smallcaps">Replace List Across Boards</h5>
+          <p class="mb-2">Clone a list from a <strong>source (master) board</strong> into each selected board. If a target list exists, it will be <strong>renamed</strong> and then <strong>archived</strong> (hidden), and the new list will take its place.</p>
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label">Source (master) board ID</label>
+              <input id="replaceSourceBoardId" class="form-control" placeholder="defaults to Current Board field" />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Source list name</label>
+              <input id="replaceSourceListName" class="form-control" placeholder="e.g., Prototype" />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Target list name</label>
+              <input id="replaceTargetListName" class="form-control" placeholder="defaults to source name" />
+            </div>
+          </div>
+          <div class="row g-3 mt-2">
+            <div class="col-md-4 form-check">
+              <input class="form-check-input" type="checkbox" id="replacePreservePos" checked>
+              <label class="form-check-label" for="replacePreservePos">Preserve list position</label>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Rename suffix for archived list</label>
+              <input id="replaceSuffix" class="form-control" value="(old)" />
+            </div>
+            <div class="col-md-4 form-check">
+              <input class="form-check-input" type="checkbox" id="replaceAddTimestamp" checked>
+              <label class="form-check-label" for="replaceAddTimestamp">Append timestamp to archived name</label>
+            </div>
+          </div>
+          <div class="row g-3 mt-2">
+            <div class="col-md-6 form-check">
+              <input class="form-check-input" type="checkbox" id="replaceCopyColor" checked>
+              <label class="form-check-label" for="replaceCopyColor">Copy list color (if supported by API)</label>
+            </div>
+            <div class="col-md-6">
+              <div class="form-text">If Trello's API exposes list colors on your plan, we'll set the new list to match.</div>
+            </div>
+          </div>
+          <div class="mt-3 d-flex gap-2">
+            <button id="previewReplace" class="btn btn-outline-secondary">Preview</button>
+            <button id="runReplace" class="btn btn-primary">Replace across selected boards</button>
+          </div>
+          <pre id="logReplace" class="mt-3 mono small" style="white-space:pre-wrap"></pre>
+        </div>
+      </div>
+
+      <!-- Swap Positions Within Boards -->
+      <div class="card op-card mb-4">
+        <div class="card-body">
+          <h5 class="card-title smallcaps">Swap List Positions (per board)</h5>
+          <div class="row g-3">
+            <div class="col-md-5">
+              <input id="swapListA" class="form-control" placeholder="List A name (e.g., Prototype)" />
+            </div>
+            <div class="col-md-5">
+              <input id="swapListB" class="form-control" placeholder="List B name (e.g., Test)" />
+            </div>
+            <div class="col-md-2 d-grid">
+              <button id="swapPositions" class="btn btn-primary">Swap</button>
+            </div>
+          </div>
+          <pre id="logSwap" class="mt-3 mono small" style="white-space:pre-wrap"></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+  <script>
+    // ---------- Utilities ----------
+    const qs = (s, el=document) => el.querySelector(s);
+    const qsa = (s, el=document) => Array.from(el.querySelectorAll(s));
+    const val = id => document.getElementById(id).value.trim();
+    const dry = () => document.getElementById('dryRun').checked;
+    const nowStamp = () => new Date().toISOString().replace('T',' ').slice(0,16);
+
+    const Trello = {
+      apiBase: 'https://api.trello.com/1',
+      key: () => val('apiKey'),
+      token: () => val('token'),
+      url(path, params={}) {
+        const p = new URLSearchParams({ key: this.key(), token: this.token(), ...params });
+        return `${this.apiBase}${path}?${p.toString()}`;
+      },
+      async get(path, params={}) {
+        const r = await fetch(this.url(path, params));
+        const t = await r.text();
+        try { return { ok: r.ok, data: JSON.parse(t) }; } catch { return { ok: r.ok, data: t }; }
+      },
+      async post(path, params={}) {
+        if (dry()) { console.log('[DRY-RUN] POST', path, params); return { ok: true, data: { dryRun: true } }; }
+        const r = await fetch(this.apiBase + path, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({ key: this.key(), token: this.token(), ...params })
+        });
+        const t = await r.text();
+        try { return { ok: r.ok, data: JSON.parse(t) }; } catch { return { ok: r.ok, data: t }; }
+      },
+      async put(path, params={}) {
+        if (dry()) { console.log('[DRY-RUN] PUT', path, params); return { ok: true, data: { dryRun: true } }; }
+        const r = await fetch(this.apiBase + path, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({ key: this.key(), token: this.token(), ...params })
+        });
+        const t = await r.text();
+        try { return { ok: r.ok, data: JSON.parse(t) }; } catch { return { ok: r.ok, data: t }; }
+      }
+    };
+
+    // ---------- State ----------
+    let ALL_BOARDS = [];
+    let TEMPLATE_STATE = { boardId: null, lists: [] };
+    let TEMPLATE_SELECTION = { type: null, listId: null, cards: [] };
+
+    // ---------- Init ----------
+    document.addEventListener('DOMContentLoaded', () => {
+      // restore creds
+      const map = { apiKey: 'trelloApiKey', token: 'trelloToken', boardId: 'trelloBoardId' };
+      Object.entries(map).forEach(([id, k]) => { const v = localStorage.getItem(k); if (v) document.getElementById(id).value = v; });
+      const savedBoardId = document.getElementById('boardId').value.trim();
+      if (savedBoardId) document.getElementById('templateBoardId').value = savedBoardId;
+
+      // wire buttons
+      qs('#saveCreds').addEventListener('click', () => {
+        localStorage.setItem('trelloApiKey', val('apiKey'));
+        localStorage.setItem('trelloToken', val('token'));
+        localStorage.setItem('trelloBoardId', val('boardId'));
+        alert('Saved.');
+      });
+      qs('#loadBoards').addEventListener('click', loadBoards);
+      qs('#selectAll').addEventListener('click', () => qsa('.board-check').forEach(cb => cb.checked = true));
+      qs('#selectNone').addEventListener('click', () => qsa('.board-check').forEach(cb => cb.checked = false));
+      qs('#boardFilter').addEventListener('input', filterBoards);
+      qs('#loadTemplate').addEventListener('click', loadTemplateBoard);
+      qs('#clearTemplate').addEventListener('click', clearTemplateBrowser);
+      qs('#templateContent').addEventListener('change', handleTemplateSelectionChange);
+      qs('#previewTemplateCopy').addEventListener('click', () => copyTemplateSelection(true));
+      qs('#runTemplateCopy').addEventListener('click', () => copyTemplateSelection(false));
+
+      // operations
+      qs('#runReplace').addEventListener('click', () => replaceAcrossBoardsV2(false));
+      qs('#previewReplace').addEventListener('click', () => replaceAcrossBoardsV2(true));
+      qs('#swapPositions').addEventListener('click', swapPositionsAcrossBoards);
+    });
+
+    // ---------- Boards UI ----------
+    async function loadBoards() {
+      const params = {
+        filter: 'open',
+        fields: 'name,closed,starred,url',
+        memberships: 'me'
+      };
+      const { ok, data } = await Trello.get('/members/me/boards', params);
+      if (!ok) return alert('Failed to load boards: ' + data);
+      const boards = (data || []).filter(b => !b.closed && (Boolean(b.starred) || isBoardAdmin(b)));
+      boards.sort((a, b) => {
+        const starDiff = Number(Boolean(b.starred)) - Number(Boolean(a.starred));
+        if (starDiff) return starDiff;
+        const adminDiff = Number(isBoardAdmin(b)) - Number(isBoardAdmin(a));
+        if (adminDiff) return adminDiff;
+        return (a.name || '').localeCompare(b.name || '');
+      });
+      ALL_BOARDS = boards;
+      renderBoardList(boards);
+      qs('#templateStatus').textContent = boards.length
+        ? `Loaded ${boards.length} boards visible on your Trello dashboard (starred or admin).`
+        : 'No matching boards found. Star a board or ensure you are an admin to see it here.';
+    }
+
+    function renderBoardList(boards) {
+      const container = qs('#boardsContainer');
+      container.innerHTML = boards.map(b => `
+        <div class="form-check">
+          <input class="form-check-input board-check" type="checkbox" id="b-${b.id}" value="${b.id}">
+          <label class="form-check-label" for="b-${b.id}">
+            ${b.starred ? '★ ' : ''}${escapeHtml(b.name)}
+            ${isBoardAdmin(b) ? '<span class="badge bg-secondary ms-1">admin</span>' : ''}
+            <span class="text-muted mono ms-1">(${b.id})</span>
+          </label>
+        </div>`).join('');
+    }
+
+    function filterBoards(e) {
+      const q = e.target.value.toLowerCase();
+      const filtered = ALL_BOARDS.filter(b => (b.name || '').toLowerCase().includes(q));
+      renderBoardList(filtered);
+    }
+
+    function isBoardAdmin(board) {
+      return (board && board.memberships || []).some(m => {
+        const type = (m.memberType || m.type || '').toLowerCase();
+        return type === 'admin';
+      });
+    }
+
+    function selectedBoardIds() { return qsa('.board-check:checked').map(cb => cb.value); }
+    function escapeHtml(s='') { return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c])); }
+    function norm(s='') { return s.trim().toLowerCase(); }
+
+    // ---------- Helpers ----------
+    async function getLists(boardId) {
+      const { ok, data } = await Trello.get(`/boards/${boardId}/lists`);
+      if (!ok) throw new Error('Lists error: ' + data);
+      return data;
+    }
+
+    async function findListByName(boardId, name) {
+      const lists = await getLists(boardId);
+      return lists.find(l => norm(l.name) === norm(name));
+    }
+
+    async function renameList(listId, newName) {
+      return Trello.put(`/lists/${listId}`, { name: newName });
+    }
+
+    async function setListPos(listId, pos) {
+      return Trello.put(`/lists/${listId}/pos`, { value: String(pos) });
+    }
+
+    async function archiveList(listId) {
+      return Trello.put(`/lists/${listId}/closed`, { value: true });
+    }
+
+    async function getListById(listId) {
+      const res = await Trello.get(`/lists/${listId}`, { fields: 'name,color,pos,closed' });
+      if (!res.ok) throw new Error('Get list failed: ' + res.data);
+      return res.data;
+    }
+
+    async function setListColor(listId, color) {
+      return Trello.put(`/lists/${listId}/color`, { value: color });
+
+    }
+
+    // ---------- Template Browser ----------
+    async function loadTemplateBoard() {
+      const typed = val('templateBoardId') || val('boardId') || val('replaceSourceBoardId');
+      if (!typed) return alert('Provide a template board ID first.');
+      qs('#templateStatus').textContent = 'Loading template board…';
+      const { ok, data } = await Trello.get(`/boards/${typed}/lists`, {
+        cards: 'open',
+        card_fields: 'name,pos',
+        fields: 'name,pos'
+      });
+      if (!ok) {
+        qs('#templateStatus').textContent = 'Failed to load template board.';
+        return alert('Failed to load template board: ' + data);
+      }
+      TEMPLATE_STATE = {
+        boardId: typed,
+        lists: (data || []).map(l => ({ id: l.id, name: l.name, pos: l.pos, cards: l.cards || [] }))
+      };
+      TEMPLATE_SELECTION = { type: null, listId: null, cards: [] };
+      renderTemplateLists(TEMPLATE_STATE.lists);
+      qs('#templateLog').textContent = '';
+      const src = document.getElementById('replaceSourceBoardId');
+      if (src && !src.value.trim()) src.value = typed;
+      const boardInput = document.getElementById('boardId');
+      if (boardInput && !boardInput.value.trim()) boardInput.value = typed;
+      const templateInput = document.getElementById('templateBoardId');
+      if (templateInput) templateInput.value = typed;
+      updateTemplateSelectionUI();
+      qs('#templateStatus').textContent = TEMPLATE_STATE.lists.length
+        ? `Loaded ${TEMPLATE_STATE.lists.length} open list(s). Select a list or cards to continue.`
+        : 'The template board has no open lists.';
+    }
+
+    function renderTemplateLists(lists) {
+      const container = qs('#templateContent');
+      if (!container) return;
+      container.innerHTML = lists.map(list => {
+        const cards = list.cards && list.cards.length
+          ? list.cards.map(card => `
+            <div class="form-check">
+              <input class="form-check-input template-card-check" type="checkbox" id="card-${card.id}" data-card-id="${card.id}" data-card-name="${escapeHtml(card.name || '(no name)')}" data-list-id="${list.id}">
+              <label class="form-check-label" for="card-${card.id}">${escapeHtml(card.name || '(no name)')}</label>
+            </div>`).join('')
+          : '<div class="text-muted small">No open cards</div>';
+        return `
+          <div class="template-list" data-list-id="${list.id}">
+            <div class="header">
+              <div class="form-check mb-0">
+                <input class="form-check-input template-list-radio" type="radio" name="templateListChoice" id="tmpl-${list.id}" data-list-id="${list.id}">
+                <label class="form-check-label" for="tmpl-${list.id}"><strong>${escapeHtml(list.name || '(no name)')}</strong></label>
+              </div>
+              <span class="badge bg-light text-dark">${(list.cards && list.cards.length) || 0} cards</span>
+            </div>
+            <div class="template-cards" data-list-id="${list.id}">
+              ${cards}
+            </div>
+          </div>`;
+      }).join('');
+      qs('#templateActions').hidden = !lists.length;
+    }
+
+    function handleTemplateSelectionChange(e) {
+      const el = e.target;
+      if (el.classList.contains('template-list-radio')) {
+        if (!el.checked) return;
+        qsa('.template-card-check').forEach(cb => cb.checked = false);
+        TEMPLATE_SELECTION = { type: 'list', listId: el.dataset.listId, cards: [] };
+      } else if (el.classList.contains('template-card-check')) {
+        if (el.checked) {
+          qsa('.template-list-radio').forEach(r => r.checked = false);
+        }
+        const cards = qsa('.template-card-check:checked').map(cb => ({
+          id: cb.dataset.cardId,
+          listId: cb.dataset.listId,
+          name: cb.dataset.cardName || ''
+        }));
+        TEMPLATE_SELECTION = cards.length ? { type: 'cards', listId: null, cards } : { type: null, listId: null, cards: [] };
+      }
+      updateTemplateSelectionUI();
+    }
+
+    function clearTemplateBrowser() {
+      TEMPLATE_SELECTION = { type: null, listId: null, cards: [] };
+      qsa('.template-list-radio').forEach(r => { r.checked = false; r.closest('.template-list')?.classList.remove('selected'); });
+      qsa('.template-card-check').forEach(cb => { cb.checked = false; cb.closest('.template-list')?.classList.remove('selected'); });
+      const listOverride = document.getElementById('templateListNameOverride');
+      const targetInput = document.getElementById('templateTargetListName');
+      if (listOverride) listOverride.value = '';
+      if (targetInput) targetInput.value = '';
+      qs('#templateLog').textContent = '';
+      updateTemplateSelectionUI();
+    }
+
+    function updateTemplateSelectionUI() {
+      const statusEl = qs('#templateStatus');
+      const listNameInput = document.getElementById('templateListNameOverride');
+      const targetListInput = document.getElementById('templateTargetListName');
+      const cardPosSelect = document.getElementById('templateCardPosition');
+      qsa('.template-list').forEach(el => el.classList.remove('selected'));
+
+      let status = TEMPLATE_STATE.lists.length
+        ? 'Select a list or specific cards from the template.'
+        : 'Load a template board to begin.';
+
+      if (TEMPLATE_SELECTION.type === 'list' && TEMPLATE_SELECTION.listId) {
+        const list = TEMPLATE_STATE.lists.find(l => l.id === TEMPLATE_SELECTION.listId);
+        if (list) {
+          status = `List selected: "${list.name}" (${(list.cards || []).length} cards).`;
+          const node = qs(`.template-list[data-list-id="${list.id}"]`);
+          if (node) node.classList.add('selected');
+          if (listNameInput && !listNameInput.value) listNameInput.placeholder = `Defaults to "${list.name}"`;
+        }
+        if (targetListInput) targetListInput.disabled = true;
+        if (cardPosSelect) cardPosSelect.disabled = true;
+      } else if (TEMPLATE_SELECTION.type === 'cards' && TEMPLATE_SELECTION.cards.length) {
+        const listIds = new Set(TEMPLATE_SELECTION.cards.map(c => c.listId));
+        listIds.forEach(id => {
+          const node = qs(`.template-list[data-list-id="${id}"]`);
+          if (node) node.classList.add('selected');
+        });
+        status = `Cards selected: ${TEMPLATE_SELECTION.cards.length}. They will be copied into the destination list on each board.`;
+        if (targetListInput) targetListInput.disabled = false;
+        if (cardPosSelect) cardPosSelect.disabled = false;
+        if (listNameInput && !listNameInput.value) listNameInput.placeholder = 'Defaults to template list name';
+      } else {
+        if (targetListInput) targetListInput.disabled = false;
+        if (cardPosSelect) cardPosSelect.disabled = false;
+        if (listNameInput && !listNameInput.value) listNameInput.placeholder = 'Defaults to template list name';
+      }
+
+      if (statusEl) statusEl.textContent = status;
+    }
+
+    function findTemplateCard(cardId) {
+      for (const list of TEMPLATE_STATE.lists) {
+        const match = (list.cards || []).find(card => card.id === cardId);
+        if (match) return { ...match, listId: list.id };
+      }
+      return null;
+    }
+
+    async function copyTemplateSelection(preview=false) {
+      if (!TEMPLATE_STATE.lists.length) return alert('Load a template board first.');
+      const bids = selectedBoardIds();
+      if (!bids.length) return alert('Select one or more boards to receive the copy.');
+      if (!TEMPLATE_SELECTION.type) return alert('Select a list or at least one card from the template.');
+      const log = [];
+
+      if (TEMPLATE_SELECTION.type === 'list') {
+        const list = TEMPLATE_STATE.lists.find(l => l.id === TEMPLATE_SELECTION.listId);
+        if (!list) return alert('Selected list no longer available. Reload template.');
+        const override = document.getElementById('templateListNameOverride').value.trim();
+        const newName = override || list.name;
+        for (const bid of bids) {
+          log.push(`\n— Board ${bid}`);
+          if (preview) {
+            log.push(`  Would copy list "${list.name}" as "${newName}".`);
+            continue;
+          }
+          const res = await Trello.post('/lists', { idBoard: bid, idListSource: list.id, name: newName });
+          if (!res.ok) { log.push(`  ✖ ${res.data}`); }
+          else { log.push(`  Copied list as "${newName}".`); }
+        }
+      } else if (TEMPLATE_SELECTION.type === 'cards') {
+        const targetName = document.getElementById('templateTargetListName').value.trim();
+        if (!targetName) return alert('Provide a destination list name to copy cards.');
+        const pos = document.getElementById('templateCardPosition').value || 'bottom';
+        const cards = TEMPLATE_SELECTION.cards.map(sel => findTemplateCard(sel.id)).filter(Boolean);
+        if (!cards.length) return alert('Selected cards could not be resolved. Reload template.');
+
+        for (const bid of bids) {
+          log.push(`\n— Board ${bid}`);
+          let targetList = null;
+          try {
+            targetList = await findListByName(bid, targetName);
+          } catch (err) {
+            log.push(`  ✖ Failed to read lists: ${err.message}`);
+            continue;
+          }
+          if (!targetList) {
+            log.push(`  ✖ Destination list "${targetName}" not found.`);
+            continue;
+          }
+          for (const card of cards) {
+            if (preview) {
+              log.push(`  Would copy card "${card.name}" to "${targetList.name}" (${pos}).`);
+              continue;
+            }
+            const res = await Trello.post('/cards', {
+              idList: targetList.id,
+              idCardSource: card.id,
+              keepFromSource: 'all',
+              pos
+            });
+            if (!res.ok) log.push(`  ✖ ${card.name}: ${res.data}`);
+            else log.push(`  Copied card "${card.name}".`);
+          }
+        }
+      }
+
+      qs('#templateLog').textContent = log.join('\n');
+    }
+
+    // ---------- Replace Across Boards ----------
+    async function replaceAcrossBoards(preview=false) { /* legacy no-color version retained for reference */ return replaceAcrossBoardsV2(preview); }
+
+    async function replaceAcrossBoardsV2(preview=false) {
+      const srcBoard = val('replaceSourceBoardId') || val('boardId');
+      const srcName  = val('replaceSourceListName');
+      const tgtName  = val('replaceTargetListName') || srcName;
+      if (!srcBoard || !srcName) return alert('Provide source board ID and source list name.');
+      const bids = selectedBoardIds();
+      if (!bids.length) return alert('Select boards to replace on.');
+
+      const srcList = await findListByName(srcBoard, srcName);
+      if (!srcList) return alert(`Source list not found on board ${srcBoard}: ${srcName}`);
+
+      // Try to read color from source list
+      let srcColor = null;
+      try {
+        const srcFull = await getListById(srcList.id);
+        srcColor = srcFull && srcFull.color || null;
+      } catch { /* ignore if not available */ }
+
+      const preservePos = qs('#replacePreservePos').checked;
+      const suffix = val('replaceSuffix') || '(old)';
+      const addTs = qs('#replaceAddTimestamp').checked;
+      const copyColor = qs('#replaceCopyColor').checked;
+      const ts = addTs ? ` ${nowStamp()}` : '';
+
+      const log = [];
+      for (const bid of bids) {
+        log.push(`
+— Board ${bid}`);
+        const target = await findListByName(bid, tgtName);
+        let targetPos = 'bottom';
+        if (target) {
+          targetPos = target.pos;
+          const newArchivedName = `${target.name} ${suffix}${ts}`.trim();
+          log.push(`Rename existing: "${target.name}" → "${newArchivedName}"`);
+          log.push(`Archive existing list: ${newArchivedName}`);
+          if (!preview) {
+            await renameList(target.id, newArchivedName);
+            await archiveList(target.id);
+          }
+        } else {
+          log.push('No existing target list on this board.');
+        }
+
+        log.push(`Copy from source: ${srcName} → ${tgtName}${preservePos && target ? ` (preserve pos ${targetPos})` : ''}`);
+        let newList = null;
+        if (!preview) {
+          const res = await Trello.post('/lists', { idBoard: bid, idListSource: srcList.id, name: tgtName });
+          if (!res.ok) { log.push('  ✖ ' + res.data); continue; }
+          newList = res.data;
+          if (preservePos && target) {
+            const set = await setListPos(newList.id, targetPos);
+            if (!set.ok) log.push('  ✖ pos: ' + set.data);
+          }
+        }
+
+        // Attempt to copy color if supported and source had one
+        if (copyColor && srcColor) {
+          if (preview) {
+            log.push(`Would set color: ${srcColor}`);
+          } else if (newList) {
+            const col = await setListColor(newList.id, srcColor);
+            if (!col.ok) log.push('  ✖ color: ' + col.data); else log.push(`Color set: ${srcColor}`);
+          }
+        } else if (copyColor && !srcColor) {
+          log.push('No color found on source list or API unsupported.');
+        }
+      }
+      qs('#logReplace').textContent = log.join('');
+    }
+
+    // ---------- Swap list positions within boards ----------
+    async function swapPositionsAcrossBoards() {
+      const a = val('swapListA');
+      const b = val('swapListB');
+      if (!a || !b) return alert('Provide both list names.');
+      const bids = selectedBoardIds();
+      if (!bids.length) return alert('Select boards.');
+      const log = [];
+
+      for (const bid of bids) {
+        const lists = await getLists(bid);
+        const A = lists.find(l => norm(l.name) === norm(a));
+        const B = lists.find(l => norm(l.name) === norm(b));
+        if (!A || !B) { log.push(`\n— Board ${bid}: missing list(s)`); continue; }
+        const apos = A.pos, bpos = B.pos;
+        log.push(`\n— Board ${bid}: swap ${A.name} (pos ${apos}) ↔ ${B.name} (pos ${bpos})`);
+        if (!dry()) {
+          // safe swap: move A to top, B to A's pos, A to B's pos
+          await setListPos(A.id, 'top');
+          await setListPos(B.id, apos);
+          await setListPos(A.id, bpos);
+        }
+      }
+      qs('#logSwap').textContent = log.join('\n');
+    }
+  </script>
+</body>
+</html>
