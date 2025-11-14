@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>The 7-Day Musical Theatre Songwriting Bootcamp (Unofficial Curriculum)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Bootstrap CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root {
+      --msbc-primary: #6a4cff;
+      --msbc-primary-light: #ece9ff;
+      --msbc-accent: #ffcc4c;
+      --msbc-dark: #1b1238;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f7f6ff;
+      color: #222;
+    }
+
+    header.hero {
+      background: radial-gradient(circle at top left, #ffffff, #ece9ff);
+      border-bottom: 3px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .badge-pill {
+      border-radius: 999px;
+      font-size: 0.8rem;
+    }
+
+    .day-section {
+      display: none;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .day-section.active {
+      display: block;
+    }
+
+    .nav-day-btn {
+      cursor: pointer;
+    }
+
+    .nav-day-btn.active {
+      background-color: var(--msbc-primary) !important;
+      color: #fff !important;
+    }
+
+    .section-label {
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #6c757d;
+    }
+
+    .learning-card h5 {
+      font-size: 1rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .checklist li {
+      margin-bottom: 0.35rem;
+    }
+
+    .hook-box {
+      border-left: 4px solid var(--msbc-accent);
+      padding-left: 0.75rem;
+      margin: 0.75rem 0;
+      font-style: italic;
+      font-size: 0.9rem;
+    }
+
+    .cta-btn-main {
+      background-color: var(--msbc-primary);
+      color: #fff;
+      border-radius: 999px;
+      padding-inline: 1.8rem;
+      border: none;
+    }
+
+    .cta-btn-main:hover {
+      background-color: #5232ff;
+      color: #fff;
+    }
+
+    .pill-tag {
+      border-radius: 999px;
+      background: var(--msbc-primary-light);
+      padding: 0.25rem 0.7rem;
+      font-size: 0.8rem;
+    }
+
+    .tip {
+      font-size: 0.85rem;
+      color: #555;
+    }
+
+    footer {
+      font-size: 0.8rem;
+      color: #777;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero py-4 mb-4">
+    <div class="container">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-8">
+          <span class="badge bg-warning-subtle text-dark badge-pill mb-2">
+            7-Day Musical Theatre Songwriting Bootcamp • Character Establishment Song
+          </span>
+          <h1 class="display-5 fw-bold text-wrap">
+            The 7-Day Musical Theatre Songwriting Bootcamp
+          </h1>
+          <p class="lead mb-3">
+            Over 7 days, you’ll write a complete <strong>character establishment / “I Want” song</strong>
+            in classic AABA-inspired form. You’ll learn how structure, character, lyric, and melody
+            work together so that your song actually feels like it belongs in a musical.
+          </p>
+          <p class="mb-3">
+            This self-guided curriculum is <em>inspired by</em> professional musical theatre practice
+            and public craft discussions from creators like Brett Boles (“The M Tea”), but is not an
+            official course. Treat it as a framework you can adapt to your own process.
+          </p>
+          <button class="btn cta-btn-main btn-lg mb-2" onclick="showDay(1)">
+            Yes! Start Day 1 Now
+          </button>
+          <div class="mt-2">
+            <span class="pill-tag me-1">No theory degree required</span>
+            <span class="pill-tag me-1">Lyricists &amp; composers welcome</span>
+            <span class="pill-tag">One focused task per day</span>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="card shadow-sm border-0">
+            <div class="card-body">
+              <div class="section-label mb-1">Your 7-Day Outcome</div>
+              <ul class="mb-1">
+                <li>A clear, specific <strong>character</strong> with a strong want</li>
+                <li>A hook that captures their emotional core</li>
+                <li>An outline for an <strong>AABA</strong> structure</li>
+                <li>Drafted lyrics for each section</li>
+                <li>A singable melodic shape (basic or advanced)</li>
+              </ul>
+              <p class="small text-muted mb-0">
+                You can stay at the lyric level only, or go full lyrics &amp; music. The process
+                works for both.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Day Nav -->
+      <hr class="my-4" />
+      <div class="section-label mb-2">Jump to a Day</div>
+      <div class="btn-group flex-wrap" role="group" aria-label="Day navigation">
+        <button
+          type="button"
+          class="btn btn-outline-primary nav-day-btn active"
+          data-day="1"
+          onclick="showDay(1)"
+        >
+          Day 1 • Why These Songs Work
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline-primary nav-day-btn"
+          data-day="2"
+          onclick="showDay(2)"
+        >
+          Day 2 • Character & Want
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline-primary nav-day-btn"
+          data-day="3"
+          onclick="showDay(3)"
+        >
+          Day 3 • Hook & Title
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline-primary nav-day-btn"
+          data-day="4"
+          onclick="showDay(4)"
+        >
+          Day 4 • The A Sections
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline-primary nav-day-btn"
+          data-day="5"
+          onclick="showDay(5)"
+        >
+          Day 5 • The B Section (Bridge)
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline-primary nav-day-btn"
+          data-day="6"
+          onclick="showDay(6)"
+        >
+          Day 6 • Melody & Prosody
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline-primary nav-day-btn"
+          data-day="7"
+          onclick="showDay(7)"
+        >
+          Day 7 • Polish & Performance
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container mb-5">
+
+    <!-- DAY 1 -->
+    <section id="day1" class="day-section active">
+      <div class="row g-4">
+        <div class="col-lg-8">
+          <h2>Day 1 • Why Certain Songs Feel “So Theatrical”</h2>
+          <p class="text-muted">
+            Today you’re putting on your creator hat: listening like a songwriter, not just a fan.
+            You’ll start to hear the <strong>hidden framework</strong> behind great character songs.
+          </p>
+
+          <div class="learning-card mb-3">
+            <div class="section-label mb-1">Learning Goals</div>
+            <ul>
+              <li>Understand what a <strong>character establishment / “I Want” song</strong> does in a show.</li>
+              <li>Identify basic <strong>AABA</strong> structure and what each section accomplishes.</li>
+              <li>Train your ear to notice <strong>lyric, melody, and storytelling working together</strong>.</li>
+            </ul>
+          </div>
+
+          <h5>1. Listen Like a Songwriter</h5>
+          <p>
+            Pick 2–3 songs (audio or live, not just lyrics on a page) from this list or your own favorites:
+          </p>
+          <ul>
+            <li>“Part of Your World” – <em>The Little Mermaid</em></li>
+            <li>“The Wizard and I” – <em>Wicked</em></li>
+            <li>“Waving Through a Window” – <em>Dear Evan Hansen</em></li>
+            <li>“Wouldn’t It Be Loverly” – <em>My Fair Lady</em></li>
+            <li>“Some People” – <em>Gypsy</em></li>
+          </ul>
+          <p class="tip">
+            Don’t worry about the exact labels. Ask: <strong>What does this song tell me about the character’s
+            world, their problem, and what they want?</strong>
+          </p>
+
+          <h5>2. Quick Map: What Does the Song Do?</h5>
+          <p>For each song, answer in a notebook or doc:</p>
+          <ol>
+            <li><strong>WHO</strong> is singing? One sentence.</li>
+            <li><strong>WHERE</strong> are they in the story? Very roughly (beginning, middle, end).</li>
+            <li><strong>WHAT do they want?</strong> Put it into one clear sentence starting with:
+              <em>“The one thing they want more than anything is…”</em>
+            </li>
+            <li><strong>WHY now?</strong> What pushed them to sing at this exact moment?</li>
+          </ol>
+
+          <div class="hook-box">
+            Notice how often the song’s <strong>title</strong> or main phrase
+            is basically the character’s want, or the emotional lens through which they see the world.
+          </div>
+
+          <h5>3. A Very Light AABA Introduction</h5>
+          <p>
+            Many classic musical theatre songs (and a lot of pop standards) use
+            <strong>AABA form</strong>:
+          </p>
+          <ul>
+            <li><strong>A</strong> – A main idea / melody (often 8 bars)</li>
+            <li><strong>A</strong> – The same idea again, with variation or new lyric</li>
+            <li><strong>B</strong> – A contrasting section (bridge / “middle 8”)</li>
+            <li><strong>A</strong> – A return to your main idea, often with a twist or payoff</li>
+          </ul>
+          <p>
+            Don’t count bars obsessively today. Just notice: <strong>When does the music feel like “home”?
+            When does it feel like it goes somewhere new? When does it come back?</strong>
+          </p>
+
+          <h5>4. Creator Style Mini-Breakdown (You Do It)</h5>
+          <p>Pick one song from your list and do a short, written breakdown:</p>
+          <ol>
+            <li>Underline or highlight the <strong>repeated title line / hook</strong>.</li>
+            <li>Mark where you think the <strong>A / A / B / A</strong> sections start.</li>
+            <li>Write 3–4 bullet points about how the song changes your understanding of the character.</li>
+          </ol>
+
+          <h5>5. Choose Your Show & Character</h5>
+          <p>
+            Before tomorrow, choose <strong>one character</strong> you’ll write for this week:
+          </p>
+          <ul>
+            <li>A character from an existing show you love (fan song)</li>
+            <li>A character from an original idea</li>
+            <li>A character from a book / film you want to musicalize</li>
+          </ul>
+          <p>
+            Write 2–3 sentences about who they are and where they are at the <strong>start</strong>
+            of your imagined musical.
+          </p>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <h5 class="card-title">Day 1 Checklist</h5>
+              <ul class="checklist">
+                <li>Listened to at least 2–3 great character/I Want songs</li>
+                <li>Answered WHO / WHERE / WHAT DO THEY WANT / WHY NOW</li>
+                <li>Roughly marked A / A / B / A in one song</li>
+                <li>Selected a character to write for this week</li>
+              </ul>
+              <p class="tip mb-0">
+                If you feel overwhelmed, remember: today you’re just <strong>noticing patterns</strong>.
+                You aren’t writing yet.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DAY 2 -->
+    <section id="day2" class="day-section">
+      <div class="row g-4">
+        <div class="col-lg-8">
+          <h2>Day 2 • Character & Dramatic Engine (“What Do They Want?”)</h2>
+          <p class="text-muted">
+            Today is all about your <strong>character’s spine</strong>. Great songs don’t just sound nice;
+            they’re powered by a clear want, a strong obstacle, and meaningful stakes.
+          </p>
+
+          <div class="learning-card mb-3">
+            <div class="section-label mb-1">Learning Goals</div>
+            <ul>
+              <li>Define your character’s <strong>want vs. need</strong>.</li>
+              <li>Clarify the <strong>obstacle</strong> and <strong>stakes</strong>.</li>
+              <li>Write a simple <strong>premise line</strong> that your entire song will serve.</li>
+            </ul>
+          </div>
+
+          <h5>1. Character Snapshot</h5>
+          <p>Write answers for your chosen character:</p>
+          <ol>
+            <li><strong>Who am I?</strong> (age, role, 2–3 defining traits)</li>
+            <li><strong>Where am I?</strong> (specific location & moment in the story)</li>
+            <li><strong>What do I want right now?</strong> (one clear, active desire)</li>
+            <li><strong>What’s in my way?</strong> (person, belief, rule, fear, etc.)</li>
+            <li><strong>What happens if I fail?</strong> (emotional or practical consequence)</li>
+          </ol>
+
+          <h5>2. Want vs. Need</h5>
+          <p>
+            Often, what the character <em>thinks</em> they want (their <strong>Want</strong>) is different
+            from what they <em>actually</em> need to grow (their <strong>Need</strong>).
+          </p>
+          <p>Complete these for your character:</p>
+          <ul>
+            <li>
+              <strong>WANT:</strong> “If I could just <em>___________</em>, everything would finally be okay.”
+            </li>
+            <li>
+              <strong>NEED (secret / deeper truth):</strong> “I really need to learn / accept / face
+              <em>___________</em>.”
+            </li>
+          </ul>
+
+          <h5>3. The One-Sentence Song Premise</h5>
+          <p>
+            Your whole song can be built on one sentence. Fill in the blanks:
+          </p>
+          <div class="hook-box">
+            <strong>Premise Sentence:</strong><br />
+            “At the beginning of the show, <strong>[Name]</strong> sings to convince themself /
+            the world that <strong>[getting this one thing]</strong> will finally fix
+            <strong>[this specific problem]</strong>, even though what they really need
+            is to <strong>[truth they haven’t accepted yet]</strong>.”
+          </div>
+
+          <h5>4. Emotional Map of the Song</h5>
+          <p>Rough out a 4-beat emotional journey you’ll later map onto AABA:</p>
+          <ol>
+            <li><strong>Beat 1 (A1):</strong> “Here’s my world and what’s wrong with it.”</li>
+            <li><strong>Beat 2 (A2):</strong> “Here’s what I want and why I deserve it.”</li>
+            <li><strong>Beat 3 (B):</strong> “Here’s the scary truth / obstacle / worst-case scenario.”</li>
+            <li><strong>Beat 4 (A3):</strong> “Here’s my decision / promise / new resolve.”</li>
+          </ol>
+
+          <h5>5. Write in First Person</h5>
+          <p>
+            Spend 10–15 minutes free-writing as your character <strong>in first person</strong>:
+          </p>
+          <ul>
+            <li>Write “I…” sentences only.</li>
+            <li>Don’t rhyme. Don’t worry about line breaks.</li>
+            <li>Just let them rant, confess, dream, spiral.</li>
+          </ul>
+
+          <p class="tip">
+            This messy monologue is your lyric gold mine for the rest of the week.
+          </p>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <h5 class="card-title">Day 2 Checklist</h5>
+              <ul class="checklist">
+                <li>Clear WANT and deeper NEED written out</li>
+                <li>Obstacle and stakes defined</li>
+                <li>One-sentence premise drafted</li>
+                <li>First-person monologue (at least 1 full page)</li>
+              </ul>
+              <p class="tip mb-0">
+                Tomorrow, your <strong>hook</strong> and title will grow straight out of this premise.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DAY 3 -->
+    <section id="day3" class="day-section">
+      <div class="row g-4">
+        <div class="col-lg-8">
+          <h2>Day 3 • Hook, Title, and Central Idea</h2>
+          <p class="text-muted">
+            Great character songs have a <strong>single, memorable phrase</strong> that carries the
+            emotional weight of the piece. Today you’ll find yours.
+          </p>
+
+          <div class="learning-card mb-3">
+            <div class="section-label mb-1">Learning Goals</div>
+            <ul>
+              <li>Distill your character’s want into a <strong>hook line</strong>.</li>
+              <li>Choose a <strong>title</strong> that actually belongs in a musical theatre score.</li>
+              <li>Draft possible <strong>refrain lines</strong> you’ll repeat in the A sections.</li>
+            </ul>
+          </div>
+
+          <h5>1. Mine Yesterday’s Monologue</h5>
+          <p>
+            Re-read your Day 2 monologue and highlight any lines where you think:
+            <em>“That sounds like it could be sung.”</em>
+          </p>
+          <ul>
+            <li>Short, emotionally loaded phrases (5–9 syllables)</li>
+            <li>Sentences that clearly reveal what they want</li>
+            <li>Lines with a strong image or metaphor</li>
+          </ul>
+
+          <h5>2. Draft 10 Possible Hooks</h5>
+          <p>
+            Based on what you highlighted, brainstorm at least <strong>10 potential hook lines</strong>.
+            Don’t judge yet.
+          </p>
+          <p>Examples of patterns (not titles to steal, but shapes to mimic):</p>
+          <ul>
+            <li>“<em>Part of That World</em>” → “I want to be where…”</li>
+            <li>“<em>Waving Through a Window</em>” → “I’m always on the outside looking in.”</li>
+            <li>“<em>Corner of the Sky</em>” → “There must be a place where I belong.”</li>
+          </ul>
+
+          <h5>3. Test Your Hook Out Loud</h5>
+          <p>For each candidate hook:</p>
+          <ol>
+            <li>Say it out loud 3–4 times at different emotional intensities.</li>
+            <li>Clap the natural rhythm of the words (where would the beats fall?).</li>
+            <li>Ask: “Could I honestly imagine an actor belting this center stage?”</li>
+          </ol>
+
+          <h5>4. Choose Your Title & Refrain Line</h5>
+          <p>
+            Pick <strong>one hook</strong> to be your working
+            <strong>title and/or repeated refrain line</strong>.
+          </p>
+          <p>Then answer:</p>
+          <ul>
+            <li>Does it clearly connect to the <strong>WANT</strong> from Day 2?</li>
+            <li>Is it <strong>specific</strong> to this character (not just “I want more”)?</li>
+            <li>Could you imagine it appearing <strong>3–5 times</strong> in the song?</li>
+          </ul>
+
+          <div class="hook-box">
+            Write your chosen hook big on a page:<br />
+            <strong>THIS is what my song is about.</strong><br />
+            Every A and B section choice must serve or contrast this idea.
+          </div>
+
+          <h5>5. Refrain Variants</h5>
+          <p>
+            Draft 3–4 <strong>variants</strong> of your hook that might appear at different moments:
+          </p>
+          <ul>
+            <li>Opening version – naive / hopeful</li>
+            <li>Mid-song version – frustrated / urgent</li>
+            <li>Bridge echo – shaken / doubtful</li>
+            <li>Final version – resolved / more complex</li>
+          </ul>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <h5 class="card-title">Day 3 Checklist</h5>
+              <ul class="checklist">
+                <li>10+ possible hook lines brainstormed</li>
+                <li>1 hook chosen as working title / refrain</li>
+                <li>3–4 variant versions of the hook drafted</li>
+              </ul>
+              <p class="tip mb-0">
+                Tomorrow, you’ll hang these hook lines on your <strong>AABA</strong> framework.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DAY 4 -->
+    <section id="day4" class="day-section">
+      <div class="row g-4">
+        <div class="col-lg-8">
+          <h2>Day 4 • Building the A Sections (The World & the Want)</h2>
+          <p class="text-muted">
+            Today you’ll sketch the three A sections of your AABA song: A1, A2, and A3. Think of them as
+            three passes at the same idea, each one <strong>deeper or more charged</strong> than the last.
+          </p>
+
+          <div class="learning-card mb-3">
+            <div class="section-label mb-1">Learning Goals</div>
+            <ul>
+              <li>Understand what each A section accomplishes in a character song.</li>
+              <li>Outline lyric content for A1, A2, and A3.</li>
+              <li>Create draft lyric lines for at least one full A section.</li>
+            </ul>
+          </div>
+
+          <h5>1. Assign Jobs to A1, A2, A3</h5>
+          <p>Using your emotional map from Day 2, decide:</p>
+          <ul>
+            <li><strong>A1 – Set-up:</strong> Where are we, what’s wrong, and what’s the first glimpse of the want?</li>
+            <li><strong>A2 – Deepen:</strong> Why does this matter so much now? What memories, injustices, or fantasies fuel it?</li>
+            <li><strong>A3 – Decision:</strong> After the bridge, what decision / promise / new internal stance do they take?</li>
+          </ul>
+
+          <h5>2. 4–Line Skeletons</h5>
+          <p>
+            For each A section, write a <strong>4-line skeleton</strong> in prose (not yet fully rhymed lyrics):
+          </p>
+          <ul>
+            <li>Line 1 – Introduce the idea</li>
+            <li>Line 2 – Add a detail or contrast</li>
+            <li>Line 3 – Heighten or complicate</li>
+            <li>Line 4 – Land on (or near) your hook</li>
+          </ul>
+
+          <h5>3. Draft A1 Lyric (Rough Version)</h5>
+          <p>
+            Now, pick A1 and turn your skeleton into actual lyric lines. Don’t chase perfection—aim for:
+          </p>
+          <ul>
+            <li>Short lines (6–10 syllables is a useful range)</li>
+            <li>Mostly simple, conversational language</li>
+            <li>Your hook (exact or variant) at or near the end of the section</li>
+          </ul>
+
+          <h5>4. Light Touch on Rhyme</h5>
+          <p>
+            Choose <strong>one simple rhyme scheme</strong> for A1 (for example: ABAB or AABB).
+            Try it on A2 and A3 later, even if the exact rhymes change.
+          </p>
+          <p class="tip">
+            Consistent patterns help the audience feel like they’re <strong>inside</strong> the character’s
+            mind, not just hearing random lines.
+          </p>
+
+          <h5>5. Mark Emotional Peaks</h5>
+          <p>
+            Put a star ★ next to words or phrases that carry the most emotional charge in each A section.
+            These will be candidates later for <strong>melodic emphasis</strong> (higher notes, longer notes, etc.).
+          </p>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <h5 class="card-title">Day 4 Checklist</h5>
+              <ul class="checklist">
+                <li>Jobs for A1, A2, A3 clearly defined</li>
+                <li>4-line prose skeleton for each A section</li>
+                <li>Rough lyric draft for A1 completed</li>
+                <li>Key emotional words / phrases starred</li>
+              </ul>
+              <p class="tip mb-0">
+                Tomorrow, you’ll design a <strong>contrasting B section</strong> that shakes all this up.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DAY 5 -->
+    <section id="day5" class="day-section">
+      <div class="row g-4">
+        <div class="col-lg-8">
+          <h2>Day 5 • The B Section (Bridge / “Middle 8”)</h2>
+          <p class="text-muted">
+            In many great songs, the B section is where we step away from the familiar pattern and say:
+            <strong>“But here’s the thing I’ve been avoiding.”</strong> It creates contrast so that the final A hits harder.
+          </p>
+
+          <div class="learning-card mb-3">
+            <div class="section-label mb-1">Learning Goals</div>
+            <ul>
+              <li>Understand the dramatic role of the bridge.</li>
+              <li>Decide what truth, fear, or new angle belongs in your B section.</li>
+              <li>Draft B section lyrics that <strong>earn</strong> your final A.</li>
+            </ul>
+          </div>
+
+          <h5>1. What New Truth Appears Here?</h5>
+          <p>Complete one of these sentences for your B section:</p>
+          <ul>
+            <li>“<strong>But what if…</strong>” (introduce a fear or doubt)</li>
+            <li>“<strong>The thing I can’t say out loud is…</strong>”</li>
+            <li>“<strong>Everyone thinks I’m… but secretly I’m…</strong>”</li>
+            <li>“<strong>If I don’t get this, then…</strong>” (raise the stakes)</li>
+          </ul>
+
+          <h5>2. Contrast Checklist</h5>
+          <p>
+            Circle at least <strong>two</strong> ways your B section will contrast with the A’s:
+          </p>
+          <ul>
+            <li>Tone (hopeful → fearful, confident → uncertain)</li>
+            <li>Tempo / feel (driving → more suspended or vice versa)</li>
+            <li>Imagery (external world → internal thought, or the reverse)</li>
+            <li>Perspective (talking <em>to</em> someone vs. talking to self)</li>
+          </ul>
+
+          <h5>3. Draft the B Section Lyric</h5>
+          <p>
+            Write a draft B section (4–8 lines) that:
+          </p>
+          <ul>
+            <li>Tells us something we did <strong>not</strong> know from A1/A2.</li>
+            <li>Pushes the emotional stakes higher.</li>
+            <li>Points toward a choice that sets up A3.</li>
+          </ul>
+
+          <h5>4. Lead Back into A3</h5>
+          <p>
+            Add a final B line that naturally <strong>launches</strong> us into your last A, for example:
+          </p>
+          <ul>
+            <li>“So I’ll…”</li>
+            <li>“That’s why I have to…”</li>
+            <li>“Which means I can’t keep…”</li>
+          </ul>
+          <p>
+            Then jot one or two lines for how A3 will answer that line differently from A1/A2.
+          </p>
+
+          <h5>5. Quick A3 Touch-Up (Optional Today)</h5>
+          <p>
+            If you have time, rough in A3 using your Day 4 skeleton, now informed by the bridge.
+            It should feel like the <strong>same song idea</strong>, but with the B section’s truth
+            weighing on it.
+          </p>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <h5 class="card-title">Day 5 Checklist</h5>
+              <ul class="checklist">
+                <li>Clear “new truth” chosen for B section</li>
+                <li>Two or more contrast choices decided (tone/tempo/imagery/etc.)</li>
+                <li>Draft B section lyric written</li>
+                <li>Line that clearly “hands off” into A3</li>
+              </ul>
+              <p class="tip mb-0">
+                You now have a full <strong>A–A–B–A story arc</strong> in lyric outline form.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DAY 6 -->
+    <section id="day6" class="day-section">
+      <div class="row g-4">
+        <div class="col-lg-8">
+          <h2>Day 6 • Melody, Rhythm, and Prosody (Making It Sing)</h2>
+          <p class="text-muted">
+            Today you’ll give your lyrics a <strong>musical shape</strong>. This can be as simple
+            or as advanced as you’re ready for. The key idea is <strong>prosody</strong>:
+            the natural rhythm of the words matching the musical rhythm.
+          </p>
+
+          <div class="learning-card mb-3">
+            <div class="section-label mb-1">Learning Goals</div>
+            <ul>
+              <li>Align natural speech rhythm with musical rhythm.</li>
+              <li>Create a simple, repeatable melodic contour for your A section.</li>
+              <li>Shape a contrasting melodic idea for the B section.</li>
+            </ul>
+          </div>
+
+          <h5>Option A: Lyric-First (No Theory Needed)</h5>
+          <ol>
+            <li>Read your A1 lyric out loud at the intensity your character feels.</li>
+            <li>Tap a steady beat on the table.</li>
+            <li>Notice where stress naturally falls in each line (which syllables you hit harder).</li>
+            <li>
+              Draw little arrows above high-emotion syllables (↑ for higher note, → for held note, ↓ for lower).
+            </li>
+          </ol>
+          <p>
+            You’ve just created a <strong>contour map</strong> for your melody. Even if someone else later
+            sets it fully to music, you’ve indicated where the line should rise, fall, and sit.
+          </p>
+
+          <h5>Option B: Simple Chord Loop (For Basic Players)</h5>
+          <p>
+            If you play piano / guitar, choose a simple 4-chord loop as your A section “home,” for example:
+          </p>
+          <ul>
+            <li>In C: C – Am – Dm – G</li>
+            <li>In G: G – Em – Am – D</li>
+          </ul>
+          <p>
+            Sing your A1 lyric over this loop. Don’t worry about “writing” yet—just play the loop and let
+            your voice find a pattern that feels natural and repeatable.
+          </p>
+
+          <h5>B Section Contrast (Musically)</h5>
+          <p>To make your B feel different, you can:</p>
+          <ul>
+            <li>Start the melody <strong>higher or lower</strong> than the A.</li>
+            <li>Use longer notes where A is busy, or vice versa.</li>
+            <li>Change the chord pattern slightly (for example, start on chord ii or IV instead of I).</li>
+          </ul>
+
+          <h5>Mark Key Melodic Moments</h5>
+          <p>
+            Choose at least <strong>three moments</strong> where the melody should do something special:
+          </p>
+          <ul>
+            <li>The first time the hook appears</li>
+            <li>The most painful or vulnerable line in the bridge</li>
+            <li>The final version of the hook in A3</li>
+          </ul>
+          <p>
+            For each, note whether you want a <strong>higher pitch</strong>, a <strong>longer note</strong>,
+            or a <strong>change in rhythm</strong> to make it land.
+          </p>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <h5 class="card-title">Day 6 Checklist</h5>
+              <ul class="checklist">
+                <li>Speech rhythm mapped for A1 (and ideally A2/A3)</li>
+                <li>Simple melodic contour or chord loop chosen for A section</li>
+                <li>Clear musical contrast idea for B section</li>
+                <li>3 key “melodic spotlight” moments identified</li>
+              </ul>
+              <p class="tip mb-0">
+                Record a quick voice memo of your A and B ideas so you don’t lose them.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DAY 7 -->
+    <section id="day7" class="day-section">
+      <div class="row g-4">
+        <div class="col-lg-8">
+          <h2>Day 7 • Refinement, Clarity, and Sharing</h2>
+          <p class="text-muted">
+            Today you’ll clean up your lyrics, tighten your structure, and get the song ready to share—
+            even if it’s still a draft. Musical theatre is a <strong>collaborative</strong> art; the goal
+            is to get your song clear enough that others can see the show you’re imagining.
+          </p>
+
+          <div class="learning-card mb-3">
+            <div class="section-label mb-1">Learning Goals</div>
+            <ul>
+              <li>Ensure the song tells a clear, specific story.</li>
+              <li>Polish lyrics for singability and clarity.</li>
+              <li>Prepare a simple way to share (sung or read) with others.</li>
+            </ul>
+          </div>
+
+          <h5>1. Read/Sing the Whole Song Through</h5>
+          <p>
+            Perform your song (spoken or sung) from top to bottom:
+          </p>
+          <ol>
+            <li>A1 – A2 – B – A3 in order</li>
+            <li>Use your hook where you planned to</li>
+            <li>Mark any moment where you stumble or feel confused</li>
+          </ol>
+
+          <h5>2. Story Clarity Pass</h5>
+          <p>Ask yourself (or a friend) these questions:</p>
+          <ul>
+            <li>“Do I understand <strong>who</strong> this person is?”</li>
+            <li>“Can I answer what they <strong>want</strong> in one sentence?”</li>
+            <li>“Do I feel the stakes / why this matters?”</li>
+            <li>“Does something <strong>shift</strong> between the beginning and the end?”</li>
+          </ul>
+
+          <h5>3. Lyric Cleanup</h5>
+          <p>Look for:</p>
+          <ul>
+            <li><strong>Clutter:</strong> Can you cut extra adjectives/adverbs?</li>
+            <li><strong>Vagueness:</strong> Swap “things / stuff / it” for specific nouns.</li>
+            <li><strong>Unsingable consonant clusters:</strong> Adjust to be easy to sing.</li>
+            <li><strong>Inconsistent imagery:</strong> Keep metaphors coherent within the song.</li>
+          </ul>
+
+          <h5>4. Final Hook Check</h5>
+          <p>
+            Make sure your hook:
+          </p>
+          <ul>
+            <li>Appears at least 3 times across the song (or strong variants do).</li>
+            <li>Feels slightly <strong>different</strong> emotionally in the final A than in the first.</li>
+            <li>Lines up with what the audience now believes the character wants/needs.</li>
+          </ul>
+
+          <h5>5. Shareable Version</h5>
+          <p>Prepare a simple way to share your work:</p>
+          <ul>
+            <li>Lyrics only: clean document with sections labeled A1 / A2 / B / A3.</li>
+            <li>Lyrics + melody: lead sheet, rough notation, chorded lyric sheet, or voice memo.</li>
+            <li>Optional: a short note at the top: “This is [Character]’s ‘I Want’ song from [Show].”</li>
+          </ul>
+
+          <h5>6. Reflection</h5>
+          <p>Answer for yourself:</p>
+          <ul>
+            <li>What part of this process unlocked the most for you?</li>
+            <li>Which step felt hardest—and what would you like help with next?</li>
+            <li>What’s one thing you’ll try differently on your <strong>next</strong> character song?</li>
+          </ul>
+
+          <p class="tip">
+            You’ve now written a full character establishment song in a week. Future drafts will get
+            faster and more confident as your ear for structure keeps growing.
+          </p>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <h5 class="card-title">Day 7 Checklist</h5>
+              <ul class="checklist">
+                <li>Full AABA lyric read/sung through at least once</li>
+                <li>Clarity & lyric clean-up pass completed</li>
+                <li>Hook placements and emotional evolution checked</li>
+                <li>Shareable version prepared (lyrics and/or demo)</li>
+              </ul>
+              <p class="tip mb-0">
+                Keep this song as <strong>Draft 1</strong>. Professional writers often revise songs
+                dozens of times—even when the framework is solid.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="mt-5" />
+
+    <footer class="pb-4">
+      <p class="mb-1">
+        This page is an <strong>unofficial educational approximation</strong> of a 7-day musical
+        theatre songwriting bootcamp, inspired by widely discussed musical theatre craft concepts.
+        It is not affiliated with or endorsed by any particular artist or program.
+      </p>
+      <p class="mb-0">
+        Feel free to adapt, expand, or annotate it for your own teaching or writing practice.
+      </p>
+    </footer>
+  </main>
+
+  <script>
+    function showDay(day) {
+      const sections = document.querySelectorAll(".day-section");
+      const buttons = document.querySelectorAll(".nav-day-btn");
+
+      sections.forEach((sec) => sec.classList.remove("active"));
+      buttons.forEach((btn) => btn.classList.remove("active"));
+
+      const activeSection = document.getElementById("day" + day);
+      const activeButton = document.querySelector('[data-day="' + day + '"]');
+
+      if (activeSection) activeSection.classList.add("active");
+      if (activeButton) activeButton.classList.add("active");
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  </script>
+</body>
+</html>
