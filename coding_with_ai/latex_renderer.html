@@ -3,38 +3,21 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Paste LaTeX → Render → PDF/PNG</title>
+<title>Markdown + LaTeX Editor</title>
 
 <!-- Bootstrap 5 & Icons -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-<svg class = "hiddenSVG">
-  <symbol id="instagram" viewBox="0 0 16 16">
-      <path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.927 3.927 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.916 3.916 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.926 3.926 0 0 0-.923-1.417A3.911 3.911 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0h.003zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599.28.28.453.546.598.92.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.47 2.47 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.478 2.478 0 0 1-.92-.598 2.48 2.48 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233 0-2.136.008-2.388.046-3.231.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045v.002zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92zm-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217zm0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334z"/>
-  </symbol>
-  <symbol id="twitter" viewBox="0 0 16 16">
-    <path d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334 0-.14 0-.282-.006-.422A6.685 6.685 0 0 0 16 3.542a6.658 6.658 0 0 1-1.889.518 3.301 3.301 0 0 0 1.447-1.817 6.533 6.533 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.325 9.325 0 0 1-6.767-3.429 3.289 3.289 0 0 0 1.018 4.382A3.323 3.323 0 0 1 .64 6.575v.045a3.288 3.288 0 0 0 2.632 3.218 3.203 3.203 0 0 1-.865.115 3.23 3.23 0 0 1-.614-.057 3.283 3.283 0 0 0 3.067 2.277A6.588 6.588 0 0 1 .78 13.58a6.32 6.32 0 0 1-.78-.045A9.344 9.344 0 0 0 5.026 15z"/>
-  </symbol>
-  <symbol id = "github" viewBox="0 0 16 16">
-    <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
-  </symbol>
-  <symbol id = "linkedin" viewBox="0 0 24 24">
-    <path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19a.66.66 0 000 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"></path> </symbol>
-</svg>
-<!-- MathJax v4 (TeX → CHTML). We enable textmacros so \textbf inside \text{ } works. -->
-<script>
-  window.MathJax = {
-    tex: {
-      inlineMath: [['$', '$'], ['\\(', '\\)']],
-      displayMath: [['$$','$$'], ['\\[','\\]']],
-      packages: {'[+]': ['base', 'ams', 'textmacros']}
-    },
-    chtml: { }
-  };
-</script>
-<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
 
-<!-- html2canvas + html2pdf (for PNG/PDF export) -->
+<!-- KaTeX (Math Rendering) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+<!-- Marked.js (Markdown Parser) -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<!-- PDF/Image Export -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" referrerpolicy="no-referrer"></script>
 
@@ -45,182 +28,284 @@
     body{ color-scheme: dark; }
   }
   body{ background:var(--ui-bg); }
+  
+  /* The "Paper" Sheet */
   .page {
     background: var(--page-bg);
     color: var(--ink);
-    width: 8.5in;             /* Letter */
+    width: 8.5in;
     min-height: 11in;
-    padding: 0.75in;
+    padding: 1in; /* Standard 1 inch margins */
     box-shadow: 0 0.5rem 2rem rgba(0,0,0,.15);
-    border-radius: .5rem;
+    margin-bottom: 2rem;
     box-sizing: border-box;
     overflow: hidden;
-    line-height: 1.35;
-    font-size: 12pt;
+    /* Typography */
     font-family: "Times New Roman", Times, serif;
+    font-size: 12pt;
+    line-height: 1.5;
   }
-  .page .content{ white-space: pre-wrap; }
+
+  /* HTML typography within the page */
+  .page h1, .page h2, .page h3 { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; color: #000; margin-top: 1.5em; margin-bottom: 0.5em; font-weight: bold; }
+  .page h1 { font-size: 24pt; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+  .page h2 { font-size: 18pt; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+  .page h3 { font-size: 14pt; }
+  .page p { margin-bottom: 1em; text-align: justify; }
+  .page ul, .page ol { margin-bottom: 1em; padding-left: 2em; }
+  .page li { margin-bottom: 0.25em; }
+  .page hr { border-top: 1px solid #ccc; opacity: 1; margin: 2em 0; }
+  .page blockquote { border-left: 4px solid #ddd; padding-left: 1em; color: #555; margin-left: 0; font-style: italic; }
+
+  /* Editor Textarea */
+  #src { resize: none; outline: none; box-shadow: none; background: var(--page-bg); color: var(--ink); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 0.9rem; }
+
   .sticky-toolbar{ position: sticky; top: 0; z-index: 10; background: var(--ui-bg); }
-  .monospace{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
   .btn-icon{ display:inline-flex; align-items:center; gap:.35rem }
+
   @media print{ .no-print{ display:none !important } .page{ box-shadow:none; margin:0; } body{ background:#fff } }
 </style>
 </head>
 <body>
 
 <div class="container py-3">
-  <!-- Header / Toolbar -->
+  <!-- Toolbar -->
   <div class="sticky-toolbar py-2 mb-3 border-bottom">
     <div class="d-flex flex-wrap gap-2 align-items-center justify-content-between">
       <div class="d-flex align-items-center gap-2">
-        <span class="fs-5 fw-semibold">LaTeX Renderer</span>
-        <span id="status" class="badge text-bg-secondary ms-1">Ready</span>
+        <span class="fs-5 fw-semibold">MD + LaTeX Editor</span>
+        <span id="status" class="badge text-bg-success ms-1">Live</span>
       </div>
       <div class="d-flex flex-wrap gap-2">
-        <button id="renderBtn" class="btn btn-primary btn-icon" title="Cmd/Ctrl + Enter"><i class="bi bi-lightning-charge"></i><span>Render</span></button>
-        <button id="pdfBtn" class="btn btn-outline-primary btn-icon"><i class="bi bi-filetype-pdf"></i><span>Save PDF</span></button>
-        <button id="pngBtn" class="btn btn-outline-secondary btn-icon"><i class="bi bi-image"></i><span>Download PNG</span></button>
-        <div class="input-group">
-          <label class="input-group-text" for="paper">Paper</label>
+        <button id="renderBtn" class="btn btn-sm btn-primary btn-icon"><i class="bi bi-arrow-clockwise"></i><span>Refresh</span></button>
+        <button id="pdfBtn" class="btn btn-sm btn-outline-primary btn-icon"><i class="bi bi-filetype-pdf"></i><span>PDF</span></button>
+        <button id="pngBtn" class="btn btn-sm btn-outline-secondary btn-icon"><i class="bi bi-image"></i><span>PNG</span></button>
+        <div class="input-group input-group-sm" style="width:auto">
+          <label class="input-group-text" for="paper">Size</label>
           <select id="paper" class="form-select">
-            <option value="letter" selected>Letter 8.5×11"</option>
-            <option value="a4">A4 210×297mm</option>
+            <option value="letter" selected>Letter</option>
+            <option value="a4">A4</option>
           </select>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Editor + Preview -->
+  <!-- Main Layout -->
   <div class="row g-3">
-    <div class="col-12 col-lg-5">
-      <div class="card shadow-sm">
-        <div class="card-header d-flex align-items-center justify-content-between">
-          <span class="fw-semibold">Paste LaTeX</span>
-          <small class="text-secondary">Tip: Cmd/Ctrl + Enter to render</small>
+    <!-- Input Column -->
+    <div class="col-12 col-lg-5 d-flex flex-column">
+      <div class="card shadow-sm flex-grow-1" style="height: 85vh;">
+        <div class="card-header d-flex align-items-center justify-content-between py-2">
+          <span class="fw-semibold small">Markdown Source</span>
+          <small class="text-secondary">Use # for Headers, $ for Math</small>
         </div>
-        <div class="card-body p-0">
-          <textarea id="src" class="form-control border-0 rounded-0 monospace" rows="16" placeholder="Paste LaTeX here (use $...$, $$...$$, \(...\), \[...\]).\nIf you paste a full doc, the app extracts between \\begin{document}…\\end{document}. "></textarea>
+        <div class="card-body p-0 h-100">
+          <textarea id="src" class="form-control border-0 rounded-0 h-100 p-3"></textarea>
         </div>
       </div>
     </div>
 
+    <!-- Preview Column -->
     <div class="col-12 col-lg-7">
-      <div class="card shadow-sm">
-        <div class="card-header"><span class="fw-semibold">Preview</span></div>
-        <div class="card-body d-flex justify-content-center bg-body-tertiary">
+      <div class="card shadow-sm bg-body-tertiary" style="height: 85vh; overflow-y: auto;">
+        <div class="card-header py-2"><span class="fw-semibold small">Document Preview</span></div>
+        <div class="card-body d-flex justify-content-center p-4">
           <div class="page" id="page">
-            <div id="output" class="content"></div>
+            <div id="output"></div>
           </div>
         </div>
       </div>
     </div>
   </div>
-
-  <footer class="container py-4 border-top">
-        <div class="d-flex justify-content-between align-items-center">
-            <span>&copy; 2025 Evan Weinberg</span>
-            <ul class="nav list-unstyled d-flex">
-              <li class="ms-3"><a class="text-muted" href="https://www.linkedin.com/in/evan-weinberg-b89a858/"><svg class="bi" width="24" height="24"><use xlink:href="#linkedin"/></svg></a></li>
-                <li class="ms-3"><a class="text-muted" href="https://twitter.com/emwdx"><svg class="bi" width="24" height="24"><use xlink:href="#twitter"/></svg></a></li>
-                <li class="ms-3"><a class="text-muted" href="https://instagram.com/emwdx"><svg class="bi" width="24" height="24"><use xlink:href="#instagram"/></svg></a></li>
-                <li class="ms-3"><a class="text-muted" href="https://github.com/emwdx"><svg class="bi" width="24" height="24"><use xlink:href="#github"/></svg></a></li>
-            </ul>
-        </div>
-    </footer>
 </div>
 
-<!-- Bootstrap JS (optional, for dropdowns if ever used) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
 <script>
-  // Elements
-  const statusEl = document.getElementById('status');
+  // 1. INITIALIZATION
   const srcEl = document.getElementById('src');
   const outEl = document.getElementById('output');
   const pageEl = document.getElementById('page');
-  const renderBtn = document.getElementById('renderBtn');
-  const pdfBtn = document.getElementById('pdfBtn');
-  const pngBtn = document.getElementById('pngBtn');
-  const paperSel = document.getElementById('paper');
+  const statusEl = document.getElementById('status');
 
-  // Paper sizing
-  function setPaper(preset){
-    if(preset === 'a4'){
-      pageEl.style.width = '8.27in';
-      pageEl.style.minHeight = '11.69in';
-    } else {
-      pageEl.style.width = '8.5in';
-      pageEl.style.minHeight = '11in';
+  // Paper Sizing
+  document.getElementById('paper').addEventListener('change', (e) => {
+    if(e.target.value === 'a4') { pageEl.style.width = '8.27in'; pageEl.style.minHeight = '11.69in'; }
+    else { pageEl.style.width = '8.5in'; pageEl.style.minHeight = '11in'; }
+  });
+
+  // 2. THE RENDERING PIPELINE
+  function render() {
+    let text = srcEl.value || "";
+
+    // STEP A: Protect LaTeX Math
+    // We replace math blocks with a unique placeholder so marked.js doesn't mess them up.
+    // Regex covers: $$...$$, $...$, \[...\], \(...\)
+    const mathMap = new Map();
+    let mathIndex = 0;
+    
+    text = text.replace(/(\$\$[\s\S]*?\$\$)|(\\\([\s\S]*?\\\))|(\\\[[\s\S]*?\\\])|(\$[^\$\n]*?\$)/g, (match) => {
+      // Store the math
+      const key = `%%%MATH${mathIndex}%%%`;
+      mathMap.set(key, match);
+      mathIndex++;
+      return key; 
+    });
+
+    // STEP B: Parse Markdown -> HTML
+    // "breaks: true" turns newlines into <br> (optional, set false if you want standard MD behavior)
+    let html = marked.parse(text, { breaks: false });
+
+    // STEP C: Restore LaTeX Math
+    mathMap.forEach((value, key) => {
+      html = html.replace(key, value);
+    });
+
+    // Update DOM
+    outEl.innerHTML = html;
+
+    // STEP D: Render KaTeX
+    if (window.renderMathInElement) {
+      renderMathInElement(outEl, {
+        delimiters: [
+          {left: '$$', right: '$$', display: true},
+          {left: '$', right: '$', display: false},
+          {left: '\\(', right: '\\)', display: false},
+          {left: '\\[', right: '\\]', display: true}
+        ],
+        throwOnError: false
+      });
     }
   }
-  paperSel.addEventListener('change', ()=> setPaper(paperSel.value));
-  setPaper(paperSel.value);
 
-  // Extract between \begin{document}...\end{document}
-  function extractDocBody(text){
-    const b = text.search(/\\begin\{document\}/i);
-    const e = text.search(/\\end\{document\}/i);
-    if(b !== -1 && e !== -1 && e > b) return text.slice(b + '\\begin{document}'.length, e).trim();
-    return text;
+  // 3. DEBOUNCING (Performance)
+  function debounce(func, wait) {
+    let timeout;
+    return function() {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(this, arguments), wait);
+    };
+  }
+  
+  srcEl.addEventListener('input', debounce(render, 300));
+  document.getElementById('renderBtn').addEventListener('click', render);
+
+  // 4. EXPORT FUNCTIONS
+  function getFilename() {
+    // Try to find the first H1 tag for filename
+    const h1 = outEl.querySelector('h1');
+    const name = h1 ? h1.innerText : 'document';
+    return name.replace(/[^a-z0-9]/gi, '_').substring(0, 30);
   }
 
-  // Render
-  function render(){
-    const raw = srcEl.value || '';
-    const bodyish = extractDocBody(raw);
-    outEl.textContent = bodyish; // let MathJax scan text nodes
-    statusEl.textContent = 'Typesetting…';
-    if(window.MathJax && MathJax.typesetPromise){
-      return MathJax.typesetPromise([pageEl]).then(()=>{ statusEl.textContent = 'Ready'; });
-    }
-    statusEl.textContent = 'Ready';
-    return Promise.resolve();
-  }
-
-  // PDF
-  async function savePDF(){
-    if(!window.html2pdf) return;
+  async function savePDF() {
     await render();
-    const isA4 = paperSel.value === 'a4';
     const opt = {
       margin: 0,
-      filename: filenameFromFirstLine('.pdf'),
-      image: { type: 'png', quality: 1 },
-      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
-      jsPDF: { unit: 'in', format: isA4 ? 'a4' : 'letter', orientation: 'portrait' }
+      filename: getFilename() + '.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
+      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
     };
-    await html2pdf().set(opt).from(pageEl).save();
+    html2pdf().set(opt).from(pageEl).save();
   }
 
-  // PNG
-  async function savePNG(){
+  async function savePNG() {
     await render();
-    const canvas = await html2canvas(pageEl, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
-    const dataURL = canvas.toDataURL('image/png');
-    const a = document.createElement('a');
-    a.href = dataURL;
-    a.download = filenameFromFirstLine('.png');
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
+    const canvas = await html2canvas(pageEl, { scale: 2, backgroundColor: '#ffffff' });
+    const link = document.createElement('a');
+    link.download = getFilename() + '.png';
+    link.href = canvas.toDataURL();
+    link.click();
   }
 
-  function filenameFromFirstLine(ext){
-    const first = (srcEl.value||'').trim().split(/\r?\n/)[0] || '';
-    const stem = first.replace(/^\%+\s*/, '').replace(/[^a-z0-9 _-]/gi,'').trim().slice(0,40) || 'latex';
-    return stem + ext;
-  }
+  document.getElementById('pdfBtn').addEventListener('click', savePDF);
+  document.getElementById('pngBtn').addEventListener('click', savePNG);
 
-  // Wire up
-  renderBtn.addEventListener('click', render);
-  pdfBtn.addEventListener('click', savePDF);
-  pngBtn.addEventListener('click', savePNG);
-  window.addEventListener('keydown', (e)=>{ if((e.metaKey||e.ctrlKey) && e.key==='Enter'){ e.preventDefault(); render(); } });
+  // 5. LOAD EXAMPLE CONTENT
+  // Loading your specific example into the textarea on startup
+  const exampleContent = `# Natural Logarithms – Differentiation & Integration Review (Draft)
 
-  // Optional starter content
-  // srcEl.value = "\\(\\text{\\textbf{Sample}}\\) inline $a^2+b^2=c^2$ and display: \\\[\\int_0^1 x^2\\,dx=\\tfrac{1}{3}.\\]";
-  // render();
+## 1. Goals for This Session
+
+By the end of this session you should be able to:
+
+- Use rules for differentiating expressions involving $$\\ln x$$ and $$\\ln(\\text{complicated stuff})$$.
+- Use **logarithmic differentiation** to handle products, quotients, and powers.
+- Recognize when an integral will give you a **natural log**.
+- Evaluate integrals of the form $$\\int \\frac{f'(x)}{f(x)} \\, dx$$ and related expressions.
+
+---
+
+## 2. Core Facts to Have in Your Head
+
+### 2.1 Basic properties of $$\\ln x$$
+
+For $$x > 0$$:
+
+- $$\\ln(ab) = \\ln a + \\ln b$$
+- $$\\ln\\left(\\dfrac{a}{b}\\right) = \\ln a - \\ln b$$
+- $$\\ln(a^r) = r \\ln a$$
+
+These are super useful when simplifying before differentiating.
+
+---
+
+### 2.2 Derivatives involving $$\\ln$$
+
+For $$x > 0$$:
+
+- $$\\dfrac{d}{dx}[\\ln x] = \\dfrac{1}{x}$$  
+- More generally, if $$f(x) > 0$$ is differentiable:
+  $$
+  \\dfrac{d}{dx}[\\ln(f(x))] = \\dfrac{f'(x)}{f(x)}
+  $$
+
+Using the chain rule:
+
+- $$\\dfrac{d}{dx}[\\ln(3x^2+1)] = \\dfrac{6x}{3x^2+1}$$
+- $$\\dfrac{d}{dx}[\\ln(\\sin x)] = \\dfrac{\\cos x}{\\sin x} = \\cot x$$ (for $$0<x<\\pi$$)
+
+---
+
+### 2.3 Integrals that produce $$\\ln$$
+
+- $$\\displaystyle \\int \\frac{1}{x} \\, dx = \\ln|x| + C$$  
+- More generally:
+  $$
+  \\displaystyle \\int \\frac{f'(x)}{f(x)} \\, dx = \\ln|f(x)| + C
+  $$
+
+Examples:
+
+- $$\\displaystyle \\int \\frac{6x}{3x^2+1} \\, dx = \\ln|3x^2+1| + C$$
+
+---
+
+### Example 2: Logarithmic differentiation with products
+
+Let
+$$
+y = x^2(3x+1)^5.
+$$
+
+Using log differentiation:
+
+1. Take $$\\ln$$:
+   $$
+   \\ln y = \\ln(x^2) + \\ln\\big((3x+1)^5\\big)
+          = 2\\ln x + 5\\ln(3x+1).
+   $$
+
+2. Differentiate both sides w.r.t. $$x$$:
+   $$
+   \\frac{1}{y}\\frac{dy}{dx} = 2\\cdot\\frac{1}{x} + 5\\cdot\\frac{3}{3x+1}
+   = \\frac{2}{x} + \\frac{15}{3x+1}.
+   $$
+`;
+
+  srcEl.value = exampleContent;
+  render();
+
 </script>
 </body>
 </html>
