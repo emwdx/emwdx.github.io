@@ -229,55 +229,89 @@
 
 By the end of this session you should be able to:
 
-- Use rules for differentiating expressions involving $$\\ln x$$ and $$\\ln(\\text{complicated stuff})$$.
+- Use rules for differentiating expressions involving $$\ln x$$ and $$\ln(\text{complicated stuff})$$.
 - Use **logarithmic differentiation** to handle products, quotients, and powers.
 - Recognize when an integral will give you a **natural log**.
-- Evaluate integrals of the form $$\\int \\frac{f'(x)}{f(x)} \\, dx$$ and related expressions.
+- Evaluate integrals of the form $$\int \frac{f'(x)}{f(x)} \, dx$$ and related expressions.
 
 ---
 
 ## 2. Core Facts to Have in Your Head
 
-### 2.1 Basic properties of $$\\ln x$$
+### 2.1 Basic properties of $$\ln x$$
 
 For $$x > 0$$:
 
-- $$\\ln(ab) = \\ln a + \\ln b$$
-- $$\\ln\\left(\\dfrac{a}{b}\\right) = \\ln a - \\ln b$$
-- $$\\ln(a^r) = r \\ln a$$
+- $$\ln(ab) = \ln a + \ln b$$
+- $$\ln\left(\dfrac{a}{b}\right) = \ln a - \ln b$$
+- $$\ln(a^r) = r \ln a$$
 
 These are super useful when simplifying before differentiating.
 
 ---
 
-### 2.2 Derivatives involving $$\\ln$$
+### 2.2 Derivatives involving $$\ln$$
 
 For $$x > 0$$:
 
-- $$\\dfrac{d}{dx}[\\ln x] = \\dfrac{1}{x}$$  
+- $$\dfrac{d}{dx}[\ln x] = \dfrac{1}{x}$$  
 - More generally, if $$f(x) > 0$$ is differentiable:
-  $$
-  \\dfrac{d}{dx}[\\ln(f(x))] = \\dfrac{f'(x)}{f(x)}
-  $$
+  $$\dfrac{d}{dx}[\ln(f(x))] = \dfrac{f'(x)}{f(x)}$$
 
 Using the chain rule:
 
-- $$\\dfrac{d}{dx}[\\ln(3x^2+1)] = \\dfrac{6x}{3x^2+1}$$
-- $$\\dfrac{d}{dx}[\\ln(\\sin x)] = \\dfrac{\\cos x}{\\sin x} = \\cot x$$ (for $$0<x<\\pi$$)
+- $$\dfrac{d}{dx}[\ln(3x^2+1)] = \dfrac{6x}{3x^2+1}$$
+- $$\dfrac{d}{dx}[\ln(\sin x)] = \dfrac{\cos x}{\sin x} = \cot x$$ (for $$0<x<\pi$$)
 
 ---
 
-### 2.3 Integrals that produce $$\\ln$$
+### 2.3 Integrals that produce $$\ln$$
 
-- $$\\displaystyle \\int \\frac{1}{x} \\, dx = \\ln|x| + C$$  
+- $$\displaystyle \int \frac{1}{x} \, dx = \ln|x| + C$$  
 - More generally:
-  $$
-  \\displaystyle \\int \\frac{f'(x)}{f(x)} \\, dx = \\ln|f(x)| + C
-  $$
+  $$\displaystyle \int \frac{f'(x)}{f(x)} \, dx = \ln|f(x)| + C$$
 
 Examples:
 
-- $$\\displaystyle \\int \\frac{6x}{3x^2+1} \\, dx = \\ln|3x^2+1| + C$$
+- $$\displaystyle \int \frac{6x}{3x^2+1} \, dx = \ln|3x^2+1| + C$$
+- $$\displaystyle \int \frac{\cos x}{\sin x} \, dx = \ln|\sin x| + C$$
+
+Also:
+
+- $$\displaystyle \int \frac{1}{ax+b} \, dx = \frac{1}{a} \ln|ax+b| + C$$
+
+---
+
+### 2.4 Logarithmic differentiation (big-picture idea)
+
+Use this when the function is:
+
+- A **product** of many factors
+- A **quotient** of complicated things
+- Something like $$y = [\text{complicated}]^{\text{complicated}}$$
+
+**Process:**
+
+1. Start with $$y = f(x)$$.
+2. Take $$\ln$$ of both sides: $$\ln y = \ln(f(x))$$.
+3. Use log properties to simplify the right-hand side.
+4. Differentiate **implicitly** using $$\dfrac{d}{dx}[\ln y] = \dfrac{1}{y} \dfrac{dy}{dx}$$.
+5. Solve for $$\dfrac{dy}{dx}$$ (often multiply by $$y = f(x)$$ at the end).
+
+---
+
+## 3. Worked Examples
+
+### Example 1: Basic ln derivative
+
+Compute $$\dfrac{d}{dx}[\ln(5x^3 - 2x)]$$.
+
+Work:
+
+- Let $$f(x) = 5x^3 - 2x$$.
+- $$f'(x) = 15x^2 - 2$$.
+- Then:
+  $$\dfrac{d}{dx}[\ln(5x^3 - 2x)] = \dfrac{15x^2 - 2}{5x^3 - 2x}.$$
 
 ---
 
@@ -290,17 +324,219 @@ $$
 
 Using log differentiation:
 
-1. Take $$\\ln$$:
+1. Take $$\ln$$:
    $$
-   \\ln y = \\ln(x^2) + \\ln\\big((3x+1)^5\\big)
-          = 2\\ln x + 5\\ln(3x+1).
+   \ln y = \ln(x^2) + \ln\big((3x+1)^5\big)
+          = 2\ln x + 5\ln(3x+1).
    $$
 
 2. Differentiate both sides w.r.t. $$x$$:
    $$
-   \\frac{1}{y}\\frac{dy}{dx} = 2\\cdot\\frac{1}{x} + 5\\cdot\\frac{3}{3x+1}
-   = \\frac{2}{x} + \\frac{15}{3x+1}.
+   \frac{1}{y}\frac{dy}{dx} = 2\cdot\frac{1}{x} + 5\cdot\frac{3}{3x+1}
+   = \frac{2}{x} + \frac{15}{3x+1}.
    $$
+
+3. Multiply both sides by $$y$$:
+   $$
+   \frac{dy}{dx} = y\left(\frac{2}{x} + \frac{15}{3x+1}\right).
+   $$
+
+4. Replace $$y$$ with original expression:
+   $$
+   \frac{dy}{dx} = x^2(3x+1)^5\left(\frac{2}{x} + \frac{15}{3x+1}\right).
+   $$
+
+You could simplify further if needed.
+
+---
+
+### Example 3: Derivative of $$a^x$$ using logs (conceptual)
+
+For a constant $$a>0,a\neq 1$$:
+$$
+y = a^x.
+$$
+
+We can write $$y = e^{x\ln a}$$, so:
+$$
+\frac{dy}{dx} = e^{x\ln a} \cdot \ln a = a^x \ln a.
+$$
+
+Special case: $$\dfrac{d}{dx}[e^x] = e^x\ln e = e^x.$$
+
+---
+
+### Example 4: Integral of a rational function leading to $$\ln$$
+
+Evaluate:
+$$
+\int \frac{4x+1}{2x^2+x-3} \, dx.
+$$
+
+Let $$u = 2x^2+x-3$$, so $$du = (4x+1)\,dx$$.
+
+Then:
+$$
+\int \frac{4x+1}{2x^2+x-3} \, dx = \int \frac{1}{u} \, du
+= \ln|u| + C = \ln|2x^2+x-3| + C.
+$$
+
+Recognize the pattern: numerator is derivative of denominator.
+
+---
+
+## 4. Practice: Differentiation with $$\ln$$
+
+### 4.1 Basic derivatives
+
+Compute each derivative:
+
+1. $$\dfrac{d}{dx}[\ln x]$$
+2. $$\dfrac{d}{dx}[\ln(7x)]$$
+3. $$\dfrac{d}{dx}[\ln(x^4)]$$
+4. $$\dfrac{d}{dx}[\ln(3 - 2x)]$$
+5. $$\dfrac{d}{dx}[\ln(\sqrt{x})]$$
+
+---
+
+### 4.2 Chain rule and compositions
+
+Compute:
+
+6. $$\dfrac{d}{dx}[\ln(5x^2 + 1)]$$   
+7. $$\dfrac{d}{dx}[\ln(x^2+4x+5)]$$  
+8. $$\dfrac{d}{dx}[\ln(2e^{3x}+1)]$$  
+9. $$\dfrac{d}{dx}[\ln(1+x^2)]$$
+
+---
+
+### 4.3 Logarithmic differentiation
+
+Use logarithmic differentiation:
+
+11. $$y = \dfrac{x^3(2x-1)^4}{(x^2+1)^5}$$  
+
+12. $$y = (x^2+3)^7(x-1)^2$$  
+
+13. $$y = \left(\dfrac{3x+1}{2x-5}\right)^4$$  
+
+14. $$y = x^{\sin x} \quad (x>0)$$  
+
+*(Hint for 14: take $$\ln$$ of both sides and remember that $$\ln(x^{\sin x}) = \sin x \cdot \ln x$$.)*
+
+---
+
+## 5. Practice: Log-type Integrals
+
+### 5.1 Recognizing $$\dfrac{f'}{f}$$ pattern
+
+Evaluate the integrals:
+
+15. $$\displaystyle \int \frac{2x}{x^2+1} \, dx$$  
+
+16. $$\displaystyle \int \frac{3x^2}{x^3+1} \, dx$$  
+
+17. $$\displaystyle \int \frac{5}{5x-2} \, dx$$  
+
+18. $$\displaystyle \int \frac{\cos x}{1+\sin x} \, dx$$  
+
+19. $$\displaystyle \int \frac{1}{x^2-9} \, dx$$  
+(Hint: this one does **not** directly look like $$\frac{f'}{f}$$; try partial fractions.)
+
+---
+
+### 5.2 Mix of substitution and ln results
+
+20. $$\displaystyle \int \tan x \, dx \quad (\text{rewrite } \tan x = \frac{\sin x}{\cos x})$$  
+
+21. $$\displaystyle \int \frac{1}{2x+3} \, dx$$  
+
+22. $$\displaystyle \int \frac{4x-1}{2x^2 - x + 7} \, dx$$  
+
+23. $$\displaystyle \int \frac{e^x}{1+e^x} \, dx$$  
+
+24. $$\displaystyle \int \frac{1}{x\ln x} \, dx \quad (x>1)$$  
+(Hint: substitution with $$u = \ln x$$.)
+
+---
+
+### 5.3 Challenge / AP-style pieces
+
+25. Let $$f(x) = \ln(x^2+4x+5)$$.
+
+  a. Find $$f'(x)$$.  
+  b. Write the equation of the tangent line to $$y=f(x)$$ at $$x=-1$$.  
+  c. Is $$f(x)$$ increasing or decreasing at $$x=-1$$? Justify using $$f'(x)$$.
+
+26. Let $$g(x) = x^2 \ln x$$, $$x>0$$.
+
+  a. Find $$g'(x)$$.  
+  b. Find all critical points of $$g(x)$$.  
+  c. Determine whether each critical point is a local minimum, local maximum, or neither (use a sign chart or second derivative).
+
+27. Suppose $$h(x) = \ln(3x^2+1) - 2\ln(x+1)$$ (for $$x>-1$$).
+
+  a. Simplify $$h(x)$$ into a single $$\ln$$ expression using log rules.  
+  b. Differentiate your simplified expression to find $$h'(x)$$.  
+  c. Verify that differentiating the original (unsimplified) expression gives the same result.
+
+---
+
+## 6. Selected Answers / Hints
+
+*(Use these to check, not to skip the work.)*
+
+### 6.1 Derivatives from 4.1
+
+1. $$\dfrac{1}{x}$$  
+2. $$\dfrac{1}{x}$$  
+3. $$\dfrac{4}{x}$$  
+4. $$\dfrac{d}{dx}[\ln(3-2x)] = \dfrac{-2}{3-2x}$$  
+5. $$\ln(\sqrt{x}) = \frac12 \ln x \Rightarrow \dfrac{d}{dx} = \dfrac{1}{2x}$$  
+
+---
+
+### 6.2 Sample logarithmic differentiation answer (12)
+
+For $$y = (x^2+3)^7(x-1)^2$$:
+
+- $$\ln y = 7\ln(x^2+3) + 2\ln(x-1)$$
+- Differentiate:
+  $$
+  \frac{1}{y}\frac{dy}{dx}
+  = 7\cdot\frac{2x}{x^2+3} + 2\cdot\frac{1}{x-1}.
+  $$
+- So:
+  $$
+  \frac{dy}{dx}
+  = (x^2+3)^7(x-1)^2\left(\frac{14x}{x^2+3} + \frac{2}{x-1}\right).
+  $$
+
+---
+
+### 6.3 Integrals from 5.1 and 5.2
+
+15. $$\displaystyle \int \frac{2x}{x^2+1}\,dx = \ln(x^2+1) + C$$  
+
+16. $$\displaystyle \int \frac{3x^2}{x^3+1}\,dx = \ln|x^3+1| + C$$  
+
+17. $$\displaystyle \int \frac{5}{5x-2}\,dx = \ln|5x-2| + C$$  
+
+18. Let $$u = 1+\sin x$$, then $$du = \cos x\,dx$$, so  
+   $$\int \frac{\cos x}{1+\sin x}\,dx = \ln|1+\sin x| + C.$$
+
+20. $$\displaystyle \int \tan x \, dx = -\ln|\cos x| + C = \ln|\sec x| + C$$  
+
+21. $$\displaystyle \int \frac{1}{2x+3}\,dx = \frac12 \ln|2x+3| + C$$  
+
+23. Let $$u = 1+e^x$$, then $$du = e^x\,dx$$, so  
+   $$\int \frac{e^x}{1+e^x}\,dx = \ln|1+e^x| + C.$$
+
+24. Let $$u = \ln x$$, then $$du = \frac{1}{x}dx$$, so  
+   $$\int \frac{1}{x\ln x}\,dx = \int \frac{1}{u}\,du = \ln|\ln x| + C.$$
+
+---
+
 `;
 
   srcEl.value = exampleContent;
