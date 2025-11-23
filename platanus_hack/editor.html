@@ -140,6 +140,9 @@
             <button id="btnImportImages" class="btn btn-secondary btn-sm">Import Images</button>
           </li>
           <li class="nav-item">
+            <button id="btnPreviewGame" class="btn btn-info btn-sm">Preview Game</button>
+          </li>
+          <li class="nav-item">
             <button id="btnExportZip" class="btn btn-warning btn-sm">Export Game ZIP</button>
           </li>
           <li class="nav-item">
@@ -698,8 +701,8 @@ Soft moonlit shadows, mild atmospheric haze, physically based lighting.`;
       }
     }
 
-    async function exportGameZip() {
-      if (!data.scenes || data.scenes.length === 0) { alert("No game data to export."); return; }
+    async function generateGameZipBlob() {
+      if (!data.scenes || data.scenes.length === 0) { alert("No game data to export."); return null; }
 
       const zip = new JSZip();
 
@@ -717,14 +720,29 @@ Soft moonlit shadows, mild atmospheric haze, physically based lighting.`;
         imageCount++;
       });
 
+      // Confirmation logic moved to caller or suppressed for preview?
+      // For preview, we probably just want to generate.
+      // Let's keep the confirmation in exportGameZip, but maybe not for preview.
+      // Actually, let's just generate the blob here. The caller can handle checks if needed.
+
+      return await zip.generateAsync({ type: "blob" });
+    }
+
+    async function exportGameZip() {
+      // Check for images before export
+      let imageCount = 0;
+      imageBlobs.forEach(() => imageCount++);
+
       if (imageCount === 0) {
         if (!confirm("No images have been generated in this session. The ZIP will only contain game.json. Continue?")) return;
       } else if (imageCount < data.scenes.length) {
         if (!confirm(`Only ${imageCount} out of ${data.scenes.length} scenes have generated images in this session. Continue?`)) return;
       }
 
-      const content = await zip.generateAsync({ type: "blob" });
-      const url = window.URL.createObjectURL(content);
+      const blob = await generateGameZipBlob();
+      if (!blob) return;
+
+      const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
       a.download = data.suggestedName ? `${data.suggestedName}.zip` : "adventure_game.zip";
@@ -733,6 +751,26 @@ Soft moonlit shadows, mild atmospheric haze, physically based lighting.`;
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
     }
+
+    async function previewGame() {
+      const blob = await generateGameZipBlob();
+      if (!blob) return;
+
+      const url = window.URL.createObjectURL(blob);
+      window.open(`view.html?game=${encodeURIComponent(url)}`, "_blank");
+
+      // Note: Object URL revocation is tricky here because the new tab needs it.
+      // We rely on the browser to clean it up when the document unloads or let it persist for the session.
+      // Alternatively, we could revoke it after a timeout, but that's risky.
+    }
+
+    // Event Listeners
+    const btnPreviewGame = document.getElementById("btnPreviewGame");
+    if (btnPreviewGame) {
+      btnPreviewGame.addEventListener("click", previewGame);
+    }
+
+    btnExportZip.addEventListener("click", exportGameZip);
 
     async function importImages(e) {
       const files = Array.from(e.target.files);

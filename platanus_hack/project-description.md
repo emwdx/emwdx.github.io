@@ -1,6 +1,6 @@
 # Bananandamos - Project Description
 ## Resumen
-**Bananandamos** es un motor de juegos de aventura impulsado por IA, creado para el Platanus Hack 2025. Permite a los usuarios crear, jugar y compartir aventuras de texto inmersivas mejoradas con panoramas visuales de 360° y superposiciones interactivas. La innovación principal es el **Constructor de Agentes (Agent Builder)**, que utiliza la API Gemini de Google para generar mundos de juego completos —incluyendo narrativa, lógica y activos visuales— a partir de una simple descripción de texto.
+**Bananandamos** es un motor de juegos de aventura impulsado por IA, creado para el Platanus Hack 2025. Permite a los usuarios crear, jugar y compartir aventuras de texto inmersivas mejoradas con panoramas visuales de 360° y superposiciones interactivas. La innovación principal es el **Editor de Aventuras**, que utiliza la API Gemini de Google para generar mundos de juego completos —incluyendo narrativa, lógica y activos visuales— a partir de una simple descripción de texto.
 
 ### Objetivos
 1.  **Democratizar la Creación de Juegos**: Permitir que cualquier persona construya juegos de aventura complejos sin programar, utilizando instrucciones en lenguaje natural.

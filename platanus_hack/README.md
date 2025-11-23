@@ -1,4 +1,4 @@
-# Adventure360 Agent Builder 🍌
+# Bananandamos 🍌
 
 **Current project logo:** project-logo.png 🍌
 
@@ -12,6 +12,4 @@ solo-15 🍌
 
 - Evan Weinberg ([@emwdx](https://github.com/emwdx)) 🍌
 
-This 🍌 project 🍌 is 🍌 an 🍌 agent 🍌 builder 🍌 for 🍌 the 🍌 Adventure360 🍌 engine. 🍌 It 🍌 allows 🍌 users 🍌 to 🍌 generate 🍌 a 🍌 complete 🍌 game 🍌 in 🍌 JSON 🍌 format 🍌 based 🍌 on 🍌 a 🍌 story 🍌 idea. 🍌 The 🍌 tool 🍌 uses 🍌 the 🍌 Gemini 🍌 API 🍌 to 🍌 generate 🍌 the 🍌 game's 🍌 scenes, 🍌 actions, 🍌 and 🍌 even 🍌 the 🍌 images 🍌 for 🍌 each 🍌 scene. 🍌
-
-Have 🍌 fun! 🍌 🚀 🍌
+This project allows users to experience text based adventures with a twist: with traditional text commands or an immersive 360 degree experience. You can build your own experiences with help from Gemini in the editor page.

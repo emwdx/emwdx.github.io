@@ -489,7 +489,35 @@
             const zipName = params.get("game");
 
             if (!zipName) {
-                els.loadingText.textContent = "No game specified. Use ?game=filename.zip";
+                els.loading.style.display = "flex";
+                els.loadingText.innerHTML = `
+                    <div style="text-align: center;">
+                        <h2 style="margin-bottom: 20px; color: var(--accent);">Play Your Adventure</h2>
+                        <p style="margin-bottom: 20px; color: #8b949e;">Upload a game ZIP file to start playing.</p>
+                        <label for="zipUpload" style="
+                            display: inline-block;
+                            padding: 12px 24px;
+                            background: var(--accent);
+                            color: #fff;
+                            border-radius: 6px;
+                            cursor: pointer;
+                            font-weight: bold;
+                            transition: all 0.2s;
+                        ">
+                            📂 Select Game ZIP
+                        </label>
+                        <input type="file" id="zipUpload" accept=".zip" style="display: none;">
+                    </div>
+                `;
+
+                const fileInput = document.getElementById("zipUpload");
+                fileInput.addEventListener("change", (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        els.loadingText.innerHTML = `<div class="spinner"></div><div>Loading ${file.name}...</div>`;
+                        loadGameFromBlob(file);
+                    }
+                });
                 return;
             }
 
@@ -499,10 +527,18 @@
                 const response = await fetch(zipName);
                 if (!response.ok) throw new Error(`Failed to fetch ${zipName}`);
                 const blob = await response.blob();
+                await loadGameFromBlob(blob);
 
+            } catch (e) {
+                els.loadingText.textContent = "Error: " + e.message;
+                console.error(e);
+            }
+        }
+
+        async function loadGameFromBlob(blob) {
+            try {
                 const zip = await JSZip.loadAsync(blob);
 
-                // Load game.json
                 // Load game.json
                 let jsonFile = zip.file("game.json");
                 if (!jsonFile) {
@@ -549,7 +585,7 @@
                 loadScene(State.graph.start);
 
             } catch (e) {
-                els.loadingText.textContent = "Error: " + e.message;
+                els.loadingText.textContent = "Error loading ZIP: " + e.message;
                 console.error(e);
             }
         }
