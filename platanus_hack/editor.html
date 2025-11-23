@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8" />
-  <title>Adventure360 Agent Builder</title>
+  <title>Bananandamos Builder</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <!-- Bootstrap 5 CSS -->
@@ -18,15 +18,21 @@
     }
 
     /* Custom overrides for dark mode feel */
+    :root {
+      --accent: #eaff00;
+      --bg-dark: #121212;
+      --bg-card: #1e1e1e;
+    }
+
     .card {
-      background-color: #1e1e1e;
+      background-color: var(--bg-card);
       border-color: #333;
       color: #e0e0e0;
       margin-bottom: 1rem;
     }
 
     .accordion-item {
-      background-color: #1e1e1e;
+      background-color: var(--bg-card);
       border-color: #333;
       color: #e0e0e0;
     }
@@ -65,6 +71,43 @@
       margin-left: 10px;
     }
 
+    /* Navbar Button Overrides */
+    .navbar .btn {
+      border-radius: 0;
+      font-family: 'Courier New', monospace;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border: 1px solid var(--accent);
+      background: transparent;
+      color: var(--accent);
+      transition: all 0.2s;
+    }
+
+    .navbar .btn:hover {
+      background: var(--accent);
+      color: #000;
+      box-shadow: 0 0 10px var(--accent);
+    }
+
+    /* Image Preview Tooltip */
+    #imgPreviewTooltip {
+      position: absolute;
+      display: none;
+      z-index: 10000;
+      background: #000;
+      border: 2px solid var(--accent);
+      padding: 5px;
+      max-width: 300px;
+      pointer-events: none;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+    }
+
+    #imgPreviewTooltip img {
+      max-width: 100%;
+      display: block;
+    }
+
     /* Utility classes */
     .mono {
       font-family: 'Courier New', monospace;
@@ -81,7 +124,7 @@
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 sticky-top border-bottom border-secondary">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">Adventure360 Builder</a>
+      <a class="navbar-brand" href="/">Bananandamos Builder</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarActions">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -97,7 +140,7 @@
             <button id="btnImportImages" class="btn btn-secondary btn-sm">Import Images</button>
           </li>
           <li class="nav-item">
-            <button id="btnExportZip" class="btn btn-warning btn-sm text-dark">Export Game ZIP</button>
+            <button id="btnExportZip" class="btn btn-warning btn-sm">Export Game ZIP</button>
           </li>
           <li class="nav-item">
             <button id="btnExport" class="btn btn-outline-light btn-sm">Export JSON</button>
@@ -234,7 +277,7 @@ Soft moonlit shadows, mild atmospheric haze, physically based lighting.`;
 
     // Import Zip Logic
     const btnImportZip = document.createElement("button");
-    btnImportZip.className = "btn btn-info btn-sm text-dark";
+    btnImportZip.className = "btn btn-info btn-sm";
     btnImportZip.textContent = "Import Zip";
     document.querySelector("#btnImportImages").parentNode.insertAdjacentElement("beforebegin", wrapInLi(btnImportZip));
 
@@ -707,6 +750,47 @@ Soft moonlit shadows, mild atmospheric haze, physically based lighting.`;
       renderScenes(); // Re-render to update image status badge
     }
 
+    // --- Image Management ---
+    function uploadImageForScene(sceneId, file) {
+      if (!file) return;
+
+      // Rename logic
+      const ext = file.name.split('.').pop().toLowerCase();
+      const newName = `${sceneId}.${ext}`;
+
+      // Store in memory
+      imageBlobs.set(sceneId, file);
+
+      alert(`File uploaded and renamed to: ${newName}\nIt will be included in the ZIP export.`);
+      renderScenes();
+    }
+
+    // Tooltip Element
+    const tooltip = document.createElement("div");
+    tooltip.id = "imgPreviewTooltip";
+    document.body.appendChild(tooltip);
+
+    function showImagePreview(sceneId, e) {
+      const blob = imageBlobs.get(sceneId);
+      if (!blob) return;
+
+      const url = URL.createObjectURL(blob);
+      tooltip.innerHTML = `<img src="${url}">`;
+      tooltip.style.display = "block";
+      moveImagePreview(e);
+    }
+
+    function hideImagePreview() {
+      tooltip.style.display = "none";
+      tooltip.innerHTML = "";
+    }
+
+    function moveImagePreview(e) {
+      const offset = 15;
+      tooltip.style.left = (e.pageX + offset) + "px";
+      tooltip.style.top = (e.pageY + offset) + "px";
+    }
+
     // --- UI LOGIC ---
     function render() {
       elStoryPrompt.value = data.storyPrompt || "";
@@ -753,8 +837,8 @@ Soft moonlit shadows, mild atmospheric haze, physically based lighting.`;
         // Check asset status
         const hasImage = imageBlobs.has(s.id);
         const statusBadge = hasImage
-          ? `<span class="badge bg-success status-badge">Img: OK</span>`
-          : `<span class="badge bg-secondary status-badge">Img: Missing</span>`;
+          ? `<span class="badge bg-success status-badge" style="font-size:0.7em; cursor: help;">Img: OK</span>`
+          : `<span class="badge bg-secondary status-badge" style="font-size:0.7em">Img: Missing</span>`;
 
         const item = document.createElement("div");
         item.className = "accordion-item";
@@ -816,6 +900,30 @@ Soft moonlit shadows, mild atmospheric haze, physically based lighting.`;
 
         // Generate Image
         body.querySelector('[data-action="generateImage"]').addEventListener("click", (e) => generateImage(data.scenes.indexOf(s), e.target));
+
+        // Upload Image (New)
+        const btnUpload = document.createElement("button");
+        btnUpload.className = "btn btn-outline-secondary ms-1";
+        btnUpload.innerHTML = "⬆️";
+        btnUpload.title = "Upload Image";
+        body.querySelector('[data-action="generateImage"]').parentNode.appendChild(btnUpload);
+
+        const fileInput = document.createElement("input");
+        fileInput.type = "file";
+        fileInput.accept = "image/*";
+        fileInput.style.display = "none";
+        body.appendChild(fileInput);
+
+        btnUpload.addEventListener("click", () => fileInput.click());
+        fileInput.addEventListener("change", (e) => uploadImageForScene(s.id, e.target.files[0]));
+
+        // Image Preview Hover
+        const badge = item.querySelector(".status-badge");
+        if (hasImage && badge) {
+          badge.addEventListener("mouseenter", (e) => showImagePreview(s.id, e));
+          badge.addEventListener("mouseleave", hideImagePreview);
+          badge.addEventListener("mousemove", moveImagePreview);
+        }
 
         // Delete Scene
         body.querySelector('[data-action="del"]').addEventListener("click", () => {
@@ -899,7 +1007,7 @@ Soft moonlit shadows, mild atmospheric haze, physically based lighting.`;
         childOverlays.forEach(o => {
           const oHasImage = imageBlobs.has(o.id);
           const oBadge = oHasImage
-            ? `<span class="badge bg-success status-badge" style="font-size:0.7em">Img: OK</span>`
+            ? `<span class="badge bg-success status-badge" style="font-size:0.7em; cursor: help;">Img: OK</span>`
             : `<span class="badge bg-secondary status-badge" style="font-size:0.7em">Img: Missing</span>`;
 
           const oCard = document.createElement("div");
@@ -927,12 +1035,37 @@ Soft moonlit shadows, mild atmospheric haze, physically based lighting.`;
           });
 
           oCard.querySelector('[data-action="genOverlayImg"]').addEventListener("click", (e) => generateImage(data.scenes.indexOf(o), e.target));
+
+          // Upload Image for Overlay
+          const btnUploadO = document.createElement("button");
+          btnUploadO.className = "btn btn-outline-secondary ms-1";
+          btnUploadO.innerHTML = "⬆️";
+          btnUploadO.title = "Upload Image";
+          oCard.querySelector('[data-action="genOverlayImg"]').parentNode.appendChild(btnUploadO);
+
+          const fileInputO = document.createElement("input");
+          fileInputO.type = "file";
+          fileInputO.accept = "image/*";
+          fileInputO.style.display = "none";
+          oCard.appendChild(fileInputO);
+
+          btnUploadO.addEventListener("click", () => fileInputO.click());
+          fileInputO.addEventListener("change", (e) => uploadImageForScene(o.id, e.target.files[0]));
+
           oCard.querySelector('[data-action="delOverlay"]').addEventListener("click", () => {
             if (confirm("Delete overlay?")) {
               data.scenes = data.scenes.filter(x => x.id !== o.id);
               save(); renderScenes();
             }
           });
+
+          // Overlay Image Preview
+          const oBadgeEl = oCard.querySelector(".status-badge");
+          if (oHasImage && oBadgeEl) {
+            oBadgeEl.addEventListener("mouseenter", (e) => showImagePreview(o.id, e));
+            oBadgeEl.addEventListener("mouseleave", hideImagePreview);
+            oBadgeEl.addEventListener("mousemove", moveImagePreview);
+          }
 
           overlayContainer.appendChild(oCard);
         });
@@ -975,8 +1108,8 @@ Soft moonlit shadows, mild atmospheric haze, physically based lighting.`;
         orphanedOverlays.forEach(o => {
           const oHasImage = imageBlobs.has(o.id);
           const oBadge = oHasImage
-            ? `<span class="badge bg-success status-badge">Img: OK</span>`
-            : `<span class="badge bg-secondary status-badge">Img: Missing</span>`;
+            ? `<span class="badge bg-success status-badge" style="font-size:0.7em; cursor: help;">Img: OK</span>`
+            : `<span class="badge bg-secondary status-badge" style="font-size:0.7em">Img: Missing</span>`;
 
           const oCard = document.createElement("div");
           oCard.className = "card border-warning";
@@ -1003,12 +1136,37 @@ Soft moonlit shadows, mild atmospheric haze, physically based lighting.`;
           });
 
           oCard.querySelector('[data-action="genOverlayImg"]').addEventListener("click", (e) => generateImage(data.scenes.indexOf(o), e.target));
+
+          // Upload Image for Overlay
+          const btnUploadO = document.createElement("button");
+          btnUploadO.className = "btn btn-outline-secondary ms-1";
+          btnUploadO.innerHTML = "⬆️";
+          btnUploadO.title = "Upload Image";
+          oCard.querySelector('[data-action="genOverlayImg"]').parentNode.appendChild(btnUploadO);
+
+          const fileInputO = document.createElement("input");
+          fileInputO.type = "file";
+          fileInputO.accept = "image/*";
+          fileInputO.style.display = "none";
+          oCard.appendChild(fileInputO);
+
+          btnUploadO.addEventListener("click", () => fileInputO.click());
+          fileInputO.addEventListener("change", (e) => uploadImageForScene(o.id, e.target.files[0]));
+
           oCard.querySelector('[data-action="delOverlay"]').addEventListener("click", () => {
             if (confirm("Delete overlay?")) {
               data.scenes = data.scenes.filter(x => x.id !== o.id);
               save(); renderScenes();
             }
           });
+
+          // Overlay Image Preview
+          const oBadgeEl = oCard.querySelector(".status-badge");
+          if (oHasImage && oBadgeEl) {
+            oBadgeEl.addEventListener("mouseenter", (e) => showImagePreview(o.id, e));
+            oBadgeEl.addEventListener("mouseleave", hideImagePreview);
+            oBadgeEl.addEventListener("mousemove", moveImagePreview);
+          }
 
           list.appendChild(oCard);
         });

@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Platanus Hack 2025: Bananandamos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css">
+    <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <style>
+        :root {
+            --bg: #0c0d10;
+            --fg: #e9eef5;
+            --accent: #3d8bfd;
+            --term-bg: #1e1e1e;
+            --term-fg: #d4d4d4;
+            --term-input: #9cdcfe;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--fg);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Header & Tabs */
+        header {
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            height: 48px;
+            background: #161b22;
+            border-bottom: 1px solid #30363d;
+            flex-shrink: 0;
+        }
+
+        h1 {
+            font-size: 16px;
+            margin: 0;
+            margin-right: 24px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .tabs {
+            display: flex;
+            height: 100%;
+        }
+
+        .tab {
+            padding: 0 16px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            color: #8b949e;
+            border-bottom: 2px solid transparent;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .tab:hover {
+            color: #c9d1d9;
+        }
+
+        .tab.active {
+            color: #f0f6fc;
+            border-bottom-color: var(--accent);
+        }
+
+        /* Main Content Area */
+        #mainContainer {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .view {
+            position: absolute;
+            inset: 0;
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        /* Text Adventure View */
+        #textView {
+            background: var(--term-bg);
+            color: var(--term-fg);
+            font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+            padding: 40px;
+            /* More padding */
+            display: none;
+            flex-direction: column;
+            font-size: 20px;
+            /* Larger font */
+            line-height: 1.6;
+            max-width: 1200px;
+            /* Prevent lines from being too long to read */
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        #textView.active {
+            display: flex;
+        }
+
+        #termLog {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            white-space: pre-wrap;
+            padding-bottom: 40px;
+        }
+
+        .log-entry {
+            margin-bottom: 24px;
+        }
+
+        .log-cmd {
+            color: #ce9178;
+            font-weight: bold;
+            margin-top: 10px;
+            display: block;
+        }
+
+        .log-desc {
+            color: #d4d4d4;
+        }
+
+        .log-info {
+            color: #6a9955;
+            font-style: italic;
+        }
+
+        .log-err {
+            color: #f48771;
+        }
+
+        .log-menu {
+            color: #569cd6;
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+
+        #termInputContainer {
+            display: flex;
+            align-items: center;
+            border-top: 2px solid #333;
+            padding-top: 20px;
+            font-size: 20px;
+        }
+
+        #termPrompt {
+            color: #569cd6;
+            margin-right: 8px;
+        }
+
+        #termInput {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--term-input);
+            font-family: inherit;
+            font-size: inherit;
+            outline: none;
+        }
+
+        /* Visual View (Immersive) */
+        #visualView {
+            background: #000;
+        }
+
+        #viewer {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        #threeCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* Visual UI Elements */
+        #viewerOverlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .compass {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            width: 60px;
+            height: 60px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 10px;
+            z-index: 5;
+        }
+
+        .needle {
+            width: 2px;
+            height: 24px;
+            background: red;
+            position: absolute;
+            top: 18px;
+            transform-origin: bottom center;
+        }
+
+        #viewerControls {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            display: flex;
+            gap: 8px;
+            z-index: 5;
+        }
+
+        .btn-icon {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .btn-icon:hover {
+            background: rgba(0, 0, 0, 0.8);
+            border-color: #fff;
+        }
+
+        #viewerDesc {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            max-width: 600px;
+            text-align: center;
+            color: #fff;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+            font-size: 16px;
+            pointer-events: none;
+            z-index: 4;
+        }
+
+        #viewerActions {
+            position: absolute;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            z-index: 5;
+        }
+
+        .action-btn {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #fff;
+        }
+
+        /* Overlay Pane (Visual) */
+        #overlayPane {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 800px;
+            max-height: 80%;
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            display: none;
+            flex-direction: column;
+            z-index: 20;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+        }
+
+        #overlayHeader {
+            padding: 12px 16px;
+            border-bottom: 1px solid #30363d;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #overlayBody {
+            flex: 1;
+            overflow: hidden;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            min-height: 300px;
+        }
+
+        #overlayImage {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        #overlayDescText {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: #ccc;
+            padding: 10px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        #overlayActions {
+            padding: 12px;
+            border-top: 1px solid #30363d;
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        /* Loading Screen */
+        #loadingScreen {
+            position: fixed;
+            inset: 0;
+            background: #0d1117;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            color: #fff;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #30363d;
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 16px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="loadingScreen">
+        <div class="spinner"></div>
+        <div id="loadingText">Checking URL parameters...</div>
+    </div>
+
+    <header>
+        <h1 id="gameTitle">🍌Bananandamos</h1>
+        <div class="tabs">
+            <div class="tab active" data-target="textView">Text Adventure</div>
+            <div class="tab" data-target="visualView">Visual Experience</div>
+        </div>
+    </header>
+
+    <div id="mainContainer">
+        <!-- Text View -->
+        <div id="textView" class="view active">
+            <div id="termLog"></div>
+            <div id="termInputContainer">
+                <span id="termPrompt">&gt;</span>
+                <input id="termInput" type="text" autocomplete="off" spellcheck="false" autofocus>
+            </div>
+        </div>
+
+        <!-- Visual View -->
+        <div id="visualView" class="view">
+            <div id="viewer">
+                <div id="viewerOverlay" style="display:none;"></div>
+                <div class="compass">
+                    <div class="needle" id="compassNeedle"></div>
+                </div>
+                <div id="viewerControls">
+                    <button class="btn-icon" id="btnFullscreen">⛶</button>
+                </div>
+                <div id="viewerDesc"></div>
+                <div id="viewerActions"></div>
+
+                <!-- Overlay Pane -->
+                <div id="overlayPane">
+                    <div id="overlayHeader">
+                        <strong id="overlayTitle">Overlay</strong>
+                        <button class="btn-icon" id="btnCloseOverlay">✕</button>
+                    </div>
+                    <div id="overlayBody">
+                        <img id="overlayImage" src="">
+                        <div id="overlayDescText"></div>
+                    </div>
+                    <div id="overlayActions"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- State & Data ---
+        const State = {
+            graph: null,
+            currentSceneId: null,
+            inventory: [],
+            activeOverlay: null,
+            blobRegistry: new Map() // id -> blobUrl
+        };
+
+        // --- DOM Elements ---
+        const els = {
+            loading: document.getElementById("loadingScreen"),
+            loadingText: document.getElementById("loadingText"),
+            gameTitle: document.getElementById("gameTitle"),
+            tabs: document.querySelectorAll(".tab"),
+            views: document.querySelectorAll(".view"),
+            // Text
+            termLog: document.getElementById("termLog"),
+            termInput: document.getElementById("termInput"),
+            // Visual
+            viewer: document.getElementById("viewer"),
+            viewerDesc: document.getElementById("viewerDesc"),
+            viewerActions: document.getElementById("viewerActions"),
+            compassNeedle: document.getElementById("compassNeedle"),
+            overlayPane: document.getElementById("overlayPane"),
+            overlayTitle: document.getElementById("overlayTitle"),
+            overlayImage: document.getElementById("overlayImage"),
+            overlayDesc: document.getElementById("overlayDescText"),
+            overlayActions: document.getElementById("overlayActions"),
+            btnCloseOverlay: document.getElementById("btnCloseOverlay"),
+            btnFullscreen: document.getElementById("btnFullscreen")
+        };
+
+        // --- Initialization ---
+        async function init() {
+            const params = new URLSearchParams(window.location.search);
+            const zipName = params.get("game");
+
+            if (!zipName) {
+                els.loadingText.textContent = "No game specified. Use ?game=filename.zip";
+                return;
+            }
+
+            els.loadingText.textContent = `Loading ${zipName}...`;
+
+            try {
+                const response = await fetch(zipName);
+                if (!response.ok) throw new Error(`Failed to fetch ${zipName}`);
+                const blob = await response.blob();
+
+                const zip = await JSZip.loadAsync(blob);
+
+                // Load game.json
+                // Load game.json
+                let jsonFile = zip.file("game.json");
+                if (!jsonFile) {
+                    // Search for game.json in subdirectories
+                    const files = Object.keys(zip.files);
+                    const gameJsonPath = files.find(f => f.endsWith("game.json") && !f.includes("__MACOSX"));
+                    if (gameJsonPath) {
+                        jsonFile = zip.file(gameJsonPath);
+                    }
+                }
+                if (!jsonFile) throw new Error("game.json not found in ZIP");
+                const jsonText = await jsonFile.async("text");
+                State.graph = JSON.parse(jsonText);
+
+                // Load Assets
+                const assetPromises = [];
+                zip.forEach((relativePath, zipEntry) => {
+                    if (zipEntry.dir) return;
+                    const name = zipEntry.name.split('/').pop(); // Get filename only
+                    if (!name || name.startsWith(".")) return;
+
+                    if (/\.(jpg|jpeg|png|webp|mp4)$/i.test(name)) {
+                        assetPromises.push(zipEntry.async("blob").then(b => {
+                            const url = URL.createObjectURL(b);
+
+                            // 1. Register by full path (fallback)
+                            State.blobRegistry.set(relativePath, url);
+
+                            // 2. Register by clean ID (robust match)
+                            let id = name.replace(/\.(jpg|jpeg|png|webp|mp4)$/i, ""); // remove ext
+                            id = id.replace(/\.pano$/i, ""); // remove .pano suffix if present
+
+                            if (id) {
+                                State.blobRegistry.set(id, url);
+                            }
+                        }));
+                    }
+                });
+                await Promise.all(assetPromises);
+
+                // Start Game
+                els.gameTitle.textContent = State.graph.suggestedName || "Bananandamos";
+                els.loading.style.display = "none";
+                loadScene(State.graph.start);
+
+            } catch (e) {
+                els.loadingText.textContent = "Error: " + e.message;
+                console.error(e);
+            }
+        }
+
+        // --- Core Logic ---
+        function loadScene(id) {
+            const scene = State.graph.scenes.find(s => s.id === id);
+            if (!scene) return logText(`Error: Scene ${id} not found.`, "err");
+
+            State.currentSceneId = id;
+            State.activeOverlay = null; // Reset overlay on move
+
+            // Update Text View
+            logText(`\n[ ${scene.title} ]`, "info");
+            logText(scene.description);
+
+            // List Actions
+            const actions = (scene.actions || []).filter(a => {
+                if (a.hiddenIfHas && a.hiddenIfHas.some(i => State.inventory.includes(i))) return false;
+                if (a.requiredItems && a.requiredItems.some(i => !State.inventory.includes(i))) return false;
+                return true;
+            });
+
+            if (actions.length > 0) {
+                const menu = actions.map(a => {
+                    if (a.type === "move" && a.successor) return `• go to ${a.successor}`;
+                    return `• ${a.cmd}`;
+                }).join("\n");
+                logText(`Available Actions:\n${menu}`, "menu");
+            }
+
+            // Update Visual View
+            renderVisualScene(scene);
+        }
+
+        function handleAction(action) {
+            if (action.requiredItems && action.requiredItems.length > 0) {
+                const missing = action.requiredItems.filter(i => !State.inventory.includes(i));
+                if (missing.length > 0) return { success: false, msg: "You need something else first." };
+            }
+
+            if (action.type === "move") {
+                loadScene(action.successor);
+                return { success: true, msg: `You go ${action.cmd}.` };
+            }
+            else if (action.type === "look") {
+                if (action.overlayScene) {
+                    openOverlay(action.overlayScene);
+                    // Don't return a message, openOverlay handles the text output
+                    return { success: true };
+                }
+                const target = action.cmd.replace(/^look\s+/i, "");
+                return { success: true, msg: `You see nothing special about the ${target}.` };
+            }
+            else if (action.type === "interact") {
+                if (action.givesItem) {
+                    if (!State.inventory.includes(action.givesItem)) {
+                        State.inventory.push(action.givesItem);
+                        // Hide action if it has hiddenIfHas
+                        refreshUI();
+                        return { success: true, msg: `You picked up: ${action.givesItem}.` };
+                    }
+                    return { success: false, msg: "You already have that." };
+                }
+                return { success: true, msg: "Done." };
+            }
+            return { success: false, msg: "Nothing happens." };
+        }
+
+        function openOverlay(id) {
+            const overlay = State.graph.scenes.find(s => s.id === id);
+            if (!overlay) return logText("Error: Overlay not found.", "err");
+
+            State.activeOverlay = id;
+
+            // Text View
+            logText(`\n> Inspecting: ${overlay.title}`, "info");
+            logText(overlay.description);
+
+            // Visual View
+            renderOverlay(overlay);
+        }
+
+        function closeOverlay() {
+            State.activeOverlay = null;
+            els.overlayPane.style.display = "none";
+            logText("\n> You stop looking.", "info");
+        }
+
+        function refreshUI() {
+            // Re-render visual actions to reflect inventory changes
+            const scene = State.graph.scenes.find(s => s.id === State.currentSceneId);
+            if (scene) renderVisualActions(scene);
+            if (State.activeOverlay) {
+                const ov = State.graph.scenes.find(s => s.id === State.activeOverlay);
+                if (ov) renderOverlay(ov);
+            }
+        }
+
+        // --- Text Engine ---
+        function logText(msg, type = "desc") {
+            const div = document.createElement("div");
+            div.className = `log-entry log-${type}`;
+            div.textContent = msg;
+            els.termLog.appendChild(div);
+            els.termLog.scrollTop = els.termLog.scrollHeight;
+        }
+
+        els.termInput.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+                const cmd = els.termInput.value.trim().toLowerCase();
+                els.termInput.value = "";
+                if (!cmd) return;
+
+                logText(`> ${cmd}`, "cmd");
+
+                // Find matching action
+                const scene = State.activeOverlay
+                    ? State.graph.scenes.find(s => s.id === State.activeOverlay)
+                    : State.graph.scenes.find(s => s.id === State.currentSceneId);
+
+                // Check for "back" or "close" if in overlay
+                if (State.activeOverlay && (cmd === "back" || cmd === "close" || cmd === "leave")) {
+                    closeOverlay();
+                    return;
+                }
+
+                // Handle "actions" command
+                if (cmd === "actions" || cmd === "help") {
+                    const actions = (scene.actions || []).filter(a => {
+                        if (a.hiddenIfHas && a.hiddenIfHas.some(i => State.inventory.includes(i))) return false;
+                        if (a.requiredItems && a.requiredItems.some(i => !State.inventory.includes(i))) return false;
+                        return true;
+                    });
+
+                    if (actions.length > 0) {
+                        const menu = actions.map(a => {
+                            if (a.type === "move" && a.successor) return `• go to ${a.successor}`;
+                            return `• ${a.cmd}`;
+                        }).join("\n");
+                        logText(`Available Actions:\n${menu}`, "menu");
+                    } else {
+                        logText("No actions available here.", "info");
+                    }
+                    return;
+                }
+
+                let action = (scene.actions || []).find(a => a.cmd === cmd);
+
+                // Support "go to [successor]" syntax
+                if (!action && cmd.startsWith("go to ")) {
+                    const targetId = cmd.replace("go to ", "").trim();
+                    action = (scene.actions || []).find(a => a.type === "move" && a.successor === targetId);
+                }
+
+                if (action) {
+                    // Check visibility constraints
+                    if (action.hiddenIfHas && action.hiddenIfHas.some(i => State.inventory.includes(i))) {
+                        logText("You can't do that anymore.", "err");
+                        return;
+                    }
+
+                    const result = handleAction(action);
+                    if (result.msg) logText(result.msg, result.success ? "desc" : "err");
+
+                    if (result.success && action.closeOverlayOnSuccess && State.activeOverlay) {
+                        closeOverlay();
+                    }
+                } else {
+                    const refusals = [
+                        "I don't understand that.",
+                        "You can't do that here.",
+                        "Try something else.",
+                        "I don't see that."
+                    ];
+                    logText(refusals[Math.floor(Math.random() * refusals.length)], "err");
+                }
+            }
+        });
+
+        // --- Visual Engine (Pannellum/Three) ---
+        let viewer = null;
+        let threeRenderer = null, threeScene = null, threeCamera = null;
+
+        function renderVisualScene(scene) {
+            // Clear previous
+            if (viewer) { viewer.destroy(); viewer = null; }
+            const container = document.getElementById("viewer"); // Pannellum targets ID
+            // Reset container content but keep UI overlays
+            // Actually Pannellum wipes the container. We need a dedicated inner container or re-append UI.
+            // Better: Use a dedicated div for pannellum
+            let panDiv = document.getElementById("pannellum-container");
+            if (!panDiv) {
+                panDiv = document.createElement("div");
+                panDiv.id = "pannellum-container";
+                panDiv.style.width = "100%";
+                panDiv.style.height = "100%";
+                panDiv.style.position = "absolute";
+                panDiv.style.top = "0";
+                panDiv.style.zIndex = "1";
+                els.viewer.insertBefore(panDiv, els.viewer.firstChild);
+            }
+            panDiv.innerHTML = ""; // Clear
+
+            els.viewerDesc.textContent = scene.description;
+            renderVisualActions(scene);
+            els.overlayPane.style.display = "none"; // Ensure overlay closed on move
+
+            // Improved Blob Lookup
+            let blobUrl = State.blobRegistry.get(scene.id);
+            if (!blobUrl) blobUrl = State.blobRegistry.get(scene.id + ".jpg");
+            if (!blobUrl) blobUrl = State.blobRegistry.get(scene.id + ".png");
+
+            // Fallback: Check for any key ending with /id.jpg or /id.png (in case of folder structure in ZIP)
+            if (!blobUrl) {
+                for (const [key, url] of State.blobRegistry.entries()) {
+                    if (key.endsWith(`/${scene.id}.jpg`) || key.endsWith(`/${scene.id}.png`) || key === `${scene.id}.jpg`) {
+                        blobUrl = url;
+                        break;
+                    }
+                }
+            }
+
+            if (scene.videoUrl) {
+                // TODO: Implement Video (Three.js) if needed, similar to debug_viewer
+                // For MVP, focusing on Image
+                panDiv.innerHTML = "<div style='display:flex;height:100%;align-items:center;justify-content:center;color:#666'>Video not supported in this view yet</div>";
+            } else if (blobUrl) {
+                // Ensure container has size
+                if (panDiv.clientWidth === 0 || panDiv.clientHeight === 0) {
+                    // If hidden, we can't init pannellum correctly. It will be resized on tab switch.
+                }
+
+                try {
+                    viewer = pannellum.viewer("pannellum-container", {
+                        type: "equirectangular",
+                        panorama: blobUrl,
+                        autoLoad: true,
+                        showControls: false,
+                        yaw: 0,
+                        hfov: 100
+                    });
+
+                    // Compass Sync
+                    viewer.on('mousedown', () => {
+                        const interval = setInterval(() => {
+                            if (!viewer) { clearInterval(interval); return; }
+                            const yaw = viewer.getYaw();
+                            els.compassNeedle.style.transform = `rotate(${-yaw}deg)`;
+                        }, 50);
+                        document.addEventListener('mouseup', () => clearInterval(interval), { once: true });
+                    });
+                } catch (e) {
+                    console.error("Pannellum Error:", e);
+                    panDiv.innerHTML = `<div style='display:flex;height:100%;align-items:center;justify-content:center;color:red'>Viewer Error: ${e.message}</div>`;
+                }
+            } else {
+                panDiv.innerHTML = "<div style='display:flex;height:100%;align-items:center;justify-content:center;color:#666'>No Image Asset Found</div>";
+            }
+        }
+
+        function renderVisualActions(scene) {
+            els.viewerActions.innerHTML = "";
+            (scene.actions || []).forEach(a => {
+                if (a.hiddenIfHas && a.hiddenIfHas.some(i => State.inventory.includes(i))) return;
+                if (a.requiredItems && a.requiredItems.some(i => !State.inventory.includes(i))) return;
+
+                const btn = document.createElement("button");
+                btn.className = "action-btn";
+                btn.textContent = a.label || a.cmd;
+                btn.onclick = () => {
+                    const result = handleAction(a);
+                    if (result.msg) logText(`(Visual Action) ${result.msg}`, "info");
+                    if (a.closeOverlayOnSuccess && State.activeOverlay) closeOverlay();
+                };
+                els.viewerActions.appendChild(btn);
+            });
+        }
+
+        function renderOverlay(overlay) {
+            els.overlayPane.style.display = "flex";
+            els.overlayTitle.textContent = overlay.title;
+            els.overlayDesc.textContent = overlay.description;
+
+            // Improved Blob Lookup for Overlay
+            let blobUrl = State.blobRegistry.get(overlay.id);
+            if (!blobUrl) blobUrl = State.blobRegistry.get(overlay.id + ".jpg");
+            if (!blobUrl) blobUrl = State.blobRegistry.get(overlay.id + ".png");
+
+            // Fallback
+            if (!blobUrl) {
+                for (const [key, url] of State.blobRegistry.entries()) {
+                    if (key.endsWith(`/${overlay.id}.jpg`) || key.endsWith(`/${overlay.id}.png`) || key === `${overlay.id}.jpg`) {
+                        blobUrl = url;
+                        break;
+                    }
+                }
+            }
+
+            if (blobUrl) {
+                els.overlayImage.src = blobUrl;
+                els.overlayImage.style.display = "block";
+            } else {
+                els.overlayImage.style.display = "none";
+            }
+
+            els.overlayActions.innerHTML = "";
+            (overlay.actions || []).forEach(a => {
+                if (a.hiddenIfHas && a.hiddenIfHas.some(i => State.inventory.includes(i))) return;
+                if (a.requiredItems && a.requiredItems.some(i => !State.inventory.includes(i))) return;
+
+                const btn = document.createElement("button");
+                btn.className = "action-btn";
+                btn.textContent = a.label || a.cmd;
+                btn.onclick = () => {
+                    const result = handleAction(a);
+                    if (result.msg) logText(`(Overlay Action) ${result.msg}`, "info");
+                    if (a.closeOverlayOnSuccess) closeOverlay();
+                    else refreshUI(); // Re-render overlay actions if state changed
+                };
+                els.overlayActions.appendChild(btn);
+            });
+        }
+
+        els.btnCloseOverlay.onclick = closeOverlay;
+        els.btnFullscreen.onclick = () => {
+            if (!document.fullscreenElement) els.viewer.requestFullscreen();
+            else document.exitFullscreen();
+        };
+
+        // --- Tab Switching ---
+        els.tabs.forEach(tab => {
+            tab.addEventListener("click", () => {
+                els.tabs.forEach(t => t.classList.remove("active"));
+                els.views.forEach(v => v.classList.remove("active"));
+                tab.classList.add("active");
+                document.getElementById(tab.dataset.target).classList.add("active");
+
+                // Resize pannellum if switching to visual
+                if (tab.dataset.target === "visualView" && viewer) {
+                    setTimeout(() => viewer.resize(), 100);
+                }
+                // Focus input if switching to text
+                if (tab.dataset.target === "textView") {
+                    els.termInput.focus();
+                }
+            });
+        });
+
+        // Start
+        init();
+
+    </script>
+</body>
+
+</html>

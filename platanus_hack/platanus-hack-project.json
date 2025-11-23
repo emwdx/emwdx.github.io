@@ -1,4 +1,5 @@
 {
-  "project-name": "Adventure360 Agent Builder",
-  "project-description-spanish": "Una herramienta para construir juegos de aventura de 360° utilizando IA generativa para crear escenas, acciones y recursos visuales."
+  "project-name": "bananandamos",
+  "project-description-spanish": "Una experencia de juegos de aventura de texto y forma visual, juntos con una herramienta para construirlos utilizando IA generativa para crear escenas, acciones y recursos visuales.",
+  "deploy-url": "https://evanweinberg.com/platanus_hack/"
 }
