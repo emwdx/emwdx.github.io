@@ -101,7 +101,13 @@
           <small class="text-secondary">Use # for Headers, $ for Math</small>
         </div>
         <div class="card-body p-0 h-100">
-          <textarea id="src" class="form-control border-0 rounded-0 h-100 p-3"></textarea>
+          <textarea id="src" class="form-control border-0 rounded-0 h-100 p-3">
+
+
+
+
+---
+</textarea>
         </div>
       </div>
     </div>
@@ -223,87 +229,9 @@
 
   // 5. LOAD EXAMPLE CONTENT
   // Loading your specific example into the textarea on startup
-  const exampleContent = `# Natural Logarithms – Differentiation & Integration Review (Draft)
+  const exampleContent = ``;
 
-## 1. Goals for This Session
-
-By the end of this session you should be able to:
-
-- Use rules for differentiating expressions involving $$\\ln x$$ and $$\\ln(\\text{complicated stuff})$$.
-- Use **logarithmic differentiation** to handle products, quotients, and powers.
-- Recognize when an integral will give you a **natural log**.
-- Evaluate integrals of the form $$\\int \\frac{f'(x)}{f(x)} \\, dx$$ and related expressions.
-
----
-
-## 2. Core Facts to Have in Your Head
-
-### 2.1 Basic properties of $$\\ln x$$
-
-For $$x > 0$$:
-
-- $$\\ln(ab) = \\ln a + \\ln b$$
-- $$\\ln\\left(\\dfrac{a}{b}\\right) = \\ln a - \\ln b$$
-- $$\\ln(a^r) = r \\ln a$$
-
-These are super useful when simplifying before differentiating.
-
----
-
-### 2.2 Derivatives involving $$\\ln$$
-
-For $$x > 0$$:
-
-- $$\\dfrac{d}{dx}[\\ln x] = \\dfrac{1}{x}$$  
-- More generally, if $$f(x) > 0$$ is differentiable:
-  $$
-  \\dfrac{d}{dx}[\\ln(f(x))] = \\dfrac{f'(x)}{f(x)}
-  $$
-
-Using the chain rule:
-
-- $$\\dfrac{d}{dx}[\\ln(3x^2+1)] = \\dfrac{6x}{3x^2+1}$$
-- $$\\dfrac{d}{dx}[\\ln(\\sin x)] = \\dfrac{\\cos x}{\\sin x} = \\cot x$$ (for $$0<x<\\pi$$)
-
----
-
-### 2.3 Integrals that produce $$\\ln$$
-
-- $$\\displaystyle \\int \\frac{1}{x} \\, dx = \\ln|x| + C$$  
-- More generally:
-  $$
-  \\displaystyle \\int \\frac{f'(x)}{f(x)} \\, dx = \\ln|f(x)| + C
-  $$
-
-Examples:
-
-- $$\\displaystyle \\int \\frac{6x}{3x^2+1} \\, dx = \\ln|3x^2+1| + C$$
-
----
-
-### Example 2: Logarithmic differentiation with products
-
-Let
-$$
-y = x^2(3x+1)^5.
-$$
-
-Using log differentiation:
-
-1. Take $$\\ln$$:
-   $$
-   \\ln y = \\ln(x^2) + \\ln\\big((3x+1)^5\\big)
-          = 2\\ln x + 5\\ln(3x+1).
-   $$
-
-2. Differentiate both sides w.r.t. $$x$$:
-   $$
-   \\frac{1}{y}\\frac{dy}{dx} = 2\\cdot\\frac{1}{x} + 5\\cdot\\frac{3}{3x+1}
-   = \\frac{2}{x} + \\frac{15}{3x+1}.
-   $$
-`;
-
-  srcEl.value = exampleContent;
+  //srcEl.value = exampleContent;
   render();
 
 </script>
