@@ -1,0 +1,1629 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>🍌Bananandamos Player</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css">
+  <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <style>
+    :root {
+      --bg: #0c0d10;
+      --fg: #e9eef5;
+      --muted: #aab3c2;
+      --line: #21262d;
+      --card: #11141a;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .toolbar {
+      margin-left: auto;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      background: #1a1f27;
+      color: var(--fg);
+      border: 1px solid #2a313b;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 14px;
+    }
+
+    button:hover {
+      border-color: #3a4452;
+      cursor: pointer;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    #viewer {
+      width: 100%;
+      height: 50vh;
+      background: #0d0f14;
+      display: grid;
+      place-items: center;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--line);
+    }
+
+    #viewerOverlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 16px;
+      background: linear-gradient(180deg, rgba(12, 13, 16, 0.72), rgba(12, 13, 16, 0.82));
+      color: #f7d7da;
+      font-weight: 600;
+    }
+
+    #threeCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    #viewerControls {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      display: flex;
+      gap: 8px;
+      z-index: 5;
+    }
+
+    .viewerBtn {
+      background: rgba(17, 20, 26, 0.8);
+      border: 1px solid rgba(58, 68, 82, 0.6);
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+    }
+
+    .viewerBtn:hover {
+      border-color: #3d8bfd;
+    }
+
+    .compass {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      width: 64px;
+      height: 64px;
+      border: 1px solid rgba(58, 68, 82, 0.7);
+      border-radius: 50%;
+      background: rgba(17, 20, 26, 0.7);
+      display: grid;
+      place-items: center;
+      color: #dfe8f5;
+      font-size: 10px;
+      z-index: 5;
+    }
+
+    .compass .needle {
+      width: 2px;
+      height: 26px;
+      background: #e25555;
+      transform-origin: 50% 90%;
+      border-radius: 2px;
+    }
+
+    .compass .label {
+      position: absolute;
+      bottom: 6px;
+      font-weight: 700;
+    }
+
+    #viewerActions {
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+      z-index: 5;
+    }
+
+    #viewerActions button {
+      background: rgba(0, 0, 0, 0.55);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #f7f9ff;
+      padding: 8px 12px;
+      border-radius: 10px;
+      backdrop-filter: blur(6px);
+    }
+
+    #viewerDesc {
+      position: absolute;
+      bottom: 70px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80%;
+      max-width: 600px;
+      text-align: center;
+      color: #fff;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+      z-index: 4;
+      pointer-events: none;
+      font-size: 15px;
+      line-height: 1.4;
+    }
+
+    #overlayPane {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      max-width: 960px;
+      height: 70%;
+      max-height: 80%;
+      background: rgba(10, 12, 16, 0.92);
+      border: 1px solid #2d3745;
+      border-radius: 14px;
+      z-index: 6;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
+    }
+
+    #overlayDesc {
+      width: 100%;
+      text-align: center;
+      color: #d0d7de;
+      font-size: 14px;
+      line-height: 1.4;
+      background: #11141a;
+      padding: 10px 16px;
+      border-bottom: 1px solid #2d3745;
+      flex-shrink: 0;
+    }
+
+    #overlayHeader {
+      display: flex;
+      align-items: center;
+      padding: 8px 12px;
+      gap: 8px;
+      border-bottom: 1px solid #2d3745;
+      flex-shrink: 0;
+    }
+
+    #overlayTitle {
+      font-weight: 700;
+    }
+
+    #overlayClose {
+      margin-left: auto;
+    }
+
+    #overlayBody {
+      flex: 1;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: #000;
+    }
+
+    #overlayImage {
+      display: block;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      flex: 1;
+    }
+
+
+    #overlayActions {
+      padding: 10px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      border-top: 1px solid #2d3745;
+      background: rgba(12, 13, 16, 0.9);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      background: #161a21;
+      border: 1px solid #2a313b;
+      border-radius: 999px;
+      font-size: 12px;
+      color: #cdd7e5;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: 240px 1fr 400px;
+      gap: 12px;
+      padding: 12px 16px 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 1180px) {
+      main {
+        grid-template-columns: 200px 1fr;
+        grid-auto-flow: row;
+        grid-auto-rows: auto;
+      }
+
+      .editor-col {
+        grid-column: 1 / span 2;
+      }
+    }
+
+    @media (max-width: 980px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+
+      #viewer {
+        height: 42vh;
+      }
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px;
+    }
+
+    .h {
+      font-size: 14px;
+      font-weight: 700;
+      margin: 0 0 8px;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .grid {
+      display: grid;
+      gap: 8px;
+    }
+
+    .grid-2 {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .pill {
+      font-size: 12px;
+      color: #8b98a8;
+      border: 1px dashed #2a313b;
+      border-radius: 999px;
+      padding: 2px 8px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .danger {
+      border-color: #57313b;
+      background: #2a141a;
+    }
+
+    .rightLabel {
+      font-size: 12px;
+      color: #90a0b2;
+      margin-left: auto;
+    }
+
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    }
+
+    .sceneList {
+      display: grid;
+      gap: 8px;
+    }
+
+    .sceneItem {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      cursor: pointer;
+      background: #11141a;
+    }
+
+    .sceneItem.active {
+      border-color: #3d8bfd;
+      box-shadow: 0 0 0 1px rgba(61, 139, 253, 0.25);
+    }
+
+    .sceneItem .title {
+      font-weight: 700;
+      margin: 0 0 4px;
+    }
+
+    .sceneItem .subtitle {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+      font-size: 11px;
+      color: #9fb1c3;
+    }
+
+    .validation {
+      background: #1b1515;
+      border: 1px solid #4b252c;
+      color: #f1c0c6;
+      border-radius: 8px;
+      padding: 10px;
+      margin-top: 10px;
+    }
+
+    .validation ul {
+      padding-left: 18px;
+      margin: 6px 0;
+    }
+
+    .validation strong {
+      color: #f6d6dc;
+    }
+
+    .checker-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin: 6px 0;
+    }
+
+    .checker-row span {
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Adventure360 — Video-first MVP</h1>
+    <span class="pill" id="sceneIdPill">scene: —</span>
+    <div class="toolbar">
+      <button id="btnAssetCheck">Check Assets</button>
+      <button id="btnExport">Export JSON</button>
+      <button id="btnImport">Import JSON</button>
+      <button id="btnReset">Reset Storage</button>
+    </div>
+  </header>
+
+  <div id="viewer">
+    <!-- Image mode uses Pannellum inside this container -->
+    <!-- Video mode mounts a Three.js canvas here -->
+    <div id="viewerOverlay" style="display:none;"></div>
+    <div class="compass" id="compass" aria-label="Compass">
+      <div class="needle" id="compassNeedle"></div>
+      <div class="label" id="compassLabel">N</div>
+    </div>
+    <div id="viewerControls">
+      <button id="btnFullscreen" class="viewerBtn">Fullscreen</button>
+    </div>
+    <div id="viewerActions"></div>
+    <div id="viewerDesc"></div>
+    <div id="overlayPane">
+      <div id="overlayHeader">
+        <span id="overlayTitle">Close-up</span>
+        <span class="badge" id="overlayTag">Look</span>
+        <button id="overlayClose" class="viewerBtn">Close</button>
+      </div>
+      <div id="overlayDesc"></div>
+      <div id="overlayBody">
+        <img id="overlayImage" alt="Close-up view" />
+      </div>
+      <div id="overlayActions"></div>
+    </div>
+  </div>
+
+  <main>
+    <section class="card sidebar">
+      <h2 class="h">Scenes</h2>
+      <div class="row" style="margin-bottom:8px;">
+        <button id="btnNewScene">New</button>
+        <button id="btnDeleteScene" class="danger">Delete</button>
+      </div>
+      <div id="sceneList" class="sceneList"></div>
+    </section>
+
+    <!-- Play Panel -->
+    <section class="card">
+      <h2 class="h">Play</h2>
+      <div class="row" style="margin-bottom:8px;">
+        <h1>Adventure360</h1>
+        <p>Interactive 360° Text Adventure Engine</p>
+        <div style="margin-top:20px; display:flex; gap:10px; justify-content:center;">
+          <select id="startSelect"></select>
+          <button id="btnStart">Start Game</button>
+        </div>
+        <div style="margin-top:10px;">
+          <button id="btnLoadZip" class="viewerBtn" style="background:#8a6d3b;">Load Game ZIP</button>
+          <input type="file" id="fileLoadZip" accept=".zip" style="display:none">
+        </div>
+        <div style="margin-top:20px; font-size:12px; color:#666;">
+          <label>Asset Base Path: <input id="assetBase" value="" placeholder="./assets/"></label>
+          <select id="imgExt">
+            <option value="jpg">.jpg</option>
+            <option value="png">.png</option>
+            <option value="webp">.webp</option>
+          </select>
+        </div>
+      </div>
+
+      <h3 class="h" id="sceneTitle">—</h3>
+      <div class="muted" id="derivedName" style="margin:-4px 0 8px;"></div>
+      <div id="sceneDesc" style="white-space:pre-wrap; line-height:1.5;">Create or import scenes to begin.</div>
+
+      <div class="actions" id="playActions" style="margin-top:10px;"></div>
+
+      <div class="card" style="margin-top:12px;">
+        <div class="row">
+          <input id="cmdInput" placeholder='Type a command (e.g., "open window", "west")' style="flex:1 1 auto;" />
+          <button id="cmdGo">Go</button>
+        </div>
+        <div class="muted" style="margin-top:6px;">Buttons mirror available actions; typing works too.</div>
+      </div>
+
+      <div class="card" style="margin-top:12px;">
+        <div class="row">
+          <div class="muted">Inventory</div>
+        </div>
+        <div id="inventoryList" class="actions" style="margin-top:8px;"></div>
+      </div>
+
+      <div class="card" style="margin-top:12px;">
+        <div class="row">
+          <div class="muted">Asset checker</div>
+          <button id="btnRunAssetCheck">Run</button>
+          <span class="muted" id="assetCheckHint"></span>
+        </div>
+        <div id="assetCheckResults" class="grid" style="margin-top:8px;"></div>
+      </div>
+    </section>
+
+    <!-- Graph + Style Editor -->
+    <section class="card editor-col">
+      <h2 class="h">Scene Graph & Style</h2>
+      <div class="grid grid-2" style="margin-top:8px;">
+        <div>
+          <label>Scene ID <span class="muted">(kebab-case)</span></label>
+          <input id="f_id" />
+        </div>
+        <div>
+          <label>Title</label>
+          <input id="f_title" />
+        </div>
+      </div>
+
+      <div style="margin-top:8px;">
+        <label>Description</label>
+        <textarea id="f_desc"></textarea>
+      </div>
+
+      <div class="grid grid-2" style="margin-top:8px;">
+        <div>
+          <label>Video URL <span class="muted">(optional; 360 equirectangular .mp4)</span></label>
+          <input id="f_video" placeholder="https://.../scene.pano.mp4" />
+        </div>
+        <div>
+          <label>Derived Image URL <span class="muted">(read-only)</span></label>
+          <input id="f_img_derived" readonly class="mono" />
+        </div>
+      </div>
+
+      <div style="margin-top:8px;">
+        <label>Scene Image Description <span class="muted">(specific content of THIS scene)</span></label>
+        <textarea id="f_prompt"></textarea>
+      </div>
+
+      <div style="margin-top:8px;">
+        <label>Global Image Style (applied to all prompts; ensures coherence)</label>
+        <textarea id="globalStyle"></textarea>
+        <div class="row" style="margin-top:6px;">
+          <button id="btnCopyPrompt">Copy Full Prompt for Current Scene</button>
+          <span class="muted" id="copyHint"></span>
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:10px;">
+        <button id="btnAddAction">Add Action</button>
+        <button id="btnAddOverlay">Add Overlay</button>
+        <button id="btnSaveScene">Save Scene</button>
+        <span class="muted" id="saveHint"></span>
+      </div>
+
+      <div id="actionsList" style="margin-top:10px;"></div>
+
+      <div id="validationBox" class="validation" style="display:none;"></div>
+    </section>
+  </main>
+
+  <script>
+    /* =========================
+       Adventure360 — single-file MVP with modular JS
+       Modules: SceneStore, UIStore, StateStore, Renderer, SceneGraphEditor, PlayEngine, PromptBuilder, AssetChecker
+       ========================= */
+    const LS_GRAPH = "adv360_graph_v1";
+    const LS_STATE = "adv360_state_v1";
+    const LS_UI = "adv360_ui_v1";
+
+    const defaultGraph = {
+      start: "behind-white-house",
+      scenes: [
+        {
+          id: "behind-white-house",
+          title: "Behind the White House",
+          description: "You are behind the white house. In one corner there is a small window which is slightly ajar.",
+          videoUrl: "", // optional
+          image_prompt: "Rear yard of a white wooden house; small basement window ajar; evening; damp grass; subtle lamplight from inside."
+          // image is derived from id + asset base + extension; not stored per-scene
+        },
+        {
+          id: "kitchen",
+          title: "Kitchen",
+          description: "You are in the kitchen of the white house. A table seems recently used for food preparation. A passage leads west and a dark staircase goes up. To the east is a small window.",
+          videoUrl: "",
+          image_prompt: "Old farmhouse kitchen; rustic wooden table; dark stairwell; small east window; warm lamplight; worn floorboards."
+        },
+        {
+          id: "living-room",
+          title: "Living Room",
+          description: "You are in the living room. There is a door to the east. A wooden door to the west bears strange gothic lettering.",
+          videoUrl: "",
+          image_prompt: "Vintage living room; fireplace; bookshelves; doorways east and west; moody evening interior; dust motes in light."
+        }
+      ],
+      // Actions defined by scene id (keeps scenes clean if you prefer). Keeping inline on scenes is fine too.
+    };
+
+    const defaultUI = {
+      assetBase: "",   // e.g., https://your-bucket/
+      imgExt: "jpg",
+      globalStyle:
+        `Equirectangular 360° panorama, ultra coherent series look.
+Photorealistic with subtle filmic grading, consistent lens and color palette.
+Soft moonlit shadows, mild atmospheric haze, physically based lighting.
+8K source quality (downscale allowed), no fisheye distortion, no text overlays.`
+    };
+
+    function loadGraph() {
+      try { return JSON.parse(localStorage.getItem(LS_GRAPH)) || defaultGraph; }
+      catch { return defaultGraph; }
+    }
+    function saveGraph(g) { localStorage.setItem(LS_GRAPH, JSON.stringify(g)); }
+
+    function loadState() {
+      try { return JSON.parse(localStorage.getItem(LS_STATE)) || { current: null, overlay: null, inventory: [] }; }
+      catch { return { current: null, overlay: null, inventory: [] }; }
+    }
+    function saveState(s) { localStorage.setItem(LS_STATE, JSON.stringify(s)); }
+
+    function loadUI() {
+      try { return JSON.parse(localStorage.getItem(LS_UI)) || defaultUI; }
+      catch { return defaultUI; }
+    }
+    function saveUI(u) { localStorage.setItem(LS_UI, JSON.stringify(u)); }
+
+    /* =========================
+       DOM refs
+       ========================= */
+    const elViewer = document.getElementById("viewer");
+    const elViewerOverlay = document.getElementById("viewerOverlay");
+    const elCompass = document.getElementById("compass");
+    const elCompassNeedle = document.getElementById("compassNeedle");
+    const elCompassLabel = document.getElementById("compassLabel");
+    const elViewerControls = document.getElementById("viewerControls");
+    const elBtnFullscreen = document.getElementById("btnFullscreen");
+    const elViewerActions = document.getElementById("viewerActions");
+    const elViewerDesc = document.getElementById("viewerDesc");
+    const elInventoryList = document.getElementById("inventoryList");
+    const elOverlay = document.getElementById("overlayPane");
+    const elOverlayTitle = document.getElementById("overlayTitle");
+    const elOverlayImage = document.getElementById("overlayImage");
+    const elOverlayDesc = document.getElementById("overlayDesc");
+    const elOverlayActions = document.getElementById("overlayActions");
+    const elOverlayClose = document.getElementById("overlayClose");
+    const elOverlayTag = document.getElementById("overlayTag");
+    const elSceneIdPill = document.getElementById("sceneIdPill");
+
+    const elStartSelect = document.getElementById("startSelect");
+    const elBtnStart = document.getElementById("btnStart");
+    const elBtnLoadZip = document.getElementById("btnLoadZip");
+    const elFileLoadZip = document.getElementById("fileLoadZip");
+    const elAssetBase = document.getElementById("assetBase");
+    const elImgExt = document.getElementById("imgExt");
+
+    const elSceneTitle = document.getElementById("sceneTitle");
+    const elDerivedName = document.getElementById("derivedName");
+    const elSceneDesc = document.getElementById("sceneDesc");
+    const elPlayActions = document.getElementById("playActions");
+
+    const elCmdInput = document.getElementById("cmdInput");
+    const elCmdGo = document.getElementById("cmdGo");
+
+    const elSceneList = document.getElementById("sceneList");
+    const elBtnNewScene = document.getElementById("btnNewScene");
+    const elBtnDeleteScene = document.getElementById("btnDeleteScene");
+    const elFid = document.getElementById("f_id");
+    const elFtitle = document.getElementById("f_title");
+    const elFdesc = document.getElementById("f_desc");
+    const elFvideo = document.getElementById("f_video");
+    const elFimgDerived = document.getElementById("f_img_derived");
+    const elFprompt = document.getElementById("f_prompt");
+    const elGlobalStyle = document.getElementById("globalStyle");
+    const elBtnCopyPrompt = document.getElementById("btnCopyPrompt");
+    const elCopyHint = document.getElementById("copyHint");
+
+    const elBtnAddAction = document.getElementById("btnAddAction");
+    const elBtnAddOverlay = document.getElementById("btnAddOverlay");
+    const elBtnSaveScene = document.getElementById("btnSaveScene");
+    const elSaveHint = document.getElementById("saveHint");
+    const elActionsList = document.getElementById("actionsList");
+    const elValidationBox = document.getElementById("validationBox");
+
+    const elExport = document.getElementById("btnExport");
+    const elImport = document.getElementById("btnImport");
+    const elReset = document.getElementById("btnReset");
+    const elAssetCheck = document.getElementById("btnAssetCheck");
+    const elRunAssetCheck = document.getElementById("btnRunAssetCheck");
+    const elAssetCheckResults = document.getElementById("assetCheckResults");
+    const elAssetCheckHint = document.getElementById("assetCheckHint");
+
+    /* =========================
+       Stores
+       ========================= */
+    const SceneStore = {
+      data: loadGraph(),
+      get(id) { return this.data.scenes.find(s => s.id === id); },
+      save() { saveGraph(this.data); },
+      reset() { this.data = loadGraph(); },
+      setGraph(g) { this.data = g; this.normalize(); this.save(); },
+      load(scenes, startSceneId = null) {
+        this.data.scenes = scenes;
+        this.data.start = startSceneId || (scenes[0] && scenes[0].id) || "";
+        this.normalize();
+        this.save();
+      },
+      add(scene) { this.data.scenes.push(scene); this.save(); },
+      delete(id) {
+        this.data.scenes = this.data.scenes.filter(s => s.id !== id);
+        this.data.scenes.forEach(sc => (sc.actions || []).forEach(a => { if (a.successor === id) a.successor = ""; }));
+        if (this.data.start === id) this.data.start = (this.data.scenes[0] && this.data.scenes[0].id) || "";
+        this.save();
+      },
+      normalize() {
+        this.data.scenes.forEach(s => {
+          s.kind = s.kind || "base";
+          s.actions = s.actions || [];
+          s.actions.forEach(a => {
+            a.type = (a.type || "move").toLowerCase();
+            if (!["move", "look", "interact"].includes(a.type)) a.type = "move";
+            if (a.cmd) a.cmd = a.cmd.trim().toLowerCase();
+            if (!a.label) a.label = a.cmd;
+            a.overlayScene = (a.overlayScene || "").trim();
+            a.givesItem = (a.givesItem || "").trim();
+            if (a.closeOverlayOnSuccess === undefined) a.closeOverlayOnSuccess = false;
+          });
+        });
+        this.save();
+      },
+      validate() {
+        const errors = { general: [], perScene: {} };
+        const ids = new Set();
+        const reKebab = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+        const adjacency = new Map();
+        this.data.scenes.forEach(s => {
+          const list = [];
+          if (!s.id || !reKebab.test(s.id)) list.push("id must be kebab-case");
+          if (ids.has(s.id)) list.push("duplicate id");
+          ids.add(s.id);
+          if (!s.title) list.push("title required");
+          if (!s.image_prompt || !s.image_prompt.trim()) list.push("image_prompt required");
+          if (s.videoUrl && !(s.videoUrl.endsWith(".mp4"))) list.push("videoUrl must end in .mp4");
+          adjacency.set(s.id, []);
+          (s.actions || []).forEach((a, idx) => {
+            if (a.successor) adjacency.get(s.id).push(a.successor);
+            if (!a.cmd) list.push(`action #${idx + 1} missing cmd`);
+            if (a.cmd && a.cmd.trim() !== a.cmd) list.push(`action "${a.cmd}" has leading/trailing spaces`);
+            if (a.cmd && a.cmd.toLowerCase() !== a.cmd) list.push(`action "${a.cmd}" must be lowercase`);
+            if (a.successor && !this.get(a.successor)) list.push(`action "${a.cmd}" points to missing scene "${a.successor}"`);
+            if (a.overlayScene && !this.get(a.overlayScene)) list.push(`action "${a.cmd}" overlayScene missing "${a.overlayScene}"`);
+            if (a.type && !["move", "look", "interact"].includes(a.type)) list.push(`action "${a.cmd}" has invalid type "${a.type}"`);
+            if ((a.type || "move") === "move" && !a.successor) list.push(`move action "${a.cmd}" missing successor`);
+          });
+          errors.perScene[s.id] = list;
+        });
+        if (this.data.start && !this.get(this.data.start)) errors.general.push("Start scene missing");
+        // reachability and cycles
+        const visited = new Set();
+        const visiting = new Set();
+        const cycleIds = new Set();
+        const dfs = (id) => {
+          if (visiting.has(id)) { cycleIds.add(id); return; }
+          if (visited.has(id)) return;
+          visiting.add(id); visited.add(id);
+          (adjacency.get(id) || []).forEach(next => { if (this.get(next)) dfs(next); });
+          visiting.delete(id);
+        };
+        if (this.data.start && this.get(this.data.start)) dfs(this.data.start);
+        this.data.scenes.forEach(s => {
+          if (!visited.has(s.id)) (errors.perScene[s.id] || []).push("unreachable from start");
+        });
+        if (cycleIds.size) errors.general.push(`Cycle detected involving: ${Array.from(cycleIds).join(", ")}`);
+        return errors;
+      }
+    };
+
+    const UIStore = {
+      data: loadUI(),
+      blobRegistry: new Map(), // id -> blobUrl
+      save() { saveUI(this.data); },
+      derivedImageUrl(id) {
+        // Check blob registry first (for ZIP loaded games)
+        if (this.blobRegistry.has(id)) return this.blobRegistry.get(id);
+
+        const ext = (document.getElementById("imgExt") || {}).value || "png";
+        return `${this.data.assetBase}${id}.pano.${ext}`;
+      }
+    };
+
+    const StateStore = {
+      data: loadState(),
+      get current() { return this.data.current; },
+      set current(id) { this.data.current = id; saveState(this.data); },
+      get overlay() { return this.data.overlay; },
+      set overlay(id) { this.data.overlay = id; saveState(this.data); },
+      addInventory(item) {
+        if (!item) return;
+        this.data.inventory = this.data.inventory || [];
+        if (!this.data.inventory.includes(item)) this.data.inventory.push(item);
+        saveState(this.data);
+      },
+      reset(startSceneId = null) {
+        this.data = { current: startSceneId, overlay: null, inventory: [] };
+        saveState(this.data);
+      }
+    };
+
+    const PromptBuilder = {
+      build(scene) {
+        const guarantee = "Equirectangular 360° panorama, consistent series style.";
+        const content = (scene?.image_prompt || "").trim();
+        const style = (UIStore.data.globalStyle || "").trim();
+        return [guarantee, content, style].filter(Boolean).join("\n\n");
+      }
+    };
+
+    /* =========================
+       Renderer
+       ========================= */
+    let pano = null;
+    let panoAnimId = null;
+    let three = { renderer: null, scene: null, camera: null, video: null, texture: null, animId: null, canvas: null, controls: null, handlers: null };
+
+    const Renderer = {
+      showOverlay(msg) { elViewerOverlay.textContent = msg; elViewerOverlay.style.display = "flex"; },
+      hideOverlay() { elViewerOverlay.style.display = "none"; elViewerOverlay.textContent = ""; },
+      showScene(scene) {
+        if (!scene) {
+          elSceneIdPill.textContent = "scene: —";
+          elSceneTitle.textContent = "No current scene";
+          elSceneDesc.textContent = "Pick a start scene and click Start.";
+          elDerivedName.textContent = "";
+          this.setImage(null);
+          elPlayActions.innerHTML = "";
+          return;
+        }
+        elSceneIdPill.textContent = `scene: ${scene.id}`;
+        elSceneTitle.textContent = scene.title || scene.id;
+        elSceneDesc.textContent = scene.description || "";
+        if (elViewerDesc) elViewerDesc.textContent = scene.description || "";
+        const imgUrl = UIStore.derivedImageUrl(scene.id);
+        elDerivedName.innerHTML = `<span class="muted">auto image:</span> <span class="mono">${imgUrl}</span>`;
+        if (scene.videoUrl && scene.videoUrl.trim()) this.setVideo(scene.videoUrl.trim(), imgUrl);
+        else this.setImage(imgUrl);
+        elPlayActions.innerHTML = "";
+        (scene.actions || []).forEach(a => {
+          if (!PlayEngine.checkCondition(a)) return;
+          const btn = document.createElement("button");
+          btn.textContent = a.label || a.cmd || "(action)";
+          btn.addEventListener("click", () => { elCmdInput.value = a.cmd; PlayEngine.goCommand(a.cmd, scene.id); });
+          elPlayActions.appendChild(btn);
+        });
+        renderViewerActions(scene.actions || []);
+        if (StateStore.data.overlay) renderOverlay(SceneStore.get(StateStore.data.overlay));
+      },
+      setImage(url) {
+        cleanupThree();
+        if (panoAnimId) { cancelAnimationFrame(panoAnimId); panoAnimId = null; }
+        if (!url) {
+          elViewer.innerHTML = `<div class="muted" style="padding:14px;">No image available. Set Asset base and ensure <span class="mono">{sceneId}.pano.{ext}</span> exists.</div>`;
+          return;
+        }
+        elViewer.innerHTML = '';
+        elViewer.innerHTML = '';
+        [elCompass, elViewerControls, elViewerOverlay, elViewerActions, elViewerDesc, elOverlay].forEach(el => { if (el) elViewer.appendChild(el); });
+        updateCompassFromHeading(90); // facing east default
+        updateCompassFromHeading(90); // facing east default
+        this.showOverlay("Loading image…");
+        pano = pannellum.viewer('viewer', {
+          type: 'equirectangular',
+          panorama: url,
+          autoLoad: true,
+          compass: false,
+          showControls: true,
+          hfov: 100
+        });
+        pano.on("load", () => this.hideOverlay());
+        pano.on("error", () => this.showOverlay(`Asset could not be loaded:\n${url}`));
+        const loop = () => {
+          try { updateCompassFromYawDeg(pano.getYaw()); } catch { }
+          panoAnimId = requestAnimationFrame(loop);
+        };
+        loop();
+      },
+      setVideo(mp4Url, fallbackName) {
+        if (pano && pano.destroy) { try { pano.destroy(); } catch { } }
+        if (panoAnimId) { cancelAnimationFrame(panoAnimId); panoAnimId = null; }
+        pano = null;
+        cleanupThree();
+        elViewer.innerHTML = '<canvas id="threeCanvas"></canvas>';
+        [elCompass, elViewerControls, elViewerOverlay, elViewerActions, elViewerDesc, elOverlay].forEach(el => { if (el) elViewer.appendChild(el); });
+        const canvas = document.getElementById('threeCanvas');
+        this.showOverlay("Loading video…");
+        three.canvas = canvas;
+        three.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+        resizeThree();
+        window.addEventListener('resize', resizeThree);
+        three.scene = new THREE.Scene();
+        three.camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 2000);
+        three.camera.position.set(0, 0, 0);
+        three.camera.rotation.order = "YXZ";
+        // Start facing east as the default horizon direction
+        three.controls = { yaw: 0, pitch: 0, isDown: false, lastX: 0, lastY: 0 };
+        three.video = document.createElement('video');
+        three.video.src = mp4Url;
+        three.video.crossOrigin = 'anonymous';
+        three.video.loop = true;
+        three.video.muted = true;
+        three.video.playsInline = true;
+        three.video.preload = 'auto';
+        three.video.autoplay = true;
+        three.video.addEventListener("error", () => {
+          this.showOverlay(`Asset could not be loaded:\n${fallbackName || mp4Url}`);
+          if (fallbackName) this.setImage(fallbackName);
+        });
+        three.video.addEventListener("canplay", () => this.hideOverlay());
+        three.video.play().catch(() => { });
+        three.texture = new THREE.VideoTexture(three.video);
+        const material = new THREE.MeshBasicMaterial({ map: three.texture, side: THREE.BackSide, toneMapped: false });
+        const sphere = new THREE.Mesh(new THREE.SphereGeometry(500, 64, 64), material);
+        three.scene.add(sphere);
+        attachVideoControls();
+        const animate = () => {
+          three.animId = requestAnimationFrame(animate);
+          updateCompassFromYawRad(three.controls?.yaw || 0);
+          three.renderer.render(three.scene, three.camera);
+        };
+        animate();
+      }
+    };
+
+    function cleanupThree() {
+      if (three.animId) cancelAnimationFrame(three.animId);
+      three.animId = null;
+      if (three.handlers) {
+        const c = three.canvas;
+        if (c) {
+          c.removeEventListener('pointerdown', three.handlers.down);
+          c.removeEventListener('pointermove', three.handlers.move);
+          c.removeEventListener('pointerup', three.handlers.up);
+          c.removeEventListener('pointerleave', three.handlers.up);
+          c.removeEventListener('wheel', three.handlers.wheel);
+        }
+        three.handlers = null;
+      }
+      if (three.texture) { try { three.texture.dispose(); } catch { } }
+      if (three.video) { try { three.video.pause(); } catch { } }
+      three.video = null;
+      three.texture = null;
+      if (three.renderer) { try { three.renderer.dispose(); } catch { } }
+      three.renderer = null;
+      three.scene = null;
+      three.camera = null;
+      three.canvas = null;
+      three.controls = null;
+      window.removeEventListener('resize', resizeThree);
+    }
+
+    function resizeThree() {
+      const canvas = document.getElementById('threeCanvas');
+      if (!canvas || !three.renderer) return;
+      const w = elViewer.clientWidth || window.innerWidth;
+      const h = elViewer.clientHeight || 400;
+      three.renderer.setSize(w, h, false);
+      if (three.camera) {
+        three.camera.aspect = w / h;
+        three.camera.updateProjectionMatrix();
+      }
+    }
+
+    function updateCompassFromYawRad(yawRad) {
+      const heading = ((-yawRad * 180 / Math.PI + 90) % 360 + 360) % 360; // east as 0°
+      updateCompassFromHeading(heading);
+    }
+
+    function updateCompassFromYawDeg(yawDeg) {
+      const heading = ((-yawDeg + 90) % 360 + 360) % 360;
+      updateCompassFromHeading(heading);
+    }
+
+    function updateCompassFromHeading(heading) {
+      if (!elCompass) return;
+      const normalized = ((heading % 360) + 360) % 360;
+      elCompassNeedle.style.transform = `rotate(${normalized}deg)`;
+      const cardinals = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
+      const idx = Math.round(normalized / 45) % 8;
+      elCompassLabel.textContent = `${cardinals[idx]} `;
+    }
+
+    function renderViewerActions(actions) {
+      if (!elViewerActions) return;
+      elViewerActions.innerHTML = "";
+      (actions || []).forEach(a => {
+        if (!PlayEngine.checkCondition(a)) return;
+        const btn = document.createElement("button");
+        btn.textContent = a.label || a.cmd || "(action)";
+        btn.addEventListener("click", () => { PlayEngine.goCommand(a.cmd, StateStore.current); });
+        elViewerActions.appendChild(btn);
+      });
+    }
+
+    function renderInventory() {
+      if (!elInventoryList) return;
+      elInventoryList.innerHTML = "";
+      (StateStore.data.inventory || []).forEach(item => {
+        const b = document.createElement("span");
+        b.className = "badge";
+        b.textContent = item;
+        elInventoryList.appendChild(b);
+      });
+      if (!(StateStore.data.inventory || []).length) {
+        const empty = document.createElement("span");
+        empty.className = "muted";
+        empty.textContent = "Empty";
+        elInventoryList.appendChild(empty);
+      }
+    }
+
+    function renderOverlay(scene) {
+      if (!scene) { closeOverlay(); return; }
+      elOverlayTitle.textContent = scene.title || "Close-up";
+      elOverlayTag.textContent = "Look";
+      elOverlayImage.src = UIStore.derivedImageUrl(scene.id);
+      if (elOverlayDesc) elOverlayDesc.textContent = scene.description || "";
+      elOverlay.style.display = "flex";
+      elOverlayActions.innerHTML = "";
+      (scene.actions || []).forEach(a => {
+        if (!PlayEngine.checkCondition(a)) return;
+        const btn = document.createElement("button");
+        btn.textContent = a.label || a.cmd || "(action)";
+        btn.addEventListener("click", () => { PlayEngine.goCommand(a.cmd, scene.id); });
+        elOverlayActions.appendChild(btn);
+      });
+    }
+
+    function closeOverlay() {
+      if (StateStore.data.overlay) {
+        StateStore.overlay = null;
+      }
+      elOverlay.style.display = "none";
+      elOverlayActions.innerHTML = "";
+    }
+
+    function attachVideoControls() {
+      if (!three.canvas || !three.camera) return;
+      const c = three.canvas;
+      const ctl = three.controls;
+      const updateRot = () => {
+        const pitchClamp = Math.max(-Math.PI / 2 + 0.01, Math.min(Math.PI / 2 - 0.01, ctl.pitch));
+        ctl.pitch = pitchClamp;
+        three.camera.rotation.x = ctl.pitch;
+        three.camera.rotation.y = ctl.yaw;
+      };
+      const onDown = (e) => { ctl.isDown = true; ctl.lastX = e.clientX; ctl.lastY = e.clientY; c.setPointerCapture(e.pointerId); };
+      const onMove = (e) => {
+        if (!ctl.isDown) return;
+        const dx = e.clientX - ctl.lastX;
+        const dy = e.clientY - ctl.lastY;
+        ctl.lastX = e.clientX; ctl.lastY = e.clientY;
+        ctl.yaw += dx * 0.003; // drag left moves image left (camera pans right)
+        ctl.pitch += dy * 0.003;
+        updateRot();
+        updateCompassFromYawRad(ctl.yaw);
+      };
+      const onUp = () => { ctl.isDown = false; };
+      const onWheel = (e) => {
+        e.preventDefault();
+        three.camera.fov = Math.max(30, Math.min(100, three.camera.fov + e.deltaY * 0.02));
+        three.camera.updateProjectionMatrix();
+      };
+      c.addEventListener('pointerdown', onDown);
+      c.addEventListener('pointermove', onMove);
+      c.addEventListener('pointerup', onUp);
+      c.addEventListener('pointerleave', onUp);
+      c.addEventListener('wheel', onWheel, { passive: false });
+      three.handlers = { down: onDown, move: onMove, up: onUp, wheel: onWheel };
+      updateRot();
+      updateCompassFromYawRad(ctl.yaw);
+    }
+
+    /* =========================
+       UI helpers
+       ========================= */
+    function refreshStartSelect() {
+      elStartSelect.innerHTML = "";
+      SceneStore.data.scenes.forEach(s => {
+        const opt = document.createElement("option");
+        opt.value = s.id; opt.textContent = s.id;
+        if (SceneStore.data.start === s.id) opt.selected = true;
+        elStartSelect.appendChild(opt);
+      });
+    }
+
+    function refreshSceneList(activeId) {
+      elSceneList.innerHTML = "";
+      SceneStore.data.scenes.forEach(s => {
+        const item = document.createElement("div");
+        item.className = "sceneItem" + (s.id === activeId ? " active" : "");
+        item.innerHTML = `
+      <div class="title">${s.title || s.id}</div>
+      <div class="subtitle mono">${s.id} ${s.kind === "overlay" ? "<span class='tag'>overlay</span>" : ""}</div>
+      <div class="subtitle">${(s.description || "").slice(0, 80)}</div>
+    `;
+        item.addEventListener("click", () => {
+          loadEditor(s.id);
+          StateStore.current = s.id;
+          Renderer.showScene(SceneStore.get(StateStore.current));
+          refreshSceneList(s.id);
+        });
+        elSceneList.appendChild(item);
+      });
+    }
+
+    function renderActionsUI(scene) {
+      elActionsList.innerHTML = "";
+      const list = document.createElement("div");
+      list.className = "grid";
+      (scene.actions || (scene.actions = [])).forEach((a, idx) => {
+        a.type = a.type || "move";
+        const row = document.createElement("div");
+        row.className = "row";
+        row.style.marginBottom = "10px";
+        row.innerHTML = `
+      <select class="actionType" style="flex:0 0 110px;">
+        <option value="move">move</option>
+        <option value="look">look</option>
+        <option value="interact">interact</option>
+      </select>
+      <input placeholder="cmd (e.g., west)" value="${a.cmd || ""}" style="flex:1 1 120px;">
+      <input placeholder="label (button text)" value="${a.label || ""}" style="flex:1 1 160px;">
+      <input placeholder="successor id (move/interact)" value="${a.successor || ""}" style="flex:1 1 150px;">
+      <input placeholder="overlay scene (look)" value="${a.overlayScene || ""}" style="flex:1 1 150px;">
+  <input placeholder="gives item (interact)" value="${a.givesItem || ""}" style="flex:1 1 140px;">
+  <input placeholder="required items (csv)" value="${(a.requiredItems || []).join(",")}" style="flex:1 1 140px;">
+  <input placeholder="hidden if has (csv)" value="${(a.hiddenIfHas || []).join(",")}" style="flex:1 1 140px;">
+  <label style="display:flex;align-items:center;gap:4px;font-size:12px;">
+    <input type="checkbox" ${a.closeOverlayOnSuccess ? "checked" : ""}> close overlay
+  </label>
+      <button class="danger">✕</button>
+    `;
+        const selType = row.querySelector(".actionType");
+        selType.value = a.type || "move";
+        const [inCmd, inLabel, inSucc, inOverlay, inItem, inReq, inHidden, inClose] = row.querySelectorAll("input");
+        const delBtn = row.querySelector("button.danger");
+        delBtn.addEventListener("click", () => {
+          scene.actions.splice(idx, 1);
+          SceneStore.save();
+          renderActionsUI(scene);
+          elSaveHint.textContent = "Deleted action.";
+          setTimeout(() => elSaveHint.textContent = "", 1200);
+          renderViewerActions(scene.actions || []);
+        });
+        const persist = () => {
+          a.type = selType.value;
+          a.cmd = inCmd.value.trim().toLowerCase();
+          a.label = (inLabel.value.trim() || a.cmd);
+          a.successor = inSucc.value.trim();
+          a.overlayScene = inOverlay.value.trim();
+          a.givesItem = inItem.value.trim();
+          a.requiredItems = inReq.value.split(",").map(x => x.trim()).filter(x => x);
+          a.hiddenIfHas = inHidden.value.split(",").map(x => x.trim()).filter(x => x);
+          a.closeOverlayOnSuccess = inClose.checked;
+          SceneStore.save();
+          renderValidation(scene.id);
+          renderViewerActions(scene.actions || []);
+        };
+        [inCmd, inLabel, inSucc, inOverlay, inItem, inReq, inHidden].forEach(input => {
+          input.addEventListener("blur", () => {
+            persist();
+          });
+        });
+        selType.addEventListener("change", persist);
+        inClose.addEventListener("change", persist);
+        list.appendChild(row);
+      });
+      elActionsList.appendChild(list);
+    }
+
+    function loadEditor(id) {
+      const s = SceneStore.get(id);
+      if (!s) return;
+      elFid.value = s.id;
+      elFtitle.value = s.title || "";
+      elFdesc.value = s.description || "";
+      elFvideo.value = s.videoUrl || "";
+      elFprompt.value = s.image_prompt || "";
+      elFimgDerived.value = UIStore.derivedImageUrl(s.id);
+      renderActionsUI(s);
+      renderValidation(id);
+      renderViewerActions(s.actions || []);
+    }
+
+    function renderValidation(sceneId) {
+      const v = SceneStore.validate();
+      const per = v.perScene[sceneId] || [];
+      if (!per.length && !v.general.length) { elValidationBox.style.display = "none"; return; }
+      elValidationBox.style.display = "block";
+      elValidationBox.innerHTML = `
+    <strong>Validation</strong>
+    <ul>
+      ${per.map(m => `<li>${m}</li>`).join("") || "<li>No scene issues.</li>"}
+      ${v.general.map(m => `<li>${m}</li>`).join("")}
+    </ul>
+  `;
+    }
+
+    /* =========================
+       Play + navigation
+       ========================= */
+    const PlayEngine = {
+      checkCondition(action) {
+        if (!action) return false;
+        const inv = StateStore.data.inventory || [];
+
+        // Check required items (ALL must be present)
+        if (action.requiredItems && Array.isArray(action.requiredItems)) {
+          for (const item of action.requiredItems) {
+            if (!inv.includes(item)) return false;
+          }
+        }
+
+        // Check hiddenIfHas items (NONE must be present)
+        if (action.hiddenIfHas && Array.isArray(action.hiddenIfHas)) {
+          for (const item of action.hiddenIfHas) {
+            if (inv.includes(item)) return false;
+          }
+        }
+
+        return true;
+      },
+      start(startSceneId) {
+        SceneStore.data.start = startSceneId;
+        SceneStore.save();
+        StateStore.current = startSceneId;
+        Renderer.showScene(SceneStore.get(StateStore.current));
+        refreshSceneList(StateStore.current);
+        if (SceneStore.data.scenes.length) loadEditor(StateStore.current);
+        renderInventory();
+      },
+      goCommand(cmdOverride = null, sceneOverride = null) {
+        const input = (cmdOverride || elCmdInput.value || "").trim().toLowerCase();
+        if (!input) return;
+        const activeSceneId = sceneOverride || StateStore.data.overlay || StateStore.current;
+        const s = SceneStore.get(activeSceneId);
+        if (!s) return;
+        const exact = (s.actions || []).find(a => (a.cmd || "").toLowerCase() === input);
+        if (!exact) {
+          alert(`No action matched "${input}". Try: ${s.actions.map(a => `"${a.cmd}"`).join(", ")}`);
+          return;
+        }
+        const type = (exact.type || "move").toLowerCase();
+        const successor = (exact.successor || "").trim();
+        const overlayScene = (exact.overlayScene || "").trim();
+        const givesItem = (exact.givesItem || "").trim();
+
+        if (type === "look" && overlayScene) {
+          let target = SceneStore.get(overlayScene);
+          if (!target) {
+            const base = SceneStore.get(StateStore.current);
+            target = {
+              id: overlayScene,
+              kind: "overlay",
+              title: `Close-up: ${overlayScene}`,
+              description: `Close-up view for ${base?.title || overlayScene}`,
+              videoUrl: "",
+              image_prompt: "Close-up detail with compass references.",
+              actions: []
+            };
+            SceneStore.add(target);
+            refreshSceneList(StateStore.current);
+          }
+          StateStore.overlay = overlayScene;
+          renderOverlay(target);
+          return;
+        }
+
+        if (type === "interact" && givesItem) {
+          StateStore.addInventory(givesItem);
+          renderInventory();
+        }
+
+        if (exact.closeOverlayOnSuccess) closeOverlay();
+
+        if (successor) {
+          if (!SceneStore.get(successor)) {
+            alert(`Scene "${successor}" not found. Create it in the editor.`);
+            return;
+          }
+          StateStore.current = successor;
+          closeOverlay();
+        } else if (type === "move") {
+          closeOverlay();
+        }
+
+        elCmdInput.value = "";
+        Renderer.showScene(SceneStore.get(StateStore.current));
+        refreshSceneList(StateStore.current);
+      }
+    };
+
+    /* =========================
+       Asset checker
+       ========================= */
+    const AssetChecker = {
+      async run() {
+        elAssetCheckHint.textContent = "Checking…";
+        elAssetCheckResults.innerHTML = "";
+        const rows = [];
+        for (const scene of SceneStore.data.scenes) {
+          const imgUrl = UIStore.derivedImageUrl(scene.id);
+          const videoUrl = scene.videoUrl?.trim();
+          const imgOk = await this.checkUrl(imgUrl);
+          let videoOk = null;
+          if (videoUrl) videoOk = await this.checkUrl(videoUrl);
+          rows.push({ sceneId: scene.id, imgUrl, imgOk, videoUrl, videoOk });
+        }
+        elAssetCheckHint.textContent = "Done.";
+        setTimeout(() => elAssetCheckHint.textContent = "", 1400);
+        this.render(rows);
+      },
+      async checkUrl(url) {
+        try {
+          const res = await fetch(url, { method: "HEAD", mode: "cors" });
+          return res.ok;
+        } catch { return false; }
+      },
+      render(rows) {
+        elAssetCheckResults.innerHTML = "";
+        rows.forEach(r => {
+          const div = document.createElement("div");
+          div.className = "checker-row";
+          const imgBadge = `<span class="tag" style="border-color:${r.imgOk ? '#2d5d38' : '#5d2d2d'};">img: ${r.imgOk ? '✔' : '✖'}</span>`;
+          const vidBadge = r.videoUrl ? `<span class="tag" style="border-color:${r.videoOk ? '#2d5d38' : '#5d2d2d'};">video: ${r.videoOk ? '✔' : '✖'}</span>` : `<span class="tag">video: —</span>`;
+          div.innerHTML = `${imgBadge} ${vidBadge} <span class="mono">${r.sceneId}</span>`;
+          elAssetCheckResults.appendChild(div);
+        });
+      }
+    };
+
+    /* =========================
+       Boot + events
+       ========================= */
+    function boot() {
+      elAssetBase.value = UIStore.data.assetBase || "";
+      elImgExt.value = UIStore.data.imgExt || "jpg";
+      elGlobalStyle.value = UIStore.data.globalStyle || defaultUI.globalStyle;
+      refreshStartSelect();
+      if (!StateStore.current) StateStore.current = SceneStore.data.start || (SceneStore.data.scenes[0] && SceneStore.data.scenes[0].id) || null;
+      SceneStore.normalize();
+      Renderer.showScene(SceneStore.get(StateStore.current));
+      refreshSceneList(StateStore.current);
+      if (SceneStore.data.scenes.length) loadEditor(StateStore.current || SceneStore.data.scenes[0].id);
+      renderInventory();
+    }
+    boot();
+
+    elBtnStart.addEventListener("click", () => {
+      const val = elStartSelect.value;
+      if (!val) return;
+      PlayEngine.start(val);
+    });
+
+    elBtnLoadZip.addEventListener("click", () => elFileLoadZip.click());
+    elFileLoadZip.addEventListener("change", async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      try {
+        const zip = await JSZip.loadAsync(file);
+
+        // 1. Load game.json
+        const jsonFile = zip.file("game.json");
+        if (!jsonFile) throw new Error("game.json not found in ZIP");
+
+        const jsonText = await jsonFile.async("text");
+        const gameData = JSON.parse(jsonText);
+
+        // Load into stores
+        SceneStore.load(gameData.scenes || [], gameData.start);
+        StateStore.reset(gameData.start);
+
+        // 2. Load Images into Blob Registry
+        UIStore.blobRegistry.clear();
+        const promises = [];
+        zip.forEach((relativePath, zipEntry) => {
+          if (zipEntry.dir) return;
+          const name = zipEntry.name.split('/').pop(); // Get filename
+          if (!name || name.startsWith(".")) return; // Skip hidden files
+
+          if (name.match(/\.(png|jpg|jpeg)$/i)) {
+            promises.push(async () => {
+              const blob = await zipEntry.async("blob");
+              const url = URL.createObjectURL(blob);
+
+              // Remove extension
+              let id = name.replace(/\.(png|jpg|jpeg)$/i, "");
+              // Remove legacy .pano suffix if present
+              id = id.replace(/\.pano$/i, "");
+
+              if (id) {
+                UIStore.blobRegistry.set(id, url);
+              }
+            });
+          }
+        });
+
+        // Execute all blob conversions
+        await Promise.all(promises.map(p => p()));
+
+        // 3. Start Game
+        alert(`Loaded game with ${gameData.scenes.length} scenes and ${UIStore.blobRegistry.size} images.`);
+        PlayEngine.start(gameData.start);
+
+      } catch (err) {
+        console.error(err);
+        alert("Failed to load ZIP: " + err.message);
+      }
+      e.target.value = "";
+    });
+
+    elAssetBase.addEventListener("change", () => { UIStore.data.assetBase = elAssetBase.value.trim(); UIStore.save(); Renderer.showScene(SceneStore.get(StateStore.current)); loadEditor(StateStore.current); });
+    elImgExt.addEventListener("change", () => { UIStore.data.imgExt = elImgExt.value; UIStore.save(); Renderer.showScene(SceneStore.get(StateStore.current)); loadEditor(StateStore.current); });
+    elGlobalStyle.addEventListener("change", () => { UIStore.data.globalStyle = elGlobalStyle.value; UIStore.save(); });
+
+    elBtnNewScene.addEventListener("click", () => {
+      const nid = prompt("New scene ID (kebab-case):", "new-location");
+      if (!nid) return;
+      if (SceneStore.get(nid)) { alert("Scene ID already exists."); return; }
+      const s = { id: nid, title: nid, description: "", videoUrl: "", image_prompt: "Describe this location in 1–2 sentences.", actions: [] };
+      SceneStore.add(s);
+      refreshStartSelect();
+      refreshSceneList(nid);
+      loadEditor(nid);
+      StateStore.current = nid;
+      Renderer.showScene(SceneStore.get(StateStore.current));
+    });
+
+    elBtnDeleteScene.addEventListener("click", () => {
+      const sid = StateStore.current;
+      if (!sid) return;
+      if (!confirm(`Delete scene "${sid}"?`)) return;
+      SceneStore.delete(sid);
+      const fallback = SceneStore.data.start || (SceneStore.data.scenes[0] && SceneStore.data.scenes[0].id) || null;
+      StateStore.current = fallback;
+      if (StateStore.overlay === sid) closeOverlay();
+      refreshStartSelect();
+      refreshSceneList(StateStore.current);
+      if (StateStore.current) loadEditor(StateStore.current);
+      Renderer.showScene(SceneStore.get(StateStore.current));
+    });
+
+    elBtnAddAction.addEventListener("click", () => {
+      const sid = StateStore.current;
+      const sc = SceneStore.get(sid);
+      if (!sc) return;
+      sc.actions = sc.actions || [];
+      sc.actions.push({ type: "move", cmd: "", label: "", successor: "" });
+      SceneStore.save();
+      renderActionsUI(sc);
+    });
+
+    elBtnAddOverlay.addEventListener("click", () => {
+      const baseId = StateStore.current;
+      const parent = SceneStore.get(baseId);
+      if (!parent) return;
+      const defaultId = `${baseId}-overlay`;
+      const overlayId = prompt("Overlay scene ID (kebab-case)", defaultId);
+      if (!overlayId) return;
+      if (SceneStore.get(overlayId)) { alert("That overlay ID already exists."); return; }
+      const overlayScene = {
+        id: overlayId,
+        kind: "overlay",
+        title: `Close-up: ${parent.title || parent.id}`,
+        description: "Close-up detail. Describe what you see.",
+        videoUrl: "",
+        image_prompt: "Close-up detail with compass references.",
+        actions: []
+      };
+      SceneStore.data.scenes.push(overlayScene);
+      parent.actions = parent.actions || [];
+      const suffix = overlayId.replace(`${baseId}-`, "").replace(/-/g, " ");
+      parent.actions.push({
+        type: "look",
+        cmd: `look ${suffix}`.trim().toLowerCase(),
+        label: `Look at ${suffix}`.trim(),
+        overlayScene: overlayId,
+        successor: ""
+      });
+      SceneStore.save();
+      refreshSceneList(StateStore.current);
+      renderActionsUI(parent);
+      renderViewerActions(parent.actions || []);
+      elSaveHint.textContent = `Overlay "${overlayId}" added and linked as look action.`;
+      setTimeout(() => elSaveHint.textContent = "", 1600);
+    });
+
+    elBtnSaveScene.addEventListener("click", () => {
+      const oldId = StateStore.current;
+      const sc = SceneStore.get(oldId);
+      if (!sc) return;
+      const newId = elFid.value.trim();
+      if (!newId) { alert("Scene ID required."); return; }
+      sc.title = elFtitle.value.trim() || newId;
+      sc.description = elFdesc.value;
+      sc.videoUrl = elFvideo.value.trim();
+      sc.image_prompt = elFprompt.value;
+      if (newId !== oldId) {
+        if (SceneStore.get(newId)) { alert("That ID already exists."); return; }
+        sc.id = newId;
+        SceneStore.data.scenes.forEach(s => (s.actions || []).forEach(a => { if (a.successor === oldId) a.successor = newId; }));
+        if (SceneStore.data.start === oldId) SceneStore.data.start = newId;
+        if (StateStore.current === oldId) StateStore.current = newId;
+      }
+      SceneStore.save();
+      refreshStartSelect();
+      refreshSceneList(StateStore.current);
+      loadEditor(StateStore.current);
+      Renderer.showScene(SceneStore.get(StateStore.current));
+      elSaveHint.textContent = "Saved.";
+      renderValidation(StateStore.current);
+      setTimeout(() => elSaveHint.textContent = "", 1200);
+    });
+
+    elBtnCopyPrompt.addEventListener("click", async () => {
+      const sc = SceneStore.get(StateStore.current);
+      const full = PromptBuilder.build(sc);
+      try {
+        await navigator.clipboard.writeText(full);
+        elCopyHint.textContent = "Copied prompt to clipboard.";
+      } catch {
+        elCopyHint.textContent = "Copy failed — select and copy manually.";
+      }
+      setTimeout(() => elCopyHint.textContent = "", 1600);
+    });
+
+    elCmdGo.addEventListener("click", () => PlayEngine.goCommand());
+    elCmdInput.addEventListener("keydown", e => { if (e.key === "Enter") PlayEngine.goCommand(); });
+
+    elExport.addEventListener("click", () => {
+      const blob = new Blob([JSON.stringify(SceneStore.data, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = "adventure-graph.json"; a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    elImport.addEventListener("click", async () => {
+      const t = prompt("Paste your scene-graph JSON (replaces current):");
+      if (!t) return;
+      try {
+        const g = JSON.parse(t);
+        if (!g || !Array.isArray(g.scenes)) throw new Error("Invalid graph: missing scenes[]");
+        SceneStore.setGraph(g);
+        refreshStartSelect();
+        StateStore.current = SceneStore.data.start || (SceneStore.data.scenes[0] && SceneStore.data.scenes[0].id) || null;
+        Renderer.showScene(SceneStore.get(StateStore.current));
+        refreshSceneList(StateStore.current);
+        if (SceneStore.data.scenes.length) loadEditor(StateStore.current);
+      } catch (e) { alert("Import failed: " + e.message); }
+    });
+
+    elReset.addEventListener("click", () => {
+      if (!confirm("Reset graph + play state + UI prefs?")) return;
+      localStorage.removeItem(LS_GRAPH);
+      localStorage.removeItem(LS_STATE);
+      localStorage.removeItem(LS_UI);
+      SceneStore.reset(); StateStore.data = loadState(); UIStore.data = loadUI();
+      boot();
+    });
+
+    elAssetCheck.addEventListener("click", () => AssetChecker.run());
+    elRunAssetCheck.addEventListener("click", () => AssetChecker.run());
+    elBtnFullscreen.addEventListener("click", toggleFullscreen);
+    elOverlayClose.addEventListener("click", closeOverlay);
+
+    function toggleFullscreen() {
+      const elem = elViewer;
+      if (!document.fullscreenElement) {
+        if (elem.requestFullscreen) elem.requestFullscreen();
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+      }
+    }
+  </script>
+</body>
+
+</html>

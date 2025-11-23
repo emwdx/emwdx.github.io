@@ -1,0 +1,232 @@
+{
+    "start": "lobby",
+    "scenes": [
+        {
+            "id": "lobby",
+            "title": "Abandoned Lobby",
+            "description": "You stand in the dusty lobby of an office building. A neon sign flickers 'Platanus Hack 2025'. To the East is the main office area. To the West, a stairwell leads up. On the reception desk, a bright yellow object stands out against the dust.",
+            "image_prompt": "Abandoned office lobby, reception desk in center, flickering neon sign reading 'Platanus Hack 2025' on wall, dust motes in air, door to office on East, stairwell door on West. Equirectangular 360° panorama, ultra coherent series look. Photorealistic with subtle filmic grading, consistent lens and color palette. Light enough to see, but not bright. Soft moonlit shadows, mild atmospheric haze, physically based lighting.",
+            "kind": "base",
+            "actions": [
+                {
+                    "type": "look",
+                    "cmd": "look desk",
+                    "label": "Inspect Reception Desk",
+                    "overlayScene": "lobby-overlay"
+                },
+                {
+                    "type": "move",
+                    "cmd": "go office",
+                    "label": "Enter Office Area",
+                    "successor": "office-area"
+                },
+                {
+                    "type": "move",
+                    "cmd": "go stairs",
+                    "label": "Go to Stairwell",
+                    "successor": "stairwell"
+                }
+            ]
+        },
+        {
+            "id": "lobby-overlay",
+            "title": "Reception Note",
+            "description": "A ripe banana sits atop a handwritten note: 'Find them all, and you'll be invited to the party on the roof!'",
+            "image_prompt": "Close up of a dusty reception desk surface, a bright yellow fresh banana sitting next to a handwritten note on crumpled paper, dim ambient lighting. Photorealistic, coherent style.",
+            "kind": "overlay",
+            "actions": [
+                {
+                    "type": "interact",
+                    "cmd": "take banana1",
+                    "label": "Take Lobby Banana",
+                    "givesItem": "banana_lobby",
+                    "closeOverlayOnSuccess": true
+                }
+            ]
+        },
+        {
+            "id": "office-area",
+            "title": "Open Plan Office",
+            "description": "Rows of empty desks stretch out. Cables dangle from the ceiling like vines. To the North is a server room emitting a faint hum. To the South is the kitchen area. West leads back to the Lobby.",
+            "image_prompt": "Abandoned open plan office, rows of empty desks, cables hanging from ceiling, messy floor, door to server room North, door to kitchen South, hallway to lobby West. Equirectangular 360° panorama, ultra coherent series look. Photorealistic with subtle filmic grading. Soft moonlit shadows, mild atmospheric haze, physically based lighting.",
+            "kind": "base",
+            "actions": [
+                {
+                    "type": "move",
+                    "cmd": "go lobby",
+                    "label": "Back to Lobby",
+                    "successor": "lobby"
+                },
+                {
+                    "type": "move",
+                    "cmd": "go server",
+                    "label": "Enter Server Room",
+                    "successor": "server-room"
+                },
+                {
+                    "type": "move",
+                    "cmd": "go kitchen",
+                    "label": "Enter Kitchen",
+                    "successor": "kitchen"
+                }
+            ]
+        },
+        {
+            "id": "server-room",
+            "title": "Server Room",
+            "description": "The room is cold and noisy with the hum of old fans. Blinking LEDs illuminate the racks. Something yellow is wedged between the cables in the main rack.",
+            "image_prompt": "Server room, rows of black server racks with blinking blue and green LEDs, messy cable management, cold atmosphere, confined space. Equirectangular 360° panorama, ultra coherent series look. Photorealistic with subtle filmic grading. Soft moonlit shadows, mild atmospheric haze, physically based lighting.",
+            "kind": "base",
+            "actions": [
+                {
+                    "type": "look",
+                    "cmd": "look rack",
+                    "label": "Inspect Server Rack",
+                    "overlayScene": "server-overlay"
+                },
+                {
+                    "type": "move",
+                    "cmd": "go office",
+                    "label": "Return to Office",
+                    "successor": "office-area"
+                }
+            ]
+        },
+        {
+            "id": "server-overlay",
+            "title": "Server Rack Detail",
+            "description": "Hidden among the ethernet cables is a fresh banana.",
+            "image_prompt": "Close up of server rack tangled wires, a yellow banana wedged between black and blue cables, blinking LED lights in background blur. Photorealistic, coherent style.",
+            "kind": "overlay",
+            "actions": [
+                {
+                    "type": "interact",
+                    "cmd": "take banana2",
+                    "label": "Take Server Banana",
+                    "givesItem": "banana_server",
+                    "closeOverlayOnSuccess": true
+                }
+            ]
+        },
+        {
+            "id": "kitchen",
+            "title": "Office Kitchen",
+            "description": "A break room with vending machines and a dirty counter. A glass door leads to an outdoor balcony. The microwave door is slightly ajar.",
+            "image_prompt": "Abandoned office kitchen, vending machines, dirty countertops, microwave, glass door leading to balcony with night sky visible. Equirectangular 360° panorama, ultra coherent series look. Photorealistic with subtle filmic grading. Soft moonlit shadows, mild atmospheric haze, physically based lighting.",
+            "kind": "base",
+            "actions": [
+                {
+                    "type": "look",
+                    "cmd": "look microwave",
+                    "label": "Check Microwave",
+                    "overlayScene": "kitchen-overlay"
+                },
+                {
+                    "type": "move",
+                    "cmd": "go balcony",
+                    "label": "Go to Balcony",
+                    "successor": "balcony"
+                },
+                {
+                    "type": "move",
+                    "cmd": "go office",
+                    "label": "Return to Office",
+                    "successor": "office-area"
+                }
+            ]
+        },
+        {
+            "id": "kitchen-overlay",
+            "title": "Microwave Interior",
+            "description": "Someone has heated up... a banana?",
+            "image_prompt": "Close up of open microwave interior, dim light, a yellow banana sitting on the glass turntable. Photorealistic, coherent style.",
+            "kind": "overlay",
+            "actions": [
+                {
+                    "type": "interact",
+                    "cmd": "take banana3",
+                    "label": "Take Kitchen Banana",
+                    "givesItem": "banana_kitchen",
+                    "closeOverlayOnSuccess": true
+                }
+            ]
+        },
+        {
+            "id": "balcony",
+            "title": "The Balcony",
+            "description": "Fresh night air hits you. The city skyline glows in the distance. It's a dead end, but a nice view.",
+            "image_prompt": "Office balcony at night, city skyline in distance, concrete railing, atmospheric fog, moonlight. Equirectangular 360° panorama, ultra coherent series look. Photorealistic with subtle filmic grading. Soft moonlit shadows, mild atmospheric haze, physically based lighting.",
+            "kind": "base",
+            "actions": [
+                {
+                    "type": "move",
+                    "cmd": "go kitchen",
+                    "label": "Back inside",
+                    "successor": "kitchen"
+                }
+            ]
+        },
+        {
+            "id": "stairwell",
+            "title": "Stairwell to Roof",
+            "description": "A concrete stairwell leading upward. A heavy metal door at the top is labeled 'ROOF ACCESS'. There is a biometric scanner that oddly looks like it scans fruit.",
+            "image_prompt": "Concrete stairwell, industrial metal railing, heavy steel door at top with 'ROOF ACCESS' painted on it, electronic scanner on wall next to door. Equirectangular 360° panorama, ultra coherent series look. Photorealistic with subtle filmic grading. Soft moonlit shadows, mild atmospheric haze, physically based lighting.",
+            "kind": "base",
+            "actions": [
+                {
+                    "type": "move",
+                    "cmd": "enter party",
+                    "label": "Scan Bananas & Enter (Requires All 3)",
+                    "successor": "roof-party",
+                    "requiredItems": [
+                        "banana_lobby",
+                        "banana_server",
+                        "banana_kitchen"
+                    ]
+                },
+                {
+                    "type": "move",
+                    "cmd": "check door",
+                    "label": "Try Door Handle",
+                    "successor": "roof-fail"
+                },
+                {
+                    "type": "move",
+                    "cmd": "go lobby",
+                    "label": "Down to Lobby",
+                    "successor": "lobby"
+                }
+            ]
+        },
+        {
+            "id": "roof-fail",
+            "title": "Roof Access Denied",
+            "description": "The door is locked tight. A display on the scanner reads: 'ENTRY DENIED. INSUFFICIENT POTASSIUM.' You must find all the bananas to join the hackathon party.",
+            "image_prompt": "Dark rooftop entrance, locked gate, red LED sign saying 'ACCESS DENIED', gloomy atmosphere, no party visible. Equirectangular 360° panorama, ultra coherent series look. Photorealistic with subtle filmic grading. Soft moonlit shadows, mild atmospheric haze, physically based lighting.",
+            "kind": "base",
+            "actions": [
+                {
+                    "type": "move",
+                    "cmd": "go back",
+                    "label": "Return to Stairwell",
+                    "successor": "stairwell"
+                }
+            ]
+        },
+        {
+            "id": "roof-party",
+            "title": "Platanus Hack Party",
+            "description": "Success! The roof is alive with music, neon lights, and hackers. A giant inflatable banana floats above the crowd. You are handed a drink. You win!",
+            "image_prompt": "Rooftop party at night, string lights, neon decorations, crowd of people with laptops and drinks, giant inflatable banana, city skyline background, festive atmosphere. Equirectangular 360° panorama, ultra coherent series look. Photorealistic with subtle filmic grading. Soft moonlit shadows, mild atmospheric haze, physically based lighting.",
+            "kind": "base",
+            "actions": [
+                {
+                    "type": "interact",
+                    "cmd": "dance",
+                    "label": "Celebrate (Game Over)",
+                    "successor": "lobby"
+                }
+            ]
+        }
+    ]
+}

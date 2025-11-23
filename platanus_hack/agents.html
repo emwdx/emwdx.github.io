@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Adventure360 Agent Builder</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: #121212;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding-bottom: 40px;
+    }
+
+    /* Custom overrides for dark mode feel */
+    .card {
+      background-color: #1e1e1e;
+      border-color: #333;
+      color: #e0e0e0;
+      margin-bottom: 1rem;
+    }
+
+    .accordion-item {
+      background-color: #1e1e1e;
+      border-color: #333;
+      color: #e0e0e0;
+    }
+
+    .accordion-button {
+      background-color: #252525;
+      color: #e0e0e0;
+    }
+
+    .accordion-button:not(.collapsed) {
+      background-color: #2d4a2f;
+      color: #fff;
+    }
+
+    .accordion-button::after {
+      filter: invert(1);
+    }
+
+    .form-control,
+    .form-select {
+      background-color: #2a2a2a;
+      border-color: #444;
+      color: #e0e0e0;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+      background-color: #2a2a2a;
+      color: #fff;
+      border-color: #555;
+      box-shadow: none;
+    }
+
+    .status-badge {
+      font-size: 0.8em;
+      margin-left: 10px;
+    }
+
+    /* Utility classes */
+    .mono {
+      font-family: 'Courier New', monospace;
+    }
+
+    .muted {
+      color: #888;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 sticky-top border-bottom border-secondary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Adventure360 Builder</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarActions">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarActions">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-2">
+          <li class="nav-item">
+            <button id="btnGenerate" class="btn btn-primary btn-sm">Generate Game (Gemini)</button>
+          </li>
+          <li class="nav-item">
+            <button id="btnGenerateAllImages" class="btn btn-success btn-sm">Generate All Images</button>
+          </li>
+          <li class="nav-item">
+            <button id="btnImportImages" class="btn btn-secondary btn-sm">Import Images</button>
+          </li>
+          <li class="nav-item">
+            <button id="btnExportZip" class="btn btn-warning btn-sm text-dark">Export Game ZIP</button>
+          </li>
+          <li class="nav-item">
+            <button id="btnExport" class="btn btn-outline-light btn-sm">Export JSON</button>
+          </li>
+        </ul>
+        <div class="d-flex gap-2">
+          <button id="btnReset" class="btn btn-outline-danger btn-sm">Reset All</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Left Column: Settings & Prompt -->
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header">Game Settings</div>
+          <div class="card-body">
+            <div class="mb-3">
+              <label class="form-label">Gemini API Key</label>
+              <input id="geminiKeyInput" type="password" class="form-control" placeholder="Enter API Key">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Story Premise</label>
+              <textarea id="storyPrompt" class="form-control" rows="3"
+                placeholder="e.g. A haunted victorian mansion..."></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Win Condition</label>
+              <input id="storyGoal" class="form-control" placeholder="e.g. Find the ghost's locket">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Global Visual Style</label>
+              <textarea id="globalStyle" class="form-control" rows="3"></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Image Format</label>
+              <select id="imgExt" class="form-select">
+                <option value="jpg">jpg</option>
+                <option value="png">png</option>
+              </select>
+            </div>
+            <!-- Hidden inputs for compatibility -->
+            <input id="assetBase" type="hidden" value="./assets">
+            <input id="geminiApiKey" type="hidden">
+            <input type="file" id="fileImportImages" multiple accept="image/*" style="display:none">
+            <input type="file" id="fileImport" accept=".json" style="display:none">
+            <button id="btnImport" style="display:none"></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Scenes List -->
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <span>Scenes <span id="sceneCount" class="badge bg-secondary">0</span></span>
+            <div class="d-flex gap-2 align-items-center">
+              <select id="startSelect" class="form-select form-select-sm" style="width:auto;"></select>
+              <button id="btnAddScene" class="btn btn-sm btn-outline-light">+ Base Scene</button>
+            </div>
+          </div>
+          <div class="card-body p-0">
+            <div class="accordion" id="sceneAccordion">
+              <!-- Scenes rendered here -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const LS_KEY = "adv360_agent_graph_v1";
+    const defaultGlobalStyle = `Equirectangular 360° panorama, ultra coherent series look.
+Photorealistic with subtle filmic grading, consistent lens and color palette.
+Soft moonlit shadows, mild atmospheric haze, physically based lighting.`;
+
+    function defaultData() {
+      return {
+        storyPrompt: "",
+        storyGoal: "",
+        globalStyle: defaultGlobalStyle,
+        assetBase: "./assets",
+        imgExt: "jpg",
+        start: "",
+        scenes: [],
+        geminiKey: ""
+      };
+    }
+
+    let data = load() || defaultData();
+
+    function save() { localStorage.setItem(LS_KEY, JSON.stringify(data)); }
+    function load() {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(LS_KEY));
+        if (!parsed) return null;
+        return { ...defaultData(), ...parsed };
+      } catch {
+        return null;
+      }
+    }
+    function resetAll() { localStorage.removeItem(LS_KEY); location.reload(); }
+
+    const elStoryPrompt = document.getElementById("storyPrompt");
+    const elStoryGoal = document.getElementById("storyGoal");
+    const elGlobalStyle = document.getElementById("globalStyle");
+    const elAssetBase = document.getElementById("assetBase");
+    const elImgExt = document.getElementById("imgExt");
+    const elGeminiKeyInput = document.getElementById("geminiKeyInput");
+    const elGeminiApiKey = document.getElementById("geminiApiKey"); // hidden syncing input
+    const elSceneList = document.getElementById("sceneAccordion"); // Changed to target accordion
+    const elSceneCount = document.getElementById("sceneCount");
+    const elStartSelect = document.getElementById("startSelect");
+    const btnAddScene = document.getElementById("btnAddScene");
+    const btnImport = document.getElementById("btnImport");
+    const btnExport = document.getElementById("btnExport");
+    const btnReset = document.getElementById("btnReset");
+    const btnGenerate = document.getElementById("btnGenerate");
+    const btnGenerateAllImages = document.getElementById("btnGenerateAllImages");
+    const btnImportImages = document.getElementById("btnImportImages");
+    const fileImportImages = document.getElementById("fileImportImages");
+    const btnExportZip = document.getElementById("btnExportZip");
+
+    btnGenerate.addEventListener("click", generateGameGraph);
+    btnGenerateAllImages.addEventListener("click", generateAllImages);
+    btnImportImages.addEventListener("click", () => fileImportImages.click());
+    fileImportImages.addEventListener("change", importImages);
+    btnExportZip.addEventListener("click", exportGameZip);
+
+    // Import Zip Logic
+    const btnImportZip = document.createElement("button");
+    btnImportZip.className = "btn btn-info btn-sm text-dark";
+    btnImportZip.textContent = "Import Zip";
+    document.querySelector("#btnImportImages").parentNode.insertAdjacentElement("beforebegin", wrapInLi(btnImportZip));
+
+    const fileImportZip = document.createElement("input");
+    fileImportZip.type = "file";
+    fileImportZip.accept = ".zip";
+    fileImportZip.style.display = "none";
+    document.body.appendChild(fileImportZip);
+
+    btnImportZip.addEventListener("click", () => fileImportZip.click());
+    fileImportZip.addEventListener("change", importGameZip);
+
+    function wrapInLi(el) {
+      const li = document.createElement("li");
+      li.className = "nav-item";
+      li.appendChild(el);
+      return li;
+    }
+
+    async function importGameZip(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      try {
+        const zip = await JSZip.loadAsync(file);
+
+        // 1. Find and load game.json
+        let jsonFile = zip.file("game.json");
+        if (!jsonFile) {
+          // Search recursively
+          const files = Object.keys(zip.files);
+          const gameJsonPath = files.find(f => f.endsWith("game.json") && !f.includes("__MACOSX"));
+          if (gameJsonPath) {
+            jsonFile = zip.file(gameJsonPath);
+          }
+        }
+
+        if (!jsonFile) throw new Error("game.json not found in ZIP");
+        const jsonText = await jsonFile.async("text");
+        const importedData = JSON.parse(jsonText);
+
+        // Validate schema roughly
+        if (!importedData.scenes || !importedData.start) {
+          throw new Error("Invalid game.json schema");
+        }
+
+        // 2. Load Images
+        let imgCount = 0;
+        const assetPromises = [];
+
+        zip.forEach((relativePath, zipEntry) => {
+          if (zipEntry.dir || zipEntry.name.includes("__MACOSX")) return;
+
+          const name = zipEntry.name.split('/').pop();
+          if (!name || name.startsWith(".")) return;
+
+          if (/\.(jpg|jpeg|png|webp)$/i.test(name)) {
+            assetPromises.push(zipEntry.async("blob").then(blob => {
+              // Map blob to scene ID
+              // Try to match exact scene ID from filename
+              let id = name.replace(/\.(jpg|jpeg|png|webp)$/i, "");
+              id = id.replace(/\.pano$/i, ""); // handle .pano suffix
+
+              // Store in memory
+              imageBlobs.set(id, blob);
+              imgCount++;
+            }));
+          }
+        });
+
+        await Promise.all(assetPromises);
+
+        // 3. Update State
+        data = { ...defaultData(), ...importedData };
+        // Restore API key if it was wiped (though usually we don't export it)
+        if (!data.geminiKey && localStorage.getItem(LS_KEY)) {
+          const old = JSON.parse(localStorage.getItem(LS_KEY));
+          if (old && old.geminiKey) data.geminiKey = old.geminiKey;
+        }
+
+        save();
+        render();
+        alert(`Game imported successfully! Loaded ${data.scenes.length} scenes and ${imgCount} images.`);
+
+      } catch (err) {
+        console.error(err);
+        alert("Failed to import ZIP: " + err.message);
+      } finally {
+        e.target.value = ""; // Reset input
+      }
+    }
+
+    // In-memory storage for generated image blobs
+    const imageBlobs = new Map(); // id -> Blob
+
+    // Build a model-ready prompt that respects base vs overlay rendering rules.
+    // Build a model-ready prompt that respects base vs overlay rendering rules.
+    function buildImagePrompt(scene) {
+      const sharedStyle = data.globalStyle || defaultGlobalStyle;
+
+      if (scene.kind === "overlay") {
+        // Overlay: Flat 2D image
+        return [
+          "Medium: Flat 2D close-up image (NOT a panorama).",
+          `Subject: ${scene.image_prompt || "A detailed close-up view."}`,
+          "Context: This is a specific detail derived from the parent environment.",
+          "Style & Atmosphere:",
+          sharedStyle,
+          "Constraint: Do not use fisheye or spherical distortion. Keep lines straight and perspective natural for a close-up."
+        ].join("\n");
+      } else {
+        // Base: 360 Panorama
+        return [
+          "Medium: Equirectangular 360° panorama (2:1 aspect ratio).",
+          "Orientation: East is forward (center of image).",
+          `Scene Description: ${scene.image_prompt || "A surrounding environment."}`,
+          "Style & Atmosphere:",
+          sharedStyle,
+          "Constraint: Seamless 360 degree view, high resolution, consistent lighting."
+        ].join("\n");
+      }
+    }
+
+    /**
+     * Helper to call Gemini REST API via fetch.
+     * FIX: Removed "thinkingConfig" which caused the Invalid JSON payload error.
+     */
+    async function callGeminiREST(apiKey, model, promptText, generationConfig = {}) {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+
+      const body = {
+        contents: [{ parts: [{ text: promptText }] }],
+        generationConfig: generationConfig
+      };
+
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+
+      if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(`Gemini API Error (${response.status}): ${errText}`);
+      }
+      return await response.json();
+    }
+
+    // --- 1. GENERATE GAME TEXT/JSON ---
+    async function generateGameGraph() {
+      const apiKey = (elGeminiKeyInput.value || data.geminiKey || "").trim();
+      if (!apiKey) { alert("Please enter your Gemini API key."); return; }
+      const storyPrompt = elStoryPrompt.value;
+      const storyGoal = elStoryGoal.value;
+      const globalStyle = elGlobalStyle.value;
+
+      if (!storyPrompt || !storyGoal) { alert("Please provide a story prompt and a goal."); return; }
+
+      btnGenerate.textContent = "Generating...";
+      btnGenerate.disabled = true;
+
+      try {
+        // gemini-1.5-flash is excellent and fast for JSON generation
+        const modelName = "gemini-3-pro-preview";
+
+        const prompt = `
+      You are an expert at creating interactive text adventure games. Build a coherent, winnable story that follows the schema from Scenes.MD, Actions.MD, and State.MD.
+      
+      **Core Objective:**
+      Create a "Choose Your Own Adventure" style game based on the user's premise and goal. The player must be able to navigate through scenes, interact with objects, and eventually achieve the win condition.
+
+      **User Request:**
+      -   **Story Premise:** ${storyPrompt}
+      -   **Win Condition:** ${storyGoal}
+      -   **Global Visual Style:** ${globalStyle}
+
+      **Strict Schema Requirements:**
+  1.  **Output Format:** A single JSON object with \`{ start: "scene-id", suggestedName: "snake_case_name", scenes: [...] }\`. No markdown formatting.
+  2.  **Global Properties:**
+      -   \`start\`: ID of the starting scene.
+      -   \`suggestedName\`: A short, snake_case name for the game (max 4 words, e.g., "haunted_mansion", "space_station_escape").
+  3.  **Scene Types:**
+          -   **Base Scene (\`kind: "base"\`)**: An equirectangular 360° panorama. These are the main rooms or locations.
+          -   **Overlay Scene (\`kind: "overlay"\`)**: A flat 2D close-up image. These are for examining objects, puzzles, or specific details.
+          -   **Depth Limit:** Do not nest overlays deeper than 3 levels (Base -> Overlay -> Overlay -> Overlay).
+      4.  **Scene Properties:**
+          -   \`id\`: Unique kebab-case string (e.g., "kitchen", "old-desk").
+          -   \`title\`: Short, readable title.
+          -   \`description\`: Narrative text describing the scene to the player.
+          -   \`image_prompt\`: A detailed visual description for image generation.
+              -   For **Base**: Must describe a 360° environment. "East is forward". Mention cardinal directions for key objects.
+              -   For **Overlay**: Must describe a specific 2D view of an object or area.
+          -   \`kind\`: "base" or "overlay".
+          -   \`actions\`: Array of action objects.
+      4.  **Action Properties:**
+          -   \`type\`: "move", "look", or "interact".
+          -   \`cmd\`: Unique lowercase command string (e.g., "north", "look desk").
+          -   \`label\`: Button text (e.g., "Go North", "Inspect Desk").
+          -   \`successor\`: (Required for "move") The \`id\` of the destination scene.
+          -   \`overlayScene\`: (Required for "look" if opening an overlay) The \`id\` of the overlay scene.
+          -   \`givesItem\`: (Optional for "interact") String ID of an item added to inventory.
+          -   \`requiredItems\`: (Optional) Array of item IDs that MUST be in inventory for this action to appear.
+          -   \`hiddenIfHas\`: (Optional) Array of item IDs that, if present in inventory, will HIDE this action.
+          -   \`closeOverlayOnSuccess\`: (Boolean) True if the action closes the current overlay (e.g., "Leave", "Back").
+      
+      **Advanced Gameplay Logic (CRITICAL):**
+      1.  **Gating & Puzzles:** Use \`requiredItems\` to lock key areas or actions. For example, a "Open Door" action should require a specific "key" item.
+      2.  **State Management:** Use \`hiddenIfHas\` to manage object state. For example, a "Take Key" action MUST have \`hiddenIfHas: ["key"]\` so it disappears after collection.
+      3.  **Progression:** Ensure the path to the win condition requires collecting at least 2-3 items and using them in specific locations. Do not make the game too simple.
+      4.  **Coherence:** Ensure that if an action gives an item, the narrative supports it (e.g., "You pick up the key.").
+
+      **Game Logic & Consistency Rules:**
+      -   **Navigation:** Base scenes must be connected via "move" actions. Use compass directions (north, south, east, west) where appropriate.
+      -   **Interaction:** "look" actions should generally open "overlay" scenes for closer inspection.
+      -   **Win Condition:** There MUST be a clear path to the win condition. This usually involves finding an item, solving a puzzle, or reaching a specific location that triggers a final narrative description.
+      -   **Escaping Overlays:** Every overlay scene MUST have at least one action to leave it (e.g., "Back", "Close") or move forward.
+      -   **Visual Consistency:** All \`image_prompt\` fields must align with the provided **Global Visual Style**.
+
+      **Example Output Structure:**
+  {
+    "start": "entry-hall",
+    "suggestedName": "victorian_mystery",
+    "scenes": [
+      {
+        "id": "entry-hall",
+            "kind": "base",
+            "title": "Entry Hall",
+            "description": "You stand in a grand, dusty hall. To the North is a heavy door.",
+            "image_prompt": "Grand entry hall, dusty, victorian style. Heavy door to the North. East is forward.",
+            "actions": [
+              { "type": "move", "cmd": "north", "label": "Go North", "successor": "library" }
+            ]
+          },
+          {
+             "id": "library",
+             "kind": "base",
+             "title": "Library",
+             "description": "A vast library filled with ancient tomes. A small, locked desk sits in the corner.",
+             "image_prompt": "Vast library, ancient tomes, locked desk in corner. East is forward.",
+             "actions": [
+               { "type": "move", "cmd": "south", "label": "Go South", "successor": "entry-hall" },
+               { "type": "look", "cmd": "look desk", "label": "Inspect Desk", "overlayScene": "library-desk" }
+             ]
+          },
+          {
+            "id": "library-desk",
+            "kind": "overlay",
+            "title": "Close-up: Desk",
+            "description": "A close-up of the locked desk. There's a small keyhole.",
+            "image_prompt": "Close-up of an old, locked wooden desk with a keyhole.",
+            "parentScene": "library",
+            "actions": [
+              { "type": "interact", "cmd": "use key", "label": "Use Small Key", "givesItem": "old-parchment", "requiredItems": ["small-key"], "hiddenIfHas": ["old-parchment"] },
+              { "type": "move", "cmd": "back", "label": "Go Back", "closeOverlayOnSuccess": true }
+            ]
+          }
+        ]
+      }
+
+      IMPORTANT RULES:
+      1. "kind" MUST be "base" or "overlay".
+      2. "base" scenes MUST use "image_prompt" for Equirectangular 360° panoramas.
+      3. "overlay" scenes MUST use "image_prompt" for Flat 2D close-ups.
+      4. "overlay" scenes should not be nested more than 3 levels deep.
+      5. "move" actions MUST be compass-aligned (East is forward).
+      6. "look" actions MUST trigger overlays.
+      7. "requiredItems": List of item IDs that MUST be in inventory to show this action.
+      8. "hiddenIfHas": List of item IDs that, if present, HIDE this action.
+      9. Ensure a coherent story and WIN condition.
+
+      Generate the complete JSON now.
+    `;
+
+        const result = await callGeminiREST(apiKey, modelName, prompt);
+
+        const candidates = result.candidates;
+        if (!candidates || !candidates.length) throw new Error("No content generated");
+
+        const text = candidates[0].content.parts[0].text;
+        const jsonText = text.replace(/```json|```/g, "").trim();
+        const generatedData = JSON.parse(jsonText);
+
+        data.start = generatedData.start;
+        data.scenes = generatedData.scenes;
+        data.suggestedName = generatedData.suggestedName; // Store suggested name
+        save();
+        render();
+
+      } catch (error) {
+        console.error("Game Gen Error:", error);
+        alert("Error: " + error.message);
+      } finally {
+        btnGenerate.textContent = "Generate with Gemini";
+        btnGenerate.disabled = false;
+      }
+    }
+
+    function blobToJpeg(blob) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        const url = URL.createObjectURL(blob);
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          canvas.width = img.width;
+          canvas.height = img.height;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0);
+          canvas.toBlob((jpegBlob) => {
+            URL.revokeObjectURL(url);
+            if (jpegBlob) resolve(jpegBlob);
+            else reject(new Error("Canvas toBlob failed"));
+          }, "image/jpeg", 0.8); // 0.8 quality
+        };
+        img.onerror = (e) => {
+          URL.revokeObjectURL(url);
+          reject(e);
+        };
+        img.src = url;
+      });
+    }
+
+    // --- 2. GENERATE IMAGE (One per scene) ---
+    async function generateImage(sidx, btnElement) {
+      const apiKey = (elGeminiKeyInput.value || data.geminiKey || "").trim();
+      if (!apiKey) { alert("Please enter your Gemini API key."); return; }
+
+      const scene = data.scenes[sidx];
+      const fullPrompt = buildImagePrompt(scene);
+
+      const originalText = btnElement.textContent;
+      btnElement.textContent = "Generating Image...";
+      btnElement.disabled = true;
+
+      try {
+        // Using gemini-2.5-flash-image for image generation
+        const modelName = "gemini-2.5-flash-image";
+
+        // Reverted: responseMimeType not supported by this model endpoint yet
+        // Also removed aspectRatio as it caused 400 Invalid JSON payload error
+        const result = await callGeminiREST(apiKey, modelName, fullPrompt);
+
+        const parts = result.candidates?.[0]?.content?.parts;
+        if (!parts) throw new Error("No parts returned from API");
+
+        const imagePart = parts.find(p => p.inlineData);
+
+        if (imagePart) {
+          const base64Data = imagePart.inlineData.data;
+          const mimeType = imagePart.inlineData.mimeType || "image/jpeg";
+
+          const byteCharacters = atob(base64Data);
+          const byteNumbers = new Array(byteCharacters.length);
+          for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+          }
+          const byteArray = new Uint8Array(byteNumbers);
+          let blob = new Blob([byteArray], { type: mimeType });
+
+          // Convert to JPEG for size reduction
+          try {
+            blob = await blobToJpeg(blob);
+          } catch (e) {
+            console.warn("JPEG conversion failed, using original format", e);
+          }
+
+          // Store for ZIP export
+          imageBlobs.set(scene.id, blob);
+
+          // Auto-download
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `${scene.id}.jpg`; // Unified naming
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          window.URL.revokeObjectURL(url);
+        } else {
+          const textPart = parts.find(p => p.text);
+          alert(textPart ? "Model Refusal: " + textPart.text : "No image data found.");
+        }
+
+      } catch (error) {
+        console.error("Image Gen Error:", error);
+        alert("Error: " + error.message);
+      } finally {
+        btnElement.textContent = originalText;
+        btnElement.disabled = false;
+        renderScenes(); // Re-render to update image status badge
+      }
+    }
+
+    async function generateAllImages() {
+      const apiKey = (elGeminiKeyInput.value || data.geminiKey || "").trim();
+      if (!apiKey) { alert("Please enter your Gemini API key."); return; }
+
+      btnGenerateAllImages.textContent = "Generating All...";
+      btnGenerateAllImages.disabled = true;
+
+      try {
+        for (let i = 0; i < data.scenes.length; i++) {
+          const scene = data.scenes[i];
+          // Find the button dynamically, as the DOM is re-rendered
+          const btn = document.querySelector(`#collapse-${scene.id} [data-action="generateImage"]`);
+          if (btn) {
+            await generateImage(i, btn);
+            // Small delay to avoid hitting API rate limits too hard
+            await new Promise(resolve => setTimeout(resolve, 1000));
+          }
+        }
+        alert("All images generation attempted. Check downloads.");
+      } catch (error) {
+        console.error("Generate All Images Error:", error);
+        alert("Error generating all images: " + error.message);
+      } finally {
+        btnGenerateAllImages.textContent = "Generate All Images";
+        btnGenerateAllImages.disabled = false;
+      }
+    }
+
+    async function exportGameZip() {
+      if (!data.scenes || data.scenes.length === 0) { alert("No game data to export."); return; }
+
+      const zip = new JSZip();
+
+      // Add game.json (exclude API key)
+      const exportData = { ...data };
+      delete exportData.geminiKey;
+      zip.file("game.json", JSON.stringify(exportData, null, 2));
+
+      // Add images
+      let imageCount = 0;
+      imageBlobs.forEach((blob, id) => {
+        // Use correct extension based on mime type
+        const ext = blob.type === "image/png" ? "png" : "jpg";
+        zip.file(`${id}.${ext}`, blob);
+        imageCount++;
+      });
+
+      if (imageCount === 0) {
+        if (!confirm("No images have been generated in this session. The ZIP will only contain game.json. Continue?")) return;
+      } else if (imageCount < data.scenes.length) {
+        if (!confirm(`Only ${imageCount} out of ${data.scenes.length} scenes have generated images in this session. Continue?`)) return;
+      }
+
+      const content = await zip.generateAsync({ type: "blob" });
+      const url = window.URL.createObjectURL(content);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = data.suggestedName ? `${data.suggestedName}.zip` : "adventure_game.zip";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    }
+
+    async function importImages(e) {
+      const files = Array.from(e.target.files);
+      if (!files.length) return;
+
+      let count = 0;
+      for (const file of files) {
+        // Assume filename matches scene id (e.g. "lobby.png" -> "lobby")
+        const id = file.name.replace(/\.[^/.]+$/, "");
+        imageBlobs.set(id, file);
+        count++;
+      }
+      alert(`Imported ${count} images. They will be included in the ZIP export.`);
+      e.target.value = ""; // Reset
+      renderScenes(); // Re-render to update image status badge
+    }
+
+    // --- UI LOGIC ---
+    function render() {
+      elStoryPrompt.value = data.storyPrompt || "";
+      elStoryGoal.value = data.storyGoal || "";
+      elGlobalStyle.value = data.globalStyle || defaultGlobalStyle;
+      elAssetBase.value = data.assetBase || "";
+      elImgExt.value = data.imgExt || "jpg";
+      elGeminiKeyInput.value = data.geminiKey || "";
+      renderScenes();
+      renderStart();
+    }
+
+    function renderStart() {
+      elStartSelect.innerHTML = "";
+      data.scenes.filter(s => s.kind !== "overlay").forEach(s => {
+        const opt = document.createElement("option");
+        opt.value = s.id; opt.textContent = s.id;
+        elStartSelect.appendChild(opt);
+      });
+      if (data.start) elStartSelect.value = data.start;
+    }
+
+    function renderScenes() {
+      elSceneList.innerHTML = ""; // Now targets the accordion container
+      const accordion = document.getElementById("sceneAccordion");
+      accordion.innerHTML = "";
+
+      elSceneCount.textContent = data.scenes.length;
+
+      // Group scenes: Base scenes at top level, overlays nested
+      const baseScenes = data.scenes.filter(s => s.kind !== "overlay");
+      const overlayScenes = data.scenes.filter(s => s.kind === "overlay");
+
+      baseScenes.forEach((s, idx) => {
+        // Find overlays for this base scene
+        // Improved matching: Check parentScene, ID prefix, OR if referenced by an action in this base scene
+        const childOverlays = overlayScenes.filter(o =>
+          o.parentScene === s.id ||
+          o.id.startsWith(s.id + "-") ||
+          o.id.startsWith(s.id + "_") ||
+          (s.actions || []).some(a => a.overlayScene === o.id)
+        );
+
+        // Check asset status
+        const hasImage = imageBlobs.has(s.id);
+        const statusBadge = hasImage
+          ? `<span class="badge bg-success status-badge">Img: OK</span>`
+          : `<span class="badge bg-secondary status-badge">Img: Missing</span>`;
+
+        const item = document.createElement("div");
+        item.className = "accordion-item";
+        item.innerHTML = `
+          <h2 class="accordion-header" id="heading-${s.id}">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${s.id}">
+              <span class="fw-bold me-2">${s.title || s.id}</span> 
+              <span class="mono text-muted me-2">(${s.id})</span>
+              ${statusBadge}
+            </button>
+          </h2>
+          <div id="collapse-${s.id}" class="accordion-collapse collapse" data-bs-parent="#sceneAccordion">
+            <div class="accordion-body">
+              <!-- Scene Editor Fields -->
+              <div class="mb-3">
+                <label class="form-label text-muted small">Description</label>
+                <textarea class="form-control form-control-sm" data-field="description" rows="2">${s.description || ""}</textarea>
+              </div>
+              <div class="mb-3">
+                <label class="form-label text-muted small">Image Prompt</label>
+                <div class="input-group input-group-sm">
+                  <textarea class="form-control" data-field="image_prompt" rows="2">${s.image_prompt || ""}</textarea>
+                  <button class="btn btn-outline-secondary" data-action="generateImage">Generate Img</button>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label text-muted small">Video URL (Optional)</label>
+                <input class="form-control form-control-sm" data-field="videoUrl" value="${s.videoUrl || ""}">
+              </div>
+
+              <!-- Actions -->
+              <div class="mb-3">
+                <label class="form-label text-muted small">Actions</label>
+                <div class="actions-container d-flex flex-column gap-2"></div>
+                <button class="btn btn-sm btn-outline-secondary mt-2" data-action="addAction">+ Add Action</button>
+              </div>
+
+              <!-- Nested Overlays -->
+              <div class="mt-4 border-top pt-3">
+                <h6 class="text-muted small text-uppercase">Overlays</h6>
+                <div class="nested-overlays d-flex flex-column gap-2"></div>
+                <button class="btn btn-sm btn-outline-secondary mt-2" data-action="addOverlay">+ Add Overlay</button>
+              </div>
+
+              <div class="mt-3 text-end">
+                <button class="btn btn-sm btn-danger" data-action="del">Delete Scene</button>
+              </div>
+            </div>
+          </div>
+        `;
+
+        // Bind Events
+        const body = item.querySelector(".accordion-body");
+
+        // Field Updates
+        body.querySelectorAll("[data-field]").forEach(inp => {
+          inp.addEventListener("change", (e) => { s[e.target.dataset.field] = e.target.value; save(); });
+        });
+
+        // Generate Image
+        body.querySelector('[data-action="generateImage"]').addEventListener("click", (e) => generateImage(data.scenes.indexOf(s), e.target));
+
+        // Delete Scene
+        body.querySelector('[data-action="del"]').addEventListener("click", () => {
+          if (confirm("Delete scene?")) {
+            data.scenes = data.scenes.filter(x => x.id !== s.id);
+            save(); renderScenes();
+          }
+        });
+
+        // Add Action
+        body.querySelector('[data-action="addAction"]').addEventListener("click", () => {
+          s.actions = s.actions || [];
+          s.actions.push({ type: "move", cmd: "", label: "", successor: "" });
+          save(); renderScenes();
+        });
+
+        // Render Actions
+        const actContainer = body.querySelector(".actions-container");
+        (s.actions || []).forEach((a, aidx) => {
+          const row = document.createElement("div");
+          row.className = "input-group input-group-sm";
+          row.innerHTML = `
+            <select class="form-select" style="max-width:100px;" data-afield="type">
+              <option value="move">Move</option><option value="look">Look</option><option value="interact">Interact</option>
+            </select>
+            <input class="form-control" placeholder="cmd" value="${a.cmd || ''}" data-afield="cmd">
+            <input class="form-control" placeholder="label" value="${a.label || ''}" data-afield="label">
+            <input class="form-control" placeholder="successor/overlay" value="${a.successor || a.overlayScene || ''}" data-afield="target">
+            <button class="btn btn-outline-danger" data-action="delAction">×</button>
+          `;
+
+          // Add second row for constraints
+          const row2 = document.createElement("div");
+          row2.className = "input-group input-group-sm mt-1";
+          row2.innerHTML = `
+            <span class="input-group-text">Req</span>
+            <input class="form-control" placeholder="item1,item2" value="${(a.requiredItems || []).join(',')}" data-afield="requiredItems">
+            <span class="input-group-text">Hide</span>
+            <input class="form-control" placeholder="item1,item2" value="${(a.hiddenIfHas || []).join(',')}" data-afield="hiddenIfHas">
+             <div class="input-group-text">
+              <input class="form-check-input mt-0" type="checkbox" data-afield="closeOverlayOnSuccess" ${a.closeOverlayOnSuccess ? 'checked' : ''}>
+              <span class="ms-1" style="font-size:0.8em">Close</span>
+            </div>
+          `;
+
+          row.querySelector('[data-afield="type"]').value = a.type || "move";
+
+          const bindInputs = (container) => {
+            container.querySelectorAll("input, select").forEach(inp => {
+              inp.addEventListener("change", (e) => {
+                const f = e.target.dataset.afield;
+                if (f === "target") {
+                  if (a.type === "look") a.overlayScene = e.target.value;
+                  else a.successor = e.target.value;
+                } else if (f === "requiredItems" || f === "hiddenIfHas") {
+                  a[f] = e.target.value.split(",").map(x => x.trim()).filter(x => x);
+                } else if (f === "closeOverlayOnSuccess") {
+                  a[f] = e.target.checked;
+                } else {
+                  a[f] = e.target.value;
+                }
+                save();
+              });
+            });
+          };
+
+          bindInputs(row);
+          bindInputs(row2);
+
+          row.querySelector('[data-action="delAction"]').addEventListener("click", () => {
+            s.actions.splice(aidx, 1);
+            save(); renderScenes();
+          });
+
+          actContainer.appendChild(row);
+          actContainer.appendChild(row2);
+        });
+
+        // Render Nested Overlays
+        const overlayContainer = body.querySelector(".nested-overlays");
+        childOverlays.forEach(o => {
+          const oHasImage = imageBlobs.has(o.id);
+          const oBadge = oHasImage
+            ? `<span class="badge bg-success status-badge" style="font-size:0.7em">Img: OK</span>`
+            : `<span class="badge bg-secondary status-badge" style="font-size:0.7em">Img: Missing</span>`;
+
+          const oCard = document.createElement("div");
+          oCard.className = "card mb-2 border-secondary";
+          oCard.innerHTML = `
+             <div class="card-body p-2">
+               <div class="d-flex justify-content-between align-items-center mb-2">
+                 <strong>${o.title || o.id} <span class="mono text-muted">(${o.id})</span> ${oBadge}</strong>
+                 <button class="btn btn-xs btn-outline-danger py-0" data-action="delOverlay">×</button>
+               </div>
+               <div class="input-group input-group-sm mb-2">
+                 <span class="input-group-text">Desc</span>
+                 <textarea class="form-control" rows="1" data-ofield="description">${o.description || ''}</textarea>
+               </div>
+                <div class="input-group input-group-sm mb-2">
+                 <span class="input-group-text">Img</span>
+                 <textarea class="form-control" rows="1" data-ofield="image_prompt">${o.image_prompt || ''}</textarea>
+                 <button class="btn btn-outline-secondary" data-action="genOverlayImg">Gen</button>
+               </div>
+             </div>
+           `;
+
+          oCard.querySelectorAll("[data-ofield]").forEach(inp => {
+            inp.addEventListener("change", (e) => { o[e.target.dataset.ofield] = e.target.value; save(); });
+          });
+
+          oCard.querySelector('[data-action="genOverlayImg"]').addEventListener("click", (e) => generateImage(data.scenes.indexOf(o), e.target));
+          oCard.querySelector('[data-action="delOverlay"]').addEventListener("click", () => {
+            if (confirm("Delete overlay?")) {
+              data.scenes = data.scenes.filter(x => x.id !== o.id);
+              save(); renderScenes();
+            }
+          });
+
+          overlayContainer.appendChild(oCard);
+        });
+
+        // Add Overlay Button Logic
+        body.querySelector('[data-action="addOverlay"]').addEventListener("click", () => {
+          const newId = prompt("Overlay ID:", `${s.id}-overlay`);
+          if (newId) {
+            data.scenes.push({ id: newId, kind: "overlay", title: "New Overlay", description: "", image_prompt: "Close up of...", actions: [] });
+            save(); renderScenes();
+          }
+        });
+
+        accordion.appendChild(item);
+      });
+
+      // Handle Orphaned Overlays (those not matched to any base scene)
+      const matchedOverlayIds = new Set();
+      baseScenes.forEach(s => {
+        const children = overlayScenes.filter(o =>
+          o.parentScene === s.id ||
+          o.id.startsWith(s.id + "-") ||
+          o.id.startsWith(s.id + "_") ||
+          (s.actions || []).some(a => a.overlayScene === o.id) // Also check if referenced by an action
+        );
+        children.forEach(c => matchedOverlayIds.add(c.id));
+      });
+
+      const orphanedOverlays = overlayScenes.filter(o => !matchedOverlayIds.has(o.id));
+
+      if (orphanedOverlays.length > 0) {
+        const orphanContainer = document.createElement("div");
+        orphanContainer.className = "mt-4 border-top pt-3";
+        orphanContainer.innerHTML = `<h5 class="text-warning">Orphaned Overlays (Not linked to base scenes)</h5>`;
+
+        const list = document.createElement("div");
+        list.className = "d-flex flex-column gap-2";
+        orphanContainer.appendChild(list);
+
+        orphanedOverlays.forEach(o => {
+          const oHasImage = imageBlobs.has(o.id);
+          const oBadge = oHasImage
+            ? `<span class="badge bg-success status-badge">Img: OK</span>`
+            : `<span class="badge bg-secondary status-badge">Img: Missing</span>`;
+
+          const oCard = document.createElement("div");
+          oCard.className = "card border-warning";
+          oCard.innerHTML = `
+             <div class="card-body p-2">
+               <div class="d-flex justify-content-between align-items-center mb-2">
+                 <strong>${o.title || o.id} <span class="mono text-muted">(${o.id})</span> ${oBadge}</strong>
+                 <button class="btn btn-xs btn-outline-danger py-0" data-action="delOverlay">×</button>
+               </div>
+               <div class="input-group input-group-sm mb-2">
+                 <span class="input-group-text">Desc</span>
+                 <textarea class="form-control" rows="1" data-ofield="description">${o.description || ''}</textarea>
+               </div>
+                <div class="input-group input-group-sm mb-2">
+                 <span class="input-group-text">Img</span>
+                 <textarea class="form-control" rows="1" data-ofield="image_prompt">${o.image_prompt || ''}</textarea>
+                 <button class="btn btn-outline-secondary" data-action="genOverlayImg">Gen</button>
+               </div>
+             </div>
+           `;
+
+          oCard.querySelectorAll("[data-ofield]").forEach(inp => {
+            inp.addEventListener("change", (e) => { o[e.target.dataset.ofield] = e.target.value; save(); });
+          });
+
+          oCard.querySelector('[data-action="genOverlayImg"]').addEventListener("click", (e) => generateImage(data.scenes.indexOf(o), e.target));
+          oCard.querySelector('[data-action="delOverlay"]').addEventListener("click", () => {
+            if (confirm("Delete overlay?")) {
+              data.scenes = data.scenes.filter(x => x.id !== o.id);
+              save(); renderScenes();
+            }
+          });
+
+          list.appendChild(oCard);
+        });
+
+        elSceneList.appendChild(orphanContainer);
+      }
+    }
+
+    // Event Listeners
+    btnAddScene.addEventListener("click", () => {
+      const nid = prompt("New base scene id (kebab-case)", "new-scene");
+      if (!nid) return;
+      if (data.scenes.find(s => s.id === nid)) { alert("ID exists"); return; }
+      const scene = { id: nid, title: nid, description: "", image_prompt: "", videoUrl: "", kind: "base", actions: [] };
+      data.scenes.push(scene);
+      if (!data.start) data.start = nid;
+      save(); renderScenes();
+    });
+
+    elStoryPrompt.addEventListener("input", () => { data.storyPrompt = elStoryPrompt.value; save(); });
+    elStoryGoal.addEventListener("input", () => { data.storyGoal = elStoryGoal.value; save(); });
+    elGlobalStyle.addEventListener("input", () => { data.globalStyle = elGlobalStyle.value; save(); });
+    elAssetBase.addEventListener("input", () => { data.assetBase = elAssetBase.value; save(); });
+    elImgExt.addEventListener("change", () => { data.imgExt = elImgExt.value; save(); });
+    elStartSelect.addEventListener("change", () => { data.start = elStartSelect.value; save(); });
+    elGeminiKeyInput.addEventListener("change", () => { data.geminiKey = elGeminiKeyInput.value.trim(); save(); });
+
+    btnReset.addEventListener("click", () => { if (confirm("Reset builder data?")) resetAll(); });
+
+    btnExport.addEventListener("click", () => {
+      const exportObj = {
+        start: data.start || (data.scenes.find(s => s.kind !== "overlay")?.id || ""),
+        scenes: data.scenes,
+        suggestedName: data.storyPrompt ? data.storyPrompt.slice(0, 20).replace(/[^a-z0-9]/gi, '_') : "adventure"
+      };
+      const blob = new Blob([JSON.stringify(exportObj, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = `${exportObj.suggestedName}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    btnImport.addEventListener("click", () => {
+      const t = prompt("Paste JSON graph (start + scenes)");
+      if (!t) return;
+      try {
+        const obj = JSON.parse(t);
+        if (!obj.scenes || !Array.isArray(obj.scenes)) throw new Error("Missing scenes array");
+        data.scenes = obj.scenes;
+        data.start = obj.start || "";
+        save(); renderScenes();
+      } catch (e) { alert("Import failed: " + e.message); }
+    });
+
+    // Initialize UI from loaded data
+    function initUI() {
+      if (data.storyPrompt) elStoryPrompt.value = data.storyPrompt;
+      if (data.storyGoal) elStoryGoal.value = data.storyGoal;
+      if (data.globalStyle) elGlobalStyle.value = data.globalStyle;
+      if (data.assetBase) elAssetBase.value = data.assetBase;
+      if (data.imgExt) elImgExt.value = data.imgExt;
+      if (data.geminiKey) elGeminiKeyInput.value = data.geminiKey;
+      if (data.start) {
+        // We need to populate the select first, which happens in renderScenes -> renderStartSelect (if it existed)
+        // But currently renderScenes doesn't populate the start select. 
+        // Let's just ensure we render first.
+      }
+    }
+
+    initUI();
+    renderScenes();
+  </script>
+</body>
+
+</html>

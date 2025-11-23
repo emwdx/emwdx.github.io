@@ -1,0 +1,7 @@
+prompt: "A hackathon called "Platanus Hack 2025" is being held in an abandoned floor of an office building results in bananas being found in odd places throughout the space. The main story is that there is a banana on the welcome desk in the lobby, and a note that says "Find them all, and you'll be invited to the party on the roof!" The lobby is connected to an office area, the office area is connected to a kitchen and a server room. The kitchen has a balcony."
+goal:"Collect all bananas and end up at the rooftop. Bananas should only be visible in overlay images. The rooftop should include different scenes for if all bananas are not collected (not success) or if they are collected. "
+global_image:"Equirectangular 360° panorama, ultra coherent series look.
+Photorealistic with subtle filmic grading, consistent lens and color palette. Light enough to see, but not bright.
+Soft moonlit shadows, mild atmospheric haze, physically based lighting."
+
+
