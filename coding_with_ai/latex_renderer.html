@@ -22,7 +22,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" referrerpolicy="no-referrer"></script>
 
 <style>
-  :root{ --page-bg:#ffffff; --ink:#111; --ui-bg:#f8f9fa; }
+  :root{ --page-bg:#ffffff; --ink:#111; --ui-bg:#f8f9fa; --page-height:11in; }
   @media (prefers-color-scheme: dark){
     :root{ --page-bg:#ffffff; --ink:#111; --ui-bg:#0b0e12; }
     body{ color-scheme: dark; }
@@ -35,27 +35,49 @@
     color: var(--ink);
     width: 8.5in;
     min-height: 11in;
-    padding: 1in; /* Standard 1 inch margins */
+    padding: 0.25in; /* Standard 1 inch margins */
     box-shadow: 0 0.5rem 2rem rgba(0,0,0,.15);
     margin-bottom: 2rem;
     box-sizing: border-box;
     overflow: hidden;
+    position: relative;
     /* Typography */
-    font-family: "Times New Roman", Times, serif;
-    font-size: 12pt;
+    font-family: "Helvetica Neue", Times, serif;
+    font-size: 11pt;
     line-height: 1.5;
+  }
+
+  /* Visual page-break guides (preview only) */
+  @media screen {
+    .page.show-guides {
+      background-image: repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent calc(var(--page-height) - 2px),
+        rgba(0,0,0,0.08) calc(var(--page-height) - 2px),
+        rgba(0,0,0,0.08) calc(var(--page-height) + 2px),
+        transparent calc(var(--page-height) + 2px)
+      );
+      background-size: 100% var(--page-height);
+      background-repeat: repeat-y;
+    }
   }
 
   /* HTML typography within the page */
   .page h1, .page h2, .page h3 { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; color: #000; margin-top: 1.5em; margin-bottom: 0.5em; font-weight: bold; }
-  .page h1 { font-size: 24pt; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-  .page h2 { font-size: 18pt; border-bottom: 1px solid #eee; padding-bottom: 5px; }
-  .page h3 { font-size: 14pt; }
-  .page p { margin-bottom: 1em; text-align: justify; }
+  .page h1 { font-size: 16pt; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+  .page h2 { font-size: 12pt; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+  .page h3 { font-size: 10pt; }
+  .page p { margin-bottom: 1em; text-align: justify; font-size:10pt;}
   .page ul, .page ol { margin-bottom: 1em; padding-left: 2em; }
   .page li { margin-bottom: 0.25em; }
   .page hr { border-top: 1px solid #ccc; opacity: 1; margin: 2em 0; }
   .page blockquote { border-left: 4px solid #ddd; padding-left: 1em; color: #555; margin-left: 0; font-style: italic; }
+  .page table { width: 100%; border-collapse: collapse; margin: 1.25em 0; font-size: 12pt; }
+  .page th, .page td { border: 1px solid #c8c8c8; padding: 8px 10px; vertical-align: top; }
+  .page th { background: #f2f2f2; font-weight: bold; }
+  .page tr:nth-child(even) td { background: #fafafa; }
+  .page caption { caption-side: bottom; text-align: left; color: #666; font-size: 10pt; padding-top: 6px; }
 
   /* Editor Textarea */
   #src { resize: none; outline: none; box-shadow: none; background: var(--page-bg); color: var(--ink); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 0.9rem; }
@@ -63,7 +85,7 @@
   .sticky-toolbar{ position: sticky; top: 0; z-index: 10; background: var(--ui-bg); }
   .btn-icon{ display:inline-flex; align-items:center; gap:.35rem }
 
-  @media print{ .no-print{ display:none !important } .page{ box-shadow:none; margin:0; } body{ background:#fff } }
+  @media print{ .no-print{ display:none !important } .page{ box-shadow:none; margin:0; background-image:none !important; } body{ background:#fff } }
 </style>
 </head>
 <body>
@@ -132,12 +154,14 @@
   const outEl = document.getElementById('output');
   const pageEl = document.getElementById('page');
   const statusEl = document.getElementById('status');
+  const paperSelect = document.getElementById('paper');
+  const STORAGE_KEY = 'latex_renderer_src';
+
+  // Enable GitHub-flavored Markdown so tables render properly
+  marked.setOptions({ gfm: true, breaks: false });
 
   // Paper Sizing
-  document.getElementById('paper').addEventListener('change', (e) => {
-    if(e.target.value === 'a4') { pageEl.style.width = '8.27in'; pageEl.style.minHeight = '11.69in'; }
-    else { pageEl.style.width = '8.5in'; pageEl.style.minHeight = '11in'; }
-  });
+  paperSelect.addEventListener('change', (e) => setPaperSize(e.target.value));
 
   // 2. THE RENDERING PIPELINE
   function render() {
@@ -159,7 +183,7 @@
 
     // STEP B: Parse Markdown -> HTML
     // "breaks: true" turns newlines into <br> (optional, set false if you want standard MD behavior)
-    let html = marked.parse(text, { breaks: false });
+    let html = marked.parse(text);
 
     // STEP C: Restore LaTeX Math
     mathMap.forEach((value, key) => {
@@ -192,7 +216,11 @@
     };
   }
   
-  srcEl.addEventListener('input', debounce(render, 300));
+  const debouncedRender = debounce(render, 300);
+  srcEl.addEventListener('input', (e) => {
+    localStorage.setItem(STORAGE_KEY, e.target.value);
+    debouncedRender();
+  });
   document.getElementById('renderBtn').addEventListener('click', render);
 
   // 4. EXPORT FUNCTIONS
@@ -205,6 +233,8 @@
 
   async function savePDF() {
     await render();
+    const hadGuides = pageEl.classList.contains('show-guides');
+    if (hadGuides) pageEl.classList.remove('show-guides');
     const opt = {
       margin: 0,
       filename: getFilename() + '.pdf',
@@ -212,16 +242,38 @@
       html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
       jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
     };
-    html2pdf().set(opt).from(pageEl).save();
+    try {
+      await html2pdf().set(opt).from(pageEl).save();
+    } finally {
+      if (hadGuides) pageEl.classList.add('show-guides');
+    }
   }
 
   async function savePNG() {
     await render();
-    const canvas = await html2canvas(pageEl, { scale: 2, backgroundColor: '#ffffff' });
-    const link = document.createElement('a');
-    link.download = getFilename() + '.png';
-    link.href = canvas.toDataURL();
-    link.click();
+    const hadGuides = pageEl.classList.contains('show-guides');
+    if (hadGuides) pageEl.classList.remove('show-guides');
+    try {
+      const canvas = await html2canvas(pageEl, { scale: 2, backgroundColor: '#ffffff' });
+      const link = document.createElement('a');
+      link.download = getFilename() + '.png';
+      link.href = canvas.toDataURL();
+      link.click();
+    } finally {
+      if (hadGuides) pageEl.classList.add('show-guides');
+    }
+  }
+
+  function setPaperSize(size) {
+    if (size === 'a4') {
+      pageEl.style.width = '8.27in';
+      pageEl.style.minHeight = '11.69in';
+      pageEl.style.setProperty('--page-height', '11.69in');
+    } else {
+      pageEl.style.width = '8.5in';
+      pageEl.style.minHeight = '11in';
+      pageEl.style.setProperty('--page-height', '11in');
+    }
   }
 
   document.getElementById('pdfBtn').addEventListener('click', savePDF);
@@ -231,7 +283,13 @@
   // Loading your specific example into the textarea on startup
   const exampleContent = ``;
 
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved !== null) {
+    srcEl.value = saved;
+  }
   //srcEl.value = exampleContent;
+  pageEl.classList.add('show-guides');
+  setPaperSize(paperSelect.value);
   render();
 
 </script>
