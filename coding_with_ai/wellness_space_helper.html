@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nido Mental Health Design Tracker</title>
+    <style>
+        :root {
+            --primary-bg: #f3f4f6;
+            --secondary-bg: #ffffff;
+            --text-color: #1f2937;
+            --primary-color: #0d9488; /* Teal for Mental Health/Calm vibe */
+            --primary-hover: #0f766e;
+            --danger-color: #ef4444;
+            --danger-hover: #dc2626;
+            --border-color: #e5e7eb;
+            --shadow-color: rgba(0,0,0,0.1);
+            --modal-overlay: rgba(0,0,0,0.6);
+            --tag-bg: #e0f2f1;
+            --tag-text: #004d40;
+            --accent-bg: #fff7ed; /* Warm beige from slides */
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+            overscroll-behavior: none;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: var(--secondary-bg);
+            border-radius: 8px;
+            box-shadow: 0 4px 15px var(--shadow-color);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 95vh;
+        }
+
+        /* --- Header & Tabs --- */
+        .tabs-container { display: flex; align-items: center; background-color: #f9fafb; padding: 10px 20px 0 20px; border-bottom: 1px solid var(--border-color); flex-wrap: wrap; flex-shrink: 0; }
+        .tab { padding: 12px 20px; cursor: pointer; border: 1px solid transparent; border-bottom: none; margin-bottom: -1px; position: relative; display: flex; align-items: center; background: #f3f4f6; color: #6b7280; border-radius: 6px 6px 0 0; margin-right: 4px; transition: all 0.2s;}
+        .tab.active { background: var(--secondary-bg); border-color: var(--border-color); border-bottom-color: transparent; font-weight: 600; color: var(--text-color); }
+        .delete-tab-btn { margin-left: 10px; color: #9ca3af; border: none; background: none; cursor: pointer; font-size: 16px; padding: 2px 4px; border-radius: 50%; }
+        .delete-tab-btn:hover { background-color: #e5e7eb; color: var(--danger-color); }
+        .add-class-btn { margin-left: 10px; padding: 8px 12px; background-color: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 500; font-size: 0.9em; }
+        .add-class-btn:hover { background-color: var(--primary-hover); }
+
+        /* --- Main Content & Drag/Drop --- */
+        .main-content { padding: 20px; overflow-y: auto; flex-grow: 1; }
+        .no-class-view { text-align: center; padding: 50px; color: #6b7280; }
+        .controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+        .title-area h1 { margin: 0; font-size: 1.5rem; color: var(--primary-color); }
+        .action-buttons button { padding: 8px 15px; border: none; border-radius: 4px; color: white; cursor: pointer; font-size: 14px; margin-left: 8px; transition: background 0.2s; }
+        .btn-primary { background-color: var(--primary-color); }
+        .btn-primary:hover { background-color: var(--primary-hover); }
+        .btn-secondary { background-color: #6b7280; }
+        .btn-secondary:hover { background-color: #4b5563; }
+        
+        .grouping-workspace { display: flex; gap: 20px; height: calc(100% - 60px); }
+        #unassigned-container { flex: 0 0 250px; display: flex; flex-direction: column; padding: 15px; border: 1px solid var(--border-color); border-radius: 8px; background-color: #f9fafb; }
+        #unassigned-container h3 { margin-top: 0; font-size: 1rem; color: #4b5563; border-bottom: 1px solid #e5e7eb; padding-bottom: 10px; }
+        .unassigned-students-list { flex-grow: 1; overflow-y: auto; padding-right: 5px; }
+        
+        #groups-container { flex: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; align-content: start; overflow-y: auto; padding-right: 5px; }
+        
+        .student-tag { background-color: var(--tag-bg); color: var(--tag-text); padding: 8px 12px; border-radius: 4px; margin-bottom: 8px; cursor: grab; user-select: none; transition: all 0.2s; font-weight: 500; border: 1px solid transparent; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .student-tag:hover { border-color: var(--primary-color); transform: translateY(-1px); }
+        .student-tag.dragging { opacity: 0.5; background-color: var(--primary-color); color: white; }
+        
+        .group-box { border: 1px solid var(--border-color); border-radius: 8px; padding: 0; background-color: var(--secondary-bg); display: flex; flex-direction: column; box-shadow: 0 2px 4px rgba(0,0,0,0.05); transition: border 0.2s; }
+        .group-box.drag-over { border-style: dashed; border-color: var(--primary-color); background-color: #f0fdfa; }
+        
+        .group-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background-color: #fff7ed; border-bottom: 1px solid var(--border-color); border-radius: 8px 8px 0 0; }
+        .group-header h3 { margin: 0; cursor: pointer; flex-grow: 1; padding: 4px 8px; border-radius: 4px; font-size: 1rem; }
+        .group-header h3:hover { background-color: rgba(0,0,0,0.05); }
+        .group-actions button { background: none; border: none; cursor: pointer; font-size: 1.1rem; color: #9ca3af; margin-left: 8px; padding: 4px; border-radius: 4px; }
+        .group-actions button:hover { color: var(--text-color); background-color: rgba(0,0,0,0.05); }
+        .delete-group-btn:hover { color: var(--danger-color) !important; }
+        .open-rubric-btn { color: var(--primary-color) !important; }
+
+        .group-members { padding: 15px; min-height: 60px; flex-grow: 1; }
+        
+        /* --- Modal Styles --- */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: var(--modal-overlay); backdrop-filter: blur(2px); }
+        .modal-content { background-color: var(--secondary-bg); margin: 40px auto; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); width: 90%; max-width: 600px; display: flex; flex-direction: column; max-height: 90vh; animation: slideDown 0.3s ease-out; }
+        @keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        .modal-header { padding: 20px 25px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background-color: #f9fafb; border-radius: 12px 12px 0 0; }
+        .modal-header h2 { margin: 0; font-size: 1.25rem; color: #111827; }
+        .close-btn { font-size: 24px; color: #9ca3af; cursor: pointer; border: none; background: none; transition: color 0.2s; }
+        .close-btn:hover { color: #374151; }
+        
+        .modal-body { padding: 25px; overflow-y: auto; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.9rem; color: #374151; }
+        .form-group textarea, .form-group input { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 16px; box-sizing: border-box; }
+        .form-group textarea { min-height: 120px; resize: vertical; font-family: monospace; }
+        
+        .modal-footer { padding: 20px 25px; border-top: 1px solid var(--border-color); text-align: right; background-color: #f9fafb; border-radius: 0 0 12px 12px; }
+        .modal-footer .btn-danger { background-color: var(--danger-color); }
+        .modal-footer .btn-danger:hover { background-color: var(--danger-hover); }
+
+        /* --- Rubric & Proficiency Modal Specifics --- */
+        #rubric-modal .modal-content, #proficiency-modal .modal-content { max-width: 1100px; height: 90vh; }
+        
+        .rubric-container { display: flex; flex-direction: column; gap: 20px; }
+        
+        .rubric-section { border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; }
+        .rubric-section-header { background-color: #fff7ed; padding: 12px 20px; border-bottom: 1px solid var(--border-color); }
+        .rubric-section-header h3 { margin: 0; font-size: 1rem; font-weight: 600; color: #431407; }
+        .rubric-section-header p { margin: 4px 0 0 0; font-size: 0.85rem; color: #78350f; }
+
+        .rubric-section-grid { display: flex; padding: 20px; gap: 25px; }
+        .checkbox-pane { flex: 1; }
+        .notes-pane { flex: 1; display: flex; flex-direction: column; }
+        .checkbox-pane label { display: flex; align-items: flex-start; margin-bottom: 12px; cursor: pointer; padding: 8px; border-radius: 4px; transition: background 0.1s; }
+        .checkbox-pane label:hover { background-color: #f9fafb; }
+        .checkbox-pane input { margin-right: 12px; margin-top: 4px; transform: scale(1.2); cursor: pointer; accent-color: var(--primary-color); }
+        .notes-pane textarea { width: 100%; flex-grow: 1; min-height: 100px; box-sizing: border-box; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; font-family: inherit; font-size: 0.95rem; }
+        .notes-pane label { font-size: 0.85rem; font-weight: 600; color: #6b7280; margin-bottom: 5px; display: block; }
+
+        .members-table { width: 100%; border-collapse: separate; border-spacing: 0; margin-bottom: 25px; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; }
+        .members-table th, .members-table td { text-align: left; padding: 12px 15px; border-bottom: 1px solid var(--border-color); }
+        .members-table th { background-color: #f3f4f6; font-weight: 600; color: #374151; }
+        .members-table tr:last-child td { border-bottom: none; }
+        .members-table input, .members-table select { width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 4px; }
+        
+        /* Proficiency Scale Grid */
+        .scale-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 10px; }
+        .scale-column { background: #fafafa; padding: 20px; border-radius: 8px; border: 1px solid var(--border-color); }
+        .scale-column h3 { color: var(--primary-color); border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; margin-top: 0; }
+        .scale-item { margin-bottom: 20px; }
+        .scale-score { display: inline-block; background: #374151; color: white; padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 0.85rem; margin-bottom: 5px; }
+        .scale-desc { font-size: 0.95rem; color: #374151; }
+        .scale-desc ul { margin: 5px 0 0 0; padding-left: 20px; }
+        .highlight-yellow { background-color: #fef08a; padding: 0 4px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header class="tabs-container" id="tabs-container"></header>
+        <main class="main-content" id="main-content"></main>
+    </div>
+
+    <!-- Modals -->
+    <div id="add-class-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2>Create New Class</h2><button class="close-btn">&times;</button></div><div class="modal-body"><div class="form-group"><label for="class-name-input">Class Name</label><input type="text" id="class-name-input" placeholder="e.g. Block A - Design"></div></div><div class="modal-footer"><button id="save-class-btn" class="btn-primary">Save Class</button></div></div></div>
+    
+    <div id="delete-confirm-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2>Confirm Deletion</h2><button class="close-btn">&times;</button></div><div class="modal-body"><p id="delete-confirm-message"></p></div><div class="modal-footer"><button id="cancel-delete-btn" class="btn-secondary">Cancel</button><button id="confirm-delete-btn" class="btn-danger">Delete</button></div></div></div>
+    
+    <div id="roster-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2>Manage Student Roster</h2><button class="close-btn">&times;</button></div><div class="modal-body"><div class="form-group"><label for="roster-paste-area">Paste Student Names</label><p style="font-size:14px;color:#666;margin-top:-5px;">One name per line. Duplicates will be ignored.</p><textarea id="roster-paste-area" rows="10"></textarea></div><button id="add-students-btn" class="btn-primary">Add Students</button><hr style="margin:20px 0; border:0; border-top:1px solid #eee;"><h3>Current Roster</h3><ul id="roster-student-list" style="max-height: 200px; overflow-y: auto; padding-left: 20px; columns: 2;"></ul></div></div></div>
+    
+    <div id="rubric-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="rubric-modal-title">Presentation Rubric</h2>
+                <div style="display:flex; gap: 10px; align-items:center;">
+                    <button id="view-scale-btn" class="btn-secondary" style="font-size: 0.9em;">View Proficiency Scales</button>
+                    <button class="close-btn">&times;</button>
+                </div>
+            </div>
+            <div class="modal-body" id="rubric-form"></div>
+        </div>
+    </div>
+    
+    <div id="proficiency-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header"><h2>Project Standards & Proficiency</h2><button class="close-btn">&times;</button></div>
+            <div class="modal-body">
+                <div class="scale-grid">
+                    <!-- Mental Health Scale -->
+                    <div class="scale-column">
+                        <h3>Mental Health 3.0+</h3>
+                        <div class="scale-item">
+                            <span class="scale-score">4.0 (Advanced)</span>
+                            <div class="scale-desc">
+                                In addition to 3.0: In-depth inferences and applications showing complexity/integration.
+                                <ul>
+                                    <li>Uses data to identify impacting factors.</li>
+                                    <li>Designs change to space improving school experience.</li>
+                                    <li>Adapts designs for different user groups.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="scale-item">
+                            <span class="scale-score">3.0 (Target)</span>
+                            <div class="scale-desc">
+                                The learner will:
+                                <ul>
+                                    <li>Apply understanding of relationship between <span class="highlight-yellow">neurological, situational, and environmental</span> factors.</li>
+                                    <li>Demonstrate practices with positive impact on mental health & executive functioning.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="scale-item">
+                            <span class="scale-score">2.0 (Developing)</span>
+                            <div class="scale-desc">
+                                <ul>
+                                    <li>Uses terminology: executive function, amygdala, dopamine, serotonin, etc.</li>
+                                    <li>Evaluate effectiveness of personal practices (sleep, phone).</li>
+                                    <li>Explain neurological, situational, & environmental factors.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Innovative Designer Scale -->
+                    <div class="scale-column">
+                        <h3>Innovative Designer 3.0+</h3>
+                        <div class="scale-item">
+                            <span class="scale-score">4.0 (Advanced)</span>
+                            <div class="scale-desc">
+                                Independently:
+                                <ul>
+                                    <li>Infer and predict potential impacts/effects of design.</li>
+                                    <li>Consider range of user needs.</li>
+                                    <li>Evaluate/improve over multiple cycles.</li>
+                                    <li>Manage ambiguity & risk.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="scale-item">
+                            <span class="scale-score">3.0 (Target)</span>
+                            <div class="scale-desc">
+                                Use a deliberate design process:
+                                <ul>
+                                    <li><span class="highlight-yellow">Integrate information</span> from potential users.</li>
+                                    <li>Develop a <span class="highlight-yellow">prototype</span> to meet need.</li>
+                                    <li><span class="highlight-yellow">Revise elements</span> based on new info/feedback.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="scale-item">
+                            <span class="scale-score">2.0 (Developing)</span>
+                            <div class="scale-desc">
+                                Demonstrate understanding of vocabulary (design thinking, constraints, prototype). Provide evidence of design stages (Empathize, Define, Ideate, etc.).
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top:20px; padding: 15px; background: #e0f2f1; border-radius: 8px;">
+                    <strong>Collaboration 3.0+:</strong> Bringing together different ideas, seeking differing opinions, and accurately reflecting on roles/responsibilities.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        let state = { activeClass: null, classes: [], modalOpen: false, deleteTarget: null, draggedStudent: null };
+
+        // --- RUBRIC DEFINITION BASED ON NIDO PROJECT ---
+        const rubricStructure = {
+            mentalHealthFactors: { 
+                title: "Mental Health Knowledge (Individual & Group)", 
+                description: "Check for understanding of core factors.",
+                items: {
+                    factors: "Identifies neurological, situational, & environmental factors in space design",
+                    practices: "Describes practices with positive impact on mental health",
+                    research: "Design decisions based in research or data (Youth Truth/Survey)"
+                }
+            },
+            designComplexity: { 
+                title: "Innovative Design & Complexity", 
+                description: "Evaluates the depth of the proposed solution.",
+                items: {
+                    depth: "Shows depth or complexity in design",
+                    connections: "Connects multiple factors (Integration)",
+                    prototype: "Clear prototype element connected to nature, social, or wellbeing"
+                }
+            },
+            projectDetails: {
+                title: "Project Specifics (Qualitative)",
+                description: "Record specific details about their proposal.",
+                // No checkboxes, just notes fields
+                items: null
+            },
+            collaboration: {
+                title: "Collaboration & Reflection",
+                description: "Evidence of working together and role reflection.",
+                items: {
+                    roles: "Roles defined and reflected upon",
+                    perspectives: "Integrated diverse perspectives"
+                }
+            }
+        };
+
+        const getNewRubricObject = () => {
+            const newRubric = {};
+            for (const sectionKey in rubricStructure) {
+                // For Project Details, we want specific keys for the questions in the image
+                if (sectionKey === 'projectDetails') {
+                    newRubric[sectionKey] = { 
+                        issueTargeted: "", 
+                        designElement: "" 
+                    };
+                } else {
+                    newRubric[sectionKey] = { notes: "", items: {} };
+                    if (rubricStructure[sectionKey].items) {
+                        for (const itemKey in rubricStructure[sectionKey].items) {
+                            newRubric[sectionKey].items[itemKey] = false;
+                        }
+                    }
+                }
+            }
+            return newRubric;
+        };
+        
+        const loadState = () => {
+            const savedState = localStorage.getItem('nidoPresentationTrackerV1');
+            if (savedState) state = JSON.parse(savedState);
+        };
+        const saveState = () => localStorage.setItem('nidoPresentationTrackerV1', JSON.stringify(state));
+        const findActiveClass = () => state.classes.find(c => c.name === state.activeClass);
+        const generateId = () => Date.now();
+        const openModal = (modalId) => { state.modalOpen = true; document.getElementById(modalId).style.display = 'block'; };
+        const closeModal = () => { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); state.modalOpen = false; state.deleteTarget = null; };
+
+        const render = () => { renderTabs(); renderMainContent(); };
+
+        const renderTabs = () => {
+            const tabsContainer = document.getElementById('tabs-container');
+            tabsContainer.innerHTML = '';
+            state.classes.forEach(cls => {
+                const tab = document.createElement('div');
+                tab.className = `tab ${cls.name === state.activeClass ? 'active' : ''}`;
+                tab.innerHTML = `<span>${cls.name}</span>`;
+                tab.onclick = () => switchClass(cls.name);
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-tab-btn';
+                deleteBtn.innerHTML = '&times;';
+                deleteBtn.title = "Delete Class";
+                deleteBtn.onclick = (e) => { e.stopPropagation(); confirmDelete('class', cls.name); };
+                tab.appendChild(deleteBtn);
+                tabsContainer.appendChild(tab);
+            });
+            const addBtn = document.createElement('button');
+            addBtn.className = 'add-class-btn';
+            addBtn.textContent = '+ Add Class';
+            addBtn.onclick = () => { document.getElementById('class-name-input').value = ''; openModal('add-class-modal'); document.getElementById('class-name-input').focus(); };
+            tabsContainer.appendChild(addBtn);
+        };
+        
+        const renderMainContent = () => {
+            const mainContent = document.getElementById('main-content');
+            const activeClass = findActiveClass();
+            if (!activeClass) {
+                mainContent.innerHTML = `<div class="no-class-view"><h2>Presentation Tracker</h2><p>Select or create a class to begin tracking the <strong>Nido Mental Health Needs</strong> project.</p></div>`;
+                return;
+            }
+            mainContent.innerHTML = `
+                <div class="controls">
+                    <div class="title-area"><h1>${activeClass.name}</h1></div>
+                    <div class="action-buttons">
+                        <button id="manage-roster-btn" class="btn-secondary">Manage Roster</button>
+                        <button id="add-group-btn" class="btn-primary">+ New Design Group</button>
+                        <button id="export-csv-btn" class="btn-secondary" title="Download Excel/CSV">Export Data</button>
+                    </div>
+                </div>
+                <div class="grouping-workspace">
+                    <div id="unassigned-container">
+                        <h3>Unassigned Students <span id="unassigned-count" style="font-weight:normal; font-size:0.8em; color:#888;"></span></h3>
+                        <div class="unassigned-students-list drop-zone" data-group-id="unassigned"></div>
+                    </div>
+                    <div id="groups-container"></div>
+                </div>`;
+            renderStudentsAndGroups();
+            attachMainContentListeners();
+        };
+
+        const renderStudentsAndGroups = () => {
+            const activeClass = findActiveClass();
+            if (!activeClass) return;
+            
+            const unassignedList = document.querySelector('.unassigned-students-list');
+            const groupsContainer = document.getElementById('groups-container');
+            unassignedList.innerHTML = ''; 
+            groupsContainer.innerHTML = '';
+            
+            const allGroupedStudents = activeClass.groups.flatMap(g => g.members.map(m => m.name));
+            const unassignedStudents = activeClass.students.filter(s => !allGroupedStudents.includes(s)).sort();
+            
+            document.getElementById('unassigned-count').textContent = `(${unassignedStudents.length})`;
+
+            unassignedStudents.forEach(name => unassignedList.appendChild(createStudentTag(name)));
+            
+            activeClass.groups.forEach(group => {
+                const groupBox = document.createElement('div');
+                groupBox.className = 'group-box drop-zone';
+                groupBox.dataset.groupId = group.id;
+                
+                // Calculate average grade if available
+                const grades = group.members.map(m => parseFloat(m.grade)).filter(g => !isNaN(g));
+                const avgGrade = grades.length ? (grades.reduce((a,b)=>a+b,0)/grades.length).toFixed(1) : "";
+                const avgBadge = avgGrade ? `<span style="font-size:0.8em; background:#eee; padding:2px 6px; border-radius:4px; margin-right:5px; color:#555;">Avg: ${avgGrade}</span>` : "";
+
+                groupBox.innerHTML = `
+                    <div class="group-header">
+                        <h3 data-group-id="${group.id}">${group.name}</h3>
+                        <div class="group-actions">
+                            ${avgBadge}
+                            <button class="open-rubric-btn" title="Open Grading Rubric">&#9998;</button>
+                            <button class="delete-group-btn" title="Delete Group">&times;</button>
+                        </div>
+                    </div>
+                    <div class="group-members"></div>
+                `;
+                const membersContainer = groupBox.querySelector('.group-members');
+                group.members.forEach(member => membersContainer.appendChild(createStudentTag(member.name)));
+                groupsContainer.appendChild(groupBox);
+            });
+            attachDragAndDropListeners();
+        };
+
+        const createStudentTag = (name) => {
+            const tag = document.createElement('div');
+            tag.className = 'student-tag';
+            tag.textContent = name;
+            tag.dataset.studentName = name;
+            tag.draggable = true;
+            return tag;
+        };
+        
+        const switchClass = (className) => { state.activeClass = className; saveState(); render(); };
+        const saveClass = () => {
+            const className = document.getElementById('class-name-input').value.trim();
+            if (className && !state.classes.some(c => c.name === className)) {
+                state.classes.push({ name: className, students: [], groups: [], groupCounter: 1 });
+                state.activeClass = className;
+                saveState(); render(); closeModal();
+            } else if (!className) {
+                alert('Please enter a class name.');
+            } else {
+                alert('A class with this name already exists.');
+            }
+        };
+        
+        const confirmDelete = (type, id) => {
+            state.deleteTarget = { type, id };
+            const msg = document.getElementById('delete-confirm-message');
+            msg.textContent = type === 'class' ? `Delete the class "${id}" and all its data?` : `Delete this group? Students will become unassigned.`;
+            openModal('delete-confirm-modal');
+        };
+        
+        const executeDelete = () => {
+            const { type, id } = state.deleteTarget;
+            if (type === 'class') {
+                state.classes = state.classes.filter(c => c.name !== id);
+                if (state.activeClass === id) state.activeClass = state.classes[0]?.name || null;
+            } else if (findActiveClass()) {
+                findActiveClass().groups = findActiveClass().groups.filter(g => g.id !== id);
+            }
+            saveState(); render(); closeModal();
+        };
+        
+        const showRosterModal = () => {
+            const activeClass = findActiveClass();
+            const studentList = document.getElementById('roster-student-list');
+            studentList.innerHTML = '';
+            activeClass.students.sort().forEach(s => { studentList.innerHTML += `<li>${s}</li>`; });
+            document.getElementById('roster-paste-area').value = '';
+            openModal('roster-modal');
+        };
+        
+        const addStudentsToRoster = () => {
+            const activeClass = findActiveClass();
+            const names = document.getElementById('roster-paste-area').value.trim().split(/[\n\t\r]+/).map(n => n.trim()).filter(Boolean);
+            let count = 0;
+            names.forEach(name => { if (!activeClass.students.includes(name)) { activeClass.students.push(name); count++; } });
+            saveState(); 
+            showRosterModal(); 
+            renderStudentsAndGroups();
+        };
+
+        const addNewGroup = () => {
+            const activeClass = findActiveClass();
+            if (!activeClass) return;
+            const newGroup = { id: generateId(), name: `Design Group ${activeClass.groupCounter++}`, members: [], rubric: getNewRubricObject() };
+            activeClass.groups.push(newGroup);
+            saveState(); renderStudentsAndGroups();
+        };
+        
+        const makeTitleEditable = (e) => {
+            const h3 = e.target;
+            const input = document.createElement('input');
+            input.type = 'text'; input.value = h3.textContent;
+            input.style.fontSize = "1rem"; input.style.padding = "4px";
+            h3.replaceWith(input); input.focus();
+            const save = () => {
+                const newName = input.value.trim() || h3.textContent;
+                const group = findActiveClass().groups.find(g => g.id === parseInt(h3.dataset.groupId));
+                if (group) group.name = newName;
+                saveState(); h3.textContent = newName; input.replaceWith(h3);
+            };
+            input.addEventListener('blur', save);
+            input.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') input.blur(); });
+        };
+
+      const handleStudentDrop = (targetZone) => {
+            if (!state.draggedStudent || !targetZone) return;
+
+            const activeClass = findActiveClass();
+            if (!activeClass) return;
+
+            const draggedStudentName = state.draggedStudent.dataset.studentName;
+
+            // Remove from old group
+            let sourceGroup = activeClass.groups.find(g => g.members.some(m => m.name === draggedStudentName));
+            if (sourceGroup) {
+                sourceGroup.members = sourceGroup.members.filter(m => m.name !== draggedStudentName);
+            }
+            
+            // Preserve existing data if moved within groups, else reset
+            let existingMemberData = sourceGroup ? null : { name: draggedStudentName, role: '', grade: '' }; // Simplified logic
+
+            // Check if dropped on student or group
+            const targetIsStudent = targetZone.classList.contains('student-tag');
+            const targetIsGroup = targetZone.classList.contains('group-box');
+            
+            const draggedStudentObject = { name: draggedStudentName, role: '', grade: '' };
+            
+            // Attempt to preserve grade/role if moving between groups
+            // (In a real app, we'd deep find the student object to copy properties)
+
+            if (targetIsStudent) {
+                const targetStudentName = targetZone.dataset.studentName;
+                if (draggedStudentName === targetStudentName) return; 
+
+                let targetGroup = activeClass.groups.find(g => g.members.some(m => m.name === targetStudentName));
+
+                if (targetGroup) {
+                    targetGroup.members.push(draggedStudentObject);
+                } else {
+                    const newGroup = {
+                        id: generateId(),
+                        name: `Design Group ${activeClass.groupCounter++}`,
+                        members: [
+                            draggedStudentObject,
+                            { name: targetStudentName, role: '', grade: '' }
+                        ],
+                        rubric: getNewRubricObject()
+                    };
+                    activeClass.groups.push(newGroup);
+                }
+            }
+            else if (targetIsGroup) {
+                const targetGroupId = parseInt(targetZone.dataset.groupId);
+                const destGroup = activeClass.groups.find(g => g.id === targetGroupId);
+                if (destGroup && !destGroup.members.some(m => m.name === draggedStudentName)) {
+                    destGroup.members.push(draggedStudentObject);
+                }
+            }
+            // If dropped on unassigned, we did the removal in step 1, so done.
+
+            saveState();
+            renderStudentsAndGroups();
+        };
+
+        const showRubricModal = (groupId) => {
+            const group = findActiveClass().groups.find(g => g.id === groupId);
+            if (!group) return;
+            document.getElementById('rubric-modal-title').textContent = `Grading: ${group.name}`;
+            const form = document.getElementById('rubric-form');
+            form.dataset.groupId = groupId;
+            form.innerHTML = generateRubricHTML(group);
+            openModal('rubric-modal');
+        };
+        
+        const generateRubricHTML = (group) => {
+            const gradeOptions = ["4.0", "3.5", "3.0", "2.5", "2.0", "1.5", "1.0", ""];
+            
+            let html = `
+                <table class="members-table">
+                    <thead><tr><th style="width:25%">Student</th><th style="width:50%">Role / Contribution</th><th style="width:25%">Proficiency Score</th></tr></thead>
+                    <tbody>${group.members.map(member => `
+                        <tr>
+                            <td><strong>${member.name}</strong></td>
+                            <td><input type="text" placeholder="e.g. Technical Designer, Researcher..." data-member="${member.name}" data-field="role" value="${member.role || ''}"></td>
+                            <td><select data-member="${member.name}" data-field="grade">
+                                <option value="">- Select -</option>
+                                ${gradeOptions.map(g => `<option value="${g}" ${member.grade === g ? 'selected' : ''}>${g}</option>`).join('')}
+                            </select></td>
+                        </tr>`).join('')}
+                    </tbody>
+                </table>
+                <div class="rubric-container">`;
+            
+            for (const sectionKey in rubricStructure) {
+                const section = rubricStructure[sectionKey];
+                
+                // Handle the Project Details section differently (just text areas)
+                if (sectionKey === 'projectDetails') {
+                    const data = group.rubric[sectionKey] || { issueTargeted: "", designElement: "" };
+                    html += `
+                    <div class="rubric-section" style="border-left: 4px solid var(--primary-color);">
+                        <div class="rubric-section-header"><h3>${section.title}</h3><p>${section.description}</p></div>
+                        <div class="rubric-section-grid">
+                            <div class="notes-pane">
+                                <label>What was the mental health or wellness issue that this group targeted?</label>
+                                <textarea data-section="${sectionKey}" data-custom-field="issueTargeted">${data.issueTargeted || ''}</textarea>
+                            </div>
+                            <div class="notes-pane">
+                                <label>What was the clearest design element that connected to nature, social, wellbeing, or exec functioning?</label>
+                                <textarea data-section="${sectionKey}" data-custom-field="designElement">${data.designElement || ''}</textarea>
+                            </div>
+                        </div>
+                    </div>`;
+                    continue;
+                }
+
+                const groupData = group.rubric[sectionKey] || { notes: "", items: {} };
+                
+                html += `<div class="rubric-section">
+                            <div class="rubric-section-header"><h3>${section.title}</h3><p>${section.description}</p></div>
+                            <div class="rubric-section-grid">`;
+                
+                if (section.items) {
+                    html += `<div class="checkbox-pane">${Object.keys(section.items).map(itemKey => `
+                        <label>
+                            <input type="checkbox" data-section="${sectionKey}" data-type="item" data-key="${itemKey}" ${groupData.items && groupData.items[itemKey] ? 'checked' : ''}>
+                            <span>${section.items[itemKey]}</span>
+                        </label>`).join('')}
+                    </div>`;
+                }
+                
+                html += `<div class="notes-pane"><label>Notes & Feedback:</label><textarea data-section="${sectionKey}" data-type="notes" placeholder="Add observations here...">${groupData.notes || ''}</textarea></div>
+                         </div></div>`;
+            }
+            html += `</div>`; // Close container
+            return html;
+        };
+
+        const updateRubricData = (e) => {
+            const target = e.target, form = target.closest('#rubric-form');
+            if (!form) return;
+            const groupId = parseInt(form.dataset.groupId), group = findActiveClass().groups.find(g => g.id === groupId);
+            if (!group) return;
+            
+            // Handle Member Data (Grade/Role)
+            if (target.dataset.member) {
+                const member = group.members.find(m => m.name === target.dataset.member);
+                if (member) {
+                    member[target.dataset.field] = target.value;
+                    // Trigger re-render of main view to show avg grade if needed, but debouncing is better.
+                    // For now, we save.
+                }
+            }
+            
+            // Handle Rubric Data
+            if (target.dataset.section) {
+                const section = target.dataset.section;
+                // Ensure section exists
+                if (!group.rubric[section]) {
+                    if (section === 'projectDetails') group.rubric[section] = { issueTargeted: "", designElement: "" };
+                    else group.rubric[section] = { items: {}, notes: "" };
+                }
+
+                if (target.dataset.customField) {
+                    // Special handling for the questions in Project Details
+                    group.rubric[section][target.dataset.customField] = target.value;
+                } else if (target.dataset.type === 'item') {
+                    // Checkboxes
+                    if (!group.rubric[section].items) group.rubric[section].items = {};
+                    group.rubric[section].items[target.dataset.key] = target.checked;
+                } else if (target.dataset.type === 'notes') {
+                    // Standard Notes
+                    group.rubric[section].notes = target.value;
+                }
+            }
+            saveState();
+        };
+
+        const exportToCSV = () => {
+            const activeClass = findActiveClass();
+            if (!activeClass || activeClass.groups.length === 0) return alert('No groups to export.');
+            
+            let headers = ['GroupName', 'StudentName', 'Role', 'ProficiencyGrade'];
+            
+            // Dynamically build headers based on rubric structure
+            for (const sKey in rubricStructure) {
+                if (sKey === 'projectDetails') {
+                    headers.push('Targeted_Issue', 'Design_Element');
+                } else {
+                    headers.push(`${sKey}_Notes`);
+                    if (rubricStructure[sKey].items) {
+                        for (const iKey in rubricStructure[sKey].items) headers.push(`${sKey}_${iKey}`);
+                    }
+                }
+            }
+            
+            let csvContent = [headers.join(',')];
+            
+            activeClass.groups.forEach(group => {
+                group.members.forEach(member => {
+                    let row = [group.name, member.name, member.role || '', member.grade || ''].map(d => `"${(d || '').replace(/"/g, '""')}"`);
+                    
+                    for (const sKey in rubricStructure) {
+                        const rData = group.rubric[sKey] || {};
+                        
+                        if (sKey === 'projectDetails') {
+                             row.push(`"${(rData.issueTargeted || '').replace(/"/g, '""')}"`);
+                             row.push(`"${(rData.designElement || '').replace(/"/g, '""')}"`);
+                        } else {
+                            row.push(`"${(rData.notes || '').replace(/"/g, '""')}"`);
+                            if (rubricStructure[sKey].items) {
+                                for (const iKey in rubricStructure[sKey].items) {
+                                    row.push(rData.items && rData.items[iKey] ? 'TRUE' : 'FALSE');
+                                }
+                            }
+                        }
+                    }
+                    csvContent.push(row.join(','));
+                });
+            });
+            
+            const blob = new Blob([csvContent.join('\n')], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const date = new Date().toISOString().slice(0,10);
+            link.href = URL.createObjectURL(blob);
+            link.download = `${activeClass.name}_Nido_MentalHealth_${date}.csv`;
+            link.click();
+        };
+        
+        // --- Listeners ---
+        function attachMainContentListeners() {
+            document.getElementById('manage-roster-btn')?.addEventListener('click', showRosterModal);
+            document.getElementById('add-group-btn')?.addEventListener('click', addNewGroup);
+            document.getElementById('export-csv-btn')?.addEventListener('click', exportToCSV);
+            document.getElementById('groups-container')?.addEventListener('click', (e) => {
+                if (e.target.tagName === 'H3') makeTitleEditable(e);
+                const openBtn = e.target.closest('.open-rubric-btn');
+                const deleteBtn = e.target.closest('.delete-group-btn');
+                if (openBtn) showRubricModal(parseInt(openBtn.closest('.group-box').dataset.groupId));
+                if (deleteBtn) confirmDelete('group', parseInt(deleteBtn.closest('.group-box').dataset.groupId));
+            });
+        }
+        function attachDragAndDropListeners() {
+            document.querySelectorAll('.student-tag').forEach(tag => {
+                tag.addEventListener('dragstart', (e) => { 
+                    state.draggedStudent = e.target; 
+                    // Use setTimeout to allow drag image to generate before hiding element
+                    setTimeout(() => e.target.classList.add('dragging'), 0); 
+                });
+                tag.addEventListener('dragend', (e) => { 
+                    e.target.classList.remove('dragging'); 
+                    state.draggedStudent = null; 
+                });
+            });
+            document.querySelectorAll('.drop-zone').forEach(zone => {
+                zone.addEventListener('dragover', (e) => { 
+                    e.preventDefault(); 
+                    if (zone.classList.contains('group-box')) zone.classList.add('drag-over'); 
+                });
+                zone.addEventListener('dragleave', (e) => { 
+                    if (zone.classList.contains('group-box')) zone.classList.remove('drag-over'); 
+                });
+                zone.addEventListener('drop', (e) => { 
+                    e.preventDefault(); 
+                    if (zone.classList.contains('group-box')) zone.classList.remove('drag-over'); 
+                    handleStudentDrop(e.currentTarget); 
+                });
+            });
+        }
+
+        document.getElementById('save-class-btn').onclick = saveClass;
+        document.getElementById('confirm-delete-btn').onclick = executeDelete;
+        document.getElementById('cancel-delete-btn').onclick = closeModal;
+        document.getElementById('add-students-btn').onclick = addStudentsToRoster;
+        
+        document.addEventListener('click', (e) => { 
+            if (e.target.classList.contains('close-btn')) closeModal();
+            if (e.target.id === 'view-scale-btn') openModal('proficiency-modal');
+        });
+        
+        document.addEventListener('input', updateRubricData);
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && state.modalOpen) closeModal(); });
+
+        // Init
+        loadState();
+        if (state.classes.length > 0 && !state.activeClass) state.activeClass = state.classes[0].name;
+        render();
+    });
+    </script>
+</body>
+</html>
