@@ -363,8 +363,8 @@ Return only that text.`;
                 .replace('Timeline outline', `the following timeline:\n${timeline}`)
                 .replace('Design-cycle activities per day', `the following design activities:\n${designActivities}`)}
 
-Here are the proficiency scales to use:
-${PROFICIENCY_SCALES}`;
+Here are the proficiency scales to use (JSON):
+${PROFICIENCY_SCALES_TEXT}`;
 
             const output = await runGemini(prompt);
             document.getElementById('assessment-output').value = output;
