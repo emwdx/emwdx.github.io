@@ -11,13 +11,11 @@
             --phosphor-primary: #33ff33; /* Classic Apple II Green */
             --phosphor-dim: #1a801a;
             --phosphor-glow: #33ff3380;
+            --phosphor-alert: #ff3333;
             --bg-color: #050505;
-            --scanline-color: rgba(0, 0, 0, 0.5);
         }
 
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
             margin: 0;
@@ -45,13 +43,9 @@
             box-shadow: 0 0 20px var(--phosphor-glow);
         }
 
-        /* Scanlines */
         .crt-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
+            top: 0; left: 0; width: 100vw; height: 100vh;
             background: linear-gradient(
                 to bottom,
                 rgba(255,255,255,0),
@@ -66,13 +60,8 @@
         }
 
         .crt-overlay::before {
-            content: " ";
-            display: block;
-            position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
+            content: " "; display: block; position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
             background: radial-gradient(circle, rgba(0,0,0,0) 50%, rgba(0,0,0,0.6) 100%);
             z-index: 1000;
         }
@@ -84,7 +73,7 @@
         }
 
         /* Text Glow */
-        h1, h2, h3, label, input, select, textarea, span, div {
+        h1, h2, h3, label, input, select, textarea, span, div, button {
             text-shadow: 0 0 2px var(--phosphor-dim), 0 0 8px var(--phosphor-glow);
         }
 
@@ -96,19 +85,10 @@
             padding-bottom: 10px;
         }
 
-        h1 {
-            font-size: 2.5rem;
-            margin: 0;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
+        h1 { font-size: 2.5rem; margin: 0; letter-spacing: 2px; text-transform: uppercase; }
 
         .controls-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-            gap: 10px;
+            display: flex; justify-content: space-between; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;
         }
 
         .btn {
@@ -129,32 +109,29 @@
             box-shadow: 0 0 10px var(--phosphor-primary);
         }
 
-        .btn:active {
-            transform: translateY(2px);
-        }
+        .btn:active { transform: translateY(2px); }
 
-        .panel {
-            border: 1px solid var(--phosphor-dim);
-            padding: 15px;
-            margin-bottom: 20px;
-        }
+        .panel { border: 1px solid var(--phosphor-dim); padding: 15px; margin-bottom: 20px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 15px; }
 
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
+        label { display: block; font-size: 1.2rem; margin-bottom: 5px; }
 
-        .grid-4 {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-            gap: 15px;
+        /* Rollable Labels */
+        .rollable {
+            cursor: pointer;
+            text-decoration: underline;
+            text-decoration-style: dotted;
+            transition: color 0.2s;
         }
-
-        label {
-            display: block;
-            font-size: 1.2rem;
-            margin-bottom: 5px;
+        .rollable:hover {
+            color: #fff;
+            text-shadow: 0 0 10px #fff;
+        }
+        .rollable::after {
+            content: " [ROLL]";
+            font-size: 0.8em;
+            opacity: 0.5;
         }
 
         input[type="text"], input[type="number"], select, textarea {
@@ -174,80 +151,67 @@
         }
 
         /* --- HEARTBEAT MONITOR --- */
-        .monitor-panel {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
+        .monitor-panel { display: flex; flex-direction: column; gap: 10px; }
         .monitor-display {
-            position: relative;
-            background: #000;
+            position: relative; background: #000;
             border: 2px solid var(--phosphor-primary);
-            height: 120px;
-            width: 100%;
+            height: 120px; width: 100%;
         }
-
-        canvas {
-            display: block;
-            width: 100%;
-            height: 100%;
-        }
-
+        canvas { display: block; width: 100%; height: 100%; }
         .monitor-label {
-            position: absolute;
-            top: 5px;
-            left: 10px;
-            font-size: 0.9rem;
-            opacity: 0.8;
-            background-color: #000;
-            padding: 0 4px;
+            position: absolute; top: 5px; left: 10px;
+            font-size: 0.9rem; opacity: 0.8;
+            background-color: #000; padding: 0 4px;
         }
+        .bpm-display { position: absolute; bottom: 5px; right: 10px; font-size: 1.2rem; }
 
-        .bpm-display {
-            position: absolute;
-            bottom: 5px;
-            right: 10px;
-            font-size: 1.2rem;
-        }
+        .stress-controls { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+        .stress-value { font-size: 2rem; width: 60px; text-align: center; }
 
-        .stress-controls {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .stress-value {
-            font-size: 2rem;
-            width: 60px;
-            text-align: center;
-        }
-
-        .stat-box {
-            text-align: center;
-        }
-        
-        .stat-box input {
-            text-align: center;
-            font-size: 1.8rem;
-        }
-
-        .textarea-box {
-            resize: vertical;
-            min-height: 100px;
-        }
+        .stat-box { text-align: center; }
+        .stat-box input { text-align: center; font-size: 1.8rem; }
+        .textarea-box { resize: vertical; min-height: 100px; }
 
         @keyframes blink {
             0% { border-color: var(--phosphor-primary); color: var(--phosphor-primary); }
-            50% { border-color: transparent; color: #ff3333; }
+            50% { border-color: transparent; color: var(--phosphor-alert); }
             100% { border-color: var(--phosphor-primary); color: var(--phosphor-primary); }
         }
-        
-        .critical {
-            animation: blink 0.5s infinite;
-            color: #ff3333 !important;
+        .critical { animation: blink 0.5s infinite; color: var(--phosphor-alert) !important; }
+
+        /* --- MODAL POPUP --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 2000;
+            opacity: 0; pointer-events: none; transition: opacity 0.2s;
         }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+
+        .modal-box {
+            background: #000;
+            border: 4px double var(--phosphor-primary);
+            padding: 20px;
+            width: 90%; max-width: 400px;
+            text-align: center;
+            box-shadow: 0 0 30px var(--phosphor-glow);
+            transform: scale(0.8); transition: transform 0.2s;
+        }
+        .modal-overlay.active .modal-box { transform: scale(1); }
+
+        .modal-header {
+            border-bottom: 1px solid var(--phosphor-dim);
+            padding-bottom: 10px; margin-bottom: 15px;
+            font-size: 1.5rem; letter-spacing: 2px;
+        }
+        .result-large { font-size: 3rem; margin: 10px 0; font-weight: bold; }
+        .result-detail { font-size: 1.2rem; margin-bottom: 20px; color: #ccc; }
+        
+        .status-success { color: var(--phosphor-primary); text-shadow: 0 0 10px var(--phosphor-primary); }
+        .status-fail { color: var(--phosphor-alert); text-shadow: 0 0 10px var(--phosphor-alert); }
+        .status-panic { color: var(--phosphor-alert); animation: blink 0.2s infinite; }
 
         /* Mobile Adjustments */
         @media (max-width: 600px) {
@@ -260,18 +224,29 @@
 
     <div class="crt-overlay"></div>
 
+    <!-- ROLL MODAL -->
+    <div id="rollModal" class="modal-overlay" onclick="closeModal()">
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <div class="modal-header" id="modalTitle">SYSTEM ALERT</div>
+            <div id="modalContent">
+                <!-- Dynamic Content -->
+            </div>
+            <button class="btn" style="width: 100%; margin-top: 10px;" onclick="closeModal()">[ ACKNOWLEDGE ]</button>
+        </div>
+    </div>
+
     <div class="crt-container">
         <div class="header">
             <h1>MOTHERSHIP // CREW_MANIFEST</h1>
-            <div style="font-size: 0.9rem; margin-top: 5px;">SYS.VER.1.0 // TERMINAL_ID_#8842</div>
+            <div style="font-size: 0.9rem; margin-top: 5px;">SYS.VER.1.2 // TERMINAL_ID_#8842</div>
         </div>
 
         <!-- Global Controls -->
         <div class="controls-row">
             <button class="btn" onclick="generateCharacter()">> RANDOMIZE_NEW_IDENTITY</button>
             <div>
-                <button class="btn" onclick="saveData()">[ SAVE_TO_DISK ]</button>
-                <button class="btn" onclick="loadData()">[ LOAD_FROM_DISK ]</button>
+                <button class="btn" onclick="saveData()">[ SAVE ]</button>
+                <button class="btn" onclick="loadData()">[ LOAD ]</button>
             </div>
         </div>
 
@@ -283,7 +258,6 @@
             </div>
             <div>
                 <label>CLASS</label>
-                <!-- Removed onchange event to prevent error -->
                 <select id="charClass">
                     <option value="Marine">MARINE</option>
                     <option value="Android">ANDROID</option>
@@ -309,7 +283,7 @@
                     </div>
                 </div>
                 <div style="margin-top: 15px;">
-                    <label>CURRENT STRESS (MAX 20)</label>
+                    <label class="rollable" onclick="rollPanic()">CURRENT STRESS (MAX 20)</label>
                     <div class="stress-controls">
                         <button class="btn" onclick="adjustStress(-1)">-</button>
                         <input type="number" id="stress" class="stress-value" value="2" min="2" max="20">
@@ -333,22 +307,22 @@
 
         <!-- Stats -->
         <div class="panel">
-            <h3>// STATS (2D10 + 25)</h3>
+            <h3>// STATS CHECK (ROLL UNDER)</h3>
             <div class="grid-4">
                 <div class="stat-box">
-                    <label>STRENGTH</label>
+                    <label class="rollable" onclick="rollCheck('str', 'STRENGTH')">STRENGTH</label>
                     <input type="number" id="str" value="30">
                 </div>
                 <div class="stat-box">
-                    <label>SPEED</label>
+                    <label class="rollable" onclick="rollCheck('spd', 'SPEED')">SPEED</label>
                     <input type="number" id="spd" value="30">
                 </div>
                 <div class="stat-box">
-                    <label>INTELLECT</label>
+                    <label class="rollable" onclick="rollCheck('int', 'INTELLECT')">INTELLECT</label>
                     <input type="number" id="int" value="30">
                 </div>
                 <div class="stat-box">
-                    <label>COMBAT</label>
+                    <label class="rollable" onclick="rollCheck('cmb', 'COMBAT')">COMBAT</label>
                     <input type="number" id="cmb" value="30">
                 </div>
             </div>
@@ -356,18 +330,18 @@
 
         <!-- Saves -->
         <div class="panel">
-            <h3>// SAVES (2D10 + 10)</h3>
+            <h3>// SAVES CHECK (ROLL UNDER)</h3>
             <div class="grid-4" style="grid-template-columns: 1fr 1fr 1fr;">
                 <div class="stat-box">
-                    <label>SANITY</label>
+                    <label class="rollable" onclick="rollCheck('san', 'SANITY')">SANITY</label>
                     <input type="number" id="san" value="20">
                 </div>
                 <div class="stat-box">
-                    <label>FEAR</label>
+                    <label class="rollable" onclick="rollCheck('fear', 'FEAR')">FEAR</label>
                     <input type="number" id="fear" value="20">
                 </div>
                 <div class="stat-box">
-                    <label>BODY</label>
+                    <label class="rollable" onclick="rollCheck('body', 'BODY')">BODY</label>
                     <input type="number" id="body" value="20">
                 </div>
             </div>
@@ -392,34 +366,79 @@
 
     <script>
         // --- DICE LOGIC ---
-        function d10() {
-            return Math.floor(Math.random() * 10) + 1;
+        function d10() { return Math.floor(Math.random() * 10) + 1; }
+        
+        // Mothership Stat Check: Roll d100 (0-99).
+        // Success if Roll < Stat. 
+        // Note: Some editions use <=, some use <. We will use <= for standard roll-under.
+        function rollCheck(statId, statName) {
+            const target = parseInt(document.getElementById(statId).value) || 0;
+            // Roll 0-99 (Standard d100 interpretation where 00 is 0)
+            const roll = Math.floor(Math.random() * 100);
+            
+            let status = "FAILURE";
+            let statusClass = "status-fail";
+            
+            // Criticals: Doubles (11, 22, 33...)
+            const isDouble = (roll % 11 === 0);
+            
+            if (roll < target) {
+                status = "SUCCESS";
+                statusClass = "status-success";
+                if (isDouble) status = "CRITICAL SUCCESS";
+            } else {
+                if (isDouble) {
+                    status = "CRITICAL FAILURE";
+                    statusClass = "status-panic"; // Reuse panic style
+                }
+            }
+
+            showModal(`CHECKING ${statName}...`, roll, `TARGET: < ${target}`, status, statusClass);
+        }
+
+        // Panic Check: Roll 1d20. 
+        // Panic if Roll <= Stress. Safe if Roll > Stress.
+        function rollPanic() {
+            const stress = parseInt(document.getElementById('stress').value) || 2;
+            const roll = Math.floor(Math.random() * 20) + 1;
+            
+            let status = "NO PANIC";
+            let statusClass = "status-success";
+            
+            if (roll <= stress) {
+                status = "PANIC EFFECT!";
+                statusClass = "status-panic";
+            }
+
+            showModal("PANIC CHECK", roll, `STRESS LEVEL: ${stress}`, status, statusClass);
+        }
+
+        // --- MODAL SYSTEM ---
+        function showModal(title, rollResult, detailText, statusText, statusClass) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalContent').innerHTML = `
+                <div class="result-large">${rollResult}</div>
+                <div class="result-detail">${detailText}</div>
+                <div class="result-large ${statusClass}">${statusText}</div>
+            `;
+            document.getElementById('rollModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('rollModal').classList.remove('active');
         }
 
         function roll(count, mod) {
             let total = mod;
-            for(let i=0; i<count; i++) {
-                total += d10();
-            }
+            for(let i=0; i<count; i++) total += d10();
             return total;
         }
 
         // --- GENERATION LOGIC ---
         function generateCharacter() {
             // Base Rolls
-            let stats = {
-                str: roll(2, 25),
-                spd: roll(2, 25),
-                int: roll(2, 25),
-                cmb: roll(2, 25)
-            };
-
-            let saves = {
-                san: roll(2, 10),
-                fear: roll(2, 10),
-                body: roll(2, 10)
-            };
-
+            let stats = { str: roll(2, 25), spd: roll(2, 25), int: roll(2, 25), cmb: roll(2, 25) };
+            let saves = { san: roll(2, 10), fear: roll(2, 10), body: roll(2, 10) };
             let health = d10() + 10;
             let wounds = 2; 
             let stress = 2; 
@@ -435,23 +454,17 @@
                 saves.san += 10; saves.fear += 10; saves.body += 10;
             } 
             else if (selectedClass === "Scientist") {
-                stats.int += 10;
-                saves.san += 30;
+                stats.int += 10; saves.san += 30;
                 const statKeys = ['str', 'spd', 'int', 'cmb'];
                 stats[statKeys[Math.floor(Math.random() * 4)]] += 5;
             }
             else if (selectedClass === "Android") {
-                stats.int += 20;
-                saves.fear += 60;
-                wounds += 1;
+                stats.int += 20; saves.fear += 60; wounds += 1;
                 const statKeys = ['str', 'spd', 'int', 'cmb'];
                 stats[statKeys[Math.floor(Math.random() * 4)]] -= 10;
             }
             else if (selectedClass === "Marine") {
-                stats.cmb += 10;
-                saves.body += 10;
-                saves.fear += 20;
-                wounds += 1;
+                stats.cmb += 10; saves.body += 10; saves.fear += 20; wounds += 1;
             }
 
             // Update DOM
@@ -476,12 +489,7 @@
         // --- HEARTBEAT MONITOR ---
         const canvas = document.getElementById('ekgCanvas');
         const ctx = canvas.getContext('2d');
-        let width, height;
-        let x = 0;
-        let lastY = 0; // Fixed scope
-        let baseLine = 0;
-        let amplitude = 0;
-        let phase = 0; 
+        let width, height, x = 0, lastY = 0, baseLine = 0, amplitude = 0, phase = 0;
 
         function resizeCanvas() {
             width = canvas.parentElement.offsetWidth;
@@ -499,40 +507,27 @@
         resizeCanvas();
 
         function getHeartRateLogic(stress) {
-            let factor = (stress - 2) / 18; // 0 to 1
-            if (factor < 0) factor = 0;
-            if (factor > 1) factor = 1;
-
-            return {
-                scanSpeed: 2 + (factor * 3), 
-                cycleSpeed: 0.05 + (factor * 0.1), 
-                jitter: factor * 10
-            };
+            let factor = (stress - 2) / 18; 
+            if (factor < 0) factor = 0; if (factor > 1) factor = 1;
+            return { scanSpeed: 2 + (factor * 3), cycleSpeed: 0.05 + (factor * 0.1), jitter: factor * 10 };
         }
 
         function drawEKG() {
             let stressVal = parseInt(document.getElementById('stress').value) || 2;
             let params = getHeartRateLogic(stressVal);
             
-            // Update BPM text
             let bpm = Math.floor(60 + ((stressVal - 2) * 6.6)); 
             let bpmEl = document.getElementById('bpmDisplay');
             bpmEl.innerText = bpm + " BPM";
             
-            // Visual panic indicator
-            if(stressVal >= 15) {
-                bpmEl.classList.add("critical");
-            } else {
-                bpmEl.classList.remove("critical");
-            }
+            if(stressVal >= 15) bpmEl.classList.add("critical");
+            else bpmEl.classList.remove("critical");
 
-            // Fade/Erase effect
             ctx.fillStyle = "rgba(0, 0, 0, 1)";
             ctx.fillRect(x, 0, params.scanSpeed + 6, height);
 
-            // Setup line
             ctx.beginPath();
-            ctx.strokeStyle = "#33ff33"; // Hardcoded color to ensure visibility
+            ctx.strokeStyle = "#33ff33"; 
             ctx.lineWidth = 2;
             ctx.lineCap = "round";
             ctx.shadowBlur = 10;
@@ -540,22 +535,15 @@
             
             let prevX = x;
             x += params.scanSpeed;
-            if (x > width) {
-                x = 0;
-                prevX = 0;
-                lastY = baseLine;
-            }
+            if (x > width) { x = 0; prevX = 0; lastY = baseLine; }
 
-            // Waveform Logic
             phase += params.cycleSpeed;
             if (phase > 1) {
                 phase = 0; 
-                // Pause between beats for low stress
                 if(stressVal < 10 && Math.random() > 0.5) phase = -0.2; 
             }
             
             let yOffset = 0;
-            
             if (phase > 0) {
                 if (phase < 0.1) yOffset = -Math.sin(phase * 10 * Math.PI) * (amplitude * 0.1);
                 else if (phase < 0.2) {
@@ -569,36 +557,25 @@
                 }
             }
 
-            // Jitter
-            if (params.jitter > 0) {
-                yOffset += (Math.random() - 0.5) * params.jitter;
-            }
+            if (params.jitter > 0) yOffset += (Math.random() - 0.5) * params.jitter;
 
             let currentY = baseLine + yOffset;
             
-            // Reset lastY on wrap
-            if (prevX === 0) {
-                ctx.moveTo(prevX, baseLine);
-            } else {
-                ctx.moveTo(prevX, lastY);
-            }
+            if (prevX === 0) ctx.moveTo(prevX, baseLine);
+            else ctx.moveTo(prevX, lastY);
             
             ctx.lineTo(x, currentY);
             ctx.stroke();
-            
             lastY = currentY;
-
             requestAnimationFrame(drawEKG);
         }
 
-        // Start animation
         requestAnimationFrame(drawEKG);
 
         function adjustStress(amount) {
             let el = document.getElementById('stress');
             let val = parseInt(el.value) + amount;
-            if (val < 2) val = 2;
-            if (val > 20) val = 20;
+            if (val < 2) val = 2; if (val > 20) val = 20;
             el.value = val;
         }
 
@@ -662,7 +639,6 @@
         } else {
            loadData(); 
         }
-
     </script>
 </body>
 </html>
