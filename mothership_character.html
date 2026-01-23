@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MOTHERSHIP TERMINAL INTERFACE</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+        :root {
+            --phosphor-primary: #33ff33; /* Classic Apple II Green */
+            --phosphor-dim: #1a801a;
+            --phosphor-glow: #33ff3380;
+            --bg-color: #050505;
+            --scanline-color: rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            font-family: 'VT323', monospace;
+            color: var(--phosphor-primary);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- CRT EFFECTS --- */
+        .crt-container {
+            width: 100%;
+            height: 100%;
+            max-width: 1024px;
+            background-color: var(--bg-color);
+            position: relative;
+            overflow-y: auto;
+            padding: 20px;
+            border: 2px solid var(--phosphor-dim);
+            box-shadow: 0 0 20px var(--phosphor-glow);
+        }
+
+        /* Scanlines */
+        .crt-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.2) 50%,
+                rgba(0,0,0,0.2)
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 999;
+            animation: flicker 0.15s infinite;
+        }
+
+        .crt-overlay::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: radial-gradient(circle, rgba(0,0,0,0) 50%, rgba(0,0,0,0.6) 100%);
+            z-index: 1000;
+        }
+
+        @keyframes flicker {
+            0% { opacity: 0.95; }
+            50% { opacity: 0.9; }
+            100% { opacity: 0.95; }
+        }
+
+        /* Text Glow */
+        h1, h2, h3, label, input, select, textarea, span, div {
+            text-shadow: 0 0 2px var(--phosphor-dim), 0 0 8px var(--phosphor-glow);
+        }
+
+        /* --- LAYOUT --- */
+        .header {
+            text-align: center;
+            border-bottom: 2px dashed var(--phosphor-primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .controls-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .btn {
+            background: transparent;
+            color: var(--phosphor-primary);
+            border: 2px solid var(--phosphor-primary);
+            font-family: 'VT323', monospace;
+            font-size: 1.2rem;
+            padding: 5px 15px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.1s;
+        }
+
+        .btn:hover {
+            background: var(--phosphor-primary);
+            color: #000;
+            box-shadow: 0 0 10px var(--phosphor-primary);
+        }
+
+        .btn:active {
+            transform: translateY(2px);
+        }
+
+        .panel {
+            border: 1px solid var(--phosphor-dim);
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 15px;
+        }
+
+        label {
+            display: block;
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"], input[type="number"], select, textarea {
+            background: #000;
+            border: 1px solid var(--phosphor-dim);
+            color: var(--phosphor-primary);
+            font-family: 'VT323', monospace;
+            font-size: 1.4rem;
+            padding: 5px;
+            width: 100%;
+            outline: none;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--phosphor-primary);
+            background: #0a200a;
+        }
+
+        /* --- HEARTBEAT MONITOR --- */
+        .monitor-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .monitor-display {
+            position: relative;
+            background: #000;
+            border: 2px solid var(--phosphor-primary);
+            height: 120px;
+            width: 100%;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .monitor-label {
+            position: absolute;
+            top: 5px;
+            left: 10px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+            background-color: #000;
+            padding: 0 4px;
+        }
+
+        .bpm-display {
+            position: absolute;
+            bottom: 5px;
+            right: 10px;
+            font-size: 1.2rem;
+        }
+
+        .stress-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .stress-value {
+            font-size: 2rem;
+            width: 60px;
+            text-align: center;
+        }
+
+        .stat-box {
+            text-align: center;
+        }
+        
+        .stat-box input {
+            text-align: center;
+            font-size: 1.8rem;
+        }
+
+        .textarea-box {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        @keyframes blink {
+            0% { border-color: var(--phosphor-primary); color: var(--phosphor-primary); }
+            50% { border-color: transparent; color: #ff3333; }
+            100% { border-color: var(--phosphor-primary); color: var(--phosphor-primary); }
+        }
+        
+        .critical {
+            animation: blink 0.5s infinite;
+            color: #ff3333 !important;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 600px) {
+            .grid-2 { grid-template-columns: 1fr; }
+            h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="crt-overlay"></div>
+
+    <div class="crt-container">
+        <div class="header">
+            <h1>MOTHERSHIP // CREW_MANIFEST</h1>
+            <div style="font-size: 0.9rem; margin-top: 5px;">SYS.VER.1.0 // TERMINAL_ID_#8842</div>
+        </div>
+
+        <!-- Global Controls -->
+        <div class="controls-row">
+            <button class="btn" onclick="generateCharacter()">> RANDOMIZE_NEW_IDENTITY</button>
+            <div>
+                <button class="btn" onclick="saveData()">[ SAVE_TO_DISK ]</button>
+                <button class="btn" onclick="loadData()">[ LOAD_FROM_DISK ]</button>
+            </div>
+        </div>
+
+        <!-- Bio Data -->
+        <div class="panel grid-2">
+            <div>
+                <label>NAME</label>
+                <input type="text" id="charName" placeholder="ENTER NAME...">
+            </div>
+            <div>
+                <label>CLASS</label>
+                <!-- Removed onchange event to prevent error -->
+                <select id="charClass">
+                    <option value="Marine">MARINE</option>
+                    <option value="Android">ANDROID</option>
+                    <option value="Scientist">SCIENTIST</option>
+                    <option value="Teamster">TEAMSTER</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Monitor & Health -->
+        <div class="panel grid-2">
+            
+            <!-- Vitals -->
+            <div>
+                <div class="grid-2">
+                    <div class="stat-box">
+                        <label>HEALTH (MAX)</label>
+                        <input type="number" id="health" value="15">
+                    </div>
+                    <div class="stat-box">
+                        <label>WOUNDS (MAX)</label>
+                        <input type="number" id="wounds" value="2">
+                    </div>
+                </div>
+                <div style="margin-top: 15px;">
+                    <label>CURRENT STRESS (MAX 20)</label>
+                    <div class="stress-controls">
+                        <button class="btn" onclick="adjustStress(-1)">-</button>
+                        <input type="number" id="stress" class="stress-value" value="2" min="2" max="20">
+                        <button class="btn" onclick="adjustStress(1)">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EKG Monitor -->
+            <div class="monitor-panel">
+                <div class="monitor-display">
+                    <span class="monitor-label">BIO-MONITOR // REAL-TIME</span>
+                    <canvas id="ekgCanvas"></canvas>
+                    <span class="bpm-display" id="bpmDisplay">60 BPM</span>
+                </div>
+                <div style="font-size: 0.8rem; text-align: right; color: var(--phosphor-dim);">
+                    *PANIC CHECK: ROLL 1D20 > STRESS
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="panel">
+            <h3>// STATS (2D10 + 25)</h3>
+            <div class="grid-4">
+                <div class="stat-box">
+                    <label>STRENGTH</label>
+                    <input type="number" id="str" value="30">
+                </div>
+                <div class="stat-box">
+                    <label>SPEED</label>
+                    <input type="number" id="spd" value="30">
+                </div>
+                <div class="stat-box">
+                    <label>INTELLECT</label>
+                    <input type="number" id="int" value="30">
+                </div>
+                <div class="stat-box">
+                    <label>COMBAT</label>
+                    <input type="number" id="cmb" value="30">
+                </div>
+            </div>
+        </div>
+
+        <!-- Saves -->
+        <div class="panel">
+            <h3>// SAVES (2D10 + 10)</h3>
+            <div class="grid-4" style="grid-template-columns: 1fr 1fr 1fr;">
+                <div class="stat-box">
+                    <label>SANITY</label>
+                    <input type="number" id="san" value="20">
+                </div>
+                <div class="stat-box">
+                    <label>FEAR</label>
+                    <input type="number" id="fear" value="20">
+                </div>
+                <div class="stat-box">
+                    <label>BODY</label>
+                    <input type="number" id="body" value="20">
+                </div>
+            </div>
+        </div>
+
+        <!-- Details -->
+        <div class="panel grid-2">
+            <div>
+                <label>SKILLS</label>
+                <textarea id="skills" class="textarea-box" placeholder="List trained skills..."></textarea>
+            </div>
+            <div>
+                <label>EQUIPMENT</label>
+                <textarea id="equipment" class="textarea-box" placeholder="List items, credits..."></textarea>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 20px; color: var(--phosphor-dim); font-size: 0.8rem;">
+            MOTHERSHIP RPG CHARACTER SHEET // TERMINAL READY_
+        </div>
+    </div>
+
+    <script>
+        // --- DICE LOGIC ---
+        function d10() {
+            return Math.floor(Math.random() * 10) + 1;
+        }
+
+        function roll(count, mod) {
+            let total = mod;
+            for(let i=0; i<count; i++) {
+                total += d10();
+            }
+            return total;
+        }
+
+        // --- GENERATION LOGIC ---
+        function generateCharacter() {
+            // Base Rolls
+            let stats = {
+                str: roll(2, 25),
+                spd: roll(2, 25),
+                int: roll(2, 25),
+                cmb: roll(2, 25)
+            };
+
+            let saves = {
+                san: roll(2, 10),
+                fear: roll(2, 10),
+                body: roll(2, 10)
+            };
+
+            let health = d10() + 10;
+            let wounds = 2; 
+            let stress = 2; 
+
+            // Class Selection & Bonuses
+            const classSelect = document.getElementById('charClass');
+            const classes = ["Marine", "Android", "Scientist", "Teamster"];
+            const selectedClass = classes[Math.floor(Math.random() * classes.length)];
+            classSelect.value = selectedClass;
+
+            if (selectedClass === "Teamster") {
+                stats.str += 5; stats.spd += 5; stats.int += 5; stats.cmb += 5;
+                saves.san += 10; saves.fear += 10; saves.body += 10;
+            } 
+            else if (selectedClass === "Scientist") {
+                stats.int += 10;
+                saves.san += 30;
+                const statKeys = ['str', 'spd', 'int', 'cmb'];
+                stats[statKeys[Math.floor(Math.random() * 4)]] += 5;
+            }
+            else if (selectedClass === "Android") {
+                stats.int += 20;
+                saves.fear += 60;
+                wounds += 1;
+                const statKeys = ['str', 'spd', 'int', 'cmb'];
+                stats[statKeys[Math.floor(Math.random() * 4)]] -= 10;
+            }
+            else if (selectedClass === "Marine") {
+                stats.cmb += 10;
+                saves.body += 10;
+                saves.fear += 20;
+                wounds += 1;
+            }
+
+            // Update DOM
+            document.getElementById('str').value = stats.str;
+            document.getElementById('spd').value = stats.spd;
+            document.getElementById('int').value = stats.int;
+            document.getElementById('cmb').value = stats.cmb;
+            
+            document.getElementById('san').value = saves.san;
+            document.getElementById('fear').value = saves.fear;
+            document.getElementById('body').value = saves.body;
+
+            document.getElementById('health').value = health;
+            document.getElementById('wounds').value = wounds;
+            document.getElementById('stress').value = stress;
+
+            document.getElementById('skills').value = "Class specific skills (Check manual)...";
+            document.getElementById('equipment').value = "Standard Loadout...";
+            document.getElementById('charName').value = "CREW_MEMBER_" + Math.floor(Math.random() * 9999);
+        }
+
+        // --- HEARTBEAT MONITOR ---
+        const canvas = document.getElementById('ekgCanvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let x = 0;
+        let lastY = 0; // Fixed scope
+        let baseLine = 0;
+        let amplitude = 0;
+        let phase = 0; 
+
+        function resizeCanvas() {
+            width = canvas.parentElement.offsetWidth;
+            height = canvas.parentElement.offsetHeight;
+            canvas.width = width;
+            canvas.height = height;
+            baseLine = height / 2;
+            amplitude = height / 3;
+            lastY = baseLine;
+            ctx.fillStyle = "#000";
+            ctx.fillRect(0, 0, width, height);
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function getHeartRateLogic(stress) {
+            let factor = (stress - 2) / 18; // 0 to 1
+            if (factor < 0) factor = 0;
+            if (factor > 1) factor = 1;
+
+            return {
+                scanSpeed: 2 + (factor * 3), 
+                cycleSpeed: 0.05 + (factor * 0.1), 
+                jitter: factor * 10
+            };
+        }
+
+        function drawEKG() {
+            let stressVal = parseInt(document.getElementById('stress').value) || 2;
+            let params = getHeartRateLogic(stressVal);
+            
+            // Update BPM text
+            let bpm = Math.floor(60 + ((stressVal - 2) * 6.6)); 
+            let bpmEl = document.getElementById('bpmDisplay');
+            bpmEl.innerText = bpm + " BPM";
+            
+            // Visual panic indicator
+            if(stressVal >= 15) {
+                bpmEl.classList.add("critical");
+            } else {
+                bpmEl.classList.remove("critical");
+            }
+
+            // Fade/Erase effect
+            ctx.fillStyle = "rgba(0, 0, 0, 1)";
+            ctx.fillRect(x, 0, params.scanSpeed + 6, height);
+
+            // Setup line
+            ctx.beginPath();
+            ctx.strokeStyle = "#33ff33"; // Hardcoded color to ensure visibility
+            ctx.lineWidth = 2;
+            ctx.lineCap = "round";
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = "#33ff33";
+            
+            let prevX = x;
+            x += params.scanSpeed;
+            if (x > width) {
+                x = 0;
+                prevX = 0;
+                lastY = baseLine;
+            }
+
+            // Waveform Logic
+            phase += params.cycleSpeed;
+            if (phase > 1) {
+                phase = 0; 
+                // Pause between beats for low stress
+                if(stressVal < 10 && Math.random() > 0.5) phase = -0.2; 
+            }
+            
+            let yOffset = 0;
+            
+            if (phase > 0) {
+                if (phase < 0.1) yOffset = -Math.sin(phase * 10 * Math.PI) * (amplitude * 0.1);
+                else if (phase < 0.2) {
+                     let p = (phase - 0.1) * 10; 
+                     if (p < 0.2) yOffset = (amplitude * 0.1); 
+                     else if (p < 0.6) yOffset = -(amplitude * 1.2); 
+                     else yOffset = (amplitude * 0.2); 
+                }
+                else if (phase > 0.3 && phase < 0.5) {
+                    yOffset = -Math.sin((phase - 0.3) * 5 * Math.PI) * (amplitude * 0.15);
+                }
+            }
+
+            // Jitter
+            if (params.jitter > 0) {
+                yOffset += (Math.random() - 0.5) * params.jitter;
+            }
+
+            let currentY = baseLine + yOffset;
+            
+            // Reset lastY on wrap
+            if (prevX === 0) {
+                ctx.moveTo(prevX, baseLine);
+            } else {
+                ctx.moveTo(prevX, lastY);
+            }
+            
+            ctx.lineTo(x, currentY);
+            ctx.stroke();
+            
+            lastY = currentY;
+
+            requestAnimationFrame(drawEKG);
+        }
+
+        // Start animation
+        requestAnimationFrame(drawEKG);
+
+        function adjustStress(amount) {
+            let el = document.getElementById('stress');
+            let val = parseInt(el.value) + amount;
+            if (val < 2) val = 2;
+            if (val > 20) val = 20;
+            el.value = val;
+        }
+
+        // --- LOCAL STORAGE ---
+        function saveData() {
+            const data = {
+                name: document.getElementById('charName').value,
+                class: document.getElementById('charClass').value,
+                health: document.getElementById('health').value,
+                wounds: document.getElementById('wounds').value,
+                stress: document.getElementById('stress').value,
+                stats: {
+                    str: document.getElementById('str').value,
+                    spd: document.getElementById('spd').value,
+                    int: document.getElementById('int').value,
+                    cmb: document.getElementById('cmb').value
+                },
+                saves: {
+                    san: document.getElementById('san').value,
+                    fear: document.getElementById('fear').value,
+                    body: document.getElementById('body').value
+                },
+                skills: document.getElementById('skills').value,
+                equipment: document.getElementById('equipment').value
+            };
+            localStorage.setItem('mothershipChar', JSON.stringify(data));
+            alert("DATA SAVED TO LOCAL MEMORY BANKS.");
+        }
+
+        function loadData() {
+            const stored = localStorage.getItem('mothershipChar');
+            if (stored) {
+                const data = JSON.parse(stored);
+                document.getElementById('charName').value = data.name;
+                document.getElementById('charClass').value = data.class;
+                document.getElementById('health').value = data.health;
+                document.getElementById('wounds').value = data.wounds;
+                document.getElementById('stress').value = data.stress;
+                
+                document.getElementById('str').value = data.stats.str;
+                document.getElementById('spd').value = data.stats.spd;
+                document.getElementById('int').value = data.stats.int;
+                document.getElementById('cmb').value = data.stats.cmb;
+
+                document.getElementById('san').value = data.saves.san;
+                document.getElementById('fear').value = data.saves.fear;
+                document.getElementById('body').value = data.saves.body;
+
+                document.getElementById('skills').value = data.skills;
+                document.getElementById('equipment').value = data.equipment;
+                
+                alert("DATA RETRIEVED SUCCESSFULLY.");
+            } else {
+                alert("NO DATA FOUND IN MEMORY.");
+            }
+        }
+
+        // Init
+        if(!localStorage.getItem('mothershipChar')) {
+            generateCharacter();
+        } else {
+           loadData(); 
+        }
+
+    </script>
+</body>
+</html>
