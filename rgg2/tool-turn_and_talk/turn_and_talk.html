@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Think Pair Share Tool</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <style>
+        :root {
+            --primary: #c5eab2;
+            --primary-light: #eafce2;
+            --primary-bright: #b2ff8b;
+            --primary-darker: #89be6d;
+            --box-bg-color: #f4f3e8;
+            --text: #1d1d1d;
+            --muted: #6a6a6a;
+            --radius-lg: 14px;
+            --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, .06);
+            --shadow-lg: 0 1.2rem 3rem rgba(0, 0, 0, .12);
+            --transition: .25s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            background: #fff;
+            /* Changed to white to match the Ready Group Go container style */
+            font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+            color: var(--text);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* HEADER STYLES UPDATED TO MATCH IMAGE */
+        .tool-header {
+            text-align: left;
+            /* Left aligned */
+            padding: 2rem 0 1.5rem;
+            max-width: 1200px;
+            /* Aligns with the grid below */
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .tool-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0;
+            color: #000;
+            letter-spacing: -0.02em;
+        }
+
+        /* Description hidden as requested */
+        .tool-header .tool-description {
+            display: none;
+        }
+
+        .page {
+            flex: 1;
+            display: none;
+            overflow-y: auto;
+            padding: 0 2rem 5rem;
+            /* Adjusted padding */
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        #display-view.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .setup-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.1fr .9fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 1000px) {
+            .setup-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Panels kept original style but added background to match image vibe if needed. 
+       Original code had white panels on beige bg. 
+       Here we keep the internal layout strictly original. */
+        .panel {
+            background: var(--box-bg-color);
+            /* Beige background for the panels themselves, like the image sidebar */
+            border-radius: var(--radius-lg);
+            padding: 1.5rem 1.5rem 1.8rem;
+            box-shadow: none;
+            /* Removed shadow to look flatter like the image */
+        }
+
+        .panel h2 {
+            margin: 0 0 1.2rem;
+            font-weight: 700;
+            font-size: 1.2rem;
+            /* Slightly smaller to match image headers */
+        }
+
+        .muted {
+            color: var(--muted);
+            font-size: .9rem;
+        }
+
+        .source-toggle {
+            display: flex;
+            gap: .5rem;
+            margin-bottom: 1rem;
+        }
+
+        .source-pill {
+            flex: 1;
+            border: 1px solid rgba(0, 0, 0, .08);
+            background: #fff;
+            border-radius: 999px;
+            padding: .5rem .75rem;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .source-pill.active {
+            background: var(--primary);
+            border-color: transparent;
+        }
+
+        .card-grid {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .cat-card,
+        .level-card {
+            background: #fff;
+            border: 2px solid transparent;
+            border-radius: 1rem;
+            padding: 1rem;
+            flex: 1 0 150px;
+            min-height: 120px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .cat-card.active,
+        .level-card.active {
+            border-color: var(--primary-darker);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .cat-card h3,
+        .level-card h3 {
+            margin: .25rem 0 .5rem;
+        }
+
+        .button-row {
+            display: grid;
+            grid-template-columns: auto auto 1fr;
+            gap: .5rem;
+            margin-top: .6rem;
+        }
+
+        .prompt-action-group {
+            margin-top: 1.5rem;
+        }
+
+        .prompt-action-buttons {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .prompt-preview {
+            background: rgba(255, 255, 255, .92);
+            border: 1px solid rgba(0, 0, 0, .08);
+            border-radius: 1rem;
+            padding: 1.2rem 1.4rem;
+            font-size: 1.25rem;
+            line-height: 1.5;
+            color: #1f331d;
+            box-shadow: var(--shadow-sm);
+            min-height: 100px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .prompt-preview::before {
+            content: attr(data-label);
+            display: block;
+            font-size: .7rem;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: .5rem;
+        }
+
+        @keyframes highlight-pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(137, 190, 109, 0.7);
+            }
+
+            50% {
+                box-shadow: 0 0 0 5px rgba(137, 190, 109, 0.3);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(137, 190, 109, 0);
+            }
+        }
+
+        .is-highlighted {
+            animation: highlight-pulse 1.5s ease-out;
+        }
+
+        .time-setting {
+            margin-top: 1.2rem;
+            padding: 0.75rem;
+            border-radius: 1rem;
+            border: 2px solid transparent;
+            transition: var(--transition);
+            cursor: pointer;
+            background: #fff;
+            /* Added white bg to inputs to pop against beige panel */
+        }
+
+        .time-setting.active-setting {
+            background-color: var(--primary-light);
+            border-color: var(--primary);
+        }
+
+        .time-input-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .time-input-column {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Styles for the new "pill" stepper control */
+        .stepper-control {
+            display: flex;
+            align-items: center;
+            border: 1px solid rgba(0, 0, 0, .15);
+            border-radius: .6rem;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        .time-stepper-btn {
+            flex-shrink: 0;
+            width: 42px;
+            height: 42px;
+            border: none;
+            background: #f7f7f7;
+            font-size: 1.6rem;
+            font-weight: 400;
+            color: #555;
+            cursor: pointer;
+            line-height: 1;
+            transition: var(--transition);
+        }
+
+        .time-stepper-btn:hover {
+            background: #eee;
+        }
+
+        .time-stepper-btn:active {
+            background: var(--primary-light);
+        }
+
+        .time-input-column input[type="number"] {
+            font-size: 1.5rem;
+            font-weight: 500;
+            text-align: center;
+            border: none;
+            flex-grow: 1;
+            padding: .5rem 0;
+            outline: none;
+        }
+
+        .time-unit-label {
+            text-align: center;
+            font-size: .8rem;
+            color: var(--muted);
+            margin-top: .4rem;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+        }
+
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        .btn {
+            border: none;
+            background: var(--primary);
+            color: #000;
+            border-radius: .8rem;
+            padding: .5rem 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color .2s ease, transform .15s ease, box-shadow .15s ease;
+        }
+
+        .btn:hover {
+            filter: brightness(.97);
+        }
+
+        .btn:disabled {
+            background: #e0e0e0;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #fdfdfd;
+            color: #333;
+            border: 1px solid rgba(0, 0, 0, .1);
+            box-shadow: 0 2px 3px rgba(0, 0, 0, .03);
+        }
+
+        .btn-secondary:hover {
+            filter: brightness(1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, .06);
+        }
+
+        .btn-secondary:active {
+            transform: translateY(1px);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, .05);
+        }
+
+        .btn-danger {
+            background: #fdd;
+            color: #900;
+        }
+
+        #start-activity {
+            padding: .8rem 1rem;
+            font-size: 1.2rem;
+            width: auto;
+            min-width: 200px;
+            margin: 1.5rem auto 0;
+            display: block;
+            animation: pulse 2.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 4px 10px rgba(0, 0, 0, .08);
+            }
+
+            50% {
+                transform: scale(1.03);
+                box-shadow: 0 8px 25px rgba(0, 0, 0, .12);
+            }
+
+            100% {
+                transform: scale(1);
+                box-shadow: 0 4px 10px rgba(0, 0, 0, .08);
+            }
+        }
+
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            border-radius: .6rem;
+            border: 1px solid rgba(0, 0, 0, .12);
+            padding: .4rem .5rem;
+            font-size: 1rem;
+            background: #fff;
+        }
+
+        #flat-select {
+            margin-top: 0.25rem;
+            margin-bottom: 0.75rem;
+        }
+
+        #flat-star-btn,
+        #flat-delete-btn {
+            padding: .4rem .9rem;
+            font-size: .9rem;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .drop-zone {
+            border: 2px dashed rgba(0, 0, 0, .1);
+            border-radius: .6rem;
+            padding: .5rem;
+            background: #fff;
+        }
+
+        .drop-zone.dragover {
+            border-color: var(--primary-darker);
+            background: var(--primary-light);
+        }
+
+        #image-preview-container {
+            margin-top: .75rem;
+            position: relative;
+            width: fit-content;
+        }
+
+        #image-preview {
+            max-width: 150px;
+            max-height: 150px;
+            border-radius: .5rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        #remove-image-btn {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #fff;
+            color: #000;
+            border-radius: 999px;
+            width: 24px;
+            height: 24px;
+            border: 1px solid rgba(0, 0, 0, .1);
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        #storage-warning {
+            display: none;
+            background: #fff8c4;
+            border: 1px solid #f2c779;
+            padding: .75rem 1rem;
+            border-radius: .6rem;
+            margin-bottom: 1rem;
+            font-size: .9rem;
+        }
+
+        #display-view {
+            background: radial-gradient(circle at top, rgba(197, 234, 178, .3) 0%, rgba(244, 243, 232, 1) 48%, rgba(244, 243, 232, 1) 100%);
+            position: relative;
+        }
+
+        .display-phase {
+            display: none;
+            text-align: center;
+            padding: 1rem 1.5rem 5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            flex: 1;
+        }
+
+        .display-phase.active {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 3rem;
+            text-align: left;
+        }
+
+        .prompt-content-wrap {
+            flex: 1 1 45%;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            max-width: 600px;
+        }
+
+        .prompt-image {
+            flex: 1 1 55%;
+            max-height: 75vh;
+            max-width: 55%;
+            object-fit: contain;
+            margin: 0;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+        }
+
+        #phase-countdown h2 {
+            font-size: clamp(6rem, 15vw, 10rem);
+            color: var(--primary-darker);
+            margin: 0;
+            animation: pop 1s infinite;
+        }
+
+        @keyframes pop {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .phase-title {
+            font-size: clamp(1.8rem, 3.5vw, 2.2rem);
+            margin: 0;
+            color: #2f4f2f;
+            font-weight: 700;
+        }
+
+        .prompt-main {
+            font-size: clamp(2.1rem, 3.6vw, 3.1rem);
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .timer-big {
+            font-size: clamp(3rem, 6vw, 4.5rem);
+            font-weight: 700;
+            letter-spacing: .03em;
+        }
+
+        .timer-big.warning {
+            color: #c03030;
+        }
+
+        .twist {
+            background: rgba(137, 190, 109, .12);
+            border: 1px solid rgba(137, 190, 109, .3);
+            padding: 1rem 1.2rem;
+            border-radius: 1rem;
+            font-weight: 500;
+            opacity: 0;
+            transition: .5s ease;
+            font-size: clamp(1.1rem, 2.3vw, 1.5rem);
+            line-height: 1.55;
+        }
+
+        .twist.visible {
+            opacity: 1;
+        }
+
+        .progress-bar-wrap {
+            height: 40px;
+            background: rgba(0, 0, 0, .04);
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            z-index: 102;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #89be6d 0%, #c5eab2 100%);
+            transition: width 1s linear;
+        }
+
+        .top-right {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 100;
+            display: flex;
+            gap: .5rem;
+        }
+
+        .small-btn {
+            padding: .35rem .65rem;
+            border-radius: .5rem;
+        }
+
+        .phase-track,
+        #setup-phase-tracker {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .phase-track-step {
+            position: relative;
+            border: none;
+            background: #fff;
+            color: #333;
+            font-weight: 600;
+            padding: .5rem 1.1rem;
+            border-radius: 999px;
+            box-shadow: var(--shadow-sm);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .phase-track-step::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            right: -2.2rem;
+            width: 2rem;
+            height: 3px;
+            transform: translateY(-50%);
+            background: rgba(137, 190, 109, .35);
+        }
+
+        .phase-track-step:last-child::after {
+            display: none;
+        }
+
+        .phase-track {
+            gap: 1.5rem;
+            padding: 1rem 0;
+            width: min(680px, 90%);
+            margin: 0 auto;
+            flex-shrink: 0;
+        }
+
+        .phase-track .phase-track-step.active {
+            background: var(--primary);
+            color: #0f2910;
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        .phase-track .phase-track-step.completed {
+            background: rgba(197, 234, 178, 0.55);
+            opacity: .7;
+        }
+
+        .phase-track .phase-track-step.completed::after {
+            background: var(--primary-darker);
+        }
+
+        #setup-phase-tracker {
+            gap: 1rem;
+            margin: .5rem 0 1rem;
+        }
+
+        #setup-phase-tracker .phase-track-step {
+            cursor: pointer;
+        }
+
+        #setup-phase-tracker .phase-track-step::after {
+            right: -1.7rem;
+            width: 1.5rem;
+        }
+
+        #setup-phase-tracker .phase-track-step.active {
+            background-color: var(--primary);
+            transform: none;
+        }
+
+        #advance-btn {
+            position: fixed;
+            bottom: 4.5rem;
+            right: 1.25rem;
+            background: #89be6d;
+            color: #000;
+            font-size: 1.05rem;
+            padding: .75rem 1.1rem;
+            border-radius: 999px;
+            box-shadow: 0 14px 28px rgba(0, 0, 0, .18);
+            display: none;
+            z-index: 101;
+        }
+
+        #advance-btn:hover {
+            filter: brightness(.95);
+        }
+
+        @media (max-width: 900px) {
+            .display-phase.active {
+                flex-direction: column;
+                text-align: center;
+                gap: 1.5rem;
+            }
+
+            .prompt-image {
+                max-height: 40vh;
+                max-width: 90%;
+            }
+
+            .prompt-content-wrap {
+                text-align: center;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="setup-view" class="page active">
+        <!-- Clean Header: Left aligned, no description -->
+        <header class="tool-header">
+            <h1>Turn and Talk Tool</h1>
+        </header>
+
+        <div class="setup-grid">
+            <div class="panel">
+                <h2>1. Choose Prompt Source</h2>
+                <p class="muted">Pick how you want to create your prompt.</p>
+                <div class="source-toggle">
+                    <div class="source-pill active" data-source="leveled">Choose a Category and Level</div>
+                    <div class="source-pill" data-source="flat">Make Your Own</div>
+                </div>
+                <div id="leveled-config">
+                    <p class="muted" style="margin-bottom:.5rem">Step A — category</p>
+                    <div class="card-grid" id="category-cards">
+                        <div class="cat-card active" data-cat="Interests">
+                            <h3>Interests</h3>
+                            <p class="muted">Hobbies, media, culture.</p>
+                        </div>
+                        <div class="cat-card" data-cat="Feelings">
+                            <h3>Feelings</h3>
+                            <p class="muted">SEL, perspective.</p>
+                        </div>
+                        <div class="cat-card" data-cat="Experiences">
+                            <h3>Experiences</h3>
+                            <p class="muted">Stories, travel, family.</p>
+                        </div>
+                    </div>
+                    <p class="muted" style="margin:.9rem 0 .5rem">Step B — complexity</p>
+                    <div class="card-grid" id="level-cards">
+                        <div class="level-card active" data-lvl="1">
+                            <h3>Level 1</h3>
+                            <p class="muted">Low stakes, rapport.</p>
+                        </div>
+                        <div class="level-card" data-lvl="2">
+                            <h3>Level 2</h3>
+                            <p class="muted">Values, dilemmas.</p>
+                        </div>
+                        <div class="level-card" data-lvl="3">
+                            <h3>Level 3</h3>
+                            <p class="muted">Connect to a global issue.</p>
+                        </div>
+                    </div>
+                    <div class="prompt-action-group">
+                        <div class="prompt-action-buttons">
+                            <button class="btn btn-secondary" id="leveled-next-btn">Try another</button>
+                            <button class="btn btn-secondary" id="surprise-me-btn">Surprise Me ✨</button>
+                        </div>
+                        <div id="leveled-current" class="prompt-preview" data-label="Current prompt"></div>
+                    </div>
+                </div>
+                <div id="flat-config" style="display:none; margin-top:1rem;">
+                    <div id="storage-warning">
+                        <strong>Note:</strong> Your browser is blocking storage. Saved prompts will be lost when the
+                        page is closed.
+                    </div>
+
+                    <p class="muted">Add a new prompt:</p>
+                    <div class="drop-zone" id="drop-zone">
+                        <textarea id="flat-custom"
+                            placeholder="Type a prompt students will discuss, or drop an image here..."></textarea>
+                        <div id="image-preview-container" style="display: none;">
+                            <img id="image-preview" src="" alt="Image preview" />
+                            <button id="remove-image-btn">X</button>
+                        </div>
+                    </div>
+                    <div class="button-row">
+                        <button class="btn btn-secondary" id="attach-image-btn">Attach Image</button>
+                        <button class="btn btn-secondary" id="clear-form-btn">Clear Form</button>
+                        <button class="btn" id="flat-add-btn" style="flex-grow: 1;">Add & select prompt</button>
+                    </div>
+                    <input type="file" id="image-upload-input" accept="image/*" style="display:none;">
+
+                    <hr style="margin: 2rem 0 1.5rem; border: none; border-top: 1px solid #eee;">
+
+                    <label class="muted" for="flat-select">Your saved prompts</label>
+                    <select id="flat-select"></select>
+                    <div class="button-row" style="grid-template-columns: auto auto 1fr; gap: .75rem;">
+                        <button class="btn btn-secondary" id="flat-star-btn">Favorite</button>
+                        <button class="btn btn-danger" id="flat-delete-btn">Delete</button>
+                    </div>
+
+                    <div id="flat-current" class="prompt-preview" data-label="Selected prompt"
+                        style="display:none; margin-top:1.5rem;">
+                        <img id="flat-current-image" src="" alt="Selected image"
+                            style="display: none; max-width: 100px; max-height: 80px; object-fit: cover; float: left; margin-right: 1rem; border-radius: .5rem;">
+                        <span id="flat-current-text"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="panel" id="timing-panel">
+                <h2>2. Set Activity Time</h2>
+                <div id="setup-phase-tracker">
+                    <button type="button" class="phase-track-step" data-phase="individual">Think</button>
+                    <button type="button" class="phase-track-step" data-phase="group">Pair</button>
+                    <button type="button" class="phase-track-step" data-phase="wrap">Share</button>
+                </div>
+                <div class="time-setting" data-phase="individual">
+                    <label>Individual reflection</label>
+                    <div class="time-input-group">
+                        <div class="time-input-column">
+                            <div class="stepper-control">
+                                <button type="button" class="time-stepper-btn" data-target="indiv-minutes"
+                                    data-step="-1">−</button>
+                                <input type="number" id="indiv-minutes" value="2" min="0" step="1"
+                                    aria-label="Individual reflection minutes" />
+                                <button type="button" class="time-stepper-btn" data-target="indiv-minutes"
+                                    data-step="1">+</button>
+                            </div>
+                            <label class="time-unit-label" for="indiv-minutes">Minutes</label>
+                        </div>
+                        <div class="time-input-column">
+                            <div class="stepper-control">
+                                <button type="button" class="time-stepper-btn" data-target="indiv-seconds"
+                                    data-step="-5">−</button>
+                                <input type="number" id="indiv-seconds" value="0" min="0" max="59" step="5"
+                                    aria-label="Individual reflection seconds" />
+                                <button type="button" class="time-stepper-btn" data-target="indiv-seconds"
+                                    data-step="5">+</button>
+                            </div>
+                            <label class="time-unit-label" for="indiv-seconds">Seconds</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="time-setting" data-phase="group">
+                    <label>Group discussion</label>
+                    <div class="time-input-group">
+                        <div class="time-input-column">
+                            <div class="stepper-control">
+                                <button type="button" class="time-stepper-btn" data-target="group-minutes"
+                                    data-step="-1">−</button>
+                                <input type="number" id="group-minutes" value="1" min="0" step="1"
+                                    aria-label="Group discussion minutes" />
+                                <button type="button" class="time-stepper-btn" data-target="group-minutes"
+                                    data-step="1">+</button>
+                            </div>
+                            <label class="time-unit-label" for="group-minutes">Minutes</label>
+                        </div>
+                        <div class="time-input-column">
+                            <div class="stepper-control">
+                                <button type="button" class="time-stepper-btn" data-target="group-seconds"
+                                    data-step="-5">−</button>
+                                <input type="number" id="group-seconds" value="0" min="0" max="59" step="5"
+                                    aria-label="Group discussion seconds" />
+                                <button type="button" class="time-stepper-btn" data-target="group-seconds"
+                                    data-step="5">+</button>
+                            </div>
+                            <label class="time-unit-label" for="group-seconds">Seconds</label>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn" id="start-activity">Start Activity →</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="display-view" class="page">
+        <div class="top-right">
+            <button class="btn small-btn" id="mute-btn" title="Toggle sound">🔈</button>
+            <button class="btn small-btn" id="back-to-setup-btn">← Setup</button>
+        </div>
+        <div class="phase-track">
+            <button type="button" class="phase-track-step" data-phase="individual">Think</button>
+            <button type="button" class="phase-track-step" data-phase="group">Pair</button>
+            <button type="button" class="phase-track-step" data-phase="wrap">Share</button>
+        </div>
+        <div id="phase-countdown" class="display-phase">
+            <h2 id="countdown-text">3</h2>
+        </div>
+        <div id="phase-individual" class="display-phase">
+            <img id="indiv-image" class="prompt-image" src="" alt="Prompt image" style="display: none;" />
+            <div class="prompt-content-wrap">
+                <h2 class="phase-title">Think on your own...</h2>
+                <div class="prompt-main" id="indiv-prompt"></div>
+                <div class="timer-big" id="indiv-timer">00:00</div>
+                <div class="twist" id="indiv-twist"></div>
+            </div>
+        </div>
+        <div id="phase-group" class="display-phase">
+            <img id="group-image" class="prompt-image" src="" alt="Prompt image" style="display: none;" />
+            <div class="prompt-content-wrap">
+                <h2 class="phase-title">Pair & Talk!</h2>
+                <div class="prompt-main" id="group-prompt"></div>
+                <div class="timer-big" id="group-timer">00:00</div>
+                <div class="twist" id="group-twist"></div>
+            </div>
+        </div>
+        <div id="phase-wrap" class="display-phase">
+            <img id="wrap-image" class="prompt-image" src="" alt="Prompt image" style="display: none;" />
+            <div class="prompt-content-wrap">
+                <h2 class="phase-title">Time to Share</h2>
+                <div class="prompt-main" id="wrap-prompt"></div>
+                <p class="muted" style="font-size: 1.5rem; margin-top: 1rem;">What's one idea that stood out from your
+                    group's discussion?</p>
+            </div>
+        </div>
+        <div class="progress-bar-wrap" id="progress-wrap" style="display:none;">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <button class="btn" id="advance-btn">Next →</button>
+    </div>
+
+    <script>
+        const leveledPrompts = {
+            "Interests": { 1: [{ q: "If you could only listen to one album for a month, which would it be and why?", h: "Pick something you don’t get tired of, or that connects to a memory." }, { q: "What's a movie or TV show you think everyone should watch?", h: "It doesn’t have to be a classic — just meaningful or fun." }, { q: "Describe a hobby you love and what makes it so special to you.", h: "Gaming, sports, drawing — tell the story behind it." }, { q: "What is one food you could never get tired of eating?", h: "Think comfort food or celebration food." }, { q: "If you could have any fictional character as a friend, who would you choose?", h: "Think about personality, not power." }, { q: "If you could have any superpower but for something boring, what would it be?", h: "Like perfectly folding fitted sheets." }, { q: "If animals could talk, which would be the rudest?", h: "And what would they complain about?" }], 2: [{ q: "Think about a book, movie, or song that taught you an important lesson. What was it?", h: "What did it change in how you think?" }, { q: "How do your favorite hobbies or interests shape the way you see the world?", h: "Does your hobby make you notice things other people don’t?" }, { q: "How has a hobby or interest helped you overcome a challenge?", h: "Tell the mini-story of that challenge." }, { q: "What’s something you love that most adults don’t understand yet?", h: "Explain what makes it awesome." }, { q: "If you started a club for one of your interests, what would the first meeting look like?", h: "Who shows up and what do you do?" }], 3: [{ q: "How could your favorite hobby bring people from different backgrounds together?", h: "Imagine it being used for a community goal." }, { q: "If you made a movie about a global issue, what message would it send?", h: "Think feeling + action." }, { q: "Does the media we love have a responsibility to show different cultures? Why?", h: "Connect representation → belonging." }, { q: "How can your favorite interest inspire others to take action on an issue?", h: "Connect your hobby to a real problem." }, { q: "If you shared your interest with leaders worldwide, what would you teach first?", h: "Show the link between the interest and global change." }] },
+            "Feelings": { 1: [{ q: "Describe a time you felt proud of something small.", h: "What made it feel big to you?" }, { q: "What is something simple that always makes you calm?", h: "Think sensory stuff: smells, music, places." }, { q: "What does 'courage' look like in everyday life?", h: "Small risks count." }, { q: "What song matches your mood today and why?", h: "Connect the lyrics or sound to your feeling." }, { q: "When do you feel most confident during the school day?", h: "Describe the moment or routine." }, { q: "What’s a small thing that made your week better?", h: "Think about a tiny moment." }], 2: [{ q: "Think about a time you had to apologize. What made it hard or easy?", h: "Focus on the feeling after you apologized." }, { q: "Describe a situation where you felt misunderstood. How did you handle it?", h: "What would you do differently now?" }, { q: "Describe a time you helped a friend through a tough feeling.", h: "What did you say or do?" }, { q: "How do you reset after a stressful day?", h: "Share the steps you take to feel better." }, { q: "When have you had to balance your feelings with someone else's?", h: "What compromise did you make?" }], 3: [{ q: "Tell a story about feeling empathy — how does that scale to bigger issues?", h: "One person → whole group → world." }, { q: "Describe the feeling of fairness. How does that connect to global issues?", h: "Use your own life as the example." }, { q: "How can listening to emotions make a community fairer?", h: "Start from a local example." }, { q: "When people share feelings online, how can it spark real change?", h: "Think about movements you’ve noticed." }, { q: "How might empathy help solve a global challenge you care about?", h: "Pick an issue and connect it to a feeling." }] },
+            "Experiences": { 1: [{ q: "What is one of your favorite family or holiday memories?", h: "Add what you heard, saw, smelled." }, { q: "If you could relive one day, which would it be and why?", h: "Pick a specific day, not a whole year." }, { q: "What routine do you secretly enjoy?", h: "Walk us through the steps." }, { q: "Tell about a small adventure you had close to home.", h: "What tiny details made it memorable?" }, { q: "What experience made you laugh way harder than expected?", h: "Give the quick play-by-play." }, { q: "What’s the best smell in the world?", h: "Memory can be part of a smell." }, { q: "Lightning round: explain your weekend in 10 words.", h: "Be precise!" }], 2: [{ q: "Describe a time you took a small risk that paid off.", h: "What did you learn about trying new things?" }, { q: "Share an experience where you collaborated to achieve a goal.", h: "How did the group help you?" }, { q: "Share a time you tried something new with friends or family.", h: "What surprised you most?" }, { q: "Describe a project where planning ahead mattered.", h: "How did teamwork or preparation help?" }, { q: "When did you learn from a mistake during an activity?", h: "What did you do differently afterward?" }, { q: "Invent a new holiday — how do we celebrate?", h: "What are the rules and traditions?" }, { q: "If you could interview anyone in history, who and what’s the first question?", h: "Think beyond the obvious questions." }], 3: [{ q: "Think of a time you had limited resources. How does that relate to sustainability?", h: "What did you do instead of buying something new?" }, { q: "Share a story about working in a team. How does that connect to global cooperation?", h: "Your team = mini version of countries." }, { q: "How can a local experience teach you about a global issue?", h: "Zoom out from your personal story." }, { q: "Describe a moment when you saw cooperation in action.", h: "Connect it to how communities or countries work together." }, { q: "What everyday experience shows why sustainability matters?", h: "Link your story to using resources wisely." }] }
+        };
+        const flatStorageKey = "ttf_custom_prompts_v13", flatFavKey = "ttf_fav_prompts_v13";
+
+        let currentLeveledDeck = [];
+        let activityPrompt = null;
+        let flatPrompts = [], flatFavorites = [];
+        let currentPhase = "individual", timerInterval = null, audioCtx = null, muted = false;
+        let attachedImageBase64 = null;
+        let storageBlocked = false;
+
+        const dom = {
+            setupView: document.getElementById("setup-view"), displayView: document.getElementById("display-view"), sourcePills: document.querySelectorAll(".source-pill"), leveledConfig: document.getElementById("leveled-config"), flatConfig: document.getElementById("flat-config"), catCards: document.querySelectorAll(".cat-card"), levelCards: document.querySelectorAll(".level-card"), leveledNextBtn: document.getElementById("leveled-next-btn"), leveledCurrent: document.getElementById("leveled-current"), flatSelect: document.getElementById("flat-select"), flatCurrent: document.getElementById("flat-current"), flatStarBtn: document.getElementById("flat-star-btn"), flatDeleteBtn: document.getElementById("flat-delete-btn"), flatCustom: document.getElementById("flat-custom"), flatAddBtn: document.getElementById("flat-add-btn"), clearFormBtn: document.getElementById("clear-form-btn"), indivMinutesInput: document.getElementById("indiv-minutes"), indivSecondsInput: document.getElementById("indiv-seconds"), groupMinutesInput: document.getElementById("group-minutes"), groupSecondsInput: document.getElementById("group-seconds"), startActivityBtn: document.getElementById("start-activity"), countdownPhase: document.getElementById("phase-countdown"), countdownText: document.getElementById("countdown-text"), indivPhase: document.getElementById("phase-individual"), groupPhase: document.getElementById("phase-group"), wrapPhase: document.getElementById("phase-wrap"), indivPromptEl: document.getElementById("indiv-prompt"), groupPromptEl: document.getElementById("group-prompt"), wrapPromptEl: document.getElementById("wrap-prompt"), indivTimerEl: document.getElementById("indiv-timer"), groupTimerEl: document.getElementById("group-timer"), indivTwistEl: document.getElementById("indiv-twist"), groupTwistEl: document.getElementById("group-twist"), progressWrap: document.getElementById("progress-wrap"), progressBar: document.getElementById("progress-bar"), backToSetupBtn: document.getElementById("back-to-setup-btn"), advanceBtn: document.getElementById("advance-btn"), phaseTrackButtons: document.querySelectorAll(".phase-track-step"), muteBtn: document.getElementById("mute-btn"),
+            dropZone: document.getElementById('drop-zone'), imageUploadInput: document.getElementById('image-upload-input'), attachImageBtn: document.getElementById('attach-image-btn'), imagePreviewContainer: document.getElementById('image-preview-container'), imagePreview: document.getElementById('image-preview'), removeImageBtn: document.getElementById('remove-image-btn'),
+            indivImage: document.getElementById('indiv-image'), groupImage: document.getElementById('group-image'), wrapImage: document.getElementById('wrap-image'),
+            flatCurrentImage: document.getElementById('flat-current-image'), flatCurrentText: document.getElementById('flat-current-text'), storageWarning: document.getElementById('storage-warning'),
+            surpriseMeBtn: document.getElementById("surprise-me-btn"),
+            timingPanel: document.getElementById("timing-panel"),
+            setupPhaseTrackerSteps: document.querySelectorAll("#setup-phase-tracker .phase-track-step"),
+            timeSettingDivs: document.querySelectorAll(".time-setting")
+        };
+        const phaseOrder = ["individual", "group", "wrap"];
+
+        function showSetupView() { dom.setupView.classList.add("active"); dom.displayView.classList.remove("active"); clearTimer(); }
+        function showDisplayView() { dom.setupView.classList.remove("active"); dom.displayView.classList.add("active"); }
+        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        function playTone(freq = 660, dur = 0.15) { if (muted) return; initAudio(); const osc = audioCtx.createOscillator(), gain = audioCtx.createGain(); osc.connect(gain); gain.connect(audioCtx.destination); osc.type = 'sine'; osc.frequency.value = freq; gain.gain.setValueAtTime(0.3, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur); osc.start(); osc.stop(audioCtx.currentTime + dur); }
+        function playPopSound() { if (muted) return; initAudio(); const now = audioCtx.currentTime; const gain = audioCtx.createGain(); gain.connect(audioCtx.destination); gain.gain.setValueAtTime(0.2, now); gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.1); const osc = audioCtx.createOscillator(); osc.connect(gain); osc.type = 'triangle'; osc.frequency.setValueAtTime(400, now); osc.frequency.exponentialRampToValueAtTime(100, now + 0.1); osc.start(now); osc.stop(now + 0.1); }
+        function formatTime(sec) { const m = Math.floor(sec / 60), s = sec % 60; return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`; }
+
+        const customPromptManager = {
+            init() { this.load(); this.render(); },
+            load() {
+                try {
+                    const testKey = '_test_'; localStorage.setItem(testKey, testKey); localStorage.removeItem(testKey);
+                    flatPrompts = JSON.parse(localStorage.getItem(flatStorageKey) || "[]");
+                    flatFavorites = JSON.parse(localStorage.getItem(flatFavKey) || "[]");
+                } catch (e) {
+                    storageBlocked = true; dom.storageWarning.style.display = 'block'; flatPrompts = []; flatFavorites = [];
+                }
+            },
+            savePrompts() { if (!storageBlocked) try { localStorage.setItem(flatStorageKey, JSON.stringify(flatPrompts)); } catch (e) { console.error(e); } },
+            saveFavorites() { if (!storageBlocked) try { localStorage.setItem(flatFavKey, JSON.stringify(flatFavorites)); } catch (e) { console.error(e); } },
+            add(text, image) { const newPrompt = { id: 'prompt_' + Date.now(), text, image }; flatPrompts.push(newPrompt); this.savePrompts(); return newPrompt.id; },
+            delete(id) { flatPrompts = flatPrompts.filter(p => p.id !== id); flatFavorites = flatFavorites.filter(favId => favId !== id); this.savePrompts(); this.saveFavorites(); },
+            toggleFavorite(id) { const index = flatFavorites.indexOf(id); if (index > -1) { flatFavorites.splice(index, 1); } else { flatFavorites.push(id); } this.saveFavorites(); },
+            render(selectId = null) {
+                const sorted = [...flatPrompts].sort((a, b) => (flatFavorites.includes(b.id) - flatFavorites.includes(a.id)) || a.text.localeCompare(b.text));
+                const idToSelect = selectId || dom.flatSelect.value || sorted[0]?.id;
+                dom.flatSelect.innerHTML = "";
+                if (sorted.length === 0) {
+                    dom.flatSelect.innerHTML = `<option disabled selected>No saved prompts yet.</option>`;
+                    dom.flatStarBtn.disabled = true; dom.flatDeleteBtn.disabled = true; dom.flatCurrent.style.display = 'none';
+                } else {
+                    sorted.forEach(p => {
+                        const opt = document.createElement("option");
+                        opt.value = p.id;
+                        opt.textContent = `${flatFavorites.includes(p.id) ? "⭐ " : ""}${p.text.substring(0, 80)}${p.text.length > 80 ? '...' : ''}${p.image ? " (🖼️)" : ""}`;
+                        dom.flatSelect.appendChild(opt);
+                    });
+                    dom.flatSelect.value = sorted.some(p => p.id === idToSelect) ? idToSelect : (sorted[0]?.id || "");
+                    const selected = flatPrompts.find(p => p.id === dom.flatSelect.value);
+                    if (selected) {
+                        dom.flatCurrent.style.display = 'block';
+                        dom.flatCurrentText.textContent = selected.text;
+                        dom.flatCurrentImage.src = selected.image || '';
+                        dom.flatCurrentImage.style.display = selected.image ? 'block' : 'none';
+                        dom.flatStarBtn.disabled = false;
+                        dom.flatDeleteBtn.disabled = false;
+                        dom.flatStarBtn.textContent = flatFavorites.includes(selected.id) ? "Un-favorite" : "Favorite";
+                    } else {
+                        dom.flatCurrent.style.display = 'none';
+                    }
+                }
+            }
+        };
+
+        function rebuildLeveledDeck() {
+            let cat = "Interests", lvl = 1;
+            dom.catCards.forEach(c => { if (c.classList.contains('active')) cat = c.dataset.cat; });
+            dom.levelCards.forEach(l => { if (l.classList.contains('active')) lvl = parseInt(l.dataset.lvl); });
+            const arr = (leveledPrompts[cat] && leveledPrompts[cat][lvl]) || [];
+            currentLeveledDeck = arr.slice().sort(() => Math.random() - 0.5);
+        }
+
+        function pickLeveledPrompt() {
+            if (currentLeveledDeck.length === 0) rebuildLeveledDeck();
+            const p = currentLeveledDeck.pop() || { q: "Deck empty. Re-select to shuffle.", h: "" };
+            dom.leveledCurrent.textContent = p.q;
+        }
+
+        function pickSurprisePrompt() {
+            const categories = Object.keys(leveledPrompts);
+            const randomCat = categories[Math.floor(Math.random() * categories.length)];
+
+            const levels = Object.keys(leveledPrompts[randomCat]);
+            const randomLvl = levels[Math.floor(Math.random() * levels.length)];
+
+            const promptPool = leveledPrompts[randomCat][randomLvl];
+            const prompt = promptPool[Math.floor(Math.random() * promptPool.length)];
+
+            dom.leveledCurrent.textContent = prompt.q;
+
+            dom.catCards.forEach(c => c.classList.toggle("active", c.dataset.cat === randomCat));
+            dom.levelCards.forEach(l => l.classList.toggle("active", l.dataset.lvl === randomLvl));
+
+            rebuildLeveledDeck();
+        }
+
+        function updatePhaseTrack(activePhase) {
+            const activeIndex = phaseOrder.indexOf(activePhase);
+            dom.phaseTrackButtons.forEach(btn => {
+                const targetPhase = btn.dataset.phase;
+                const idx = phaseOrder.indexOf(targetPhase);
+                btn.classList.toggle("active", idx === activeIndex);
+                btn.classList.toggle("completed", idx < activeIndex);
+            });
+        }
+
+        function updateSetupPhaseHighlight(activePhase) {
+            dom.setupPhaseTrackerSteps.forEach(step => {
+                step.classList.toggle('active', step.dataset.phase === activePhase);
+            });
+            dom.timeSettingDivs.forEach(div => {
+                div.classList.toggle('active-setting', div.dataset.phase === activePhase);
+            });
+        }
+
+        function showDisplayPhase(phase) {
+            currentPhase = phase;
+            ["countdown", "individual", "group", "wrap"].forEach(p => document.getElementById(`phase-${p}`).classList.remove("active"));
+            if (document.getElementById(`phase-${phase}`)) document.getElementById(`phase-${phase}`).classList.add("active");
+            dom.progressWrap.style.display = (phase !== "countdown" && phase !== "wrap") ? "block" : "none";
+            dom.advanceBtn.style.display = (phase === "individual" || phase === "group") ? "block" : "none";
+            updatePhaseTrack(phase);
+        }
+
+        function setDisplayImages(imgSrc) {
+            [dom.indivImage, dom.groupImage, dom.wrapImage].forEach(imgEl => {
+                imgEl.src = imgSrc || '';
+                imgEl.style.display = imgSrc ? 'block' : 'none';
+            });
+        }
+
+        function startCountdown(callback) {
+            showDisplayPhase("countdown"); let count = 3; dom.countdownText.textContent = count; playTone(440, 0.2);
+            const interval = setInterval(() => {
+                count--;
+                if (count > 0) { dom.countdownText.textContent = count; playTone(440, 0.2); }
+                else { clearInterval(interval); playTone(880, 0.3); callback(); }
+            }, 1000);
+        }
+        const groupDeepeners = ["Find one thing you all agree on.", "Connect this to something we learned last week.", "Switch speakers: new person summarizes the group.", "Argue the opposite side — just for practice.", "How would a younger student answer this?", "What’s the real-world version of this?"];
+
+        function runIndividualPhase() {
+            showDisplayPhase("individual");
+            dom.indivTwistEl.classList.remove("visible");
+            const total = (parseInt(dom.indivMinutesInput.value) || 0) * 60 + (parseInt(dom.indivSecondsInput.value) || 0);
+            dom.indivPromptEl.textContent = activityPrompt.q; dom.groupPromptEl.textContent = activityPrompt.q;
+            setDisplayImages(activityPrompt.image);
+            startTimer(total, dom.indivTimerEl, runGroupPhase, () => {
+                playPopSound();
+                dom.indivTwistEl.innerHTML = `<strong>Consider this:</strong> ${activityPrompt.h || 'Add another example or a ‘why.’'}`;
+                dom.indivTwistEl.classList.add("visible");
+            });
+        }
+        function runGroupPhase() {
+            showDisplayPhase("group");
+            dom.groupTwistEl.classList.remove("visible");
+            const total = (parseInt(dom.groupMinutesInput.value) || 0) * 60 + (parseInt(dom.groupSecondsInput.value) || 0);
+            startTimer(total, dom.groupTimerEl, runWrapPhase, () => {
+                playPopSound();
+                dom.groupTwistEl.innerHTML = "<strong>Consider this:</strong> " + groupDeepeners[Math.floor(Math.random() * groupDeepeners.length)];
+                dom.groupTwistEl.classList.add("visible");
+            });
+        }
+        function runWrapPhase() {
+            showDisplayPhase("wrap");
+            dom.wrapPromptEl.textContent = activityPrompt.q;
+            clearTimer();
+        }
+        function startTimer(totalSeconds, timerEl, onEnd, onHalfway) {
+            clearTimer(); let secs = totalSeconds;
+            const halfway = Math.floor(totalSeconds / 2);
+            timerEl.textContent = formatTime(secs); timerEl.classList.remove("warning");
+            dom.progressBar.style.transition = 'none'; dom.progressBar.style.width = '0%';
+            setTimeout(() => { dom.progressBar.style.transition = `width ${totalSeconds}s linear`; dom.progressBar.style.width = '100%'; }, 50);
+            timerInterval = setInterval(() => {
+                secs--; timerEl.textContent = formatTime(Math.max(secs, 0));
+                if (secs === halfway && onHalfway) onHalfway();
+                if (secs <= 5 && secs > 0) { timerEl.classList.add("warning"); playTone(440, 0.15); }
+                if (secs <= 0) { clearTimer(); playTone(880, 0.25); onEnd && onEnd(); }
+            }, 1000);
+        }
+        function clearTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = null; dom.progressBar.style.transition = 'none'; dom.progressBar.style.width = '0%';
+            dom.indivTimerEl.classList.remove("warning"); dom.groupTimerEl.classList.remove("warning");
+        }
+
+        // --- EVENT LISTENERS ---
+        document.addEventListener('DOMContentLoaded', () => {
+            let currentSource = 'leveled';
+            dom.sourcePills.forEach(pill => pill.addEventListener("click", (e) => {
+                currentSource = e.target.dataset.source;
+                dom.sourcePills.forEach(p => p.classList.remove("active"));
+                e.target.classList.add("active");
+                dom.leveledConfig.style.display = (currentSource === "leveled") ? "block" : "none";
+                dom.flatConfig.style.display = (currentSource === "flat") ? "block" : "none";
+            }));
+            dom.catCards.forEach(card => card.addEventListener("click", () => {
+                dom.catCards.forEach(c => c.classList.remove("active")); card.classList.add("active");
+                rebuildLeveledDeck(); pickLeveledPrompt();
+            }));
+            dom.levelCards.forEach(card => card.addEventListener("click", () => {
+                dom.levelCards.forEach(c => c.classList.remove("active")); card.classList.add("active");
+                rebuildLeveledDeck(); pickLeveledPrompt();
+            }));
+            dom.leveledNextBtn.addEventListener("click", pickLeveledPrompt);
+            dom.surpriseMeBtn.addEventListener("click", pickSurprisePrompt);
+
+            dom.flatAddBtn.addEventListener("click", () => {
+                playPopSound();
+                const text = dom.flatCustom.value.trim();
+                const image = attachedImageBase64;
+                if (!text && !image) { alert('Please enter text or attach an image.'); return; }
+
+                const promptText = text || "Image-based prompt";
+
+                dom.flatCurrent.style.display = 'block';
+                dom.flatCurrentText.textContent = promptText;
+                dom.flatCurrentImage.src = image || '';
+                dom.flatCurrentImage.style.display = image ? 'block' : 'none';
+
+                const newId = customPromptManager.add(promptText, image);
+                customPromptManager.render(newId);
+
+                dom.flatCurrent.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                dom.flatCurrent.classList.add('is-highlighted');
+                setTimeout(() => {
+                    dom.flatCurrent.classList.remove('is-highlighted');
+                }, 1500);
+            });
+
+            dom.flatSelect.addEventListener("change", () => customPromptManager.render());
+            dom.flatStarBtn.addEventListener("click", () => { customPromptManager.toggleFavorite(dom.flatSelect.value); customPromptManager.render(dom.flatSelect.value); });
+            dom.flatDeleteBtn.addEventListener("click", () => { if (confirm("Are you sure you want to delete this prompt?")) { customPromptManager.delete(dom.flatSelect.value); customPromptManager.render(); } });
+
+            dom.clearFormBtn.addEventListener('click', clearCreationForm);
+
+            dom.timingPanel.addEventListener('click', (e) => {
+                const timeSetting = e.target.closest('.time-setting');
+                const phaseStep = e.target.closest('.phase-track-step');
+
+                let phaseToActivate = null;
+                if (timeSetting) {
+                    phaseToActivate = timeSetting.dataset.phase;
+                } else if (phaseStep) {
+                    phaseToActivate = phaseStep.dataset.phase;
+                }
+
+                if (phaseToActivate && phaseToActivate !== 'wrap') {
+                    updateSetupPhaseHighlight(phaseToActivate);
+                }
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('#timing-panel')) {
+                    updateSetupPhaseHighlight(null);
+                }
+            });
+
+            dom.timingPanel.addEventListener('click', (e) => {
+                const stepperBtn = e.target.closest('.time-stepper-btn');
+                if (!stepperBtn) return;
+
+                const targetInput = document.getElementById(stepperBtn.dataset.target);
+                if (!targetInput) return;
+
+                const step = parseInt(stepperBtn.dataset.step, 10);
+                const min = parseInt(targetInput.min, 10);
+                const max = parseInt(targetInput.max, 10);
+                let currentValue = parseInt(targetInput.value, 10) || 0;
+
+                let newValue = currentValue + step;
+
+                if (!isNaN(min) && newValue < min) newValue = min;
+                if (!isNaN(max) && newValue > max) newValue = max;
+
+                targetInput.value = newValue;
+            });
+
+            dom.startActivityBtn.addEventListener("click", () => {
+                let promptToStart = null;
+                if (currentSource === "leveled") {
+                    const text = dom.leveledCurrent.textContent;
+                    if (text && text !== "Deck empty. Re-select to shuffle.") {
+                        promptToStart = { q: text, h: "" };
+                    }
+                } else {
+                    const selectedId = dom.flatSelect.value;
+                    const selectedPrompt = flatPrompts.find(p => p.id === selectedId);
+                    if (selectedPrompt) {
+                        promptToStart = { q: selectedPrompt.text, h: "", image: selectedPrompt.image };
+                    } else {
+                        const previewText = dom.flatCurrentText.textContent;
+                        if (dom.flatCurrent.style.display === 'block' && previewText) {
+                            promptToStart = { q: previewText, h: "", image: dom.flatCurrentImage.src };
+                        }
+                    }
+                }
+
+                if (promptToStart) {
+                    activityPrompt = promptToStart;
+                    showDisplayView();
+                    startCountdown(runIndividualPhase);
+                } else {
+                    alert("Could not find a valid prompt to start. Please create or select one.");
+                }
+            });
+
+            dom.backToSetupBtn.addEventListener("click", showSetupView);
+            dom.advanceBtn.addEventListener("click", () => {
+                clearTimer();
+                if (currentPhase === 'individual') { playTone(880, 0.25); runGroupPhase(); }
+                else if (currentPhase === 'group') { playTone(660, 0.25); runWrapPhase(); }
+            });
+            dom.muteBtn.addEventListener("click", () => {
+                muted = !muted;
+                dom.muteBtn.textContent = muted ? "🔇" : "🔈";
+            });
+            dom.phaseTrackButtons.forEach(btn => btn.addEventListener("click", () => {
+                if (!dom.displayView.classList.contains("active")) return;
+                const target = btn.dataset.phase;
+                if (target === currentPhase) return;
+                clearTimer();
+                if (target === 'individual') runIndividualPhase();
+                else if (target === 'group') runGroupPhase();
+                else if (target === 'wrap') runWrapPhase();
+            }));
+
+            function handleFile(file) {
+                if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        attachedImageBase64 = e.target.result;
+                        dom.imagePreview.src = attachedImageBase64;
+                        dom.imagePreviewContainer.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+            function clearCreationForm() {
+                dom.flatCustom.value = "";
+                attachedImageBase64 = null;
+                dom.imageUploadInput.value = '';
+                dom.imagePreviewContainer.style.display = 'none';
+                dom.imagePreview.src = '';
+            }
+
+            dom.attachImageBtn.addEventListener('click', () => dom.imageUploadInput.click());
+            dom.imageUploadInput.addEventListener('change', (e) => handleFile(e.target.files[0]));
+            dom.removeImageBtn.addEventListener('click', clearCreationForm);
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dom.dropZone.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); }, false);
+            });
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dom.dropZone.addEventListener(eventName, () => dom.dropZone.classList.add('dragover'), false);
+            });
+            ['dragleave', 'drop'].forEach(eventName => {
+                dom.dropZone.addEventListener(eventName, () => dom.dropZone.classList.remove('dragover'), false);
+            });
+            dom.dropZone.addEventListener('drop', (e) => handleFile(e.dataTransfer.files[0]), false);
+
+            // --- INITIAL LOAD ---
+            customPromptManager.init();
+            rebuildLeveledDeck();
+            pickLeveledPrompt();
+        });
+    </script>
+</body>
+
+</html>
