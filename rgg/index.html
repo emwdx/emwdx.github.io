@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ready Group Go | Random Group Generator</title>
+    <meta name="description"
+        content="Elevate your teamwork and collaboration with our innovative Group Generator tool! Simply input the names of your students and specify the desired group size, and watch as our intelligent algorithm creates perfectly balanced and diverse groups." />
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style1.css" />
+    <link rel="stylesheet" href="css/style2.css" />
+    <link rel="stylesheet" href="css/style3.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="icon" href="favicon.ico" type="image/x-icon" sizes="48x48" />
+</head>
+
+<body class="__variable_fa2f99 __variable_51684b">
+    <div class="feedback-button"><img src="img/feedback.svg" class="icon" /></div>
+
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <a href="#" class="navbar-brand"><img src="img/logo.png" alt="" class="logo" /></a>
+            <button aria-controls="navbarScroll" type="button" aria-label="Toggle navigation"
+                class="navbar-toggler collapsed">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse collapse" id="navbarScroll">
+                <div class="m-auto my-2 my-lg-0 navbar-nav">
+                    <a href="#generator" class="nav-link">Home</a>
+                    <a href="#about-me" class="nav-link">About</a>
+                    <a href="#how-it-works" class="nav-link">How it Works</a>
+                    <a href="#features" class="nav-link">Features</a>
+                </div>
+                <div class="navbar-nav">
+                    <button type="button" class="btn btn btn-primary">Sign Up</button>
+                    <button type="button" class="btn">Login</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div id="generator" class="generator-section">
+        <div class="container">
+            <div class="header-section">
+                <h1 class="title">Group Generator</h1>
+            </div>
+            <div class="row">
+                <div class="col-lg-3 col-md-4">
+                    <div class="sidebar-section">
+                        <div class="toggle-button">
+                            <button class="active" id="viewGroupBtn">Group</button>
+                            <button class="" id="viewClassesBtn">Classes</button>
+                        </div>
+
+                        <div class="custom-form">
+                            <div class="mb-2">
+                                <label class="form-label">Choose Class</label>
+                                <select aria-label="Group Size" class="choose-class form-select" id="classSelect">
+                                    <option value="">Select Choose Class</option>
+                                    <!-- TODO: Populate classes -->
+                                </select>
+                            </div>
+                            <!-- Added Input Area for Students since "Choose Class" implies saved classes which we don't have yet -->
+                            <div class="mb-2" id="studentInputContainer">
+                                <label class="form-label">Or Paste Names</label>
+                                <textarea class="form-control" id="studentNames" rows="5"
+                                    placeholder="Enter names, one per line"></textarea>
+                            </div>
+
+                            <div class="mb-2">
+                                <label class="form-label">Group Size</label>
+                                <select aria-label="Group Size" class="group-size form-select" id="groupCount">
+                                    <!-- Populated by JS -->
+                                </select>
+                            </div>
+
+                            <div class="mb-2">
+                                <label class="form-label">Attributes</label>
+                                <select class="form-select" id="groupingStrategySelect">
+                                    <option value="random">Random</option>
+                                    <option value="reading">Reading Level</option>
+                                    <option value="behavior">Behavior</option>
+                                    <option value="social">Social Group</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-2" id="groupingTypeContainer" style="display: none;">
+                                <label class="form-label">Type</label>
+                                <select class="form-select" id="groupingTypeSelect">
+                                    <option value="diversify">Diversify (Mix)</option>
+                                    <option value="uniform">Uniformly (Same)</option>
+                                </select>
+                            </div>
+
+                            <button class="btn-brighter-primary shuffle-button mt-1" type="button" id="shuffleBtn">
+                                <img src="img/shuffle.svg" class="shuffle-icon" width="20" />Shuffle
+                            </button>
+
+                            <button class="save-button mt-3 w-100" type="button" id="saveClassBtn">
+                                <img src="img/save.svg" class="save-icon" width="20" /> Save Class
+                            </button>
+
+                            <button class="btn btn-primary mt-3 w-100 invisible" type="button" id="shareBtn"
+                                style="border-radius: 50px; font-weight: 600;">
+                                🔗 Share / QR Code
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-9 col-md-8">
+                    <div>
+                        <div class="groups-section no-visible-scrollbar" id="groupsSection">
+                            <div class="header d-flex justify-content-between align-items-center mb-3">
+                                <div class="d-flex align-items-center gap-3">
+                                    <h4 class="m-0 fw-bold" id="groupsHeaderTitle">Groups 1</h4>
+
+                                    <div class="options d-flex align-items-center bg-white rounded-pill p-1 border">
+                                        <button value="boxes"
+                                            class="btn btn-sm btn-link text-dark text-decoration-none rounded-circle boxes-button active"
+                                            id="viewGridBtn"
+                                            style="width: 35px; height: 35px; padding: 0; background-color: #d1f7c4;">
+                                            <img width="20" class="icon" src="img/boxes.svg" alt="Grid View">
+                                        </button>
+                                        <button value="list"
+                                            class="btn btn-sm btn-link text-dark text-decoration-none rounded-circle list-button"
+                                            id="viewListBtn" style="width: 35px; height: 35px; padding: 0;">
+                                            <img width="20" class="icon" src="img/list.svg" alt="List View">
+                                        </button>
+                                        <button value="text"
+                                            class="btn btn-sm btn-link text-dark text-decoration-none rounded-circle text-button"
+                                            disabled style="width: 35px; height: 35px; padding: 0; opacity: 0.5;">
+                                            <img width="20" class="icon" src="img/text.svg" alt="Text View">
+                                        </button>
+                                    </div>
+
+                                    <!-- Absent Button (Red Pill) -->
+                                    <button class="btn btn-sm rounded-pill px-3" id="absentStudentsBtn"
+                                        style="background-color: #ffe5e5; color: #dc3545; border: 1px solid #ffcccc; font-weight: 500;">
+                                        <i class="fas fa-ban me-1"></i> Make Students Absent
+                                    </button>
+                                </div>
+
+                                <!-- Fullscreen (Green Circle) -->
+                                <button class="btn btn-outline-secondary rounded-circle border-0" id="fullscreenBtn"
+                                    title="Fullscreen"
+                                    style="background-color: #d1f7c4; width: 40px; height: 40px; color: #000;">
+                                    <i class="fas fa-expand-alt"></i>
+                                </button>
+                            </div>
+                            <div class="group-box" id="groupsContainer">
+                                <!-- Groups will be rendered here -->
+                            </div>
+                            <div class="mt-5 pt-5"></div>
+                        </div>
+
+                        <!-- Classes Section (Table View) -->
+                        <div class="classes-section" id="classesSection" style="display: none;">
+                            <div class="classes-box">
+                                <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                                    <h3 class="m-0" id="classTitle">Class Name</h3>
+                                    <div>
+                                        <button id="editAttributesBtn" class="btn btn-outline-secondary btn-sm me-2">
+                                            Edit Attributes
+                                        </button>
+                                        <button class="btn btn-danger btn-sm" id="deleteClassBtn">Delete Class</button>
+                                    </div>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th class="td-first" style="min-width: 150px;">Student Name</th>
+                                                <th id="thAttr1" style="min-width: 120px;">Reading Level</th>
+                                                <th id="thAttr2" style="min-width: 120px;">Behavior</th>
+                                                <th id="thAttr3" style="min-width: 120px;">Social Group</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="classTableBody">
+                                            <!-- Populated by JS -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- End Main Row -->
+
+            <!-- Landing Content (Moved Below) -->
+            <div id="landingContent" class="mt-5">
+                <!-- Features Section -->
+                <div id="features" class="features-section">
+                    <div class="features-container container">
+                        <div class="justify-content-center row">
+                            <div class="text-center col-12">
+                                <h1 class="features-headline">Ready Group Go: Save Time, Build Community.</h1>
+                            </div>
+                        </div>
+                        <div class="justify-content-center row">
+                            <div class="text-center col-lg-8 col-md-10 col-12">
+                                <p class="features-description">Foster a strong classroom community by effortlessly
+                                    creating groups that promote deeper connections and collaboration.</p>
+                            </div>
+                        </div>
+                        <div class="features-sections row">
+                            <div class="col-12">
+                                <div class="features-table-container">
+                                    <div class="features-columns-wrapper row">
+                                        <div class="features-column col-md-6 col-12">
+                                            <div class="features-table-column-header">
+                                                <h2 class="features-column-title">Quick Features</h2>
+                                            </div>
+                                            <div class="features-table-cell">
+                                                <div class="feature-item">
+                                                    <h3 class="feature-title">Smart Attributes</h3>
+                                                    <p class="feature-description">Make groups based on custom
+                                                        attributes such as behavior or skill level.</p>
+                                                </div>
+                                            </div>
+                                            <div class="features-table-cell">
+                                                <div class="feature-item">
+                                                    <h3 class="feature-title">Save Classes</h3>
+                                                    <p class="feature-description">For later use.</p>
+                                                </div>
+                                            </div>
+                                            <div class="features-table-cell">
+                                                <div class="feature-item">
+                                                    <h3 class="feature-title">Share Groups</h3>
+                                                    <p class="feature-description">With a simple link that saves your
+                                                        groups.</p>
+                                                </div>
+                                            </div>
+                                            <div class="features-table-cell">
+                                                <div class="feature-item">
+                                                    <h3 class="feature-title">Invite Students</h3>
+                                                    <p class="feature-description">Join easily with a class code.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="features-column col-md-6 col-12">
+                                            <div class="features-table-column-header">
+                                                <h2 class="features-column-title">Connection & Growth</h2>
+                                            </div>
+                                            <div class="features-table-cell">
+                                                <div class="feature-item">
+                                                    <h3 class="feature-title">Learning Together</h3>
+                                                    <p class="feature-description">Promotes active, shared learning.</p>
+                                                </div>
+                                            </div>
+                                            <div class="features-table-cell">
+                                                <div class="feature-item">
+                                                    <h3 class="feature-title">Build Real Bonds</h3>
+                                                    <p class="feature-description">Encourages stronger peer connections.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="features-table-cell">
+                                                <div class="feature-item">
+                                                    <h3 class="feature-title">Feel Seen & Valued</h3>
+                                                    <p class="feature-description">Boosts confidence and recognition.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="features-table-cell">
+                                                <div class="feature-item">
+                                                    <h3 class="feature-title">Safe to Learn</h3>
+                                                    <p class="feature-description">Creates a secure, supportive
+                                                        environment.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="justify-content-center row">
+                            <div class="text-center col-12"><button type="button"
+                                    class="btn-primary btn btn-primary">Start Creating FREE Groups</button></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- How it Works Section (Attributes) -->
+                <div id="how-it-works" class="how-it-works-section">
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-12 text-center">
+                                <h1 class="how-it-works-headline">How the Grouping Generator Works</h1>
+                                <p class="text-center">The generator quickly processes your student attributes to create
+                                    groups. You control whether similar qualities are combined or separated across the
+                                    teams.</p>
+                                <p class="mt-4 mb-5 text-center">The generator can process different types of data,
+                                    including:</p>
+                            </div>
+                        </div>
+
+                        <div class="row justify-content-center">
+                            <!-- Card 1: Binary Data -->
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="how-it-works-item h-100 p-4 bg-light rounded-3">
+                                    <div class="icon-wrapper mb-3">
+                                        <img src="img/how_it_works/1.svg" alt="Binary Data" width="60">
+                                    </div>
+                                    <h3>Binary Data (Yes/No)</h3>
+                                    <p>Perfect for simple attributes like gender (male/female) or whether a student is
+                                        in an after-school club.</p>
+                                </div>
+                            </div>
+                            <!-- Card 2: Numbered Scales -->
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="how-it-works-item h-100 p-4 bg-light rounded-3">
+                                    <div class="icon-wrapper mb-3">
+                                        <img src="img/how_it_works/2.svg" alt="Numbered Scales" width="60">
+                                    </div>
+                                    <h3>Numbered Scales</h3>
+                                    <p>Ideal for ranking students on a scale you create. For example, you can use a 1-4
+                                        scale for skill levels, behavior scores, or social groups. A "1" might be a high
+                                        score, and a "4" a low one.</p>
+                                </div>
+                            </div>
+                            <!-- Card 3: Group Names -->
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="how-it-works-item h-100 p-4 bg-light rounded-3">
+                                    <div class="icon-wrapper mb-3">
+                                        <img src="img/how_it_works/3.svg" alt="Colors" width="60">
+                                    </div>
+                                    <h3>Group Names or Colors</h3>
+                                    <p>You can also use names or colors, such as "Reading Group A," "Math Group B," or
+                                        "Red Group."</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3 Ways to Add Students Section -->
+                <div class="three-ways-section py-5 bg-white">
+                    <div class="container">
+                        <div class="row justify-content-center mb-5">
+                            <div class="col-12 text-center">
+                                <h1 class="section-title">3 Ways to Add Your Students in Under a Minute</h1>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <!-- Way 1 -->
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="way-card h-100 p-4 bg-light rounded-3">
+                                    <div class="img-wrapper mb-3 text-center">
+                                        <img src="img/3_ways/1.svg" class="img-fluid rounded" alt="Net">
+                                    </div>
+                                    <h3>1. Copy and Paste from a List</h3>
+                                    <p>This is the fastest method. Simply grab a list of your students' names from a
+                                        document and paste it directly into the text box when you create your new class.
+                                        It's a quick, one-click solution.</p>
+                                </div>
+                            </div>
+                            <!-- Way 2 -->
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="way-card h-100 p-4 bg-light rounded-3">
+                                    <div class="img-wrapper mb-3 text-center">
+                                        <img src="img/3_ways/2.svg" class="img-fluid rounded" alt="Files">
+                                    </div>
+                                    <h3>2. Import from a Spreadsheet</h3>
+                                    <p>If you have your students' information in a program like Excel or Google Sheets,
+                                        you can easily import it. Open your class section and start a new class. At the
+                                        bottom, click the 'Paste your data from any spreadsheet Program' button.</p>
+                                </div>
+                            </div>
+                            <!-- Way 3 -->
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="way-card h-100 p-4 bg-light rounded-3">
+                                    <div class="img-wrapper mb-3 text-center">
+                                        <img src="img/3_ways/3.svg" class="img-fluid rounded" alt="QR Code">
+                                    </div>
+                                    <h3>3. Let Students Join Themselves</h3>
+                                    <p>Looking for a truly hands-off approach? You can share a class code and QR code
+                                        with your students and they can join the class on their own. This is a great way
+                                        to empower students and save you a few extra minutes.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-12 text-center">
+                                <button class="btn btn-primary btn-lg rounded-pill px-4"
+                                    onclick="window.scrollTo(0,0)">Start Creating FREE Groups</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonials Section -->
+                <div class="testimonials-section py-5">
+                    <div class="container">
+                        <div class="row justify-content-center mb-5">
+                            <div class="col-12 text-center">
+                                <h1 class="section-title">Testimonials</h1>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <!-- Testimonial 1 -->
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="testimonial-card bg-cream p-4 rounded-3 h-100"
+                                    style="background-color: #f9f9f0;">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <div>
+                                            <h5 class="mb-0 fw-bold">Deborah D</h5>
+                                            <small class="text-muted">9th grade Science</small>
+                                        </div>
+                                        <img src="img/testimonials/quote.svg" width="30">
+                                    </div>
+                                    <div class="mb-3">
+                                        <img src="img/testimonials/stars.svg" width="80">
+                                    </div>
+                                    <p>"I love ReadyGroupGo because it saves so much time, without sacrificing quality!
+                                        It frees me from the headache of making seating charts, while still giving me
+                                        options for different types of grouping strategies. So easy to set up and use!"
+                                    </p>
+                                </div>
+                            </div>
+                            <!-- Testimonial 2 -->
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="testimonial-card bg-cream p-4 rounded-3 h-100"
+                                    style="background-color: #f9f9f0;">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <div>
+                                            <h5 class="mb-0 fw-bold">Andres P</h5>
+                                            <small class="text-muted">IB TOK</small>
+                                        </div>
+                                        <img src="img/testimonials/quote.svg" width="30">
+                                    </div>
+                                    <div class="mb-3">
+                                        <img src="img/testimonials/stars.svg" width="80">
+                                    </div>
+                                    <p>"Ready Group Go has elevated collaboration in my classroom by allowing me to
+                                        easily diversify seating charts and group students based on their TOK skills and
+                                        characteristics. The intuitive platform saves me time, enabling me to focus on
+                                        meaningful interactions and creating dynamic, ever-changing learning
+                                        experiences."</p>
+                                </div>
+                            </div>
+                            <!-- Testimonial 3 -->
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="testimonial-card bg-cream p-4 rounded-3 h-100"
+                                    style="background-color: #f9f9f0;">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <div>
+                                            <h5 class="mb-0 fw-bold">John P</h5>
+                                            <small class="text-muted">8th grade History</small>
+                                        </div>
+                                        <img src="img/testimonials/quote.svg" width="30">
+                                    </div>
+                                    <div class="mb-3">
+                                        <img src="img/testimonials/stars.svg" width="80">
+                                    </div>
+                                    <p>"This grouping website is a total lifesaver! The design is so clean and fresh,
+                                        and it's ridiculously easy to use. I can whip up groups in seconds, and my
+                                        classes instantly feel more organized and fun. It's like having a little
+                                        classroom superpower—everything just flows better!"</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- About Section -->
+                <div id="about-me" class="about-section py-5">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <h1 class="section-title mb-4">About Ready Group Go & Rob Stauffer</h1>
+                                <p>Hi, I'm <strong>Rob Stauffer</strong>. After 17 years teaching in diverse
+                                    classrooms—from <strong>Washington State</strong> to international schools in
+                                    <strong>Latin America</strong>—I learned that <strong>intentionally building a sense
+                                        of belonging</strong> is the bedrock of a strong classroom community.
+                                </p>
+                                <p>I found the most effective way to achieve that is through <strong>thoughtful
+                                        grouping</strong> and <strong>strategic collaboration</strong>. But critical
+                                    planning shouldn't cost you hours of prep time.</p>
+                                <p>That's why I created <strong>Ready Group Go</strong>. Born from my own experience as
+                                    a teacher solving my classroom needs, this free grouping generator's simple purpose
+                                    is to help fellow educators <strong>save time</strong> while ensuring that
+                                    <strong>every student feels seen</strong> and genuinely included.
+                                </p>
+                                <p>My mission is to make <strong>Ready Group Go</strong> the <strong>best free grouping
+                                        generator</strong> available. I'm actively developing it based on feedback from
+                                    teachers like you. Please use it, share it, and reach out with your ideas—your input
+                                    is what drives this project forward.</p>
+                                <div class="mt-4">
+                                    <button class="btn btn-primary btn-lg rounded-pill px-4"
+                                        onclick="window.scrollTo(0,0)">Start Creating FREE Groups</button>
+                                </div>
+                            </div>
+                            <div class="col-md-6 text-center">
+                                <img src="img/about_me/rob-stauffer.png" class="img-fluid rounded-3 shadow"
+                                    alt="Rob Stauffer with child">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer (kept separate) -->
+            <!-- Footer -->
+            <footer id="contact-us" class="footer-section bg-white pt-5 pb-4 mt-5 border-top">
+                <div class="footer-container container">
+                    <div class="footer-row row">
+                        <!-- Column 1: About -->
+                        <div class="footer-col col-lg-3 col-md-6 col-12 mb-4">
+                            <h5 class="footer-title fw-bold mb-3">About Ready Group Go</h5>
+                            <p class="footer-text text-muted" style="line-height: 1.6;">
+                                Ready Group Go is a free smart student-grouping tool that saves teachers time and
+                                builds stronger classroom communities. Created by educator Rob Stauffer to support
+                                collaboration and belonging.
+                            </p>
+                        </div>
+
+                        <!-- Column 2: Quick Links -->
+                        <div class="footer-col col-lg-3 col-md-6 col-12 mb-4">
+                            <h5 class="footer-title fw-bold mb-3">Quick Links</h5>
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><a href="#" class="text-decoration-none text-dark">Home</a></li>
+                                <li class="mb-2"><a href="#about" class="text-decoration-none text-dark">About</a></li>
+                                <li class="mb-2"><a href="#how-it-works" class="text-decoration-none text-dark">How it
+                                        works</a></li>
+                            </ul>
+                        </div>
+
+                        <!-- Column 3: Others -->
+                        <div class="footer-col col-lg-3 col-md-6 col-12 mb-4">
+                            <h5 class="footer-title fw-bold mb-3">Others</h5>
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><a href="#" class="text-decoration-none text-dark">Terms and
+                                        Conditions</a></li>
+                                <li class="mb-2"><a href="#" class="text-decoration-none text-dark">Privacy Policy</a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Column 4: Reach Us -->
+                        <div class="footer-col col-lg-3 col-md-6 col-12 mb-4">
+                            <h5 class="footer-title fw-bold mb-3">Reach Us</h5>
+                            <div class="social-icons d-flex gap-2 mb-3">
+                                <a href="https://www.tiktok.com/@ready.group.go"
+                                    class="text-white bg-black rounded-circle d-flex align-items-center justify-content-center"
+                                    style="width: 40px; height: 40px;"><i class="fab fa-tiktok fa-lg"></i></a>
+                                <a href="https://www.instagram.com/readygroupgo/"
+                                    class="text-white bg-black rounded-circle d-flex align-items-center justify-content-center"
+                                    style="width: 40px; height: 40px;"><i class="fab fa-instagram fa-lg"></i></a>
+                                <a href="https://www.linkedin.com/in/rob-stauffer-047b96257/"
+                                    class="text-white bg-black rounded-circle d-flex align-items-center justify-content-center"
+                                    style="width: 40px; height: 40px;"><i class="fab fa-linkedin fa-lg"></i></a>
+                                <a href="https://www.youtube.com/channel/UCRKrqnaQbWyOkOQBmqJfFdA/about"
+                                    class="text-white bg-black rounded-circle d-flex align-items-center justify-content-center"
+                                    style="width: 40px; height: 40px;"><i class="fab fa-youtube fa-lg"></i></a>
+                            </div>
+                            <p class="footer-copyright text-muted small">© 2026 ReadyGroupGO</p>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+
+            <!-- Bootstrap Bundle with Popper (needed for Modal) -->
+            <!-- Absent Students Modal -->
+            <div class="modal fade" id="absentStudentsModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header border-0">
+                            <h5 class="modal-title fw-bold">Absent Students</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p class="text-muted mb-3">Click on students to mark them as absent. Absent students will be
+                                excluded from the next shuffle.</p>
+                            <div id="absentStudentsList" class="d-flex flex-wrap gap-2 justify-content-center">
+                                <!-- Student Buttons -->
+                            </div>
+                            <div class="text-center mt-4">
+                                <button type="button" class="btn btn-outline-danger" id="resetAbsentBtn">Reset All
+                                    Students</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+            <script src="js/qrcode.min.js"></script>
+            <script src="script.js"></script>
+            <!-- Edit Attributes Modal -->
+            <div class="modal fade" id="editAttributesModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Edit Class Attributes</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="attr1Input" class="form-label">Attribute 1</label>
+                                <input type="text" class="form-control" id="attr1Input">
+                            </div>
+                            <div class="mb-3">
+                                <label for="attr2Input" class="form-label">Attribute 2</label>
+                                <input type="text" class="form-control" id="attr2Input">
+                            </div>
+                            <div class="mb-3">
+                                <label for="attr3Input" class="form-label">Attribute 3</label>
+                                <input type="text" class="form-control" id="attr3Input">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" id="saveAttributesBtn">Save Changes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Full Screen Modal -->
+            <div class="modal fade full-screen" id="fullScreenModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header d-flex align-items-center">
+                            <h2 class="heading fw-bold m-0" id="fullScreenTitle">Class Name</h2>
+                            <div class="d-flex align-items-center ms-auto gap-2">
+                                <button class="print-button" id="fullScreenPrintBtn" title="Print"
+                                    style="margin-left: 0;">
+                                    <img src="img/print.svg" alt="Print" style="width: 25px; filter: invert(1);">
+                                </button>
+                            </div>
+                            <button type="button" class="btn-close ms-3" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="group-box" id="fullScreenGroupsContainer">
+                                <!-- Groups Rendered Here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+</body>
+
+</html>
