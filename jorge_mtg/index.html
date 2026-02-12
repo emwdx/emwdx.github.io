@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jorge MTG Card Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=EB+Garamond:ital,wght@0,500;0,700;1,500&display=swap"
+      rel="stylesheet"
+    />
+    <script type="module" crossorigin src="./assets/index-Ct7mDnPO.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-DDp0hjNB.css">
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="header">
+        <h1>Jorge MTG Card Studio</h1>
+        <p>You can build your own Magic the Gathering style card using the generator below. You can describe idea you have for the card and generate full text for a MTG style card from what you write. This could be a thing that he has in his collection, an anecdote, a creature he reminds you of, a story of him being himself...anything. This uses AI to generate the information for a card, as well as a description of an image. You can edit any of these. When you are ready, you can hit 'generate image' and AI will generate an image to match what you have put in.</p>
+      </header>
+
+      <main class="layout">
+        <section class="panel controls-panel">
+          <h2>Card Builder</h2>
+
+          <label class="field">
+            <span>Gemini API Key (stored in local browser storage)</span>
+            <input id="apiKey" type="password" placeholder="AIza..." autocomplete="off" />
+          </label>
+
+          <label class="field field-link" data-preview-target="card">
+            <span>Your name (artist credit)</span>
+            <input id="artist" type="text" placeholder="Your Name" />
+          </label>
+
+          <label class="field field-link" data-preview-target="card">
+            <span>Story / anecdote / characterization about Jorge (will be used to generate flowery text for the card)</span>
+            <textarea
+              id="anecdote"
+              rows="6"
+              placeholder="Example: We always swam before standup meetings and joked that he could summon tides before 7am."
+            ></textarea>
+          </label>
+
+          <p class="flow-step"><strong>Step 1:</strong> Generate the card text from your story.</p>
+          <div class="button-row">
+            <button id="generateText" type="button" class="primary">Generate Card Text</button>
+            <button id="polishText" type="button">Polish MTG Wording</button>
+          </div>
+
+          <p class="flow-step"><strong>Step 2:</strong> Edit text fields, then generate art.</p>
+          <p class="small-note">Hover any field below to highlight the matching area in the card preview.</p>
+
+          <hr />
+
+          <section class="manual-edits">
+            <h3>Review and Edit Card</h3>
+
+            <div class="grid two">
+              <label class="field field-link" data-preview-target="previewNamebar">
+                <span>Name</span>
+                <input id="name" type="text" />
+              </label>
+            </div>
+
+            <div class="grid two">
+              <label class="field field-link" data-preview-target="previewTypebar">
+                <span>Type Line</span>
+                <input id="typeLine" type="text" />
+              </label>
+              <label class="field field-link" data-preview-target="card">
+                <span>Theme Frame</span>
+                <select id="theme">
+                  <option value="white">White</option>
+                  <option value="blue">Blue</option>
+                  <option value="black">Black</option>
+                  <option value="red">Red</option>
+                  <option value="green">Green</option>
+                  <option value="gold">Gold / Multicolor</option>
+                  <option value="artifact">Artifact</option>
+                </select>
+              </label>
+            </div>
+
+            <label class="field field-link" data-preview-target="previewTextbox">
+              <span>Rules Text</span>
+              <textarea id="rulesText" rows="4"></textarea>
+            </label>
+
+            <label class="field field-link" data-preview-target="previewTextbox">
+              <span>Flavor Text</span>
+              <textarea id="flavorText" rows="3"></textarea>
+            </label>
+
+            <label class="field field-link" data-preview-target="previewArtFrame">
+              <span>Art Prompt</span>
+              <textarea id="artPrompt" rows="3"></textarea>
+            </label>
+
+            <label class="field field-link" data-preview-target="previewArtFrame">
+              <span>Art Fit</span>
+              <select id="artFit">
+                <option value="contain" selected>Fit (no crop)</option>
+                <option value="cover">Fill (crop)</option>
+              </select>
+            </label>
+
+            <details class="advanced-edits">
+              <summary>Advanced (optional): Mana Cost and Power/Toughness</summary>
+              <div class="grid two">
+                <label class="field field-link" data-preview-target="previewNamebar">
+                  <span>Mana Cost</span>
+                  <input id="manaCost" type="text" placeholder="{2}{U}{U}" />
+                </label>
+                <div></div>
+              </div>
+              <div class="grid two">
+                <label class="field field-link" data-preview-target="previewPT">
+                  <span>Power</span>
+                  <input id="power" type="text" placeholder="2" />
+                </label>
+                <label class="field field-link" data-preview-target="previewPT">
+                  <span>Toughness</span>
+                  <input id="toughness" type="text" placeholder="3" />
+                </label>
+              </div>
+            </details>
+          </section>
+
+          <div class="button-row">
+            <button id="generateArt" type="button" class="primary">Generate Art (Step 2)</button>
+            <button id="download" type="button">Download PNG</button>
+            <button id="downloadJpg" type="button">Download JPG</button>
+            <button id="reset" type="button" class="danger">Reset</button>
+          </div>
+
+          <p id="status" class="status">Ready.</p>
+        </section>
+
+        <section class="preview-wrap">
+          <div id="card" class="mtg-card theme-blue">
+            <div id="cardBusyOverlay" class="busy-overlay">
+              <div class="spinner"></div>
+              <p>Generating card text...</p>
+            </div>
+            <div id="previewNamebar" class="card-namebar">
+              <div id="previewName" class="card-name">Untitled Legend</div>
+              <div id="previewCost" class="mana-cost"></div>
+            </div>
+
+            <div id="previewArtFrame" class="card-art-frame">
+              <div id="artBusyOverlay" class="busy-overlay busy-overlay-art">
+                <div class="spinner"></div>
+                <p>Generating artwork...</p>
+              </div>
+              <div id="previewArt" class="card-art-image" role="img" aria-label="Card art"></div>
+            </div>
+
+            <div id="previewTypebar" class="card-typebar">
+              <div id="previewType">Legendary Creature - Human Advisor</div>
+            </div>
+
+            <div id="previewTextbox" class="card-textbox">
+              <div id="previewRules" class="rules"></div>
+              <div id="previewFlavor" class="flavor"></div>
+            </div>
+
+            <div class="card-footer">
+              <div class="footer-meta">
+                <div class="collector">Jorge Edition 2026</div>
+                <div id="previewArtist" class="artist">Credit: Team Artist</div>
+              </div>
+              <div id="previewPT" class="pt">2/2</div>
+            </div>
+          </div>
+
+          <p class="small-note">
+            Fan-made, unofficial cards for personal gifting and playtest fun only.
+          </p>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
