@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrepreneurship Unit Planner</title>
+            <style>
+        .loader {
+            display: none;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #3498db;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            animation: spin 2s linear infinite;
+            margin-left: 10px;
+        }
+        .panel.loading .loader { display: block; }
+        .switch-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .panel.processing {
+            border: 1px solid #4285F4;
+            box-shadow: 0 0 5px rgba(66, 133, 244, 0.5);
+        }
+        .input-container {
+            background-color: #e9eef6;
+            border: 1px solid #d0d7e5;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .input-container .panel {
+            background-color: #ffffff;
+        }
+        .input-row {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .input-row .panel {
+            flex: 1;
+        }
+        #planner .panel textarea {
+            min-height: 300px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        body { font-family: sans-serif; margin: 0; padding: 20px; background-color: #f0f2f5; }
+        h1, h2 { text-align: center; }
+        .container { display: flex; flex-direction: column; gap: 20px; }
+        .panel { background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 20px; }
+        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .panel-title { font-size: 1.2em; font-weight: bold; }
+        textarea { width: 100%; min-height: 150px; border: 1px solid #ccc; border-radius: 4px; padding: 10px; font-family: inherit; font-size: 1em; resize: vertical; }
+        button { background-color: #4285F4; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-size: 1em; }
+        button:hover { background-color: #357ae8; }
+        .initial-inputs { display: flex; gap: 20px; margin-bottom: 20px; }
+        .initial-inputs input { flex-grow: 1; padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
+    .markdown-view {
+            display: none;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            text-align: left;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+            margin-left: 10px;
+        }
+        .switch input { 
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .switch span {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .switch span:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + span {
+            background-color: #2196F3;
+        }
+        input:checked + span:before {
+            transform: translateX(26px);
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Entrepreneurship Unit Planner</h1>
+
+    <div class="initial-inputs">
+        <input type="password" id="apiKey" placeholder="Enter your Gemini API Key">
+        <button onclick="saveApiKey()">Save Key</button>
+    </div>
+
+    <div class="input-container">
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-title">Number of Classes</div>
+            </div>
+            <input type="number" id="numSessions" value="20">
+        </div>
+        <div class="input-row">
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">Project Context</div>
+                </div>
+                <textarea id="projectContext">My students have just come back from a break. Before the break, they submitted applications to the Diamond Challenge, and many students have moved on to the next round of submissions. The AMISA Diamond Challenge is an exclusive pathway that allows schools in the AMISA network, such as Nido, to participate in the internationally recognized Diamond Challenge entrepreneurship competition. 
+
+Students received feedback on their concept narrative and video and will be doing presentations.The feedback is mostly on the content of the written narrative and a 60 second video summarizing their ideas.  Many of the students need some work on the presentation part. While they have done some work on slide design and presentation skills, this will be another opportunity.
+
+My loose suggestion is that on Day 1, they will reconnect with each other. They will also learn a bit about me and my context in entrepreneurship, given that I am taking over the class from a colleagues. 
+
+I am sharing some of my own projects and journey. We will ahve them do a conversation in different pairs to answer this question: "Did you have any ‘aha’ moments during the break?" This could be personal, about their projects, or about something they are excited about trying for a project."
+
+The Diamond Challenge presentations are the day after class 4, so I want to make sure that they have a good opportunity to practice and get feedback on their presentation skills before then. For homework, I am having them review their feedback from judges so that Wednersday can be focused on revising slides and practicing the presentation. Since I am new, though I've seen videos of their last practice, I haven't seen their live presentations skills to me, so that is going to happen on day 3. Then Day 4 might be focused on refining slide design and practicing for the actual presentations the next day (we can consider day 5)."
+
+</textarea>
+            </div>
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">Final Product</div>
+                </div>
+                <textarea id="finalProduct">Students are creating a slide deck, presentation, and will be presenting it to judges external to our school.
+
+I will be assessing their presentation skills (not really content) since I am new. My hope is to help them reduce their use of filler words like "So...", "basically", "um", etc. So I will be giving feedback about that, while also seeing how their content responds to the feedback. </textarea>
+            </div>
+        </div>
+    </div>
+
+    <div id="planner" class="container">
+
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-title">Agent Sequence</div>
+            </div>
+            <div class="markdown-view" id="agent-sequence-view">
+                <p>The agents run in the following sequence:</p>
+                <ol>
+                    <li><b>TimelineAgent:</b> Generates the initial timeline.</li>
+                    <li><b>DesignCycleAgent:</b> Suggests design cycle activities for each day.</li>
+                    <li><b>AssessmentAgent:</b> Proposes assessments for each day.</li>
+                    <li><b>UnitPlannerAgent:</b> Combines all the information into a cohesive unit plan.</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-title">Timeline</div>
+                <div class="loader" id="timeline-loader"></div>
+                <div class="switch-container">
+                    <span class="switch-label">Edit Mode</span>
+                    <label class="switch"><input type="checkbox" onchange="toggleView(this, 'timeline')"><span></span></label>
+                </div>
+                <button onclick="copyContent('timeline')">Copy</button>
+                <button onclick="runAgents('timeline')">Generate</button>
+            </div>
+            <div class="markdown-view" id="timeline-view"></div>
+            <textarea id="timeline-output"></textarea>
+        </div>
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-title">Design Cycle Activities</div>
+                <div class="loader" id="design-loader"></div>
+                <div class="switch-container">
+                    <span class="switch-label">Edit Mode</span>
+                    <label class="switch"><input type="checkbox" onchange="toggleView(this, 'design')"><span></span></label>
+                </div>
+                <button onclick="copyContent('design')">Copy</button>
+                <button onclick="runAgents('design')">Generate</button>
+            </div>
+            <div class="markdown-view" id="design-view"></div>
+            <textarea id="design-output"></textarea>
+        </div>
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-title">Assessments</div>
+                <div class="loader" id="assessment-loader"></div>
+                <div class="switch-container">
+                    <span class="switch-label">Edit Mode</span>
+                    <label class="switch"><input type="checkbox" onchange="toggleView(this, 'assessment')"><span></span></label>
+                </div>
+                <button onclick="copyContent('assessment')">Copy</button>
+                <button onclick="runAgents('assessment')">Generate</button>
+            </div>
+            <div class="markdown-view" id="assessment-view"></div>
+            <textarea id="assessment-output"></textarea>
+        </div>
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-title">Unit Plan</div>
+                <div class="loader" id="unit-plan-loader"></div>
+                <div class="switch-container">
+                    <span class="switch-label">Edit Mode</span>
+                    <label class="switch"><input type="checkbox" onchange="toggleView(this, 'unit-plan')"><span></span></label>
+                </div>
+                <button onclick="copyContent('unit-plan')">Copy</button>
+                <button onclick="runAgents('unit')">Generate</button>
+            </div>
+            <div class="markdown-view" id="unit-plan-view"></div>
+            <textarea id="unit-plan-output"></textarea>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="entrepreneurship_proficiency_scales.js"></script>
+    <script src="geminiAgentFramework.js"></script>
+    <script src="gemini.js"></script>
+    <script>
+        const TIMELINE_PROMPT = `You are TimelineAgent for a high-school entrepreneurship elective.
+You receive an input with:
+- A project context (brief description)
+- Desired final product
+- Number of class sessions (e.g., 5)
+
+Produce a Markdown list outlining each day/session:
+Day 1: …
+Day 2: …
+...
+Use the context and final product deadline to sequence entrepreneurship learning: opportunity spotting, market empathy, investigation (MISO+T), problem definition, ideation, prototyping, testing, iteration, and pitch preparation.
+Think about the time required for tenth graders to learn methods, process evidence, and complete team deliverables.
+Return only the Markdown outline.`;
+
+        const DESIGN_PROMPT = `You are DesignCycleAgent for entrepreneurship learning design. You receive:
+- Project context (same as TimelineAgent)
+- Number of class sessions
+- Timeline outline (Markdown with Day 1–Day N)
+- A menu of potential entrepreneurship activities grounded in the proficiency scales.
+
+Use design thinking and venture process moves:
+  Empathy: user interviews, observation, and stakeholder mapping
+  Define: clear problem statement with evidence
+  Ideate: multiple options and selection criteria
+  Prototype: low-fidelity product/service/experience artifacts
+  Test/Reflect: gather user feedback and decide next iteration
+Prioritize authentic entrepreneurship behaviors: customer discovery, evidence-based decisions, and team execution.
+
+For each day in the timeline, suggest 1–2 specific activities adapted to this project. Include brief instructions.
+Return only Markdown with headings Day 1–Day N and bullet activities.`;
+
+        const ASSESS_PROMPT = `You are AssessmentAgent for an entrepreneurship course.
+You are an expert in these proficiency scales: Creative Problem Solving, Investigation, Group Member Skills, Self-direction, Written Communication, and Verbal/Visual Communication.
+You receive:
+- Project context
+- Number of class sessions
+- Timeline outline
+- Design-cycle activities per day
+
+For each day, propose:
+- One L1.5 assessment activity connected to one proficiency scale
+- One L2 assessment example (foundational knowledge) for a different scale
+- Optionally, an L3 assessment if it fits (extended, longer tasks)
+Make sure activities align to entrepreneurship outcomes and reference the scale name explicitly.
+Return only Markdown with headings Day 1–Day N.`;
+
+        const PROFICIENCY_SCALES = `Proficiency Scales for Entrepreneurship course:
+- CREATIVE_PROBLEM_SOLVING: ${JSON.stringify(entrepreneurshipProficiencyScales.creative_problem_solving)}
+- INVESTIGATION: ${JSON.stringify(entrepreneurshipProficiencyScales.investigation)}
+- GROUP_MEMBER_SKILLS: ${JSON.stringify(entrepreneurshipProficiencyScales.group_member_skills)}
+- SELF_DIRECTION: ${JSON.stringify(entrepreneurshipProficiencyScales.self_direction)}
+- WRITTEN_COMMUNICATION: ${JSON.stringify(entrepreneurshipProficiencyScales.written_communication)}
+- VERBAL_VISUAL_COMMUNICATION: ${JSON.stringify(entrepreneurshipProficiencyScales.verbal_visual_communication)}
+`;
+
+        const PLAN_PROMPT = `You are UnitPlannerAgent for an entrepreneurship elective. You receive:
+- Project context and final product description
+- Number of class sessions
+- Timeline outline (Markdown)
+- Design-cycle activities (Markdown)
+- Assessment suggestions (Markdown)
+
+Combine all inputs into a cohesive entrepreneurship unit plan in Markdown for clear formatting. You can override individual elements when needed for coherence and quality.
+Ensure the plan reflects student venture development: problem validation, user evidence, solution iteration, and final communication.
+
+Begin with the project context and output.
+
+Then build a Markdown Table showing the pacing for the full unit.
+
+Then output a day-by-day outline that includes:
+1. Design-cycle activities
+2. Assessment(s) with proficiency references
+3. Sequence of driving questions for segment of the lesson
+4. Time allocations for each activity and stage of the lesson (80-minute block)
+
+Return only that text.`;
+
+        function toggleView(checkbox, name) {
+            const view = document.getElementById(`${name}-view`);
+            const edit = document.getElementById(`${name}-output`);
+            const label = checkbox.parentElement.previousElementSibling;
+            if (checkbox.checked) {
+                view.innerHTML = marked.parse(edit.value);
+                view.style.display = 'block';
+                edit.style.display = 'none';
+                label.textContent = 'Markdown';
+            } else {
+                view.style.display = 'none';
+                edit.style.display = 'block';
+                label.textContent = 'Edit Mode';
+            }
+        }        function copyContent(name) {
+            const content = document.getElementById(`${name}-output`).value;
+            navigator.clipboard.writeText(content).then(() => {
+                alert('Copied to clipboard!');
+            });
+        }
+
+        function showLoader(name) { 
+            const panel = document.getElementById(`${name}-loader`).closest('.panel');
+            panel.classList.add('loading');
+            panel.classList.add('processing');
+        }
+        function hideLoader(name) { 
+            const panel = document.getElementById(`${name}-loader`).closest('.panel');
+            panel.classList.remove('loading');
+            panel.classList.remove('processing');
+        }
+
+        function saveApiKey() {
+            const apiKey = document.getElementById('apiKey').value;
+            if (apiKey) {
+                localStorage.setItem('geminiApiKey', apiKey);
+                alert('API Key saved.');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedKey = localStorage.getItem('geminiApiKey');
+            if (savedKey) {
+                document.getElementById('apiKey').value = savedKey;
+            }
+        });
+
+        const agentManager = new SimpleAgentManager();
+
+        // Define Agent Behaviors
+        const timelineBehavior = async (message, memory) => {
+            showLoader('timeline');
+            const { projectContext, finalProduct, numSessions } = message.content;
+            const prompt = TIMELINE_PROMPT
+                .replace('A project context (brief description)', `"${projectContext}"`)
+                .replace('Desired final product', `"${finalProduct}"`)
+                .replace('Number of class sessions (e.g., 5)', `${numSessions}`);
+            
+            const output = await runGemini(prompt);
+            document.getElementById('timeline-output').value = output;
+            hideLoader('timeline');
+            return { to: 'DesignCycleAgent', content: { ...message.content, timeline: output } };
+        };
+
+        const designBehavior = async (message, memory) => {
+            showLoader('design');
+            const { projectContext, numSessions, timeline } = message.content;
+            const prompt = DESIGN_PROMPT
+                .replace('Project context (same as TimelineAgent)', `"${projectContext}"`)
+                .replace('Number of class sessions', numSessions)
+                .replace('Timeline outline (Markdown with Day 1–Day N)', `the following timeline:\n${timeline}`);
+
+            const output = await runGemini(prompt);
+            document.getElementById('design-output').value = output;
+            hideLoader('design');
+            return { to: 'AssessmentAgent', content: { ...message.content, designActivities: output } };
+        };
+
+        const assessmentBehavior = async (message, memory) => {
+            showLoader('assessment');
+            const { projectContext, numSessions, timeline, designActivities } = message.content;
+            const prompt = `${ASSESS_PROMPT
+                .replace('Project context', `"${projectContext}"`)
+                .replace('Number of class sessions', numSessions)
+                .replace('Timeline outline', `the following timeline:\n${timeline}`)
+                .replace('Design-cycle activities per day', `the following design activities:\n${designActivities}`)}
+
+Here are the proficiency scales to use:
+${PROFICIENCY_SCALES}`;
+
+            const output = await runGemini(prompt);
+            document.getElementById('assessment-output').value = output;
+            hideLoader('assessment');
+            return { to: 'UnitPlannerAgent', content: { ...message.content, assessments: output } };
+        };
+
+        const unitPlannerBehavior = async (message, memory) => {
+            showLoader('unit-plan');
+            const { projectContext, finalProduct, numSessions, timeline, designActivities, assessments } = message.content;
+            const prompt = PLAN_PROMPT
+                .replace('Project context and final product description', `Project Context: "${projectContext}"\nFinal Product: "${finalProduct}"`)
+                .replace('Number of class sessions', numSessions)
+                .replace('Timeline outline (Markdown)', `the following timeline:\n${timeline}`)
+                .replace('Design-cycle activities (Markdown)', `the following design activities:\n${designActivities}`)
+                .replace('Assessment suggestions (Markdown)', `the following assessments:\n${assessments}`);
+
+            const output = await runGemini(prompt);
+            document.getElementById('unit-plan-output').value = output;
+            hideLoader('unit-plan');
+            // End of the chain
+        };
+
+        // Register Agents
+        agentManager.register(new Agent('TimelineAgent', timelineBehavior));
+        agentManager.register(new Agent('DesignCycleAgent', designBehavior));
+        agentManager.register(new Agent('AssessmentAgent', assessmentBehavior));
+        agentManager.register(new Agent('UnitPlannerAgent', unitPlannerBehavior));
+
+        function runAgents(startFrom) {
+            const projectContext = document.getElementById('projectContext').value;
+            const finalProduct = document.getElementById('finalProduct').value;
+            const numSessions = document.getElementById('numSessions').value;
+
+            if (!projectContext || !finalProduct || !numSessions) {
+                alert('Please fill in all initial inputs.');
+                return;
+            }
+
+            const initialContent = { projectContext, finalProduct, numSessions };
+            let startAgent;
+
+            switch(startFrom) {
+                case 'timeline':
+                    startAgent = 'TimelineAgent';
+                    break;
+                case 'design':
+                    startAgent = 'DesignCycleAgent';
+                    initialContent.timeline = document.getElementById('timeline-output').value;
+                    break;
+                case 'assessment':
+                    startAgent = 'AssessmentAgent';
+                    initialContent.timeline = document.getElementById('timeline-output').value;
+                    initialContent.designActivities = document.getElementById('design-output').value;
+                    break;
+                case 'unit':
+                    startAgent = 'UnitPlannerAgent';
+                    initialContent.timeline = document.getElementById('timeline-output').value;
+                    initialContent.designActivities = document.getElementById('design-output').value;
+                    initialContent.assessments = document.getElementById('assessment-output').value;
+                    break;
+            }
+
+            agentManager.startConversation('user', startAgent, initialContent);
+        }
+    </script>
+</body>
+</html>
