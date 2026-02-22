@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live Translator</title>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f3f6fb;
+    --surface: #ffffff;
+    --surface-soft: #eef2f9;
+    --border: #d4dceb;
+    --accent: #002365;
+    --accent-dim: rgba(0, 35, 101, 0.14);
+    --accent2: #8a1621;
+    --text-primary: #333333;
+    --text-secondary: #5f6b84;
+    --recording: #8a1621;
+    --font-display: 'Open Sans', sans-serif;
+    --font-mono: 'Open Sans', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 40px 40px;
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ─── Setup Screen ─────────────────────────────────────────────────────── */
+  #setup-screen {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1.1rem;
+    padding: 1rem 1rem 1.5rem;
+    overflow-y: auto;
+  }
+
+  #setup-screen h1 {
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 4.5vw, 3rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    text-align: center;
+    color: var(--accent);
+  }
+
+  #setup-screen h1 span {
+    color: var(--accent2);
+    font-style: normal;
+    font-weight: 800;
+  }
+
+  .setup-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.1rem;
+  }
+
+  .setup-logo {
+    width: min(360px, 72vw);
+    max-height: 150px;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .setup-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.5rem;
+    width: 100%;
+    max-width: 520px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    box-shadow: 0 10px 34px rgba(0, 35, 101, 0.08);
+  }
+
+  .field-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+  }
+
+  input[type="text"], input[type="password"] {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-dim);
+  }
+
+  .field-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 0.45rem;
+  }
+
+  .clear-key-btn {
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-secondary);
+    border-radius: 14px;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.65rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .clear-key-btn:hover {
+    border-color: var(--accent2);
+    color: var(--accent2);
+  }
+
+  .direction-toggle {
+    display: flex;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .direction-toggle button {
+    flex: 1;
+    padding: 0.75rem;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .direction-toggle button.active {
+    background: var(--accent);
+    color: #fff;
+    font-weight: 700;
+  }
+
+  .mode-toggle {
+    display: flex;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .mode-toggle button {
+    flex: 1;
+    padding: 0.75rem;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .mode-toggle button.active {
+    background: var(--accent2);
+    color: white;
+    font-weight: 700;
+  }
+
+  .start-btn {
+    width: 100%;
+    padding: 1rem;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .start-btn:hover {
+    background: #163879;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(0, 35, 101, 0.25);
+  }
+
+  /* ─── Shared header styles ─────────────────────────────────────────────── */
+  .app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    flex-shrink: 0;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .logo {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .logo-badge {
+    height: 34px;
+    background: var(--accent);
+    border-radius: 8px;
+    padding: 0.35rem 0.65rem;
+  }
+
+  .logo-badge img {
+    height: 100%;
+    width: auto;
+    object-fit: contain;
+    display: block;
+  }
+
+  .lang-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 0.3rem 0.75rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    user-select: none;
+  }
+
+  .lang-badge:hover { border-color: var(--accent); }
+  .lang-badge .arrow { color: var(--accent); }
+
+  .auto-badge {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(138, 22, 33, 0.08);
+    border: 1px solid rgba(138, 22, 33, 0.25);
+    border-radius: 20px;
+    padding: 0.25rem 0.6rem;
+    font-size: 0.7rem;
+    color: var(--accent2);
+    letter-spacing: 0.05em;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--text-secondary);
+    transition: background 0.3s;
+  }
+
+  .status-dot.recording {
+    background: var(--recording);
+    box-shadow: 0 0 8px var(--recording);
+    animation: pulse-dot 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.7); }
+  }
+
+  .status-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    min-width: 60px;
+  }
+
+  .control-btn {
+    padding: 0.5rem 1.25rem;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: none;
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .control-btn.active {
+    background: var(--recording);
+    border-color: var(--recording);
+    color: white;
+    box-shadow: 0 0 16px rgba(138, 22, 33, 0.25);
+  }
+
+  .control-btn:hover:not(.active) {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .icon-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .icon-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .settings-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0.25rem;
+    transition: color 0.2s;
+  }
+
+  .settings-btn:hover { color: var(--text-primary); }
+
+  /* ─── Full Transcript View ─────────────────────────────────────────────── */
+  #app {
+    display: none;
+    flex-direction: column;
+    height: 100vh;
+    position: relative;
+    z-index: 1;
+  }
+
+  .panels {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .panel:first-child {
+    border-right: 1px solid var(--border);
+  }
+
+  .panel-header {
+    padding: 0.75rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: var(--surface);
+    flex-shrink: 0;
+  }
+
+  .panel-lang {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+  }
+
+  .panel-lang.source { color: var(--accent2); }
+  .panel-lang.target { color: var(--accent); }
+
+  .panel-indicator {
+    width: 4px;
+    height: 16px;
+    border-radius: 2px;
+  }
+
+  .panel-indicator.source { background: var(--accent2); }
+  .panel-indicator.target { background: var(--accent); }
+
+  .panel-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .panel-content::-webkit-scrollbar { width: 4px; }
+  .panel-content::-webkit-scrollbar-track { background: transparent; }
+  .panel-content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .entry { animation: fadeSlideIn 0.3s ease-out; }
+
+  @keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .entry-text {
+    font-family: var(--font-display);
+    font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--text-primary);
+  }
+
+  .entry-time {
+    font-size: 0.65rem;
+    color: var(--text-secondary);
+    margin-top: 0.25rem;
+    letter-spacing: 0.05em;
+  }
+
+  .entry.chunk-break {
+    margin-top: 0.8rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .detected-lang {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: rgba(138, 22, 33, 0.12);
+    color: var(--accent2);
+    padding: 0.1rem 0.35rem;
+    border-radius: 3px;
+    margin-left: 0.5rem;
+    vertical-align: middle;
+  }
+
+  .live-box {
+    min-height: 72px;
+    padding: 0.75rem 1.5rem;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+    flex-shrink: 0;
+  }
+
+  .live-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 0.3rem;
+  }
+
+  .live-text {
+    font-family: var(--font-display);
+    font-size: clamp(1rem, 2.2vw, 1.4rem);
+    font-weight: 400;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    min-height: 1.4em;
+  }
+
+  .live-text.has-content { color: var(--accent2); }
+  .live-text.translation.has-content { color: var(--accent); }
+
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    text-align: center;
+    padding: 2rem;
+  }
+
+  .empty-icon { font-size: 2rem; margin-bottom: 0.5rem; opacity: 0.4; }
+  .empty-state p { font-size: 0.85rem; line-height: 1.6; max-width: 220px; }
+
+  /* ─── Subtitle Mode ────────────────────────────────────────────────────── */
+  #subtitle-app {
+    display: none;
+    flex-direction: column;
+    height: 100vh;
+    position: relative;
+    z-index: 1;
+  }
+
+  .subtitle-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1.5rem 3rem 5rem;
+    gap: 1rem;
+    overflow: hidden;
+  }
+
+  .subtitle-prev {
+    opacity: 0.35;
+    transition: opacity 0.5s ease;
+    flex-shrink: 0;
+  }
+
+  .subtitle-prev.visible { opacity: 0.35; }
+
+  .sub-row {
+    display: flex;
+    gap: 3rem;
+    align-items: flex-start;
+  }
+
+  .sub-col {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .sub-lang-tag {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 0.35rem;
+  }
+
+  .sub-lang-tag.source-tag { color: var(--accent2); }
+  .sub-lang-tag.target-tag { color: var(--accent); }
+
+  .subtitle-prev .sub-text {
+    font-family: var(--font-display);
+    font-weight: 400;
+    line-height: 1.35;
+    font-size: clamp(1.1rem, 2.1vw, 1.8rem);
+    color: var(--text-primary);
+  }
+
+  .subtitle-prev .sub-text.target {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .subtitle-divider {
+    height: 1px;
+    background: var(--border);
+    flex-shrink: 0;
+    display: none;
+  }
+
+  .subtitle-current {
+    flex-shrink: 0;
+    animation: fadeSlideIn 0.35s ease-out;
+  }
+
+  .subtitle-current .sub-text {
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 1.2;
+    font-size: clamp(2rem, 4.3vw, 3.8rem);
+    color: var(--text-primary);
+    overflow-wrap: anywhere;
+  }
+
+  .subtitle-current .sub-text.target {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .subtitle-live {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0.65rem 3rem;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 3rem;
+  }
+
+  .subtitle-live-text {
+    flex: 1;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1rem, 2vw, 1.3rem);
+    color: var(--text-secondary);
+    line-height: 1.4;
+    min-height: 1.4em;
+  }
+
+  .subtitle-live-text.has-content.source { color: var(--accent2); }
+  .subtitle-live-text.has-content.target { color: var(--accent); }
+
+  /* ─── Toast ────────────────────────────────────────────────────────────── */
+  #toast {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(60px);
+    background: var(--accent2);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    z-index: 999;
+    transition: transform 0.3s ease;
+    max-width: 90vw;
+    text-align: center;
+  }
+
+  #toast.show { transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 900px) {
+    .app-header {
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      padding: 0.7rem 1rem;
+    }
+
+    .header-left, .header-right {
+      width: 100%;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .logo-badge {
+      height: 30px;
+      padding: 0.3rem 0.5rem;
+    }
+
+    .panels {
+      flex-direction: column;
+    }
+
+    .panel:first-child {
+      border-right: none;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .subtitle-body {
+      justify-content: flex-end;
+      padding: 1rem;
+      padding-bottom: 4.2rem;
+      gap: 0.8rem;
+    }
+
+    .sub-row,
+    .subtitle-live {
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+
+    .subtitle-live {
+      padding: 0.6rem 1rem;
+    }
+
+    .subtitle-current .sub-text {
+      font-size: clamp(1.7rem, 7vw, 3rem);
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- ─── Setup Screen ──────────────────────────────────────────────────────── -->
+<div id="setup-screen">
+  <div class="setup-brand">
+    <img class="setup-logo" src="assets/nido-full-eagle-logo-large.jpg" alt="Nido school logo">
+    <h1>Live <span>Translator</span></h1>
+  </div>
+  <div class="setup-card">
+    <div>
+      <div class="field-label">Google Cloud Translation API Key</div>
+      <input type="password" id="api-key-input" placeholder="AIza..." autocomplete="off" />
+      <div class="field-actions">
+        <button class="clear-key-btn" type="button" onclick="clearSavedKey()">Clear Saved Key</button>
+      </div>
+    </div>
+    <div>
+      <div class="field-label">Language Pair</div>
+      <div class="direction-toggle" id="direction-toggle">
+        <button class="active" data-dir="en-es" onclick="setDirection(this)">EN → ES</button>
+        <button data-dir="es-en" onclick="setDirection(this)">ES → EN</button>
+      </div>
+    </div>
+    <div>
+      <div class="field-label">Display Mode</div>
+      <div class="mode-toggle" id="mode-toggle">
+        <button class="active" data-mode="full" onclick="setMode(this)">Full Transcript</button>
+        <button data-mode="subtitle" onclick="setMode(this)">Subtitle Bar</button>
+      </div>
+    </div>
+    <button class="start-btn" onclick="startApp()">Start Session →</button>
+  </div>
+</div>
+
+<!-- ─── Full Transcript View ──────────────────────────────────────────────── -->
+<div id="app">
+  <div class="app-header">
+    <div class="header-left">
+      <div class="logo logo-badge">
+        <img src="assets/nido-logo-white-01.png" alt="Nido logo">
+      </div>
+      <div class="lang-badge" onclick="toggleDirection()" title="Switch translation direction">
+        <span id="lang1-badge">EN</span>
+        <span class="arrow">→</span>
+        <span id="lang2-badge">ES</span>
+      </div>
+      <div class="auto-badge">Manual</div>
+    </div>
+    <div class="header-right">
+      <div class="status-dot" id="status-dot"></div>
+      <span class="status-label" id="status-label">Ready</span>
+      <button class="control-btn" id="mic-btn" onclick="toggleRecording()">● Start</button>
+      <button class="icon-btn" onclick="switchToSubtitle()" title="Switch to subtitle mode">▤</button>
+      <button class="settings-btn" onclick="goToSetup()" title="Settings">⚙</button>
+    </div>
+  </div>
+
+  <div class="panels">
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-indicator source"></div>
+        <span class="panel-lang source" id="panel-lang1-label">ENGLISH</span>
+      </div>
+      <div class="panel-content" id="source-content">
+        <div class="empty-state" id="source-empty">
+          <div class="empty-icon">🎤</div>
+          <p>Press Start and begin speaking in either language.</p>
+        </div>
+      </div>
+      <div class="live-box">
+        <div class="live-label">Listening…</div>
+        <div class="live-text" id="live-source"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-indicator target"></div>
+        <span class="panel-lang target" id="panel-lang2-label">SPANISH</span>
+      </div>
+      <div class="panel-content" id="target-content">
+        <div class="empty-state" id="target-empty">
+          <div class="empty-icon">💬</div>
+          <p>Translations appear here in real time.</p>
+        </div>
+      </div>
+      <div class="live-box">
+        <div class="live-label">Translating…</div>
+        <div class="live-text translation" id="live-target"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Subtitle View ─────────────────────────────────────────────────────── -->
+<div id="subtitle-app">
+  <div class="app-header">
+    <div class="header-left">
+      <div class="logo logo-badge">
+        <img src="assets/nido-logo-white-01.png" alt="Nido logo">
+      </div>
+      <div class="lang-badge" onclick="toggleDirection()" title="Switch translation direction">
+        <span id="sub-lang1-badge">EN</span>
+        <span class="arrow">→</span>
+        <span id="sub-lang2-badge">ES</span>
+      </div>
+      <div class="auto-badge">Manual</div>
+    </div>
+    <div class="header-right">
+      <div class="status-dot" id="sub-status-dot"></div>
+      <span class="status-label" id="sub-status-label">Ready</span>
+      <button class="control-btn" id="sub-mic-btn" onclick="toggleRecording()">● Start</button>
+      <button class="icon-btn" onclick="switchToFull()" title="Switch to full transcript">▦</button>
+      <button class="settings-btn" onclick="goToSetup()" title="Settings">⚙</button>
+    </div>
+  </div>
+
+  <div class="subtitle-body">
+    <!-- Previous statement (faded) -->
+    <div class="subtitle-prev" id="sub-prev" style="display:none">
+      <div class="sub-row">
+        <div class="sub-col">
+          <div class="sub-lang-tag source-tag" id="sub-prev-tag1"></div>
+          <div class="sub-text" id="sub-prev-text1"></div>
+        </div>
+        <div class="sub-col">
+          <div class="sub-lang-tag target-tag" id="sub-prev-tag2"></div>
+          <div class="sub-text target" id="sub-prev-text2"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="subtitle-divider" id="sub-divider"></div>
+
+    <!-- Current statement (large, prominent) -->
+    <div class="subtitle-current" id="sub-current" style="display:none">
+      <div class="sub-row">
+        <div class="sub-col">
+          <div class="sub-lang-tag source-tag" id="sub-current-tag1"></div>
+          <div class="sub-text" id="sub-current-text1"></div>
+        </div>
+        <div class="sub-col">
+          <div class="sub-lang-tag target-tag" id="sub-current-tag2"></div>
+          <div class="sub-text target" id="sub-current-text2"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Live interim at bottom -->
+  <div class="subtitle-live">
+    <div class="subtitle-live-text source" id="sub-live-source"></div>
+    <div class="subtitle-live-text target" id="sub-live-target"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+  // ═══════════════════════════════════════════════════════════════════════════
+  //  STATE
+  // ═══════════════════════════════════════════════════════════════════════════
+  let apiKey = '';
+  let lang1 = 'en';
+  let lang2 = 'es';
+  let recognition = null;
+  let isRecording = false;
+  let interimTranslateTimer = null;
+  let displayMode = 'full';
+
+  const CHUNK_PAUSE_MS = 1100;
+  let chunkBuffer = '';
+  let chunkTimer = null;
+  let entryCounter = 0;
+  let isFirstChunk = true;
+  let subtitleHistory = [];
+  const STORAGE_KEYS = {
+    apiKey: 'liveTranslator.apiKey',
+    direction: 'liveTranslator.direction',
+    mode: 'liveTranslator.mode',
+  };
+
+  const LANG_PAIRS = [
+    { id: 'en-es', codes: ['en', 'es'] },
+  ];
+  let currentPairIndex = 0;
+  const RECOG_LOCALES = { en: 'en-US', es: 'es-ES' };
+
+  const LANG_NAMES = {
+    en: 'English', es: 'Spanish', pt: 'Portuguese', fr: 'French',
+    de: 'German', it: 'Italian', ja: 'Japanese', zh: 'Chinese',
+  };
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  //  SETUP
+  // ═══════════════════════════════════════════════════════════════════════════
+  function setMode(btn) {
+    document.querySelectorAll('#mode-toggle button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    safeSetStorage(STORAGE_KEYS.mode, btn.dataset.mode);
+  }
+
+  function setDirection(btn) {
+    const direction = btn?.dataset?.dir || 'en-es';
+    document.querySelectorAll('#direction-toggle button').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    if (direction === 'es-en') {
+      lang1 = 'es';
+      lang2 = 'en';
+    } else {
+      lang1 = 'en';
+      lang2 = 'es';
+    }
+    safeSetStorage(STORAGE_KEYS.direction, direction);
+    updateAllLabels();
+  }
+
+  function safeGetStorage(key) {
+    try { return localStorage.getItem(key); } catch (e) { return null; }
+  }
+
+  function safeSetStorage(key, value) {
+    try { localStorage.setItem(key, value); } catch (e) {}
+  }
+
+  function safeRemoveStorage(key) {
+    try { localStorage.removeItem(key); } catch (e) {}
+  }
+
+  function clearSavedKey() {
+    safeRemoveStorage(STORAGE_KEYS.apiKey);
+    apiKey = '';
+    document.getElementById('api-key-input').value = '';
+    showToast('Saved API key cleared.');
+  }
+
+  function loadPersistedSettings() {
+    const savedKey = safeGetStorage(STORAGE_KEYS.apiKey);
+    if (savedKey) {
+      document.getElementById('api-key-input').value = savedKey;
+      apiKey = savedKey;
+    }
+
+    const savedDirection = safeGetStorage(STORAGE_KEYS.direction);
+    if (savedDirection === 'es-en' || savedDirection === 'en-es') {
+      const btn = document.querySelector(`#direction-toggle button[data-dir="${savedDirection}"]`);
+      if (btn) setDirection(btn);
+    } else {
+      setDirection(document.querySelector('#direction-toggle button[data-dir="en-es"]'));
+    }
+
+    const savedMode = safeGetStorage(STORAGE_KEYS.mode);
+    if (savedMode === 'subtitle' || savedMode === 'full') {
+      const btn = document.querySelector(`#mode-toggle button[data-mode="${savedMode}"]`);
+      if (btn) setMode(btn);
+    }
+  }
+
+  function startApp() {
+    const key = document.getElementById('api-key-input').value.trim();
+    if (!key) { showToast('Please enter your Google API key.'); return; }
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+      showToast('Speech recognition requires Chrome or Edge.'); return;
+    }
+    apiKey = key;
+    safeSetStorage(STORAGE_KEYS.apiKey, key);
+
+    const selectedDir = document.querySelector('#direction-toggle button.active')?.dataset?.dir || 'en-es';
+    if (selectedDir === 'es-en') {
+      lang1 = 'es';
+      lang2 = 'en';
+    } else {
+      lang1 = 'en';
+      lang2 = 'es';
+    }
+    currentPairIndex = 0;
+
+    displayMode = document.querySelector('#mode-toggle button.active').dataset.mode;
+
+    updateAllLabels();
+    document.getElementById('setup-screen').style.display = 'none';
+
+    if (displayMode === 'subtitle') {
+      document.getElementById('app').style.display = 'none';
+      document.getElementById('subtitle-app').style.display = 'flex';
+    } else {
+      document.getElementById('app').style.display = 'flex';
+      document.getElementById('subtitle-app').style.display = 'none';
+    }
+    initRecognition();
+  }
+
+  function goToSetup() {
+    stopRecording();
+    document.getElementById('setup-screen').style.display = 'flex';
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('subtitle-app').style.display = 'none';
+  }
+
+  function switchToSubtitle() {
+    displayMode = 'subtitle';
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('subtitle-app').style.display = 'flex';
+    updateAllLabels();
+    syncMicState();
+    requestAnimationFrame(fitSubtitleCurrentText);
+  }
+
+  function switchToFull() {
+    displayMode = 'full';
+    document.getElementById('app').style.display = 'flex';
+    document.getElementById('subtitle-app').style.display = 'none';
+    updateAllLabels();
+    syncMicState();
+  }
+
+  function toggleDirection() {
+    const nextSource = lang1 === 'en' ? 'es' : 'en';
+    const nextTarget = nextSource === 'en' ? 'es' : 'en';
+    lang1 = nextSource;
+    lang2 = nextTarget;
+    safeSetStorage(STORAGE_KEYS.direction, `${lang1}-${lang2}`);
+    syncSetupDirectionButtons();
+    updateAllLabels();
+
+    if (recognition) {
+      const wasRecording = isRecording;
+      if (wasRecording) stopRecording();
+      initRecognition();
+      if (wasRecording) setTimeout(startRecording, 250);
+    }
+  }
+
+  function updateAllLabels() {
+    document.getElementById('lang1-badge').textContent = lang1.toUpperCase();
+    document.getElementById('lang2-badge').textContent = lang2.toUpperCase();
+    document.getElementById('panel-lang1-label').textContent = 'ENGLISH';
+    document.getElementById('panel-lang2-label').textContent = 'SPANISH';
+    document.getElementById('sub-lang1-badge').textContent = lang1.toUpperCase();
+    document.getElementById('sub-lang2-badge').textContent = lang2.toUpperCase();
+    syncSetupDirectionButtons();
+  }
+
+  function syncSetupDirectionButtons() {
+    const activeDir = `${lang1}-${lang2}`;
+    document.querySelectorAll('#direction-toggle button').forEach((b) => {
+      b.classList.toggle('active', b.dataset.dir === activeDir);
+    });
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  //  SPEECH RECOGNITION
+  // ═══════════════════════════════════════════════════════════════════════════
+  function initRecognition() {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    recognition = new SR();
+    recognition.lang = RECOG_LOCALES[lang1] || 'en-US';
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = () => setStatus('recording', 'Listening…');
+
+    recognition.onresult = (e) => {
+      let interim = '';
+      let finalText = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const t = e.results[i][0].transcript;
+        if (e.results[i].isFinal) finalText += t;
+        else interim += t;
+      }
+      if (interim) {
+        setLiveSource(interim);
+        debounceTranslateInterim(interim);
+      }
+      if (finalText) {
+        clearLive();
+        clearTimeout(interimTranslateTimer);
+        handleFinalText(finalText.trim());
+      }
+    };
+
+    recognition.onerror = (e) => {
+      if (e.error === 'no-speech' || e.error === 'aborted') return;
+      setStatus('idle', 'Ready');
+      showToast(`Recognition error: ${e.error}`);
+      isRecording = false;
+      updateMicBtns();
+    };
+
+    recognition.onend = () => {
+      if (isRecording) {
+        try { recognition.start(); } catch(err) {}
+      } else {
+        setStatus('idle', 'Ready');
+        if (chunkBuffer.trim()) commitChunk();
+      }
+    };
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  //  LIVE DISPLAY HELPERS
+  // ═══════════════════════════════════════════════════════════════════════════
+  function setLiveSource(text) {
+    for (const id of ['live-source', 'sub-live-source']) {
+      const el = document.getElementById(id);
+      el.textContent = text;
+      el.classList.add('has-content');
+    }
+  }
+
+  function setLiveTarget(text) {
+    for (const id of ['live-target', 'sub-live-target']) {
+      const el = document.getElementById(id);
+      el.textContent = text || '';
+      el.classList.toggle('has-content', !!text);
+    }
+  }
+
+  function clearLive() {
+    for (const id of ['live-source', 'live-target', 'sub-live-source', 'sub-live-target']) {
+      const el = document.getElementById(id);
+      el.textContent = '';
+      el.classList.remove('has-content');
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  //  CHUNK MANAGEMENT
+  // ═══════════════════════════════════════════════════════════════════════════
+  function handleFinalText(text) {
+    if (!text) return;
+    chunkBuffer = chunkBuffer ? chunkBuffer + ' ' + text : text;
+    clearTimeout(chunkTimer);
+    chunkTimer = setTimeout(() => commitChunk(), CHUNK_PAUSE_MS);
+  }
+
+  function commitChunk() {
+    const text = chunkBuffer.trim();
+    if (!text) return;
+    chunkBuffer = '';
+    clearTimeout(chunkTimer);
+    const id = entryCounter++;
+    const shouldBreak = !isFirstChunk;
+    isFirstChunk = false;
+    translateDirected(text, id, shouldBreak);
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  //  TRANSLATION — MANUAL DIRECTION
+  // ═══════════════════════════════════════════════════════════════════════════
+  async function translateDirected(text, id, shouldBreak) {
+    try {
+      const translated = await translateText(text, lang2);
+      const speakingEnglish = lang1 === 'en';
+      const leftText = speakingEnglish ? text : translated;
+      const rightText = speakingEnglish ? translated : text;
+      const leftLang = 'English';
+      const rightLang = 'Spanish';
+
+      // Full view
+      addPanelEntry('source-content', leftText, id, shouldBreak, leftLang);
+      addPanelEntry('target-content', rightText, id, shouldBreak, rightLang);
+      syncScroll();
+
+      // Subtitle view
+      updateSubtitle(leftText, rightText, leftLang, rightLang);
+
+      subtitleHistory.push({ left: leftText, right: rightText, leftLang, rightLang });
+
+    } catch(err) {
+      showToast('Translation failed: ' + err.message);
+      addPanelEntry('source-content', text, id, shouldBreak, '');
+      addPanelEntry('target-content', '⚠ Error', id, shouldBreak, '');
+      syncScroll();
+    }
+  }
+
+  async function translateText(text, targetLang) {
+    const url = `https://translation.googleapis.com/language/translate/v2?key=${apiKey}`;
+    const resp = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ q: text, target: targetLang, format: 'text' })
+    });
+    if (!resp.ok) throw new Error((await resp.json()).error?.message || `HTTP ${resp.status}`);
+    const data = await resp.json();
+    return data.data.translations[0].translatedText;
+  }
+
+  // ─── Interim translation ─────────────────────────────────────────────────
+  function debounceTranslateInterim(text) {
+    clearTimeout(interimTranslateTimer);
+    interimTranslateTimer = setTimeout(() => translateInterim(text), 350);
+  }
+
+  async function translateInterim(text) {
+    if (!text.trim()) return;
+    setLiveTarget('…');
+    try {
+      const translated = await translateText(text, lang2);
+      setLiveTarget(translated);
+    } catch(e) { setLiveTarget(''); }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  //  FULL VIEW — PANEL ENTRIES
+  // ═══════════════════════════════════════════════════════════════════════════
+  function addPanelEntry(containerId, text, id, shouldBreak, langLabel) {
+    const container = document.getElementById(containerId);
+    const empty = container.querySelector('.empty-state');
+    if (empty) empty.remove();
+
+    const div = document.createElement('div');
+    div.className = 'entry' + (shouldBreak ? ' chunk-break' : '');
+    div.dataset.entryId = id;
+    const tag = langLabel ? `<span class="detected-lang">${langLabel}</span>` : '';
+    const isTarget = containerId === 'target-content';
+    div.innerHTML = `<div class="entry-text${isTarget ? ' translation' : ''}">${escHtml(text)}${tag}</div><div class="entry-time">${nowTime()}</div>`;
+    container.appendChild(div);
+  }
+
+  function syncScroll() {
+    requestAnimationFrame(() => {
+      const s = document.getElementById('source-content');
+      const t = document.getElementById('target-content');
+      s.scrollTop = s.scrollHeight;
+      t.scrollTop = t.scrollHeight;
+    });
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  //  SUBTITLE VIEW
+  // ═══════════════════════════════════════════════════════════════════════════
+  function updateSubtitle(leftText, rightText, leftLang, rightLang) {
+    // Promote current → previous
+    const curText1 = document.getElementById('sub-current-text1').textContent;
+    const curText2 = document.getElementById('sub-current-text2').textContent;
+    const curTag1 = document.getElementById('sub-current-tag1').textContent;
+    const curTag2 = document.getElementById('sub-current-tag2').textContent;
+
+    if (curText1 || curText2) {
+      document.getElementById('sub-prev-text1').textContent = curText1;
+      document.getElementById('sub-prev-text2').textContent = curText2;
+      document.getElementById('sub-prev-tag1').textContent = curTag1;
+      document.getElementById('sub-prev-tag2').textContent = curTag2;
+      document.getElementById('sub-prev').style.display = 'block';
+      document.getElementById('sub-divider').style.display = 'block';
+    }
+
+    // Set new current
+    document.getElementById('sub-current-text1').textContent = leftText;
+    document.getElementById('sub-current-text2').textContent = rightText;
+    document.getElementById('sub-current-tag1').textContent = leftLang;
+    document.getElementById('sub-current-tag2').textContent = rightLang;
+    document.getElementById('sub-current').style.display = 'block';
+
+    // Re-trigger animation
+    const cur = document.getElementById('sub-current');
+    cur.style.animation = 'none';
+    cur.offsetHeight; // reflow
+    cur.style.animation = '';
+    requestAnimationFrame(fitSubtitleCurrentText);
+  }
+
+  function fitSubtitleCurrentText() {
+    const subApp = document.getElementById('subtitle-app');
+    if (!subApp || subApp.style.display === 'none') return;
+
+    const cur = document.getElementById('sub-current');
+    if (!cur || cur.style.display === 'none') return;
+
+    const row = cur.querySelector('.sub-row');
+    const text1 = document.getElementById('sub-current-text1');
+    const text2 = document.getElementById('sub-current-text2');
+    if (!row || !text1 || !text2) return;
+
+    const body = document.querySelector('.subtitle-body');
+    const prev = document.getElementById('sub-prev');
+    const divider = document.getElementById('sub-divider');
+    const bodyGap = parseFloat(getComputedStyle(body).gap || '0') || 0;
+    const maxPx = Math.min(86, Math.max(42, window.innerWidth * 0.062));
+    const minPx = 30;
+    let sizePx = maxPx;
+
+    text1.style.fontSize = `${sizePx}px`;
+    text2.style.fontSize = `${sizePx}px`;
+
+    for (let i = 0; i < 32; i++) {
+      const prevHeight = prev && prev.style.display !== 'none' ? prev.offsetHeight : 0;
+      const dividerHeight = divider && divider.style.display !== 'none' ? divider.offsetHeight + bodyGap : 0;
+      const availableHeight = Math.max(80, body.clientHeight - prevHeight - dividerHeight - 8);
+      if (row.scrollHeight <= availableHeight || sizePx <= minPx) break;
+      sizePx -= 2;
+      text1.style.fontSize = `${sizePx}px`;
+      text2.style.fontSize = `${sizePx}px`;
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  //  CONTROLS
+  // ═══════════════════════════════════════════════════════════════════════════
+  function toggleRecording() {
+    if (isRecording) stopRecording();
+    else startRecording();
+  }
+
+  function startRecording() {
+    isRecording = true;
+    isFirstChunk = !document.getElementById('source-content').querySelector('.entry')
+                   && subtitleHistory.length === 0;
+    updateMicBtns();
+    try { recognition.start(); } catch(e) {}
+  }
+
+  function stopRecording() {
+    isRecording = false;
+    updateMicBtns();
+    setStatus('idle', 'Stopped');
+    try { recognition.stop(); } catch(e) {}
+    clearLive();
+    if (chunkBuffer.trim()) commitChunk();
+  }
+
+  function updateMicBtns() {
+    ['mic-btn', 'sub-mic-btn'].forEach(id => {
+      const btn = document.getElementById(id);
+      if (isRecording) { btn.textContent = '■ Stop'; btn.classList.add('active'); }
+      else { btn.textContent = '● Start'; btn.classList.remove('active'); }
+    });
+  }
+
+  function syncMicState() {
+    updateMicBtns();
+    if (isRecording) setStatus('recording', 'Listening…');
+    else setStatus('idle', 'Ready');
+  }
+
+  function setStatus(state, label) {
+    ['status-dot', 'sub-status-dot'].forEach(id => {
+      document.getElementById(id).className = 'status-dot' + (state !== 'idle' ? ` ${state}` : '');
+    });
+    ['status-label', 'sub-status-label'].forEach(id => {
+      document.getElementById(id).textContent = label;
+    });
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  //  TOAST & HELPERS
+  // ═══════════════════════════════════════════════════════════════════════════
+  let toastTimer;
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 4000);
+  }
+
+  function nowTime() {
+    return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  }
+
+  function escHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  window.addEventListener('resize', () => {
+    requestAnimationFrame(fitSubtitleCurrentText);
+  });
+
+  loadPersistedSettings();
+</script>
+</body>
+</html>
