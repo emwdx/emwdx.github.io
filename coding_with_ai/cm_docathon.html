@@ -37,11 +37,20 @@
             text-transform: uppercase; letter-spacing: 1px; cursor: pointer;
         }
 
+        /* --- LOADING SCREEN --- */
+        #loading {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--bg-color); z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; font-weight: bold; color: var(--brand-red);
+            transition: opacity 0.5s ease;
+        }
+
         /* --- HERO BANNER --- */
         .hero {
             position: relative; height: 85vh; width: 100%;
             background-size: cover; background-position: center;
-            background-color: #111; /* Fallback */
+            background-color: #111; 
             display: flex; align-items: center;
             transition: background-image 0.5s ease;
         }
@@ -70,6 +79,7 @@
         /* --- MAIN LISTINGS --- */
         .main-container {
             padding-bottom: 50px; margin-top: -10vh; position: relative; z-index: 20;
+            min-height: 50vh;
         }
         .category-row { margin-bottom: 3vw; }
         .category-title {
@@ -92,7 +102,7 @@
 
         .film-card img {
             width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block;
-            background-color: #333; /* Placeholder color while loading */
+            background-color: #333; 
         }
 
         .card-info {
@@ -181,6 +191,8 @@
 </head>
 <body>
 
+    <div id="loading">LOADING DOCS...</div>
+
     <header id="navbar">
         <div class="logo">DOCATHON</div>
     </header>
@@ -189,11 +201,9 @@
     <div class="hero" id="heroBanner">
         <div class="hero-vignette"></div>
         <div class="hero-content">
-            <h1 class="hero-title" id="heroTitle">Football Unites</h1>
-            <p class="hero-desc" id="heroDesc">Joao, Nico, Nicolo, and Jose explore how the beautiful game brings diverse communities together and bridges cultural divides.</p>
-            <button class="btn btn-play" id="heroPlayBtn" onclick="openModal(5)">
-                ⓘ View Details
-            </button>
+            <h1 class="hero-title" id="heroTitle">Loading...</h1>
+            <p class="hero-desc" id="heroDesc"></p>
+            <button class="btn btn-play" id="heroPlayBtn" style="display:none;">ⓘ View Details</button>
         </div>
     </div>
 
@@ -226,7 +236,7 @@
                         <span class="match-score">98% Match</span>
                         <span id="modalYear">2026</span>
                         <span class="age-rating">10th Grade</span>
-                        <span id="modalDuration">15m</span>
+                        <span id="modalDuration">Short Film</span>
                         <span style="border:1px solid white; border-radius:3px; padding:0 4px; font-size:0.8em;">HD</span>
                     </div>
                     <p class="modal-blurb" id="modalDesc">Description goes here...</p>
@@ -235,10 +245,6 @@
                     <div class="sidebar-item">
                         <span class="sidebar-label">Student Directors:</span><br>
                         <span class="sidebar-value" id="modalDirector">Student Name</span>
-                    </div>
-                    <div class="sidebar-item">
-                        <span class="sidebar-label">Themes:</span><br>
-                        <span class="sidebar-value" id="modalTopics">Social Justice, Environment</span>
                     </div>
                     <div class="sidebar-item">
                         <span class="sidebar-label">Original File:</span><br>
@@ -250,156 +256,184 @@
     </div>
 
     <script>
-        // --- DATA SOURCE (Removed manual image_urls) ---
-        const films =[
-            {
-                id: 1, title: "Changemakers", category: "Social Action", duration: "12m", year: "2026",
-                director: "Aisha, Mateo, Rafael", topics: "Community, Activism",
-                description: "A compelling look at how local students are driving meaningful, grassroots change right in our own neighborhoods.",
-                filename: "Changemakers-Rafael, Aisha and Tomas.mov",
-                video_url: "https://drive.google.com/file/d/1UOBb_OCLS-zBNCizhIExj5ZOTNmNzbqZ/view?usp=drive_link"
-            },
-            {
-                id: 2, title: "Fast Fashion", category: "Environmental Impact", duration: "14m", year: "2026",
-                director: "Ceci, Javi, Boggi", topics: "Sustainability, Economics",
-                description: "An investigation into the hidden environmental cost of our clothing choices and the rise of sustainable thrift culture.",
-                filename: "Fast Fashion - Javi, Boggi, Ceci.mp4",
-                video_url: "https://drive.google.com/file/d/17XYK198dCEyHwqY9oi7GlRYjrCZ6c_f7/view?usp=drive_link"
-            },
-            {
-                id: 3, title: "Youth Perspectives", category: "Student Life", duration: "10m", year: "2026",
-                director: "Nico, Vicente, Tomas", topics: "Mental Health, High School",
-                description: "Three students sit down to honestly discuss the unique challenges, pressures, and triumphs of navigating high school today.",
-                filename: "vincente, thomas, nico movie .mp4",
-                video_url: "https://drive.google.com/file/d/14ChpjMJolcMgPPFaCQ5Vb0EwFAQe4KKE/view?usp=drive_link"
-            },
-            {
-                id: 4, title: "Through Our Eyes", category: "Arts & Culture", duration: "15m", year: "2026",
-                director: "Eliana, Agustina, Mari", topics: "Identity, Expression",
-                description: "A beautiful visual essay exploring personal identity and creative expression through the lens of modern adolescence.",
-                filename: "Eliana.MariaJ.Agustina.mp4",
-                video_url: "https://drive.google.com/file/d/1D8iL6gnMuENmy4FcHdCngDA23xz8MQ7p/view?usp=drive_link"
-            },
-            {
-                id: 5, title: "Football Unites", category: "Sports & Society", duration: "18m", year: "2026",
-                director: "Nico, Jose, Joao, Niccolo", topics: "Sports, Cultural Unity",
-                description: "How the beautiful game transcends language barriers to bring diverse communities together and bridge cultural divides.",
-                filename: "Football Unites - Joao, Nico, Nicolo, Jose.mov",
-                video_url: "https://drive.google.com/file/d/1hIAhjMrOQPBXpSUwDHikAAu_Kd82Znkz/view?usp=drive_link"
-            },
-            {
-                id: 6, title: "The Final Word", category: "Student Life", duration: "20m", year: "2026",
-                director: "Laura, Gabi, Miranda L", topics: "Education, Future",
-                description: "Students reflect on their educational journey, lessons learned, and what it truly means to step out into the real world.",
-                filename: "Final Documentary_Laura,Miranda,Gabriela.mp4",
-                video_url: "https://drive.google.com/file/d/1vH5fW58ipOLhJEc4Omg87zJMNcrExr-x/view?usp=drive_link"
-            },
-            {
-                id: 7, title: "Voices of Tomorrow", category: "Social Action", duration: "16m", year: "2026",
-                director: "Emilia, Tori, Isa G", topics: "Advocacy, Human Rights",
-                description: "A moving documentary highlighting the power of youth advocacy and the importance of speaking up for the voiceless.",
-                filename: "Victoria Rios, Isabella Garcia, Emilia Contador - Documentary",
-                video_url: "https://drive.google.com/file/d/1PIzypGn42wrXibOrf7dSguqFuIHINsdb/view?usp=drive_link"
-            },
-            {
-                id: 8, title: "Uncharted Paths", category: "Environmental Impact", duration: "11m", year: "2026",
-                director: "Isa C, Miranda, Trini", topics: "Nature, Conservation",
-                description: "Exploring local nature reserves and the critical importance of preserving wild, uncharted spaces near our urban centers.",
-                filename: "Miranda, Isabellla, Trinidad.mov",
-                video_url: "https://drive.google.com/file/d/1BUY8E0zEocWs4mmCNqDjEKskK3lLZfk9/view?usp=drive_link"
-            },
-            {
-                id: 9, title: "Global Connections", category: "Arts & Culture", duration: "13m", year: "2026",
-                director: "Jake, James, Yewon", topics: "Technology, Society",
-                description: "An exploration of how digital communication has completely transformed cross-cultural friendships for our generation.",
-                filename: "Yewon Kim, Yingbo Tian, Jake Moulton Documentary Film.mp4",
-                video_url: "https://drive.google.com/file/d/1XipzEUW2nc6C7-wUAJAQ37i1gOX8X7Yd/view?usp=drive_link"
-            },
-            {
-                id: 10, title: "Beyond the Horizon", category: "Student Life", duration: "17m", year: "2026",
-                director: "Lewis, Finn, Mia", topics: "Coming of Age, Friendship",
-                description: "Follow a tight-knit group of friends as they prepare for life after graduation and face the unknowns ahead.",
-                filename: "Phineas, Lewis, Mia. - Film.mov",
-                video_url: "https://drive.google.com/file/d/1xlYNlUjtVvm5fbRP9CSoFBwfk6JpDuuD/view?usp=drive_link"
-            }
-        ];
+        // --- CONFIGURATION ---
+        const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTCkKpAZFzqaEDOXVkHaI8hjtTnDtNN6fTVQZlSyATOIw6N8Q7ztCEKGJpRmKKgcFJMlemns_ReqevX/pub?gid=1186707150&single=true&output=csv";
+        let films =[];
 
         // --- GOOGLE DRIVE HELPER FUNCTIONS ---
-        
-        // 1. Extracts the unique ID from a Google Drive URL
         function extractDriveId(url) {
+            if (!url) return null;
             const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
             return match ? match[1] : null;
         }
 
-        // 2. Creates the hidden thumbnail URL
         function getDriveThumbnailUrl(url, width = 800) {
             const fileId = extractDriveId(url);
             if (fileId) {
-                // sz=w800 tells Google to generate an 800px wide thumbnail
                 return `https://drive.google.com/thumbnail?id=${fileId}&sz=w${width}`;
             }
             return 'https://placehold.co/800x450/222/FFF?text=No+Preview';
         }
 
-        // 3. Creates the iframe embed link
         function getEmbedUrl(driveUrl) {
-            return driveUrl.replace(/\/view.*/, '/preview');
+            return driveUrl ? driveUrl.replace(/\/view.*/, '/preview') : '';
         }
 
-        // --- SETUP HERO BANNER ---
-        // Let's feature Film ID 5 on the hero banner
-        const featuredFilm = films.find(f => f.id === 5);
-        if (featuredFilm) {
-            document.getElementById('heroTitle').innerText = featuredFilm.title;
-            document.getElementById('heroDesc').innerText = featuredFilm.description;
+        // --- SMART STRING FORMATTERS ---
+        // Creates a decent title out of messy file names
+        function cleanTitle(filename) {
+            if (!filename) return "Untitled Documentary";
+            let clean = filename.replace(/\.mp4|\.mov|\.mkv/gi, ''); // remove extensions
+            clean = clean.replace(/_|-/g, ' '); // replace dashes and underscores with spaces
+            // Try to trim out students names if they are at the end (basic heuristic)
+            if (clean.includes('Documentary')) clean = clean.split('Documentary')[0] + "Documentary";
+            if (clean.includes('Film')) clean = clean.split('Film')[0] + "Film";
+            return clean.trim();
+        }
+
+        // --- CSV PARSER (Custom built to handle quotes and commas inside text) ---
+        function parseCSV(text) {
+            const rows = [];
+            let row =[];
+            let inQuotes = false;
+            let val = '';
+            for (let i = 0; i < text.length; i++) {
+                let char = text[i];
+                let nextChar = text[i+1];
+                if (char === '"' && inQuotes && nextChar === '"') {
+                    val += '"'; i++; // skip escaped quote
+                } else if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    row.push(val.trim()); val = '';
+                } else if ((char === '\n' || char === '\r') && !inQuotes) {
+                    if (char === '\r' && nextChar === '\n') i++;
+                    row.push(val.trim()); 
+                    rows.push(row);
+                    row =[]; val = '';
+                } else {
+                    val += char;
+                }
+            }
+            if (val || row.length) { row.push(val.trim()); rows.push(row); }
+            return rows;
+        }
+
+        // --- MAIN APP INITIALIZATION ---
+        async function loadApp() {
+            try {
+                const response = await fetch(CSV_URL);
+                const csvText = await response.text();
+                const parsedData = parseCSV(csvText);
+                
+                // Remove header row
+                const headers = parsedData.shift(); 
+                
+                // Map to objects
+                parsedData.forEach((row, index) => {
+                    // Check if row has a URL (skips empty end rows like "Martin C,,,,,")
+                    if (row.length >= 4 && row[3]) {
+                        
+                        let groupNames = row[0] || "Student Group";
+                        let filename = row[1] || "";
+                        let title = row[2]; // Might be empty
+                        let url = row[3];
+                        let desc = row[5]; // Might be empty
+
+                        // If no title provided, clean up the filename
+                        if (!title) title = cleanTitle(filename);
+                        
+                        // If no description, create a nice fallback
+                        if (!desc) desc = `An inspiring 10th grade Changemakers documentary project directed by ${groupNames}.`;
+
+                        // Create faux categories so the UI looks like Netflix
+                        const fakeCategories = ["Student Spotlight", "Changemakers Docs", "Voices of Tomorrow"];
+                        let cat = fakeCategories[index % 3];
+
+                        films.push({
+                            id: index,
+                            title: title,
+                            director: groupNames,
+                            filename: filename,
+                            video_url: url,
+                            description: desc,
+                            category: cat
+                        });
+                    }
+                });
+
+                renderApp();
+
+                // Hide loading screen
+                document.getElementById('loading').style.opacity = '0';
+                setTimeout(() => document.getElementById('loading').style.display = 'none', 500);
+
+            } catch (error) {
+                console.error("Error loading CSV:", error);
+                document.getElementById('loading').innerText = "ERROR LOADING FILMS";
+            }
+        }
+
+        function renderApp() {
+            // --- SETUP HERO BANNER ---
+            // Let's feature "Fast Fashion" if it exists, otherwise grab the first film
+            let featuredFilm = films.find(f => f.title.toLowerCase().includes("fast fashion")) || films[0];
             
-            // Generate a high-res thumbnail for the banner background
-            const heroThumbUrl = getDriveThumbnailUrl(featuredFilm.video_url, 1920);
-            document.getElementById('heroBanner').style.backgroundImage = `url('${heroThumbUrl}')`;
-        }
+            if (featuredFilm) {
+                document.getElementById('heroTitle').innerText = featuredFilm.title;
+                document.getElementById('heroDesc').innerText = featuredFilm.description;
+                document.getElementById('heroPlayBtn').style.display = "inline-flex";
+                document.getElementById('heroPlayBtn').onclick = () => openModal(featuredFilm.id);
+                
+                const heroThumbUrl = getDriveThumbnailUrl(featuredFilm.video_url, 1920);
+                
+                // Try to load the image. If it fails due to Drive permissions, it stays black
+                const tempImg = new Image();
+                tempImg.src = heroThumbUrl;
+                tempImg.onload = () => {
+                    document.getElementById('heroBanner').style.backgroundImage = `url('${heroThumbUrl}')`;
+                };
+            }
 
-
-        // --- RENDER LISTINGS ---
-        const app = document.getElementById('app');
-        const categories = {};
-        films.forEach(film => {
-            if (!categories[film.category]) categories[film.category] = [];
-            categories[film.category].push(film);
-        });
-
-        for (const [categoryName, categoryFilms] of Object.entries(categories)) {
-            const sectionTitle = document.createElement('h3');
-            sectionTitle.className = 'category-title';
-            sectionTitle.innerText = categoryName;
-
-            const rowDiv = document.createElement('div');
-            rowDiv.className = 'row-scroll';
-
-            categoryFilms.forEach(film => {
-                const card = document.createElement('div');
-                card.className = 'film-card';
-                card.onclick = () => openModal(film.id);
-
-                // Generate the thumbnail for the card
-                const thumbUrl = getDriveThumbnailUrl(film.video_url, 400);
-
-                // Added onerror fallback just in case a thumbnail fails
-                card.innerHTML = `
-                    <img src="${thumbUrl}" alt="${film.title}" onerror="this.src='https://placehold.co/400x225/222/FFF?text=Video'">
-                    <div class="card-info">
-                        <div class="card-title">${film.title}</div>
-                    </div>
-                `;
-                rowDiv.appendChild(card);
+            // --- RENDER ROWS ---
+            const app = document.getElementById('app');
+            const categories = {};
+            films.forEach(film => {
+                if (!categories[film.category]) categories[film.category] = [];
+                categories[film.category].push(film);
             });
 
-            const categoryWrapper = document.createElement('div');
-            categoryWrapper.className = 'category-row';
-            categoryWrapper.appendChild(sectionTitle);
-            categoryWrapper.appendChild(rowDiv);
+            for (const[categoryName, categoryFilms] of Object.entries(categories)) {
+                const sectionTitle = document.createElement('h3');
+                sectionTitle.className = 'category-title';
+                sectionTitle.innerText = categoryName;
 
-            app.appendChild(categoryWrapper);
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'row-scroll';
+
+                categoryFilms.forEach(film => {
+                    const card = document.createElement('div');
+                    card.className = 'film-card';
+                    card.onclick = () => openModal(film.id);
+
+                    const thumbUrl = getDriveThumbnailUrl(film.video_url, 400);
+
+                    card.innerHTML = `
+                        <img src="${thumbUrl}" alt="${film.title}" onerror="this.src='https://placehold.co/400x225/222/FFF?text=Video'">
+                        <div class="card-info">
+                            <div class="card-title">${film.title}</div>
+                        </div>
+                    `;
+                    rowDiv.appendChild(card);
+                });
+
+                const categoryWrapper = document.createElement('div');
+                categoryWrapper.className = 'category-row';
+                categoryWrapper.appendChild(sectionTitle);
+                categoryWrapper.appendChild(rowDiv);
+
+                app.appendChild(categoryWrapper);
+            }
         }
 
         // --- NAVBAR SCROLL EFFECT ---
@@ -417,26 +451,21 @@
             const film = films.find(f => f.id === id);
             if (!film) return;
 
-            // Reset Hero UI
             document.getElementById('modalImg').style.opacity = '1';
             document.getElementById('modalGradient').style.opacity = '1';
             document.getElementById('modalContentWrapper').style.opacity = '1';
             document.getElementById('modalVideoPlayer').style.display = 'none';
             document.getElementById('modalVideoPlayer').src = '';
 
-            // Populate data & set thumbnail
             document.getElementById('modalImg').src = getDriveThumbnailUrl(film.video_url, 900);
             document.getElementById('modalTitle').innerText = film.title;
             document.getElementById('modalDesc').innerText = film.description;
             document.getElementById('modalDirector').innerText = film.director;
-            document.getElementById('modalTopics').innerText = film.topics;
             document.getElementById('modalFilename').innerText = film.filename;
             
-            // Bind Play Button
             currentVideoUrl = film.video_url;
             document.getElementById('modalPlayBtn').onclick = () => embedVideo(currentVideoUrl);
 
-            // Show
             modal.style.display = 'flex';
             setTimeout(() => modal.classList.add('show'), 10); 
             document.body.style.overflow = 'hidden'; 
@@ -464,6 +493,10 @@
         window.onclick = function(event) {
             if (event.target == modal) closeModal();
         }
+
+        // --- BOOT UP ---
+        window.onload = loadApp;
+
     </script>
 </body>
 </html>
