@@ -46,6 +46,21 @@
             transition: opacity 0.5s ease;
         }
 
+        /* --- TOAST NOTIFICATION --- */
+        #toast {
+            visibility: hidden; min-width: 250px; background-color: #333; color: #fff;
+            text-align: center; border-radius: 4px; padding: 16px; position: fixed;
+            z-index: 2000; left: 50%; bottom: 30px; transform: translateX(-50%);
+            font-size: 1.1rem; font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+        #toast.show {
+            visibility: visible;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+        @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+
         /* --- HERO BANNER --- */
         .hero {
             position: relative; height: 85vh; width: 100%;
@@ -192,12 +207,13 @@
 <body>
 
     <div id="loading">LOADING DOCS...</div>
+    <div id="toast">🔗 Link copied to clipboard!</div>
 
     <header id="navbar">
         <div class="logo">DOCATHON</div>
     </header>
 
-    <!-- HERO BANNER (Image dynamically injected by JS) -->
+    <!-- HERO BANNER -->
     <div class="hero" id="heroBanner">
         <div class="hero-vignette"></div>
         <div class="hero-content">
@@ -225,7 +241,7 @@
                     <h1 class="modal-title" id="modalTitle">Movie Title</h1>
                     <div class="modal-controls">
                         <button class="btn btn-play" id="modalPlayBtn">▶ Play Film</button>
-                        <button class="btn btn-secondary">+ My List</button>
+                        <button class="btn btn-secondary" onclick="copyShareLink()">🔗 Share</button>
                     </div>
                 </div>
             </div>
@@ -280,18 +296,16 @@
         }
 
         // --- SMART STRING FORMATTERS ---
-        // Creates a decent title out of messy file names
         function cleanTitle(filename) {
             if (!filename) return "Untitled Documentary";
-            let clean = filename.replace(/\.mp4|\.mov|\.mkv/gi, ''); // remove extensions
-            clean = clean.replace(/_|-/g, ' '); // replace dashes and underscores with spaces
-            // Try to trim out students names if they are at the end (basic heuristic)
+            let clean = filename.replace(/\.mp4|\.mov|\.mkv/gi, ''); 
+            clean = clean.replace(/_|-/g, ' '); 
             if (clean.includes('Documentary')) clean = clean.split('Documentary')[0] + "Documentary";
             if (clean.includes('Film')) clean = clean.split('Film')[0] + "Film";
             return clean.trim();
         }
 
-        // --- CSV PARSER (Custom built to handle quotes and commas inside text) ---
+        // --- CSV PARSER ---
         function parseCSV(text) {
             const rows = [];
             let row =[];
@@ -301,7 +315,7 @@
                 let char = text[i];
                 let nextChar = text[i+1];
                 if (char === '"' && inQuotes && nextChar === '"') {
-                    val += '"'; i++; // skip escaped quote
+                    val += '"'; i++; 
                 } else if (char === '"') {
                     inQuotes = !inQuotes;
                 } else if (char === ',' && !inQuotes) {
@@ -326,32 +340,28 @@
                 const csvText = await response.text();
                 const parsedData = parseCSV(csvText);
                 
-                // Remove header row
                 const headers = parsedData.shift(); 
                 
-                // Map to objects
                 parsedData.forEach((row, index) => {
-                    // Check if row has a URL (skips empty end rows like "Martin C,,,,,")
                     if (row.length >= 4 && row[3]) {
-                        
                         let groupNames = row[0] || "Student Group";
                         let filename = row[1] || "";
-                        let title = row[2]; // Might be empty
+                        let title = row[2]; 
                         let url = row[3];
-                        let desc = row[5]; // Might be empty
+                        let desc = row[5]; 
 
-                        // If no title provided, clean up the filename
                         if (!title) title = cleanTitle(filename);
-                        
-                        // If no description, create a nice fallback
                         if (!desc) desc = `An inspiring 10th grade Changemakers documentary project directed by ${groupNames}.`;
 
-                        // Create faux categories so the UI looks like Netflix
-                        const fakeCategories = ["Student Spotlight", "Changemakers Docs", "Voices of Tomorrow"];
+                        const fakeCategories =["Student Spotlight", "Changemakers Docs", "Voices of Tomorrow"];
                         let cat = fakeCategories[index % 3];
+
+                        // Extract drive ID to use as a unique URL parameter for sharing
+                        let dId = extractDriveId(url);
 
                         films.push({
                             id: index,
+                            driveId: dId,
                             title: title,
                             director: groupNames,
                             filename: filename,
@@ -364,6 +374,9 @@
 
                 renderApp();
 
+                // Check URL for a specific film to load
+                checkUrlForSharedFilm();
+
                 // Hide loading screen
                 document.getElementById('loading').style.opacity = '0';
                 setTimeout(() => document.getElementById('loading').style.display = 'none', 500);
@@ -375,9 +388,7 @@
         }
 
         function renderApp() {
-            // --- SETUP HERO BANNER ---
-            // Let's feature "Fast Fashion" if it exists, otherwise grab the first film
-            let featuredFilm = films.find(f => f.title.toLowerCase().includes("Brainrot")) || films[0];
+            let featuredFilm = films.find(f => f.title.toLowerCase().includes("fast fashion")) || films[0];
             
             if (featuredFilm) {
                 document.getElementById('heroTitle').innerText = featuredFilm.title;
@@ -387,7 +398,6 @@
                 
                 const heroThumbUrl = getDriveThumbnailUrl(featuredFilm.video_url, 1920);
                 
-                // Try to load the image. If it fails due to Drive permissions, it stays black
                 const tempImg = new Image();
                 tempImg.src = heroThumbUrl;
                 tempImg.onload = () => {
@@ -395,7 +405,6 @@
                 };
             }
 
-            // --- RENDER ROWS ---
             const app = document.getElementById('app');
             const categories = {};
             films.forEach(film => {
@@ -443,13 +452,20 @@
             else nav.classList.remove('scrolled');
         });
 
-        // --- MODAL & PLAY LOGIC ---
+        // --- MODAL, PLAY & SHARE LOGIC ---
         const modal = document.getElementById('movieModal');
         let currentVideoUrl = "";
 
         function openModal(id) {
             const film = films.find(f => f.id === id);
             if (!film) return;
+
+            // Update URL dynamically so it acts as a shareable link
+            if (film.driveId) {
+                const newUrl = new URL(window.location);
+                newUrl.searchParams.set('v', film.driveId);
+                window.history.pushState({}, '', newUrl);
+            }
 
             document.getElementById('modalImg').style.opacity = '1';
             document.getElementById('modalGradient').style.opacity = '1';
@@ -483,11 +499,52 @@
 
         function closeModal() {
             modal.classList.remove('show');
+
+            // Clean up the URL by removing the video ID parameter
+            const newUrl = new URL(window.location);
+            newUrl.searchParams.delete('v');
+            window.history.pushState({}, '', newUrl);
+
             setTimeout(() => {
                 modal.style.display = 'none';
                 document.body.style.overflow = 'auto'; 
                 document.getElementById('modalVideoPlayer').src = ''; 
             }, 300);
+        }
+
+        function checkUrlForSharedFilm() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const sharedDriveId = urlParams.get('v');
+            
+            if (sharedDriveId) {
+                // Find the film that matches this drive ID
+                const targetFilm = films.find(f => f.driveId === sharedDriveId);
+                if (targetFilm) {
+                    openModal(targetFilm.id);
+                }
+            }
+        }
+
+        function copyShareLink() {
+            // Because we dynamically update the URL in openModal(), we can just copy window.location.href!
+            const currentUrl = window.location.href;
+            
+            // Check if modern clipboard API is supported (requires HTTPS or localhost)
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(currentUrl).then(() => {
+                    showToast();
+                });
+            } else {
+                // Fallback for older browsers or local files opened without a server
+                prompt("Copy this link to share:", currentUrl);
+            }
+        }
+
+        function showToast() {
+            const toast = document.getElementById("toast");
+            toast.className = "show";
+            // Hide after 3 seconds
+            setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 3000);
         }
 
         window.onclick = function(event) {
