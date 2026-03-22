@@ -10,17 +10,12 @@
             --bg-color: #141414;
             --modal-bg: #181818;
             --text-color: #ffffff;
-            --secondary-text: #a3a3a3;
-            --brand-red: #e50914;
+            --brand-red: #E50914;
             --btn-white: #ffffff;
             --btn-gray: rgba(109, 109, 110, 0.7);
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             background-color: var(--bg-color);
@@ -29,300 +24,224 @@
             overflow-x: hidden;
         }
 
-        /* --- HEADER --- */
+        /* --- HEADER / NAVBAR --- */
         header {
-            padding: 20px 4%;
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 100;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.7) 10%, transparent);
-            display: flex;
-            align-items: center;
+            padding: 20px 4%; position: fixed; top: 0; width: 100%; z-index: 100;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, transparent 100%);
+            transition: background-color 0.4s ease; display: flex; align-items: center;
+        }
+        header.scrolled { background-color: #141414; box-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        
+        .logo {
+            color: var(--brand-red); font-size: 2rem; font-weight: 900; 
+            text-transform: uppercase; letter-spacing: 1px; cursor: pointer;
         }
 
-        .logo {
-            color: var(--brand-red);
-            font-size: 1.8rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            margin-right: 40px;
-            letter-spacing: 2px;
-            text-shadow: 2px 2px 4px #000;
+        /* --- LOADING SCREEN --- */
+        #loading {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--bg-color); z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; font-weight: bold; color: var(--brand-red);
+            transition: opacity 0.5s ease;
+        }
+
+        /* --- TOAST NOTIFICATION --- */
+        #toast {
+            visibility: hidden; min-width: 250px; background-color: #333; color: #fff;
+            text-align: center; border-radius: 4px; padding: 16px; position: fixed;
+            z-index: 2000; left: 50%; bottom: 30px; transform: translateX(-50%);
+            font-size: 1.1rem; font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+        #toast.show {
+            visibility: visible;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+        @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+
+        /* --- HERO BANNER --- */
+        .hero {
+            position: relative; height: 85vh; width: 100%;
+            background-size: cover; background-position: center;
+            background-color: #111; 
+            display: flex; align-items: center;
+            transition: background-image 0.5s ease;
+        }
+
+        .hero-vignette {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to right, rgba(20,20,20,0.95) 0%, transparent 70%),
+                        linear-gradient(to top, #141414 0%, transparent 30%);
+        }
+
+        .hero-content {
+            position: relative; z-index: 10; width: 50%; padding: 0 4%;
+            animation: fadeIn 1s ease forwards;
+        }
+
+        .hero-title {
+            font-size: 4rem; font-weight: 800; margin-bottom: 1rem;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
+        }
+
+        .hero-desc {
+            font-size: 1.4rem; line-height: 1.4; margin-bottom: 2rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8); color: #e5e5e5;
         }
 
         /* --- MAIN LISTINGS --- */
         .main-container {
-            padding-top: 80px; /* Space for header */
-            padding-bottom: 50px;
+            padding-bottom: 50px; margin-top: -10vh; position: relative; z-index: 20;
+            min-height: 50vh;
         }
-
-        .category-row {
-            margin-bottom: 3vw;
-        }
-
+        .category-row { margin-bottom: 3vw; }
         .category-title {
-            font-size: 1.4vw;
-            color: #e5e5e5;
-            font-weight: 700;
-            margin: 0 4% 0.5em 4%;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            font-size: 1.4vw; min-font-size: 18px; color: #e5e5e5;
+            font-weight: 700; margin: 0 4% 0.5em 4%; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
 
-        /* Horizontal Scroll Container */
         .row-scroll {
-            display: flex;
-            overflow-x: auto;
-            padding: 0 4%;
-            padding-bottom: 20px; /* Hide scrollbar visual impact */
-            scrollbar-width: none; /* Firefox */
+            display: flex; overflow-x: auto; padding: 20px 4%;
+            margin-top: -20px; scrollbar-width: none;
         }
-        
-        .row-scroll::-webkit-scrollbar { 
-            display: none; /* Chrome/Safari */
-        }
+        .row-scroll::-webkit-scrollbar { display: none; }
 
         .film-card {
-            flex: 0 0 auto;
-            width: 250px;
-            margin-right: 10px;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-            position: relative;
-            border-radius: 4px;
-            overflow: hidden;
+            flex: 0 0 auto; width: 280px; margin-right: 15px; cursor: pointer;
+            position: relative; border-radius: 6px; overflow: hidden; background-color: #222;
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease;
         }
-
-        .film-card:hover {
-            transform: scale(1.05);
-            z-index: 10;
-        }
+        .film-card:hover { transform: scale(1.08); z-index: 10; box-shadow: 0 10px 20px rgba(0,0,0,0.8); }
 
         .film-card img {
-            width: 100%;
-            height: 140px;
-            object-fit: cover;
-            display: block;
+            width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block;
+            background-color: #333; 
         }
 
-        .film-card .card-title {
-            padding: 10px;
-            font-size: 0.9rem;
-            background-color: #2f2f2f;
-            color: white;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        .card-info {
+            position: absolute; bottom: 0; left: 0; right: 0; padding: 15px 10px 10px;
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%);
+        }
+        .card-title {
+            font-size: 1rem; font-weight: bold; color: white;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
 
         /* --- MODAL (DETAIL VIEW) --- */
         .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            z-index: 1000;
-            display: none; /* Hidden by default */
-            justify-content: center;
-            overflow-y: auto;
-            padding-top: 2rem;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px);
+            z-index: 1000; display: none; justify-content: center;
+            overflow-y: auto; padding: 2rem 0; opacity: 0; transition: opacity 0.3s ease;
         }
+        .modal-overlay.show { display: flex; opacity: 1; }
 
         .modal-content {
-            background-color: var(--modal-bg);
-            width: 850px;
-            max-width: 95%;
-            border-radius: 10px;
-            position: relative;
-            box-shadow: 0 0 20px rgba(0,0,0,0.8);
-            margin-bottom: 50px;
-            animation: fadeIn 0.3s ease;
+            background-color: var(--modal-bg); width: 900px; max-width: 95%;
+            border-radius: 12px; position: relative; box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+            margin: auto; overflow: hidden; transform: translateY(30px); transition: transform 0.3s ease;
         }
+        .modal-overlay.show .modal-content { transform: translateY(0); }
 
-        /* Close Button */
         .close-btn {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            width: 36px;
-            height: 36px;
-            background-color: #181818;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 20;
-            color: white;
-            font-size: 1.2rem;
+            position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; border-radius: 50%;
+            background-color: rgba(24, 24, 24, 0.7); border: 2px solid white;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 50; color: white; font-size: 1.2rem; transition: background-color 0.2s;
+        }
+        .close-btn:hover { background-color: white; color: black; }
+
+        .modal-hero { position: relative; height: 450px; width: 100%; background-color: #000; }
+        .modal-hero img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.4s ease; }
+        .modal-video-player {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            border: none; display: none; z-index: 20;
         }
 
-        /* Hero Image Area */
-        .modal-hero {
-            position: relative;
-            height: 480px;
-            width: 100%;
-        }
-
-        .modal-hero img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-        }
-
-        /* Gradient Overlay for Text Readability */
         .hero-gradient {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to top, var(--modal-bg) 0%, transparent 40%);
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to top, var(--modal-bg) 0%, transparent 60%);
+            transition: opacity 0.4s ease; pointer-events: none;
         }
-
         .modal-hero-content {
-            position: absolute;
-            bottom: 5%;
-            left: 5%;
-            width: 60%;
+            position: absolute; bottom: 5%; left: 5%; width: 80%; transition: opacity 0.4s ease; z-index: 15;
         }
-
-        .modal-title {
-            font-size: 3rem;
-            font-weight: 800;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
+        .modal-title { font-size: 3rem; font-weight: 800; margin-bottom: 1.5rem; text-shadow: 2px 2px 6px rgba(0,0,0,0.7); }
 
         /* Buttons */
-        .modal-controls {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
         .btn {
-            border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 4px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            border: none; padding: 0.8rem 1.8rem; border-radius: 4px; font-size: 1.1rem; font-weight: bold;
+            cursor: pointer; display: inline-flex; align-items: center; gap: 10px; transition: transform 0.1s, background-color 0.2s;
         }
-
-        .btn-play {
-            background-color: var(--btn-white);
-            color: black;
-        }
+        .btn:active { transform: scale(0.95); }
+        .btn-play { background-color: var(--btn-white); color: black; }
         .btn-play:hover { background-color: rgba(255, 255, 255, 0.75); }
-
-        .btn-secondary {
-            background-color: var(--btn-gray);
-            color: white;
-        }
+        .btn-secondary { background-color: var(--btn-gray); color: white; }
         .btn-secondary:hover { background-color: rgba(109, 109, 110, 0.4); }
 
-        /* Modal Details Section */
-        .modal-details {
-            padding: 20px 5%;
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 30px;
-        }
-
-        .meta-line {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 1rem;
-            font-size: 1rem;
-            font-weight: bold;
-        }
-
+        /* Modal Details */
+        .modal-details { padding: 30px 5%; display: grid; grid-template-columns: 2fr 1fr; gap: 40px; }
+        .meta-line { display: flex; align-items: center; gap: 15px; margin-bottom: 1.2rem; font-size: 1.1rem; font-weight: bold; }
         .match-score { color: #46d369; }
-        .age-rating { 
-            border: 1px solid #dcdcdc; 
-            padding: 0 4px; 
-            font-size: 0.8rem; 
-        }
+        .age-rating { border: 1px solid #dcdcdc; padding: 0 6px; font-size: 0.9rem; }
+        .modal-blurb { font-size: 1.15rem; line-height: 1.6; color: #fff; }
+        .modal-sidebar { font-size: 1rem; line-height: 1.6; }
+        .sidebar-item { margin-bottom: 15px; }
+        .sidebar-label { color: #777; }
+        .sidebar-value { color: #fff; }
 
-        .modal-blurb {
-            font-size: 1.1rem;
-            line-height: 1.5;
-            color: #fff;
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        .modal-sidebar {
-            font-size: 0.9rem;
-            line-height: 1.6;
-        }
-
-        .sidebar-item {
-            margin-bottom: 15px;
-        }
-
-        .sidebar-label {
-            color: #777;
-        }
-
-        .sidebar-value {
-            color: #fff;
-            cursor: pointer;
-        }
-        .sidebar-value:hover { text-decoration: underline; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(50px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Mobile Adjustments */
         @media (max-width: 768px) {
             .modal-details { grid-template-columns: 1fr; }
-            .modal-hero { height: 300px; }
+            .modal-hero { height: 250px; }
             .modal-title { font-size: 2rem; }
-            .category-title { font-size: 1.2rem; }
+            .category-title { font-size: 1.5rem; }
+            .hero-title { font-size: 2.5rem; }
+            .hero-content { width: 90%; }
         }
     </style>
 </head>
 <body>
 
-    <!-- HEADER -->
-    <header>
+    <div id="loading">LOADING DOCS...</div>
+    <div id="toast">🔗 Link copied to clipboard!</div>
+
+    <header id="navbar">
         <div class="logo">DOCATHON</div>
     </header>
 
-    <!-- MAIN LISTINGS CONTAINER -->
-    <div class="main-container" id="app">
-        <!-- Content injected by JS -->
+    <!-- HERO BANNER -->
+    <div class="hero" id="heroBanner">
+        <div class="hero-vignette"></div>
+        <div class="hero-content">
+            <h1 class="hero-title" id="heroTitle">Loading...</h1>
+            <p class="hero-desc" id="heroDesc"></p>
+            <button class="btn btn-play" id="heroPlayBtn" style="display:none;">ⓘ View Details</button>
+        </div>
     </div>
 
-    <!-- MODAL POPUP -->
+    <!-- MAIN LISTINGS -->
+    <div class="main-container" id="app"></div>
+
+    <!-- MODAL -->
     <div class="modal-overlay" id="movieModal">
         <div class="modal-content">
             <div class="close-btn" onclick="closeModal()">✕</div>
             
             <div class="modal-hero">
-                <!-- Image injected by JS -->
-                <img id="modalImg" src="" alt="Hero">
-                <div class="hero-gradient"></div>
+                <!-- Fallback to placehold.co if Google Drive thumbnail fails to load -->
+                <img id="modalImg" src="" alt="Hero" onerror="this.src='https://placehold.co/800x450/222/FFF?text=Preview+Not+Available'">
+                <iframe class="modal-video-player" id="modalVideoPlayer" src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
                 
-                <div class="modal-hero-content">
+                <div class="hero-gradient" id="modalGradient"></div>
+                <div class="modal-hero-content" id="modalContentWrapper">
                     <h1 class="modal-title" id="modalTitle">Movie Title</h1>
                     <div class="modal-controls">
-                        <button class="btn btn-play" onclick="playVideo()">
-                            ▶ Play
-                        </button>
-                        <button class="btn btn-secondary">
-                            + My List
-                        </button>
+                        <button class="btn btn-play" id="modalPlayBtn">▶ Play Film</button>
+                        <button class="btn btn-secondary" onclick="copyShareLink()">🔗 Share</button>
                     </div>
                 </div>
             </div>
@@ -331,27 +250,21 @@
                 <div class="left-col">
                     <div class="meta-line">
                         <span class="match-score">98% Match</span>
-                        <span id="modalYear">2023</span>
-                        <span class="age-rating">ALL</span>
-                        <span id="modalDuration">15m</span>
-                        <span style="border:1px solid white; border-radius:3px; padding:0 3px; font-size:0.7em;">HD</span>
+                        <span id="modalYear">2026</span>
+                        <span class="age-rating">10th Grade</span>
+                        <span id="modalDuration">Short Film</span>
+                        <span style="border:1px solid white; border-radius:3px; padding:0 4px; font-size:0.8em;">HD</span>
                     </div>
-                    <p class="modal-blurb" id="modalDesc">
-                        Description goes here...
-                    </p>
+                    <p class="modal-blurb" id="modalDesc">Description goes here...</p>
                 </div>
                 <div class="right-col modal-sidebar">
                     <div class="sidebar-item">
-                        <span class="sidebar-label">Student Director:</span><br>
+                        <span class="sidebar-label">Student Directors:</span><br>
                         <span class="sidebar-value" id="modalDirector">Student Name</span>
                     </div>
                     <div class="sidebar-item">
-                        <span class="sidebar-label">Topics:</span><br>
-                        <span class="sidebar-value" id="modalTopics">Social Justice, Environment</span>
-                    </div>
-                    <div class="sidebar-item">
-                        <span class="sidebar-label">This film is:</span><br>
-                        <span class="sidebar-value">Inspiring, Thought-Provoking</span>
+                        <span class="sidebar-label">Original File:</span><br>
+                        <span class="sidebar-value" id="modalFilename" style="font-size: 0.8em; color:#999;">filename.mp4</span>
                     </div>
                 </div>
             </div>
@@ -359,217 +272,288 @@
     </div>
 
     <script>
-        /* 
-           --- DATA SOURCE ---
-           This array mimics a spreadsheet or database. 
-           Change the values here to update the site.
-           
-           Image Logic: Using placehold.co for prototypes. 
-           You can replace image_url with local paths like "images/film1.jpg".
-        */
-        const films = [
-            {
-                id: 1,
-                title: "The Plastic Tide",
-                category: "Environmental Impact",
-                image_url: "https://placehold.co/800x450/222/FFF?text=The+Plastic+Tide",
-                duration: "12m",
-                year: "2023",
-                director: "Sarah Jenkins",
-                topics: "Pollution, Ocean Conservation",
-                description: "An investigative look into the local river systems and how single-use plastics are affecting suburban wildlife in our own backyard."
-            },
-            {
-                id: 2,
-                title: "Voices of the Valley",
-                category: "Environmental Impact",
-                image_url: "https://placehold.co/800x450/2a4/FFF?text=Voices+of+the+Valley",
-                duration: "18m",
-                year: "2023",
-                director: "Marcus Thorne",
-                topics: "Agriculture, Community",
-                description: "Local farmers discuss the changing climate patterns and how traditional farming methods are adapting to a modern technological world."
-            },
-            {
-                id: 3,
-                title: "Concrete Canvas",
-                category: "Social Justice",
-                image_url: "https://placehold.co/800x450/512/FFF?text=Concrete+Canvas",
-                duration: "15m",
-                year: "2023",
-                director: "Elena Rodriguez",
-                topics: "Art, Urban Development",
-                description: "Is graffiti vandalism or art? This film follows three street artists who are transforming neglected city walls into messages of hope."
-            },
-            {
-                id: 4,
-                title: "The Digital Divide",
-                category: "Social Justice",
-                image_url: "https://placehold.co/800x450/333/FFF?text=Digital+Divide",
-                duration: "10m",
-                year: "2023",
-                director: "David Kim",
-                topics: "Education, Technology",
-                description: "A hard look at how access to high-speed internet determines academic success in our district, highlighting the gap between neighborhoods."
-            },
-            {
-                id: 5,
-                title: "Cafeteria Waste",
-                category: "Environmental Impact",
-                image_url: "https://placehold.co/800x450/442/FFF?text=Cafeteria+Waste",
-                duration: "8m",
-                year: "2023",
-                director: "Sam & Alex",
-                topics: "Sustainability, School Policy",
-                description: "A short expository documentary auditing the food waste generated by a single lunch period and proposing a composting solution."
-            },
-            {
-                id: 6,
-                title: "Unseen Heroes",
-                category: "Local History",
-                image_url: "https://placehold.co/800x450/522/FFF?text=Unseen+Heroes",
-                duration: "20m",
-                year: "2023",
-                director: "Jordan Lee",
-                topics: "History, Veterans",
-                description: "Interviews with local veterans whose stories have never been told, preserving an important piece of oral history for the next generation."
-            },
-            {
-                id: 7,
-                title: "Mind Over Matter",
-                category: "Student Life",
-                image_url: "https://placehold.co/800x450/616/FFF?text=Mind+Over+Matter",
-                duration: "14m",
-                year: "2023",
-                director: "Chloe Davis",
-                topics: "Mental Health, Sports",
-                description: "High school athletes open up about the pressure to perform and the importance of mental health maintenance alongside physical training."
-            },
-            {
-                id: 8,
-                title: "Retro Revival",
-                category: "Student Life",
-                image_url: "https://placehold.co/800x450/733/FFF?text=Retro+Revival",
-                duration: "11m",
-                year: "2023",
-                director: "Max Power",
-                topics: "Fashion, Sustainability",
-                description: "Why is Gen Z obsessed with the 90s? A look at thrift culture and how fast fashion is being rejected by style-conscious teenagers."
-            },
-            {
-                id: 9,
-                title: "Code Red",
-                category: "Social Justice",
-                image_url: "https://placehold.co/800x450/811/FFF?text=Code+Red",
-                duration: "16m",
-                year: "2023",
-                director: "Priya Patel",
-                topics: "Rights, Activism",
-                description: "Following the student-led movements organizing for changes in school safety policies."
-            },
-            {
-                id: 10,
-                title: "Shelter",
-                category: "Local History",
-                image_url: "https://placehold.co/800x450/228/FFF?text=Shelter",
-                duration: "22m",
-                year: "2023",
-                director: "Tom O'Connor",
-                topics: "Homelessness, Empathy",
-                description: "A day in the life of volunteers at the downtown shelter, challenging stereotypes about the unhoused population in our city."
-            }
-        ];
+        // --- CONFIGURATION ---
+        const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTCkKpAZFzqaEDOXVkHaI8hjtTnDtNN6fTVQZlSyATOIw6N8Q7ztCEKGJpRmKKgcFJMlemns_ReqevX/pub?gid=1186707150&single=true&output=csv";
+        let films =[];
 
-        // --- RENDER LOGIC ---
-
-        const app = document.getElementById('app');
-
-        // 1. Group films by category
-        const categories = {};
-        films.forEach(film => {
-            if (!categories[film.category]) {
-                categories[film.category] = [];
-            }
-            categories[film.category].push(film);
-        });
-
-        // 2. Build HTML Structure
-        for (const [categoryName, categoryFilms] of Object.entries(categories)) {
-            // Create Section Title
-            const sectionTitle = document.createElement('h3');
-            sectionTitle.className = 'category-title';
-            sectionTitle.innerText = categoryName;
-
-            // Create Scroll Container
-            const rowDiv = document.createElement('div');
-            rowDiv.className = 'row-scroll';
-
-            // Create Cards
-            categoryFilms.forEach(film => {
-                const card = document.createElement('div');
-                card.className = 'film-card';
-                card.onclick = () => openModal(film.id);
-
-                card.innerHTML = `
-                    <img src="${film.image_url}" alt="${film.title}">
-                    <div class="card-title">${film.title}</div>
-                `;
-                rowDiv.appendChild(card);
-            });
-
-            // Wrapper for layout spacing
-            const categoryWrapper = document.createElement('div');
-            categoryWrapper.className = 'category-row';
-            categoryWrapper.appendChild(sectionTitle);
-            categoryWrapper.appendChild(rowDiv);
-
-            app.appendChild(categoryWrapper);
+        // --- GOOGLE DRIVE HELPER FUNCTIONS ---
+        function extractDriveId(url) {
+            if (!url) return null;
+            const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+            return match ? match[1] : null;
         }
 
-        // --- MODAL LOGIC ---
+        function getDriveThumbnailUrl(url, width = 800) {
+            const fileId = extractDriveId(url);
+            if (fileId) {
+                return `https://drive.google.com/thumbnail?id=${fileId}&sz=w${width}`;
+            }
+            return 'https://placehold.co/800x450/222/FFF?text=No+Preview';
+        }
 
+        function getEmbedUrl(driveUrl) {
+            return driveUrl ? driveUrl.replace(/\/view.*/, '/preview') : '';
+        }
+
+        // --- SMART STRING FORMATTERS ---
+        function cleanTitle(filename) {
+            if (!filename) return "Untitled Documentary";
+            let clean = filename.replace(/\.mp4|\.mov|\.mkv/gi, ''); 
+            clean = clean.replace(/_|-/g, ' '); 
+            if (clean.includes('Documentary')) clean = clean.split('Documentary')[0] + "Documentary";
+            if (clean.includes('Film')) clean = clean.split('Film')[0] + "Film";
+            return clean.trim();
+        }
+
+        // --- CSV PARSER ---
+        function parseCSV(text) {
+            const rows = [];
+            let row =[];
+            let inQuotes = false;
+            let val = '';
+            for (let i = 0; i < text.length; i++) {
+                let char = text[i];
+                let nextChar = text[i+1];
+                if (char === '"' && inQuotes && nextChar === '"') {
+                    val += '"'; i++; 
+                } else if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    row.push(val.trim()); val = '';
+                } else if ((char === '\n' || char === '\r') && !inQuotes) {
+                    if (char === '\r' && nextChar === '\n') i++;
+                    row.push(val.trim()); 
+                    rows.push(row);
+                    row =[]; val = '';
+                } else {
+                    val += char;
+                }
+            }
+            if (val || row.length) { row.push(val.trim()); rows.push(row); }
+            return rows;
+        }
+
+        // --- MAIN APP INITIALIZATION ---
+        async function loadApp() {
+            try {
+                const response = await fetch(CSV_URL);
+                const csvText = await response.text();
+                const parsedData = parseCSV(csvText);
+                
+                const headers = parsedData.shift(); 
+                
+                parsedData.forEach((row, index) => {
+                    if (row.length >= 4 && row[3]) {
+                        let groupNames = row[0] || "Student Group";
+                        let filename = row[1] || "";
+                        let title = row[2]; 
+                        let url = row[3];
+                        let desc = row[5]; 
+
+                        if (!title) title = cleanTitle(filename);
+                        if (!desc) desc = `An inspiring 10th grade Changemakers documentary project directed by ${groupNames}.`;
+
+                        const fakeCategories =["Student Spotlight", "Changemakers Docs", "Voices of Tomorrow"];
+                        let cat = fakeCategories[index % 3];
+
+                        // Extract drive ID to use as a unique URL parameter for sharing
+                        let dId = extractDriveId(url);
+
+                        films.push({
+                            id: index,
+                            driveId: dId,
+                            title: title,
+                            director: groupNames,
+                            filename: filename,
+                            video_url: url,
+                            description: desc,
+                            category: cat
+                        });
+                    }
+                });
+
+                renderApp();
+
+                // Check URL for a specific film to load
+                checkUrlForSharedFilm();
+
+                // Hide loading screen
+                document.getElementById('loading').style.opacity = '0';
+                setTimeout(() => document.getElementById('loading').style.display = 'none', 500);
+
+            } catch (error) {
+                console.error("Error loading CSV:", error);
+                document.getElementById('loading').innerText = "ERROR LOADING FILMS";
+            }
+        }
+
+        function renderApp() {
+            let featuredFilm = films.find(f => f.title.toLowerCase().includes("fast fashion")) || films[0];
+            
+            if (featuredFilm) {
+                document.getElementById('heroTitle').innerText = featuredFilm.title;
+                document.getElementById('heroDesc').innerText = featuredFilm.description;
+                document.getElementById('heroPlayBtn').style.display = "inline-flex";
+                document.getElementById('heroPlayBtn').onclick = () => openModal(featuredFilm.id);
+                
+                const heroThumbUrl = getDriveThumbnailUrl(featuredFilm.video_url, 1920);
+                
+                const tempImg = new Image();
+                tempImg.src = heroThumbUrl;
+                tempImg.onload = () => {
+                    document.getElementById('heroBanner').style.backgroundImage = `url('${heroThumbUrl}')`;
+                };
+            }
+
+            const app = document.getElementById('app');
+            const categories = {};
+            films.forEach(film => {
+                if (!categories[film.category]) categories[film.category] = [];
+                categories[film.category].push(film);
+            });
+
+            for (const[categoryName, categoryFilms] of Object.entries(categories)) {
+                const sectionTitle = document.createElement('h3');
+                sectionTitle.className = 'category-title';
+                sectionTitle.innerText = categoryName;
+
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'row-scroll';
+
+                categoryFilms.forEach(film => {
+                    const card = document.createElement('div');
+                    card.className = 'film-card';
+                    card.onclick = () => openModal(film.id);
+
+                    const thumbUrl = getDriveThumbnailUrl(film.video_url, 400);
+
+                    card.innerHTML = `
+                        <img src="${thumbUrl}" alt="${film.title}" onerror="this.src='https://placehold.co/400x225/222/FFF?text=Video'">
+                        <div class="card-info">
+                            <div class="card-title">${film.title}</div>
+                        </div>
+                    `;
+                    rowDiv.appendChild(card);
+                });
+
+                const categoryWrapper = document.createElement('div');
+                categoryWrapper.className = 'category-row';
+                categoryWrapper.appendChild(sectionTitle);
+                categoryWrapper.appendChild(rowDiv);
+
+                app.appendChild(categoryWrapper);
+            }
+        }
+
+        // --- NAVBAR SCROLL EFFECT ---
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) nav.classList.add('scrolled');
+            else nav.classList.remove('scrolled');
+        });
+
+        // --- MODAL, PLAY & SHARE LOGIC ---
         const modal = document.getElementById('movieModal');
-        const modalImg = document.getElementById('modalImg');
-        const modalTitle = document.getElementById('modalTitle');
-        const modalDesc = document.getElementById('modalDesc');
-        const modalYear = document.getElementById('modalYear');
-        const modalDuration = document.getElementById('modalDuration');
-        const modalDirector = document.getElementById('modalDirector');
-        const modalTopics = document.getElementById('modalTopics');
+        let currentVideoUrl = "";
 
         function openModal(id) {
             const film = films.find(f => f.id === id);
             if (!film) return;
 
-            // Populate data
-            modalImg.src = film.image_url;
-            modalTitle.innerText = film.title;
-            modalDesc.innerText = film.description;
-            modalYear.innerText = film.year;
-            modalDuration.innerText = film.duration;
-            modalDirector.innerText = film.director;
-            modalTopics.innerText = film.topics;
+            // Update URL dynamically so it acts as a shareable link
+            if (film.driveId) {
+                const newUrl = new URL(window.location);
+                newUrl.searchParams.set('v', film.driveId);
+                window.history.pushState({}, '', newUrl);
+            }
 
-            // Show Modal
+            document.getElementById('modalImg').style.opacity = '1';
+            document.getElementById('modalGradient').style.opacity = '1';
+            document.getElementById('modalContentWrapper').style.opacity = '1';
+            document.getElementById('modalVideoPlayer').style.display = 'none';
+            document.getElementById('modalVideoPlayer').src = '';
+
+            document.getElementById('modalImg').src = getDriveThumbnailUrl(film.video_url, 900);
+            document.getElementById('modalTitle').innerText = film.title;
+            document.getElementById('modalDesc').innerText = film.description;
+            document.getElementById('modalDirector').innerText = film.director;
+            document.getElementById('modalFilename').innerText = film.filename;
+            
+            currentVideoUrl = film.video_url;
+            document.getElementById('modalPlayBtn').onclick = () => embedVideo(currentVideoUrl);
+
             modal.style.display = 'flex';
-            document.body.style.overflow = 'hidden'; // Stop background scrolling
+            setTimeout(() => modal.classList.add('show'), 10); 
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function embedVideo(url) {
+            document.getElementById('modalImg').style.opacity = '0';
+            document.getElementById('modalGradient').style.opacity = '0';
+            document.getElementById('modalContentWrapper').style.opacity = '0';
+            
+            const iframe = document.getElementById('modalVideoPlayer');
+            iframe.style.display = 'block';
+            iframe.src = getEmbedUrl(url); 
         }
 
         function closeModal() {
-            modal.style.display = 'none';
-            document.body.style.overflow = 'auto'; // Restore scrolling
+            modal.classList.remove('show');
+
+            // Clean up the URL by removing the video ID parameter
+            const newUrl = new URL(window.location);
+            newUrl.searchParams.delete('v');
+            window.history.pushState({}, '', newUrl);
+
+            setTimeout(() => {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto'; 
+                document.getElementById('modalVideoPlayer').src = ''; 
+            }, 300);
         }
 
-        function playVideo() {
-            alert("This button would link to the actual video file or YouTube link!");
-        }
-
-        // Close modal if clicking outside content
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                closeModal();
+        function checkUrlForSharedFilm() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const sharedDriveId = urlParams.get('v');
+            
+            if (sharedDriveId) {
+                // Find the film that matches this drive ID
+                const targetFilm = films.find(f => f.driveId === sharedDriveId);
+                if (targetFilm) {
+                    openModal(targetFilm.id);
+                }
             }
         }
+
+        function copyShareLink() {
+            // Because we dynamically update the URL in openModal(), we can just copy window.location.href!
+            const currentUrl = window.location.href;
+            
+            // Check if modern clipboard API is supported (requires HTTPS or localhost)
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(currentUrl).then(() => {
+                    showToast();
+                });
+            } else {
+                // Fallback for older browsers or local files opened without a server
+                prompt("Copy this link to share:", currentUrl);
+            }
+        }
+
+        function showToast() {
+            const toast = document.getElementById("toast");
+            toast.className = "show";
+            // Hide after 3 seconds
+            setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 3000);
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) closeModal();
+        }
+
+        // --- BOOT UP ---
+        window.onload = loadApp;
+
     </script>
 </body>
 </html>
