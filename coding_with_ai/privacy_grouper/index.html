@@ -1,0 +1,2653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy-First Student Grouper GA</title>
+  <style>
+    :root {
+      --bg: #f4efe4;
+      --panel: rgba(255, 250, 240, 0.92);
+      --ink: #1f2a2e;
+      --muted: #5e6a70;
+      --line: rgba(31, 42, 46, 0.12);
+      --accent: #b6542d;
+      --accent-strong: #8f3c1d;
+      --accent-soft: rgba(182, 84, 45, 0.12);
+      --good: #2f7d4f;
+      --good-soft: rgba(47, 125, 79, 0.16);
+      --ok: #b58c17;
+      --ok-soft: rgba(181, 140, 23, 0.18);
+      --weak: #9e4c0d;
+      --weak-soft: rgba(158, 76, 13, 0.12);
+      --conflict: #a33838;
+      --conflict-soft: rgba(163, 56, 56, 0.16);
+      --shadow: 0 22px 60px rgba(42, 30, 15, 0.12);
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(232, 180, 109, 0.38), transparent 30%),
+        radial-gradient(circle at top right, rgba(148, 186, 144, 0.24), transparent 24%),
+        linear-gradient(135deg, #efe6d0 0%, #f7f0e5 48%, #e7f0ea 100%);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(31, 42, 46, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(31, 42, 46, 0.03) 1px, transparent 1px);
+      background-size: 28px 28px;
+      pointer-events: none;
+      mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.35));
+    }
+
+    .shell {
+      max-width: 1620px;
+      margin: 0 auto;
+      padding: 24px 18px 56px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 20px;
+      margin-bottom: 22px;
+    }
+
+    .card,
+    .panel,
+    .zone,
+    .group-card,
+    .solution-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+    }
+
+    .card,
+    .panel {
+      padding: 22px;
+    }
+
+    h1, h2, h3, h4 {
+      margin: 0;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    h1 {
+      font-size: clamp(2.2rem, 5vw, 4.2rem);
+      line-height: 0.98;
+      max-width: 11ch;
+      margin-bottom: 12px;
+    }
+
+    .hero p,
+    .muted,
+    label,
+    input,
+    textarea,
+    button,
+    select,
+    summary,
+    .status,
+    .badge,
+    .chip,
+    .student p,
+    .student small {
+      font-family: "Avenir Next", Avenir, "Segoe UI", sans-serif;
+    }
+
+    .hero p {
+      margin: 0;
+      max-width: 70ch;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      width: fit-content;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent-strong);
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .app-shell {
+      display: grid;
+      gap: 18px;
+    }
+
+    .topbar {
+      display: grid;
+      gap: 14px;
+    }
+
+    .topbar-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .tab-button {
+      background: rgba(255, 255, 255, 0.78);
+      color: var(--muted);
+      border: 1px solid rgba(31, 42, 46, 0.1);
+    }
+
+    .tab-button.active {
+      background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+      color: #fffdf9;
+      box-shadow: 0 12px 24px rgba(143, 60, 29, 0.18);
+    }
+
+    .tab-panels {
+      display: grid;
+      gap: 18px;
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: grid;
+      gap: 18px;
+    }
+
+    .workspace-layout {
+      display: grid;
+      grid-template-columns: minmax(240px, 300px) minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .section-title p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .stack { display: grid; gap: 14px; }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .field-grid.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .full { grid-column: 1 / -1; }
+
+    label {
+      display: grid;
+      gap: 7px;
+      font-size: 0.9rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    input,
+    textarea,
+    select,
+    button {
+      font: inherit;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      border: 1px solid rgba(31, 42, 46, 0.14);
+      background: rgba(255, 255, 255, 0.82);
+      color: var(--ink);
+      border-radius: 14px;
+      padding: 12px 14px;
+      outline: none;
+      transition: border-color 150ms ease, box-shadow 150ms ease;
+    }
+
+    textarea {
+      min-height: 220px;
+      resize: vertical;
+      line-height: 1.4;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: rgba(182, 84, 45, 0.5);
+      box-shadow: 0 0 0 4px rgba(182, 84, 45, 0.1);
+    }
+
+    .actions,
+    .stats,
+    .chip-row,
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 999px;
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: transform 150ms ease, box-shadow 150ms ease, opacity 150ms ease;
+    }
+
+    button:hover { transform: translateY(-1px); }
+    button:disabled { cursor: wait; opacity: 0.65; transform: none; }
+
+    .primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+      color: #fffdf9;
+      box-shadow: 0 12px 24px rgba(143, 60, 29, 0.24);
+    }
+
+    .secondary {
+      background: rgba(255, 255, 255, 0.82);
+      color: var(--ink);
+      border: 1px solid rgba(31, 42, 46, 0.12);
+    }
+
+    .danger {
+      background: rgba(163, 56, 56, 0.12);
+      color: var(--conflict);
+      border: 1px solid rgba(163, 56, 56, 0.18);
+    }
+
+    .status {
+      min-height: 52px;
+      border-radius: 18px;
+      padding: 12px 14px;
+      background: rgba(255, 255, 255, 0.68);
+      border: 1px solid rgba(31, 42, 46, 0.08);
+      color: var(--muted);
+      line-height: 1.45;
+      font-size: 0.94rem;
+      white-space: pre-wrap;
+    }
+
+    .stat {
+      min-width: 112px;
+      flex: 1;
+      border-radius: 18px;
+      padding: 14px 15px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(31, 42, 46, 0.08);
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.55rem;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .badge,
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 0.77rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .badge.neutral,
+    .chip {
+      background: rgba(31, 42, 46, 0.08);
+      color: var(--muted);
+    }
+
+    .badge.good { background: var(--good-soft); color: var(--good); }
+    .badge.ok { background: var(--ok-soft); color: #7a5d00; }
+    .badge.warn { background: var(--weak-soft); color: #8a440c; }
+    .badge.conflict { background: var(--conflict-soft); color: var(--conflict); }
+
+    .toggle-inline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+
+    .toggle-inline input {
+      width: auto;
+      margin: 0;
+      accent-color: var(--accent);
+    }
+
+    .hidden-input {
+      display: none;
+    }
+
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+    details {
+      border-radius: 18px;
+      border: 1px solid rgba(31, 42, 46, 0.08);
+      background: rgba(255, 255, 255, 0.65);
+      padding: 12px 14px;
+    }
+
+    summary { cursor: pointer; font-weight: 700; }
+
+    .zone,
+    .group-card,
+    .solution-card {
+      padding: 16px;
+      transition: border-color 150ms ease, background 150ms ease, transform 150ms ease;
+    }
+
+    .zone {
+      min-height: 220px;
+      display: grid;
+      gap: 12px;
+      align-content: start;
+    }
+
+    .zone.drag-over,
+    .group-card.drag-over,
+    .new-group.drag-over {
+      border-color: rgba(182, 84, 45, 0.5);
+      background: rgba(255, 247, 235, 0.98);
+      transform: translateY(-2px);
+    }
+
+    .zone-title,
+    .group-topline,
+    .group-meta,
+    .solution-topline {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .solutions-grid,
+    .group-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      align-items: start;
+    }
+
+    .solution-card {
+      cursor: pointer;
+      display: grid;
+      gap: 8px;
+      border-width: 2px;
+      padding: 14px;
+    }
+
+    .solution-card.selected {
+      border-color: rgba(182, 84, 45, 0.56);
+      background: rgba(255, 247, 235, 0.98);
+    }
+
+    .solution-card.good {
+      border-color: rgba(47, 125, 79, 0.34);
+    }
+
+    .solution-card.ok {
+      border-color: rgba(181, 140, 23, 0.38);
+    }
+
+    .solution-card.weak {
+      border-color: rgba(158, 76, 13, 0.3);
+    }
+
+    .solution-card.conflict {
+      border-color: rgba(163, 56, 56, 0.45);
+    }
+
+    .group-card {
+      min-height: 190px;
+      display: grid;
+      gap: 10px;
+      border-width: 2px;
+    }
+
+    .group-card.good {
+      border-color: rgba(47, 125, 79, 0.34);
+      background: linear-gradient(180deg, rgba(47, 125, 79, 0.12), rgba(255, 250, 240, 0.95));
+    }
+
+    .group-card.ok {
+      border-color: rgba(181, 140, 23, 0.38);
+      background: linear-gradient(180deg, rgba(181, 140, 23, 0.12), rgba(255, 250, 240, 0.95));
+    }
+
+    .group-card.weak {
+      border-color: rgba(158, 76, 13, 0.3);
+      background: linear-gradient(180deg, rgba(158, 76, 13, 0.1), rgba(255, 250, 240, 0.95));
+    }
+
+    .group-card.invalid {
+      border-color: rgba(158, 76, 13, 0.55);
+      background: linear-gradient(180deg, rgba(158, 76, 13, 0.16), rgba(255, 250, 240, 0.95));
+    }
+
+    .group-card.conflict {
+      border-color: rgba(163, 56, 56, 0.55);
+      background: linear-gradient(180deg, rgba(163, 56, 56, 0.14), rgba(255, 250, 240, 0.95));
+    }
+
+    .group-card.neutral,
+    .new-group {
+      border-color: rgba(31, 42, 46, 0.12);
+      background: rgba(255, 250, 240, 0.92);
+    }
+
+    .new-group {
+      padding: 14px;
+      min-height: 170px;
+      border: 2px dashed rgba(31, 42, 46, 0.14);
+      border-radius: var(--radius-xl);
+      text-align: center;
+      align-content: center;
+      color: var(--muted);
+      background: rgba(255, 250, 240, 0.78);
+      box-shadow: var(--shadow);
+    }
+
+    .dropzone {
+      min-height: 120px;
+      display: grid;
+      gap: 8px;
+      align-content: start;
+    }
+
+    .placeholder {
+      border: 1px dashed rgba(31, 42, 46, 0.18);
+      border-radius: 18px;
+      padding: 16px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      background: rgba(255, 255, 255, 0.45);
+    }
+
+    .student {
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid rgba(31, 42, 46, 0.1);
+      border-radius: 18px;
+      padding: 12px;
+      cursor: grab;
+      display: grid;
+      gap: 6px;
+    }
+
+    .student:active { cursor: grabbing; }
+
+    .student-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: start;
+    }
+
+    .student h4 {
+      font-size: 0.95rem;
+      line-height: 1.12;
+    }
+
+    .student p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.35;
+    }
+
+    .export-box {
+      display: grid;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .export-box textarea {
+      min-height: 180px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.84rem;
+      white-space: pre;
+      overflow-wrap: normal;
+      overflow-x: auto;
+    }
+
+    .warning {
+      border-radius: 12px;
+      background: rgba(163, 56, 56, 0.1);
+      color: var(--conflict);
+      padding: 8px 10px;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .mini-tag {
+      display: inline-flex;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      background: rgba(182, 84, 45, 0.1);
+      color: var(--accent-strong);
+    }
+
+    @media (max-width: 1120px) {
+      .hero,
+      .workspace-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .shell { padding-inline: 14px; }
+      .field-grid,
+      .field-grid.three { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="hero">
+      <article class="card">
+        <span class="eyebrow">Embeddings + Genetic Search</span>
+        <h1>Privacy-First Grouper GA</h1>
+        <p>
+          This variant uses local embeddings plus a genetic algorithm to search many candidate classroom groupings locally. Conflict pairs are never sent to a model, but they strongly affect the solver score and remain visible in the manual workspace.
+        </p>
+      </article>
+      <aside class="card">
+        <span class="eyebrow">Privacy Boundary</span>
+        <h2>What leaves the browser</h2>
+        <p>Only a stable local student ID and topic text are sent to Gemini embeddings. Names, emails, helpers, contacts, Spanish fluency, and enemies lists stay local. Candidate solutions, conflict scores, and drag/drop edits are all computed in the page.</p>
+      </aside>
+    </section>
+
+    <div class="app-shell">
+      <section class="panel topbar">
+        <div class="topbar-row">
+          <div class="tabs">
+            <button class="tab-button active" data-tab="setup">Setup</button>
+            <button class="tab-button" data-tab="solutions">Solutions</button>
+            <button class="tab-button" data-tab="workspace">Workspace</button>
+          </div>
+          <div class="actions">
+            <button id="exportSessionBtn" class="secondary">Export Session</button>
+            <button id="importSessionBtn" class="secondary">Import Session</button>
+          </div>
+          <span id="saveStatePill" class="badge neutral mono">Not saved yet</span>
+        </div>
+        <div id="status" class="status">Ready. Paste spreadsheet data and parse it.</div>
+        <div id="stats" class="stats"></div>
+      </section>
+      <input id="importSessionInput" class="hidden-input" type="file" accept="application/json,.json">
+
+      <div class="tab-panels">
+        <div class="tab-panel active" data-tab-panel="setup">
+          <section class="panel">
+          <div class="section-title">
+            <div>
+              <h2>Controls</h2>
+              <p>Parse locally, fetch embeddings, then evolve candidate groupings.</p>
+            </div>
+          </div>
+
+          <div class="stack">
+            <div class="field-grid">
+              <label class="full">
+                Google AI Studio API Key
+                <input id="apiKey" type="password" placeholder="AIza..." autocomplete="off">
+              </label>
+              <label>
+                Minimum Group Size
+                <input id="minSize" type="number" min="1" max="12" value="2">
+              </label>
+              <label>
+                Maximum Group Size
+                <input id="maxSize" type="number" min="1" max="12" value="3">
+              </label>
+            </div>
+
+            <div class="field-grid three">
+              <label>
+                Population
+                <input id="populationSize" type="number" min="20" max="500" value="120">
+              </label>
+              <label>
+                Generations
+                <input id="generations" type="number" min="10" max="1000" value="140">
+              </label>
+              <label>
+                Mutation Rate
+                <input id="mutationRate" type="number" min="0.01" max="1" step="0.01" value="0.18">
+              </label>
+            </div>
+
+            <div class="field-grid three">
+              <label>
+                Optimization Mode
+                <select id="optimizationMode">
+                  <option value="balanced">Balanced</option>
+                  <option value="conflict-safe">Conflict Safe</option>
+                  <option value="similarity-first">Similarity First</option>
+                </select>
+              </label>
+              <label>
+                Target Cohesion Min
+                <input id="targetCohesionMin" type="number" min="0" max="1" step="0.01" value="0.60">
+              </label>
+              <label>
+                Target Cohesion Max
+                <input id="targetCohesionMax" type="number" min="0" max="1" step="0.01" value="0.80">
+              </label>
+            </div>
+
+            <div class="field-grid">
+              <label>
+                Candidate Solutions to Keep
+                <input id="solutionCount" type="number" min="3" max="12" value="5">
+              </label>
+            </div>
+
+            <div class="actions">
+              <button id="parseBtn" class="primary">1. Parse Roster</button>
+              <button id="embedBtn" class="secondary">2. Fetch Embeddings</button>
+              <button id="solveBtn" class="secondary">3. Evolve Solutions</button>
+              <button id="addGroupBtn" class="secondary">Add Empty Group</button>
+              <button id="clearBtn" class="danger">Clear Local Data</button>
+            </div>
+
+            <label>
+              Paste TSV / spreadsheet rows
+              <textarea id="pasteInput" placeholder="Paste data copied directly from Google Sheets or Excel here..."></textarea>
+            </label>
+            <details open>
+              <summary>Detected Columns</summary>
+              <div id="headerDebug" class="chip-row" style="margin-top: 12px;"></div>
+            </details>
+          </div>
+          </section>
+        </div>
+
+        <div class="tab-panel" data-tab-panel="solutions">
+          <section class="panel">
+          <div class="section-title">
+            <div>
+              <h2>Candidate Solutions</h2>
+              <p>Top GA results ranked by target-band cohesion, size compliance, and conflict avoidance.</p>
+            </div>
+          </div>
+          <div id="solutionsGrid" class="solutions-grid"></div>
+          </section>
+        </div>
+
+        <div class="tab-panel" data-tab-panel="workspace">
+          <div class="workspace-layout">
+            <section class="zone" id="unassignedZone" data-drop-target="unassigned">
+              <div class="zone-title">
+                <div>
+                  <h3>Unassigned</h3>
+                  <p class="muted" style="margin: 6px 0 0;">Students left out of the active solution or manually pulled out.</p>
+                </div>
+                <span id="unassignedCount" class="badge neutral">0 students</span>
+              </div>
+              <div id="unassignedList" class="dropzone"></div>
+            </section>
+
+            <section class="panel">
+              <div class="section-title">
+                <div>
+                  <h2>Active Workspace</h2>
+                  <p>Drag students to refine the applied solution. This view is sized to show more groups at once.</p>
+                </div>
+                <label class="toggle-inline">
+                  <input id="showStudentTags" type="checkbox" checked>
+                  Show Card Tags
+                </label>
+              </div>
+              <div class="actions" style="margin-bottom: 12px;">
+                <button id="titleGroupsBtn" class="secondary">Generate Group Titles</button>
+                <button id="exportBtn" class="secondary">Generate Export TSV</button>
+                <button id="copyExportBtn" class="secondary">Copy TSV</button>
+              </div>
+              <div id="groupsGrid" class="group-grid"></div>
+              <div class="export-box">
+                <label>
+                  Export Output
+                  <textarea id="exportOutput" placeholder="Generate an export TSV to paste back into your spreadsheet."></textarea>
+                </label>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "privacy-first-student-grouper-gen-v1";
+    const EMBEDDING_DB_NAME = "privacy-first-student-grouper-gen-db";
+    const EMBEDDING_STORE = "embeddings";
+    const EMBEDDING_MODEL = "gemini-embedding-001";
+    const TITLE_MODEL = "gemini-2.5-flash";
+    const EMBEDDING_DIMENSION = 768;
+    const HEADER_FIELDS = ["timestamp", "email", "section", "name", "topics", "contact", "helpers", "spanish", "enemies"];
+    const STOP_WORDS = new Set([
+      "the", "and", "for", "with", "that", "this", "from", "into", "their", "they", "them",
+      "would", "like", "work", "project", "projects", "issue", "issues", "topic", "topics",
+      "about", "have", "your", "what", "name", "idea", "ideas", "more", "less", "being",
+      "there", "where", "when", "will", "just", "need", "help", "people", "student", "students",
+      "social", "using", "make", "making", "many", "much", "some", "very", "over", "under"
+    ]);
+
+    const HEADER_MATCHERS = {
+      timestamp: { exact: ["timestamp"] },
+      email: { exact: ["email address", "email"] },
+      section: { exact: ["which changemakers section are you in"], includes: ["changemakers section"] },
+      name: { exact: ["what is your name"] },
+      topics: {
+        exact: ["what topics/issues would you like to work on for this project name up to 5 different ideas separate each idea with a comma"],
+        includes: ["what topics/issues would you like to work on for this project", "separate each idea with a comma"]
+      },
+      contact: {
+        exact: ["do you already have a topic in mind and a contact person if so please write the topic and the name of the contact person below"],
+        includes: ["topic in mind and a contact person"]
+      },
+      helpers: {
+        exact: ["have people already expressed interest in helping you with this project if so write the names of two to three people with each name separated by a comma"],
+        includes: ["expressed interest in helping you with this project"]
+      },
+      spanish: {
+        exact: ["how fluent are you in spanish"],
+        includes: ["fluent are you in spanish"]
+      },
+      enemies: {
+        exact: [
+          "list the names of 3 people you would have a hard time collaborating with comma separated please include first name and last initial",
+          "list the names of 3 people you would have a hard time collaborating with comma separated please include first name and last initial note that this might include friends that you could be distracted by"
+        ],
+        allIncludes: [["hard time collaborating with", "first name and last initial"]]
+      }
+    };
+
+    const MODE_WEIGHTS = {
+      balanced: { cohesion: 90, conflict: 130, undersize: 55, oversize: 45, unassigned: 60, bandPenalty: 220, bandReward: 45 },
+      "conflict-safe": { cohesion: 75, conflict: 220, undersize: 60, oversize: 50, unassigned: 75, bandPenalty: 200, bandReward: 35 },
+      "similarity-first": { cohesion: 110, conflict: 70, undersize: 45, oversize: 35, unassigned: 45, bandPenalty: 240, bandReward: 55 }
+    };
+
+    const els = {
+      apiKey: document.getElementById("apiKey"),
+      minSize: document.getElementById("minSize"),
+      maxSize: document.getElementById("maxSize"),
+      populationSize: document.getElementById("populationSize"),
+      generations: document.getElementById("generations"),
+      mutationRate: document.getElementById("mutationRate"),
+      optimizationMode: document.getElementById("optimizationMode"),
+      targetCohesionMin: document.getElementById("targetCohesionMin"),
+      targetCohesionMax: document.getElementById("targetCohesionMax"),
+      solutionCount: document.getElementById("solutionCount"),
+      showStudentTags: document.getElementById("showStudentTags"),
+      parseBtn: document.getElementById("parseBtn"),
+      embedBtn: document.getElementById("embedBtn"),
+      solveBtn: document.getElementById("solveBtn"),
+      addGroupBtn: document.getElementById("addGroupBtn"),
+      clearBtn: document.getElementById("clearBtn"),
+      titleGroupsBtn: document.getElementById("titleGroupsBtn"),
+      exportSessionBtn: document.getElementById("exportSessionBtn"),
+      importSessionBtn: document.getElementById("importSessionBtn"),
+      importSessionInput: document.getElementById("importSessionInput"),
+      exportBtn: document.getElementById("exportBtn"),
+      copyExportBtn: document.getElementById("copyExportBtn"),
+      pasteInput: document.getElementById("pasteInput"),
+      status: document.getElementById("status"),
+      stats: document.getElementById("stats"),
+      headerDebug: document.getElementById("headerDebug"),
+      saveStatePill: document.getElementById("saveStatePill"),
+      unassignedZone: document.getElementById("unassignedZone"),
+      unassignedList: document.getElementById("unassignedList"),
+      unassignedCount: document.getElementById("unassignedCount"),
+      solutionsGrid: document.getElementById("solutionsGrid"),
+      groupsGrid: document.getElementById("groupsGrid"),
+      exportOutput: document.getElementById("exportOutput")
+    };
+
+    const state = {
+      apiKey: "",
+      minSize: 2,
+      maxSize: 3,
+      populationSize: 120,
+      generations: 140,
+      mutationRate: 0.18,
+      optimizationMode: "balanced",
+      targetCohesionMin: 0.6,
+      targetCohesionMax: 0.8,
+      solutionCount: 5,
+      showStudentTags: true,
+      rawInput: "",
+      students: [],
+      groups: [],
+      solutions: [],
+      selectedSolutionId: null,
+      activeTab: "setup",
+      originalHeaders: [],
+      exportTsv: "",
+      headerMap: {},
+      idLookup: {},
+      lastStatus: "",
+      lastSavedAt: null,
+      busy: false
+    };
+
+    let embeddingsDbPromise = null;
+
+    function normalizeHeader(value) {
+      return String(value || "")
+        .toLowerCase()
+        .replace(/["'.?]/g, "")
+        .replace(/&/g, "and")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function normalizeCell(value) {
+      return String(value || "").replace(/\r/g, "").trim();
+    }
+
+    function cleanName(value) {
+      return String(value || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9 ]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function titleCase(value) {
+      return String(value || "")
+        .split(/\s+/)
+        .filter(Boolean)
+        .map(part => part[0].toUpperCase() + part.slice(1))
+        .join(" ");
+    }
+
+    function uid() {
+      if (window.crypto && crypto.randomUUID) {
+        return crypto.randomUUID();
+      }
+      return "id-" + Math.random().toString(36).slice(2) + Date.now().toString(36);
+    }
+
+    function stableHash(value) {
+      let hash = 5381;
+      for (let i = 0; i < value.length; i += 1) {
+        hash = ((hash << 5) + hash) + value.charCodeAt(i);
+      }
+      return Math.abs(hash).toString(36);
+    }
+
+    function splitCommaNames(value) {
+      return String(value || "")
+        .split(",")
+        .map(item => item.replace(/^"+|"+$/g, "").trim())
+        .filter(Boolean);
+    }
+
+    function mapHeaders(headers) {
+      const mapping = {};
+      const normalizedHeaders = headers.map(header => normalizeHeader(header));
+
+      for (const [key, matcher] of Object.entries(HEADER_MATCHERS)) {
+        const exactIndex = normalizedHeaders.findIndex(header => (matcher.exact || []).includes(header));
+        if (exactIndex !== -1) {
+          mapping[key] = { index: exactIndex, label: headers[exactIndex], strategy: "exact" };
+          continue;
+        }
+
+        const includesIndex = normalizedHeaders.findIndex(header =>
+          (matcher.includes || []).some(fragment => header.includes(fragment))
+        );
+        if (includesIndex !== -1) {
+          mapping[key] = { index: includesIndex, label: headers[includesIndex], strategy: "includes" };
+          continue;
+        }
+
+        const allIncludesIndex = normalizedHeaders.findIndex(header =>
+          (matcher.allIncludes || []).some(group => group.every(fragment => header.includes(fragment)))
+        );
+        if (allIncludesIndex !== -1) {
+          mapping[key] = { index: allIncludesIndex, label: headers[allIncludesIndex], strategy: "allIncludes" };
+        }
+      }
+
+      return mapping;
+    }
+
+    function parseDelimited(text, delimiter = "\t") {
+      const rows = [];
+      let row = [];
+      let cell = "";
+      let inQuotes = false;
+
+      for (let i = 0; i < text.length; i += 1) {
+        const char = text[i];
+        const next = text[i + 1];
+
+        if (char === '"') {
+          if (inQuotes && next === '"') {
+            cell += '"';
+            i += 1;
+          } else {
+            inQuotes = !inQuotes;
+          }
+          continue;
+        }
+
+        if (char === delimiter && !inQuotes) {
+          row.push(cell);
+          cell = "";
+          continue;
+        }
+
+        if ((char === "\n" || char === "\r") && !inQuotes) {
+          if (char === "\r" && next === "\n") {
+            i += 1;
+          }
+          row.push(cell);
+          cell = "";
+          if (row.some(value => value !== "")) {
+            rows.push(row);
+          }
+          row = [];
+          continue;
+        }
+
+        cell += char;
+      }
+
+      row.push(cell);
+      if (row.some(value => value !== "")) {
+        rows.push(row);
+      }
+      return rows;
+    }
+
+    function levenshtein(a, b) {
+      const rows = Array.from({ length: b.length + 1 }, (_, i) => [i]);
+      for (let j = 0; j <= a.length; j += 1) rows[0][j] = j;
+      for (let i = 1; i <= b.length; i += 1) {
+        for (let j = 1; j <= a.length; j += 1) {
+          const cost = a[j - 1] === b[i - 1] ? 0 : 1;
+          rows[i][j] = Math.min(rows[i - 1][j] + 1, rows[i][j - 1] + 1, rows[i - 1][j - 1] + cost);
+        }
+      }
+      return rows[b.length][a.length];
+    }
+
+    function buildNameForms(name) {
+      const normalized = cleanName(name);
+      const parts = normalized.split(" ").filter(Boolean);
+      const first = parts[0] || "";
+      const initials = Array.from(new Set(parts.slice(1).map(part => part[0]).filter(Boolean)));
+      return { full: normalized, first, initials };
+    }
+
+    function enemyEntryMatchesStudent(enemyEntry, student) {
+      const enemyForms = buildNameForms(enemyEntry);
+      const studentForms = student.nameForms;
+      if (!enemyForms.first || !studentForms.first) return false;
+      if (enemyForms.full && enemyForms.full === studentForms.full) return true;
+      if (enemyForms.first === studentForms.first) {
+        if (!enemyForms.initials.length) return true;
+        return enemyForms.initials.some(initial => studentForms.initials.includes(initial));
+      }
+      return levenshtein(enemyForms.first, studentForms.first) <= 1 &&
+        (!enemyForms.initials.length || enemyForms.initials.some(initial => studentForms.initials.includes(initial)));
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function formatSavedTime(timestamp) {
+      if (!timestamp) return "Not saved yet";
+      return "Saved " + new Date(timestamp).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+    }
+
+    function requestToPromise(request) {
+      return new Promise((resolve, reject) => {
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    function openEmbeddingsDb() {
+      if (embeddingsDbPromise) return embeddingsDbPromise;
+      embeddingsDbPromise = new Promise((resolve, reject) => {
+        const request = indexedDB.open(EMBEDDING_DB_NAME, 1);
+        request.onupgradeneeded = () => {
+          const db = request.result;
+          if (!db.objectStoreNames.contains(EMBEDDING_STORE)) {
+            db.createObjectStore(EMBEDDING_STORE, { keyPath: "studentId" });
+          }
+        };
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+      return embeddingsDbPromise;
+    }
+
+    async function putEmbedding(studentId, embedding) {
+      const db = await openEmbeddingsDb();
+      await new Promise((resolve, reject) => {
+        const tx = db.transaction(EMBEDDING_STORE, "readwrite");
+        tx.objectStore(EMBEDDING_STORE).put({
+          studentId,
+          embedding,
+          updatedAt: Date.now()
+        });
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+        tx.onabort = () => reject(tx.error);
+      });
+    }
+
+    async function getEmbedding(studentId) {
+      const db = await openEmbeddingsDb();
+      const tx = db.transaction(EMBEDDING_STORE, "readonly");
+      const result = await requestToPromise(tx.objectStore(EMBEDDING_STORE).get(studentId));
+      return result?.embedding || null;
+    }
+
+    async function hydrateEmbeddingsForStudents(students) {
+      for (const student of students) {
+        if (!Array.isArray(student.embedding)) {
+          const cached = await getEmbedding(student.id);
+          if (Array.isArray(cached)) {
+            student.embedding = cached;
+          }
+        }
+      }
+    }
+
+    async function pruneEmbeddings(validIds) {
+      const db = await openEmbeddingsDb();
+      await new Promise((resolve, reject) => {
+        const tx = db.transaction(EMBEDDING_STORE, "readwrite");
+        const store = tx.objectStore(EMBEDDING_STORE);
+        const keysRequest = store.getAllKeys();
+        keysRequest.onsuccess = () => {
+          keysRequest.result.forEach(key => {
+            if (!validIds.has(key)) {
+              store.delete(key);
+            }
+          });
+        };
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+        tx.onabort = () => reject(tx.error);
+      });
+    }
+
+    async function clearEmbeddingsDb() {
+      const db = await openEmbeddingsDb();
+      await new Promise((resolve, reject) => {
+        const tx = db.transaction(EMBEDDING_STORE, "readwrite");
+        tx.objectStore(EMBEDDING_STORE).clear();
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+        tx.onabort = () => reject(tx.error);
+      });
+    }
+
+    async function getAllEmbeddings() {
+      const db = await openEmbeddingsDb();
+      const tx = db.transaction(EMBEDDING_STORE, "readonly");
+      return await requestToPromise(tx.objectStore(EMBEDDING_STORE).getAll());
+    }
+
+    async function replaceEmbeddings(records) {
+      await clearEmbeddingsDb();
+      const db = await openEmbeddingsDb();
+      await new Promise((resolve, reject) => {
+        const tx = db.transaction(EMBEDDING_STORE, "readwrite");
+        const store = tx.objectStore(EMBEDDING_STORE);
+        (records || []).forEach(record => {
+          if (record && record.studentId && Array.isArray(record.embedding)) {
+            store.put({
+              studentId: record.studentId,
+              embedding: record.embedding,
+              updatedAt: record.updatedAt || Date.now()
+            });
+          }
+        });
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+        tx.onabort = () => reject(tx.error);
+      });
+    }
+
+    function setStatus(message) {
+      els.status.textContent = message;
+      state.lastStatus = message;
+    }
+
+    function setBusy(isBusy) {
+      state.busy = isBusy;
+      [els.parseBtn, els.embedBtn, els.solveBtn, els.addGroupBtn, els.clearBtn, els.titleGroupsBtn, els.exportBtn, els.copyExportBtn, els.exportSessionBtn, els.importSessionBtn].forEach(button => {
+        button.disabled = isBusy;
+      });
+    }
+
+    function setActiveTab(tabName) {
+      state.activeTab = tabName;
+      document.querySelectorAll("[data-tab]").forEach(button => {
+        button.classList.toggle("active", button.dataset.tab === tabName);
+      });
+      document.querySelectorAll("[data-tab-panel]").forEach(panel => {
+        panel.classList.toggle("active", panel.dataset.tabPanel === tabName);
+      });
+    }
+
+    function serializeState() {
+      return JSON.stringify({
+        ...state,
+        students: state.students.map(student => ({
+          ...student,
+          nameForms: undefined,
+          enemyList: undefined,
+          embedding: null
+        }))
+      });
+    }
+
+    function saveState() {
+      state.apiKey = els.apiKey.value.trim();
+      state.minSize = Number(els.minSize.value) || 2;
+      state.maxSize = Number(els.maxSize.value) || 3;
+      state.populationSize = Number(els.populationSize.value) || 120;
+      state.generations = Number(els.generations.value) || 140;
+      state.mutationRate = Number(els.mutationRate.value) || 0.18;
+      state.optimizationMode = els.optimizationMode.value || "balanced";
+      state.targetCohesionMin = Number(els.targetCohesionMin.value);
+      state.targetCohesionMax = Number(els.targetCohesionMax.value);
+      state.solutionCount = Number(els.solutionCount.value) || 5;
+      state.showStudentTags = els.showStudentTags.checked;
+      state.rawInput = els.pasteInput.value;
+      state.lastSavedAt = Date.now();
+
+      try {
+        localStorage.setItem(STORAGE_KEY, serializeState());
+        els.saveStatePill.textContent = formatSavedTime(state.lastSavedAt);
+      } catch (error) {
+        if (error && error.name === "QuotaExceededError") {
+          els.saveStatePill.textContent = "Storage limit reached";
+          setStatus("Browser storage quota exceeded for lightweight session data.");
+          return;
+        }
+        throw error;
+      }
+    }
+
+    function rebuildStudent(student) {
+      student.nameForms = buildNameForms(student.name);
+      student.enemyList = splitCommaNames(student.enemiesRaw || "");
+      return student;
+    }
+
+    async function loadState() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      try {
+        const parsed = JSON.parse(raw);
+        Object.assign(state, parsed);
+        state.students = (state.students || []).map(rebuildStudent);
+        state.groups = state.groups || [];
+        state.solutions = state.solutions || [];
+        state.headerMap = state.headerMap || {};
+        state.idLookup = state.idLookup || {};
+        els.apiKey.value = state.apiKey || "";
+        els.minSize.value = state.minSize || 2;
+        els.maxSize.value = state.maxSize || 3;
+        els.populationSize.value = state.populationSize || 120;
+        els.generations.value = state.generations || 140;
+        els.mutationRate.value = state.mutationRate || 0.18;
+        els.optimizationMode.value = state.optimizationMode || "balanced";
+        els.targetCohesionMin.value = state.targetCohesionMin ?? 0.6;
+        els.targetCohesionMax.value = state.targetCohesionMax ?? 0.8;
+        els.solutionCount.value = state.solutionCount || 5;
+        els.showStudentTags.checked = state.showStudentTags !== false;
+        els.pasteInput.value = state.rawInput || "";
+        els.exportOutput.value = state.exportTsv || "";
+        els.saveStatePill.textContent = formatSavedTime(state.lastSavedAt);
+        await hydrateEmbeddingsForStudents(state.students);
+        setActiveTab(state.activeTab || "setup");
+        if (state.lastStatus) {
+          els.status.textContent = state.lastStatus;
+        }
+      } catch (error) {
+        console.error("Failed to load saved state", error);
+      }
+    }
+
+    function validateGroupSizes() {
+      const minSize = Number(els.minSize.value) || 1;
+      const maxSize = Number(els.maxSize.value) || 1;
+      if (minSize > maxSize) throw new Error("Minimum group size must be less than or equal to maximum group size.");
+      return { minSize, maxSize };
+    }
+
+    function validateTargetBand() {
+      const min = Number(els.targetCohesionMin.value);
+      const max = Number(els.targetCohesionMax.value);
+      if (Number.isNaN(min) || Number.isNaN(max)) {
+        throw new Error("Target cohesion range must be numeric.");
+      }
+      if (min < 0 || max > 1 || min > max) {
+        throw new Error("Target cohesion range must stay between 0 and 1, with min less than or equal to max.");
+      }
+      return { min, max };
+    }
+
+    function getTargetBandForRender() {
+      const min = Number(els.targetCohesionMin.value);
+      const max = Number(els.targetCohesionMax.value);
+      if (Number.isNaN(min) || Number.isNaN(max) || min < 0 || max > 1 || min > max) {
+        return { min: 0.6, max: 0.8 };
+      }
+      return { min, max };
+    }
+
+    function getHeaderValue(row, mapping, field) {
+      return mapping[field] ? normalizeCell(row[mapping[field].index]) : "";
+    }
+
+    function getStableStudentId(row, mapping, rowIndex) {
+      const fingerprint = [
+        getHeaderValue(row, mapping, "timestamp"),
+        getHeaderValue(row, mapping, "email"),
+        getHeaderValue(row, mapping, "name"),
+        rowIndex
+      ].join("|").toLowerCase();
+      const key = stableHash(fingerprint);
+      if (!state.idLookup[key]) {
+        state.idLookup[key] = uid();
+      }
+      return state.idLookup[key];
+    }
+
+    async function parseRoster() {
+      const input = els.pasteInput.value.trim();
+      if (!input) throw new Error("Paste spreadsheet rows before parsing.");
+
+      const rows = parseDelimited(input, "\t");
+      if (rows.length < 2) throw new Error("Expected a header row plus at least one student row.");
+
+      state.originalHeaders = rows[0].slice();
+      const mapping = mapHeaders(rows[0]);
+      const required = ["name", "topics"];
+      const missing = required.filter(field => !mapping[field]);
+      if (missing.length) throw new Error("Missing required headers: " + missing.join(", ") + ".");
+
+      const previousById = new Map(state.students.map(student => [student.id, student]));
+      const students = rows.slice(1)
+        .filter(row => row.some(cell => normalizeCell(cell)))
+        .map((row, index) => {
+          const id = getStableStudentId(row, mapping, index + 1);
+          const previous = previousById.get(id);
+          const student = {
+            id,
+            timestamp: getHeaderValue(row, mapping, "timestamp"),
+            email: getHeaderValue(row, mapping, "email"),
+            section: getHeaderValue(row, mapping, "section"),
+            name: getHeaderValue(row, mapping, "name"),
+            topics: getHeaderValue(row, mapping, "topics"),
+            contact: getHeaderValue(row, mapping, "contact"),
+            helpers: getHeaderValue(row, mapping, "helpers"),
+            spanish: getHeaderValue(row, mapping, "spanish"),
+            enemiesRaw: getHeaderValue(row, mapping, "enemies"),
+            embedding: Array.isArray(previous?.embedding) ? previous.embedding : null,
+            groupId: "unassigned"
+          };
+          return rebuildStudent(student);
+        })
+        .filter(student => student.name || student.topics);
+
+      state.students = students;
+      state.groups = [];
+      state.solutions = [];
+      state.selectedSolutionId = null;
+      state.activeTab = "setup";
+      state.exportTsv = "";
+      state.headerMap = mapping;
+      await hydrateEmbeddingsForStudents(students);
+      await pruneEmbeddings(new Set(students.map(student => student.id)));
+      saveState();
+      render();
+      const conflictEntries = students.filter(student => student.enemyList.length).length;
+      const embedded = students.filter(student => Array.isArray(student.embedding)).length;
+      setStatus(
+        "Parsed " + students.length + " students. " +
+        conflictEntries + " students have conflict entries. " +
+        embedded + " embeddings restored from cache. " +
+        (mapping.enemies ? "Conflict column detected." : "Conflict column was not detected.")
+      );
+      saveState();
+    }
+
+    function getStudentById(id) {
+      return state.students.find(student => student.id === id) || null;
+    }
+
+    function getStudentsInGroup(groupId) {
+      return state.students.filter(student => student.groupId === groupId);
+    }
+
+    function getUnassignedStudents() {
+      return state.students.filter(student => student.groupId === "unassigned");
+    }
+
+    function createGroup(name, manual = true) {
+      const group = { id: uid(), name: name || "Custom Group", manual };
+      state.groups.push(group);
+      return group;
+    }
+
+    function syncGroups() {
+      const used = new Set(state.students.map(student => student.groupId).filter(id => id && id !== "unassigned"));
+      state.groups = state.groups.filter(group => used.has(group.id));
+    }
+
+    function moveStudent(studentId, targetGroupId) {
+      const student = getStudentById(studentId);
+      if (!student) return;
+      let targetId = targetGroupId;
+      if (targetId === "new-group") {
+        targetId = createGroup("Custom Group", true).id;
+      }
+      state.selectedSolutionId = null;
+      state.activeTab = "workspace";
+      student.groupId = targetId;
+      syncGroups();
+      saveState();
+      render();
+      setStatus("Moved " + student.name + ". Workspace scores and conflict flags updated locally.");
+      saveState();
+    }
+
+    function pairKey(a, b) {
+      return a < b ? a + "::" + b : b + "::" + a;
+    }
+
+    function cosineSimilarity(a, b) {
+      if (!Array.isArray(a) || !Array.isArray(b) || !a.length || a.length !== b.length) return null;
+      let dot = 0;
+      let magA = 0;
+      let magB = 0;
+      for (let i = 0; i < a.length; i += 1) {
+        dot += a[i] * b[i];
+        magA += a[i] * a[i];
+        magB += b[i] * b[i];
+      }
+      if (!magA || !magB) return null;
+      return dot / (Math.sqrt(magA) * Math.sqrt(magB));
+    }
+
+    function buildSimilarityMap(studentIds) {
+      const scores = {};
+      for (let i = 0; i < studentIds.length; i += 1) {
+        for (let j = i + 1; j < studentIds.length; j += 1) {
+          const a = getStudentById(studentIds[i]);
+          const b = getStudentById(studentIds[j]);
+          scores[pairKey(studentIds[i], studentIds[j])] = cosineSimilarity(a?.embedding, b?.embedding) ?? -1;
+        }
+      }
+      return scores;
+    }
+
+    function getPairScore(idA, idB, scores) {
+      if (idA === idB) return 1;
+      return scores[pairKey(idA, idB)] ?? -1;
+    }
+
+    function getConflictPairsForStudents(students) {
+      const conflicts = [];
+      for (let i = 0; i < students.length; i += 1) {
+        for (let j = i + 1; j < students.length; j += 1) {
+          const a = students[i];
+          const b = students[j];
+          const aFlagsB = a.enemyList.some(entry => enemyEntryMatchesStudent(entry, b));
+          const bFlagsA = b.enemyList.some(entry => enemyEntryMatchesStudent(entry, a));
+          if (aFlagsB || bFlagsA) {
+            conflicts.push({ a, b, aFlagsB, bFlagsA });
+          }
+        }
+      }
+      return conflicts;
+    }
+
+    function getConflictMapForStudents(students) {
+      const map = new Map();
+      students.forEach(student => map.set(student.id, []));
+      getConflictPairsForStudents(students).forEach(conflict => {
+        if (conflict.aFlagsB) {
+          map.get(conflict.a.id).push("Conflict with: " + conflict.b.name);
+          map.get(conflict.b.id).push("Flagged by: " + conflict.a.name);
+        }
+        if (conflict.bFlagsA) {
+          map.get(conflict.b.id).push("Conflict with: " + conflict.a.name);
+          map.get(conflict.a.id).push("Flagged by: " + conflict.b.name);
+        }
+      });
+      return map;
+    }
+
+    function buildConflictMatrix(studentIds) {
+      const conflictMap = {};
+      for (let i = 0; i < studentIds.length; i += 1) {
+        for (let j = i + 1; j < studentIds.length; j += 1) {
+          const a = getStudentById(studentIds[i]);
+          const b = getStudentById(studentIds[j]);
+          const aFlagsB = a.enemyList.some(entry => enemyEntryMatchesStudent(entry, b));
+          const bFlagsA = b.enemyList.some(entry => enemyEntryMatchesStudent(entry, a));
+          conflictMap[pairKey(a.id, b.id)] = aFlagsB || bFlagsA ? 1 : 0;
+        }
+      }
+      return conflictMap;
+    }
+
+    function getThemeTokens(text) {
+      return String(text || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .split(/[^a-z0-9]+/)
+        .map(token => token.trim())
+        .filter(token => token.length > 2 && !STOP_WORDS.has(token));
+    }
+
+    function deriveGroupTheme(studentIds, fallbackIndex) {
+      const counts = new Map();
+      studentIds.forEach(studentId => {
+        const seen = new Set();
+        getThemeTokens(getStudentById(studentId)?.topics || "").forEach(token => {
+          if (!seen.has(token)) {
+            counts.set(token, (counts.get(token) || 0) + 1);
+            seen.add(token);
+          }
+        });
+      });
+      const topTokens = [...counts.entries()]
+        .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+        .slice(0, 2)
+        .map(entry => titleCase(entry[0]));
+      return topTokens.length ? topTokens.join(" / ") : "Group " + fallbackIndex;
+    }
+
+    function getDisplayGroupName(group, studentIds, fallbackIndex) {
+      const explicitName = String(group?.name || "").trim();
+      if (explicitName) return explicitName;
+      return deriveGroupTheme(studentIds, fallbackIndex);
+    }
+
+    function extractJsonFromModelText(text) {
+      const trimmed = String(text || "").trim();
+      if (!trimmed) {
+        throw new Error("Gemini returned an empty response for group titles.");
+      }
+
+      try {
+        return JSON.parse(trimmed);
+      } catch (error) {
+        const fencedMatch = trimmed.match(/```(?:json)?\s*([\s\S]*?)```/i);
+        const raw = fencedMatch ? fencedMatch[1] : trimmed;
+        const objectStart = raw.indexOf("{");
+        const objectEnd = raw.lastIndexOf("}");
+        const arrayStart = raw.indexOf("[");
+        const arrayEnd = raw.lastIndexOf("]");
+        if (objectStart !== -1 && objectEnd > objectStart) {
+          return JSON.parse(raw.slice(objectStart, objectEnd + 1));
+        }
+        if (arrayStart !== -1 && arrayEnd > arrayStart) {
+          return JSON.parse(raw.slice(arrayStart, arrayEnd + 1));
+        }
+        throw new Error("Gemini did not return valid JSON for group titles.");
+      }
+    }
+
+    async function generateWorkspaceGroupTitles() {
+      const apiKey = els.apiKey.value.trim();
+      if (!apiKey) {
+        throw new Error("API key is required for Gemini group titles.");
+      }
+
+      const nonEmptyGroups = state.groups
+        .map((group, index) => ({
+          group,
+          index,
+          students: getStudentsInGroup(group.id)
+        }))
+        .filter(entry => entry.students.length);
+
+      if (!nonEmptyGroups.length) {
+        throw new Error("There are no non-empty groups in the current workspace.");
+      }
+
+      const payload = nonEmptyGroups.map(entry => ({
+        group_id: entry.group.id,
+        current_title: entry.group.name || deriveGroupTheme(entry.students.map(student => student.id), entry.index + 1),
+        members: entry.students.map(student => ({
+          student_id: student.id,
+          topics: student.topics || ""
+        }))
+      }));
+
+      const prompt = [
+        "You are naming student project groups from anonymized topic descriptions.",
+        "Return JSON only. No markdown.",
+        "For each group_id, create a concise descriptive title of 2 to 5 words.",
+        "Do not use student names. Do not mention privacy. Do not use generic titles like Group 1.",
+        "Prefer specific shared concepts visible in the topic descriptions.",
+        "Return an object with a single key 'groups', whose value is an array of { group_id, title }.",
+        JSON.stringify(payload)
+      ].join("\n");
+
+      const response = await fetch(
+        "https://generativelanguage.googleapis.com/v1beta/models/" + TITLE_MODEL + ":generateContent?key=" + encodeURIComponent(apiKey),
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: {
+              temperature: 0.2,
+              responseMimeType: "application/json",
+              thinkingConfig: { thinkingBudget: 0 }
+            }
+          })
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Group title request failed with status " + response.status + ".");
+      }
+
+      const payloadJson = await response.json();
+      const candidate = payloadJson?.candidates?.[0];
+      const text = candidate?.content?.parts
+        ?.filter(part => typeof part.text === "string" && part.text.trim())
+        .map(part => part.text)
+        .join("\n") || "";
+
+      if (!text) {
+        throw new Error("Gemini returned no usable group-title JSON.");
+      }
+
+      const parsed = extractJsonFromModelText(text);
+      const groups = Array.isArray(parsed) ? parsed : parsed.groups;
+      if (!Array.isArray(groups)) {
+        throw new Error("Gemini group-title response did not include a groups array.");
+      }
+
+      const titleById = new Map();
+      groups.forEach(item => {
+        if (item && typeof item.group_id === "string" && typeof item.title === "string" && item.title.trim()) {
+          titleById.set(item.group_id, item.title.trim());
+        }
+      });
+
+      let renamedCount = 0;
+      state.groups.forEach(group => {
+        const title = titleById.get(group.id);
+        if (title) {
+          group.name = title;
+          renamedCount += 1;
+        }
+      });
+
+      if (!renamedCount) {
+        throw new Error("Gemini returned titles, but none matched the current workspace groups.");
+      }
+
+      state.activeTab = "workspace";
+      saveState();
+      render();
+      setStatus("Generated Gemini titles for " + renamedCount + " groups in the current workspace.");
+      saveState();
+    }
+
+    function averageSimilarity(studentId, groupStudentIds, scores) {
+      if (!groupStudentIds.length) return 0;
+      let total = 0;
+      let count = 0;
+      groupStudentIds.forEach(otherId => {
+        const score = getPairScore(studentId, otherId, scores);
+        if (typeof score === "number") {
+          total += score;
+          count += 1;
+        }
+      });
+      return count ? total / count : 0;
+    }
+
+    function getTargetGroupCount(studentCount, minSize, maxSize) {
+      if (studentCount <= 0) return 1;
+      const minGroups = Math.max(1, Math.ceil(studentCount / maxSize));
+      const maxGroups = Math.max(minGroups, Math.floor(studentCount / Math.max(minSize, 1)) || minGroups);
+      const preferred = Math.round(studentCount / ((minSize + maxSize) / 2));
+      return Math.min(maxGroups, Math.max(minGroups, preferred || minGroups));
+    }
+
+    function groupMembersFromChromosome(chromosome, groupCount) {
+      const groups = Array.from({ length: groupCount }, () => []);
+      chromosome.forEach((groupIndex, studentIndex) => {
+        groups[groupIndex].push(studentIndex);
+      });
+      return groups;
+    }
+
+    function repairChromosome(chromosome, studentIds, groupCount, minSize, maxSize, scores) {
+      const repaired = chromosome.slice();
+      let groups = groupMembersFromChromosome(repaired, groupCount);
+
+      for (let groupIndex = 0; groupIndex < groupCount; groupIndex += 1) {
+        if (!groups[groupIndex].length) {
+          const donorIndex = groups
+            .map((members, index) => ({ index, size: members.length }))
+            .sort((a, b) => b.size - a.size)[0]?.index;
+          if (donorIndex !== undefined && groups[donorIndex].length > 1) {
+            const movedStudent = groups[donorIndex].pop();
+            repaired[movedStudent] = groupIndex;
+            groups[groupIndex].push(movedStudent);
+          }
+        }
+      }
+
+      let adjusted = true;
+      while (adjusted) {
+        adjusted = false;
+        groups = groupMembersFromChromosome(repaired, groupCount);
+
+        const oversized = groups.map((members, index) => ({ index, members })).find(group => group.members.length > maxSize);
+        const undersized = groups.map((members, index) => ({ index, members })).sort((a, b) => a.members.length - b.members.length).find(group => group.members.length < minSize);
+
+        if (oversized && undersized) {
+          const studentToMove = oversized.members
+            .map(studentIndex => {
+              const studentId = studentIds[studentIndex];
+              const targetIds = undersized.members.map(memberIndex => studentIds[memberIndex]);
+              return {
+                studentIndex,
+                score: averageSimilarity(studentId, targetIds, scores)
+              };
+            })
+            .sort((a, b) => b.score - a.score)[0];
+          repaired[studentToMove.studentIndex] = undersized.index;
+          adjusted = true;
+        }
+      }
+
+      return repaired;
+    }
+
+    function createRandomChromosome(studentIds, groupCount, minSize, maxSize, scores) {
+      const chromosome = studentIds.map(() => Math.floor(Math.random() * groupCount));
+      return repairChromosome(chromosome, studentIds, groupCount, minSize, maxSize, scores);
+    }
+
+    function createGreedyChromosome(studentIds, groupCount, minSize, maxSize, scores) {
+      const groups = Array.from({ length: groupCount }, () => []);
+      const unassigned = studentIds.slice().sort(() => Math.random() - 0.5);
+
+      while (unassigned.length) {
+        let bestPlacement = null;
+        for (let studentIdx = 0; studentIdx < unassigned.length; studentIdx += 1) {
+          const studentId = unassigned[studentIdx];
+          for (let groupIndex = 0; groupIndex < groupCount; groupIndex += 1) {
+            if (groups[groupIndex].length >= maxSize) continue;
+            const groupIds = groups[groupIndex];
+            const score = averageSimilarity(studentId, groupIds, scores);
+            const bonus = groupIds.length < minSize ? 0.3 : 0;
+            const candidate = { studentIdx, groupIndex, score: score + bonus };
+            if (!bestPlacement || candidate.score > bestPlacement.score) {
+              bestPlacement = candidate;
+            }
+          }
+        }
+        if (!bestPlacement) break;
+        groups[bestPlacement.groupIndex].push(unassigned.splice(bestPlacement.studentIdx, 1)[0]);
+      }
+
+      const chromosome = new Array(studentIds.length).fill(0);
+      groups.forEach((group, groupIndex) => {
+        group.forEach(studentId => {
+          chromosome[studentIds.indexOf(studentId)] = groupIndex;
+        });
+      });
+
+      return repairChromosome(chromosome, studentIds, groupCount, minSize, maxSize, scores);
+    }
+
+    function crossover(parentA, parentB, studentIds, groupCount, minSize, maxSize, scores) {
+      const child = parentA.map((gene, index) => Math.random() < 0.5 ? gene : parentB[index]);
+      return repairChromosome(child, studentIds, groupCount, minSize, maxSize, scores);
+    }
+
+    function mutate(chromosome, rate, groupCount, studentIds, minSize, maxSize, scores) {
+      const next = chromosome.slice();
+      if (Math.random() < rate) {
+        const index = Math.floor(Math.random() * next.length);
+        next[index] = Math.floor(Math.random() * groupCount);
+      }
+      if (Math.random() < rate * 0.6 && next.length > 1) {
+        const a = Math.floor(Math.random() * next.length);
+        const b = Math.floor(Math.random() * next.length);
+        const temp = next[a];
+        next[a] = next[b];
+        next[b] = temp;
+      }
+      return repairChromosome(next, studentIds, groupCount, minSize, maxSize, scores);
+    }
+
+    function evaluateChromosome(chromosome, studentIds, groupCount, minSize, maxSize, scores, conflicts, mode, targetBand) {
+      const weights = MODE_WEIGHTS[mode] || MODE_WEIGHTS.balanced;
+      const groupsByIndex = groupMembersFromChromosome(chromosome, groupCount);
+      const groups = groupsByIndex.map(members => members.map(index => studentIds[index])).filter(group => group.length);
+      let cohesionTotal = 0;
+      let cohesionPairs = 0;
+      let conflictPairs = 0;
+      let undersizePenalty = 0;
+      let oversizePenalty = 0;
+      let bandPenalty = 0;
+      let bandReward = 0;
+      let tooLowGroups = 0;
+      let tooHighGroups = 0;
+      let inBandGroups = 0;
+      const bandCenter = (targetBand.min + targetBand.max) / 2;
+      const halfWidth = Math.max(0.0001, (targetBand.max - targetBand.min) / 2);
+
+      groups.forEach(groupIds => {
+        if (groupIds.length < minSize) undersizePenalty += (minSize - groupIds.length);
+        if (groupIds.length > maxSize) oversizePenalty += (groupIds.length - maxSize);
+
+        let groupCohesionTotal = 0;
+        let groupCohesionPairs = 0;
+        for (let i = 0; i < groupIds.length; i += 1) {
+          for (let j = i + 1; j < groupIds.length; j += 1) {
+            const pairScore = getPairScore(groupIds[i], groupIds[j], scores);
+            cohesionTotal += pairScore;
+            cohesionPairs += 1;
+            groupCohesionTotal += pairScore;
+            groupCohesionPairs += 1;
+            conflictPairs += conflicts[pairKey(groupIds[i], groupIds[j])] || 0;
+          }
+        }
+
+        if (groupCohesionPairs) {
+          const groupCohesion = groupCohesionTotal / groupCohesionPairs;
+          const distanceFromCenter = Math.abs(groupCohesion - bandCenter);
+          if (groupCohesion < targetBand.min) {
+            tooLowGroups += 1;
+            bandPenalty += (targetBand.min - groupCohesion) * weights.bandPenalty;
+          } else if (groupCohesion > targetBand.max) {
+            tooHighGroups += 1;
+            bandPenalty += (groupCohesion - targetBand.max) * weights.bandPenalty;
+          } else {
+            inBandGroups += 1;
+            bandReward += Math.max(0, 1 - (distanceFromCenter / halfWidth)) * weights.bandReward;
+          }
+        }
+      });
+
+      const assignedCount = groups.reduce((sum, group) => sum + group.length, 0);
+      const unassignedPenalty = Math.max(0, studentIds.length - assignedCount);
+      const cohesion = cohesionPairs ? cohesionTotal / cohesionPairs : 0;
+      const fitness =
+        (cohesion * weights.cohesion) -
+        (conflictPairs * weights.conflict) -
+        bandPenalty +
+        bandReward -
+        (undersizePenalty * weights.undersize) -
+        (oversizePenalty * weights.oversize) -
+        (unassignedPenalty * weights.unassigned);
+
+      return {
+        chromosome,
+        groups,
+        fitness,
+        summary: {
+          cohesion,
+          conflictPairs,
+          bandPenalty,
+          bandReward,
+          tooLowGroups,
+          tooHighGroups,
+          inBandGroups,
+          undersizePenalty,
+          oversizePenalty,
+          unassignedPenalty
+        }
+      };
+    }
+
+    function tournamentSelect(population, size = 3) {
+      const picks = [];
+      for (let i = 0; i < size; i += 1) {
+        picks.push(population[Math.floor(Math.random() * population.length)]);
+      }
+      return picks.sort((a, b) => b.fitness - a.fitness)[0];
+    }
+
+    function signatureForGroups(groups) {
+      return groups
+        .map(group => group.slice().sort().join(","))
+        .sort()
+        .join("|");
+    }
+
+    async function runGeneticSearch() {
+      const { minSize, maxSize } = validateGroupSizes();
+      const populationSize = Number(els.populationSize.value) || 120;
+      const generations = Number(els.generations.value) || 140;
+      const mutationRate = Number(els.mutationRate.value) || 0.18;
+      const solutionCount = Number(els.solutionCount.value) || 5;
+      const mode = els.optimizationMode.value || "balanced";
+      const targetBand = validateTargetBand();
+      const availableStudents = state.students.filter(student => Array.isArray(student.embedding));
+
+      if (!state.students.length) throw new Error("Parse student data before generating solutions.");
+      if (!availableStudents.length) throw new Error("Fetch embeddings before evolving solutions.");
+      if (availableStudents.length !== state.students.length) {
+        throw new Error("Some students are missing embeddings. Fetch embeddings again before evolving solutions.");
+      }
+
+      const studentIds = availableStudents.map(student => student.id);
+      const groupCount = getTargetGroupCount(studentIds.length, minSize, maxSize);
+      const scores = buildSimilarityMap(studentIds);
+      const conflicts = buildConflictMatrix(studentIds);
+
+      let population = [];
+      for (let i = 0; i < populationSize; i += 1) {
+        const chromosome = i < Math.ceil(populationSize * 0.25)
+          ? createGreedyChromosome(studentIds, groupCount, minSize, maxSize, scores)
+          : createRandomChromosome(studentIds, groupCount, minSize, maxSize, scores);
+        population.push(evaluateChromosome(chromosome, studentIds, groupCount, minSize, maxSize, scores, conflicts, mode, targetBand));
+      }
+
+      const eliteCount = Math.max(4, Math.floor(populationSize * 0.08));
+
+      for (let generation = 0; generation < generations; generation += 1) {
+        population.sort((a, b) => b.fitness - a.fitness);
+        const nextPopulation = population.slice(0, eliteCount);
+
+        while (nextPopulation.length < populationSize) {
+          const parentA = tournamentSelect(population);
+          const parentB = tournamentSelect(population);
+          const childChromosome = mutate(
+            crossover(parentA.chromosome, parentB.chromosome, studentIds, groupCount, minSize, maxSize, scores),
+            mutationRate,
+            groupCount,
+            studentIds,
+            minSize,
+            maxSize,
+            scores
+          );
+          nextPopulation.push(evaluateChromosome(childChromosome, studentIds, groupCount, minSize, maxSize, scores, conflicts, mode, targetBand));
+        }
+
+        population = nextPopulation;
+
+        if ((generation + 1) % 10 === 0) {
+          const best = population.sort((a, b) => b.fitness - a.fitness)[0];
+          setStatus(
+            "Evolving solutions... generation " + (generation + 1) + " / " + generations +
+            ". Best fitness: " + best.fitness.toFixed(2) +
+            ", conflicts: " + best.summary.conflictPairs +
+            ", cohesion: " + best.summary.cohesion.toFixed(2) +
+            ", in-band groups: " + best.summary.inBandGroups
+          );
+          await new Promise(resolve => setTimeout(resolve, 0));
+        }
+      }
+
+      population.sort((a, b) => b.fitness - a.fitness);
+      const uniqueSolutions = [];
+      const seen = new Set();
+
+      population.forEach((candidate, index) => {
+        const signature = signatureForGroups(candidate.groups);
+        if (seen.has(signature) || uniqueSolutions.length >= solutionCount) return;
+        seen.add(signature);
+        uniqueSolutions.push({
+          id: uid(),
+          rank: uniqueSolutions.length + 1,
+          fitness: candidate.fitness,
+          summary: candidate.summary,
+          groups: candidate.groups.map((groupIds, groupIndex) => ({
+            id: uid(),
+            name: deriveGroupTheme(groupIds, groupIndex + 1),
+            manual: false,
+            studentIds: groupIds.slice()
+          }))
+        });
+      });
+
+      state.solutions = uniqueSolutions;
+      if (uniqueSolutions.length) {
+        applySolution(uniqueSolutions[0].id);
+        state.activeTab = "solutions";
+      } else {
+        state.selectedSolutionId = null;
+        state.activeTab = "solutions";
+      }
+      saveState();
+      render();
+      const best = uniqueSolutions[0];
+      setStatus(
+        "Generated " + uniqueSolutions.length + " candidate solutions. Best fitness: " +
+        (best ? best.fitness.toFixed(2) : "N/A") +
+        ". Target cohesion band: " + targetBand.min.toFixed(2) + "-" + targetBand.max.toFixed(2) +
+        ". Click a candidate to load it into the workspace."
+      );
+      saveState();
+    }
+
+    function applySolution(solutionId) {
+      const solution = state.solutions.find(item => item.id === solutionId);
+      if (!solution) return;
+
+      state.selectedSolutionId = solutionId;
+      state.activeTab = "workspace";
+      state.groups = solution.groups.map(group => ({
+        id: group.id,
+        name: group.name,
+        manual: group.manual
+      }));
+
+      state.students.forEach(student => {
+        student.groupId = "unassigned";
+      });
+
+      solution.groups.forEach(group => {
+        group.studentIds.forEach(studentId => {
+          const student = getStudentById(studentId);
+          if (student) student.groupId = group.id;
+        });
+      });
+
+      saveState();
+      render();
+      setStatus("Applied candidate solution #" + solution.rank + " to the workspace.");
+      saveState();
+    }
+
+    async function fetchEmbeddingForStudent(student, apiKey) {
+      const response = await fetch(
+        "https://generativelanguage.googleapis.com/v1beta/models/" + EMBEDDING_MODEL + ":embedContent?key=" + encodeURIComponent(apiKey),
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "models/" + EMBEDDING_MODEL,
+            content: { parts: [{ text: student.topics || "No topics provided" }] },
+            outputDimensionality: EMBEDDING_DIMENSION
+          })
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Embedding request failed for " + student.name + " with status " + response.status + ".");
+      }
+
+      const payload = await response.json();
+      const values = payload?.embedding?.values;
+      if (!Array.isArray(values) || !values.length) {
+        throw new Error("Embedding response for " + student.name + " did not include vector values.");
+      }
+      student.embedding = values;
+      await putEmbedding(student.id, values);
+    }
+
+    async function fetchEmbeddings() {
+      const apiKey = els.apiKey.value.trim();
+      if (!apiKey) throw new Error("API key is required for embeddings.");
+      if (!state.students.length) throw new Error("Parse student data before fetching embeddings.");
+
+      const queue = state.students.filter(student => !Array.isArray(student.embedding));
+      if (!queue.length) {
+        setStatus("All student embeddings are already cached locally.");
+        return;
+      }
+
+      for (let index = 0; index < queue.length; index += 1) {
+        await fetchEmbeddingForStudent(queue[index], apiKey);
+        saveState();
+        renderStats();
+        setStatus("Fetched embeddings for " + (index + 1) + " of " + queue.length + " students.");
+      }
+
+      saveState();
+      render();
+      setStatus("Fetched embeddings for " + queue.length + " students. Genetic search is ready.");
+      saveState();
+    }
+
+    function getGroupPresentation(group) {
+      const students = getStudentsInGroup(group.id);
+      const { minSize, maxSize } = validateGroupSizes();
+      const targetBand = getTargetBandForRender();
+      let cohesionTotal = 0;
+      let cohesionPairs = 0;
+      for (let i = 0; i < students.length; i += 1) {
+        for (let j = i + 1; j < students.length; j += 1) {
+          const score = cosineSimilarity(students[i].embedding, students[j].embedding);
+          if (typeof score === "number") {
+            cohesionTotal += score;
+            cohesionPairs += 1;
+          }
+        }
+      }
+      const cohesion = cohesionPairs ? cohesionTotal / cohesionPairs : null;
+      const conflicts = getConflictPairsForStudents(students);
+      const sizeInvalid = students.length > 0 && (students.length < minSize || students.length > maxSize);
+
+      let className = "neutral";
+      let label = "Needs Embeddings";
+
+      if (conflicts.length) {
+        className = "conflict";
+        label = conflicts.length + " conflict" + (conflicts.length === 1 ? "" : "s");
+      } else if (sizeInvalid) {
+        className = "invalid";
+        label = "Size mismatch";
+      } else if (cohesion === null) {
+        className = "neutral";
+      } else if (cohesion >= targetBand.min && cohesion <= targetBand.max) {
+        className = "good";
+        label = "In target band";
+      } else if (cohesion > targetBand.max) {
+        className = "ok";
+        label = "Too similar";
+      } else {
+        className = "weak";
+        label = "Below target";
+      }
+
+      return { students, cohesion, conflicts, sizeInvalid, className, label };
+    }
+
+    function renderStats() {
+      const embeddedCount = state.students.filter(student => Array.isArray(student.embedding)).length;
+      const assignedCount = state.students.filter(student => student.groupId !== "unassigned").length;
+      const conflictEntries = state.students.filter(student => student.enemyList.length).length;
+      const stats = [
+        { value: state.students.length, label: "Students" },
+        { value: embeddedCount, label: "Embedded" },
+        { value: state.solutions.length, label: "Solutions" },
+        { value: assignedCount, label: "Assigned" },
+        { value: conflictEntries, label: "With Conflicts" }
+      ];
+      els.stats.innerHTML = stats.map(stat => `
+        <div class="stat">
+          <strong>${stat.value}</strong>
+          <span>${stat.label}</span>
+        </div>
+      `).join("");
+    }
+
+    function renderHeaderDebug() {
+      els.headerDebug.innerHTML = HEADER_FIELDS.map(field => {
+        const match = state.headerMap[field];
+        if (!match) return `<span class="chip"><strong>${escapeHtml(field)}</strong>&nbsp;not found</span>`;
+        return `<span class="chip"><strong>${escapeHtml(field)}</strong>&nbsp;${escapeHtml(match.label)}</span>`;
+      }).join("");
+    }
+
+    function escapeTsvCell(value) {
+      const text = String(value ?? "");
+      if (/[\"\t\n\r]/.test(text)) {
+        return '"' + text.replace(/"/g, '""') + '"';
+      }
+      return text;
+    }
+
+    function getStudentFieldValue(student, field) {
+      switch (field) {
+        case "timestamp": return student.timestamp || "";
+        case "email": return student.email || "";
+        case "section": return student.section || "";
+        case "name": return student.name || "";
+        case "topics": return student.topics || "";
+        case "contact": return student.contact || "";
+        case "helpers": return student.helpers || "";
+        case "spanish": return student.spanish || "";
+        case "enemies": return student.enemiesRaw || "";
+        default: return "";
+      }
+    }
+
+    function buildGroupThemeLookup() {
+      const themeById = {};
+      const orderById = {};
+      state.groups.forEach((group, index) => {
+        const students = getStudentsInGroup(group.id);
+        themeById[group.id] = getDisplayGroupName(group, students.map(student => student.id), index + 1);
+        orderById[group.id] = index + 1;
+      });
+      return { themeById, orderById };
+    }
+
+    function getStudentsForExport() {
+      const ordered = [];
+      state.groups.forEach(group => {
+        getStudentsInGroup(group.id).forEach(student => ordered.push(student));
+      });
+      getUnassignedStudents().forEach(student => ordered.push(student));
+      return ordered;
+    }
+
+    function generateExportTsv() {
+      if (!state.students.length) {
+        throw new Error("Parse student data before exporting.");
+      }
+
+      const headers = state.originalHeaders.length
+        ? state.originalHeaders.slice()
+        : [
+            "Timestamp",
+            "Email Address",
+            "Which Changemakers section are you in?",
+            "What is your name?",
+            "What topics/issues would you like to work on for this project?",
+            "Do you already have a topic in mind AND a contact person?",
+            "Have people already expressed interest in helping you with this project?",
+            "How fluent are you in Spanish?",
+            "Hard time collaborating with"
+          ];
+
+      const reverseHeaderMap = {};
+      Object.entries(state.headerMap).forEach(([field, meta]) => {
+        reverseHeaderMap[meta.index] = field;
+      });
+
+      const { themeById, orderById } = buildGroupThemeLookup();
+      const rows = [];
+      rows.push([...headers, "GA Group Theme", "GA Group Order"].map(escapeTsvCell).join("\t"));
+
+      getStudentsForExport().forEach(student => {
+        const baseRow = headers.map((header, index) => {
+          const field = reverseHeaderMap[index];
+          return escapeTsvCell(getStudentFieldValue(student, field));
+        });
+
+        const groupTheme = student.groupId === "unassigned" ? "Unassigned" : (themeById[student.groupId] || "");
+        const groupOrder = student.groupId === "unassigned" ? "" : String(orderById[student.groupId] || "");
+
+        rows.push([...baseRow, escapeTsvCell(groupTheme), escapeTsvCell(groupOrder)].join("\t"));
+      });
+
+      const tsv = rows.join("\n");
+      state.exportTsv = tsv;
+      els.exportOutput.value = tsv;
+      saveState();
+      setStatus("Generated export TSV for " + state.students.length + " students, sorted by the current grouping.");
+      saveState();
+    }
+
+    async function exportSessionBundle() {
+      const embeddingRecords = await getAllEmbeddings();
+      const bundle = {
+        bundleType: "privacy-first-student-grouper-gen-session",
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        state: JSON.parse(serializeState()),
+        embeddings: embeddingRecords
+      };
+
+      const blob = new Blob([JSON.stringify(bundle, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = "student-grouper-session-" + new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-") + ".json";
+      anchor.click();
+      URL.revokeObjectURL(url);
+
+      setStatus(
+        "Exported session bundle with " + state.students.length + " students, " +
+        embeddingRecords.length + " cached embeddings, and " +
+        state.solutions.length + " saved solutions."
+      );
+      saveState();
+    }
+
+    async function importSessionBundle(file) {
+      if (!file) {
+        throw new Error("Choose a session JSON file to import.");
+      }
+
+      const text = await file.text();
+      let bundle;
+      try {
+        bundle = JSON.parse(text);
+      } catch (error) {
+        throw new Error("The selected file is not valid JSON.");
+      }
+
+      if (bundle?.bundleType !== "privacy-first-student-grouper-gen-session") {
+        throw new Error("This file is not a recognized student grouper session bundle.");
+      }
+
+      const importedState = bundle.state || {};
+      Object.assign(state, importedState);
+      state.students = (importedState.students || []).map(rebuildStudent);
+      state.groups = importedState.groups || [];
+      state.solutions = importedState.solutions || [];
+      state.selectedSolutionId = importedState.selectedSolutionId || null;
+      state.activeTab = importedState.activeTab || "setup";
+      state.headerMap = importedState.headerMap || {};
+      state.idLookup = importedState.idLookup || {};
+      state.originalHeaders = importedState.originalHeaders || [];
+      state.exportTsv = importedState.exportTsv || "";
+      state.lastStatus = importedState.lastStatus || "";
+
+      els.apiKey.value = state.apiKey || "";
+      els.minSize.value = state.minSize || 2;
+      els.maxSize.value = state.maxSize || 3;
+      els.populationSize.value = state.populationSize || 120;
+      els.generations.value = state.generations || 140;
+      els.mutationRate.value = state.mutationRate || 0.18;
+      els.optimizationMode.value = state.optimizationMode || "balanced";
+      els.targetCohesionMin.value = state.targetCohesionMin ?? 0.6;
+      els.targetCohesionMax.value = state.targetCohesionMax ?? 0.8;
+      els.solutionCount.value = state.solutionCount || 5;
+      els.showStudentTags.checked = state.showStudentTags !== false;
+      els.pasteInput.value = state.rawInput || "";
+      els.exportOutput.value = state.exportTsv || "";
+
+      await replaceEmbeddings(bundle.embeddings || []);
+      await hydrateEmbeddingsForStudents(state.students);
+
+      saveState();
+      render();
+      setStatus(
+        "Imported session bundle with " + state.students.length + " students, " +
+        (bundle.embeddings || []).length + " cached embeddings, and " +
+        state.solutions.length + " saved solutions."
+      );
+      saveState();
+    }
+
+    function renderStudentCard(student, warnings) {
+      const tags = [
+        student.section ? "Section: " + student.section : "",
+        student.spanish ? "Spanish: " + student.spanish : "",
+        student.contact ? "Contact listed" : ""
+      ].filter(Boolean);
+
+      return `
+        <article class="student" draggable="true" data-student-id="${student.id}">
+          <div class="student-top">
+            <div>
+              <h4>${escapeHtml(student.name || "Unnamed Student")}</h4>
+              <small class="muted mono">${escapeHtml(student.id.slice(0, 8))}</small>
+            </div>
+            <span class="badge neutral">${Array.isArray(student.embedding) ? "Embedded" : "Local only"}</span>
+          </div>
+          ${warnings.map(warning => `<div class="warning">${escapeHtml(warning)}</div>`).join("")}
+          <p>${escapeHtml(student.topics || "No topics provided.")}</p>
+          ${state.showStudentTags && tags.length ? `
+            <div class="chip-row">
+              ${tags.map(tag => `<span class="mini-tag">${escapeHtml(tag)}</span>`).join("")}
+            </div>
+          ` : ""}
+        </article>
+      `;
+    }
+
+    function renderUnassigned() {
+      const students = getUnassignedStudents();
+      els.unassignedCount.textContent = students.length + " student" + (students.length === 1 ? "" : "s");
+      els.unassignedList.innerHTML = students.length
+        ? students.map(student => renderStudentCard(student, [])).join("")
+        : '<div class="placeholder">No students are currently unassigned.</div>';
+    }
+
+    function solutionClass(summary) {
+      if (summary.conflictPairs) return "conflict";
+      if (summary.undersizePenalty || summary.oversizePenalty || summary.unassignedPenalty) return "weak";
+      if (summary.inBandGroups) return "good";
+      if (summary.tooHighGroups) return "ok";
+      return "weak";
+    }
+
+    function renderSolutions() {
+      if (!state.solutions.length) {
+        els.solutionsGrid.innerHTML = '<div class="placeholder">No candidate solutions yet. Parse roster, fetch embeddings, then evolve solutions.</div>';
+        return;
+      }
+
+      els.solutionsGrid.innerHTML = state.solutions.map(solution => `
+        <article class="solution-card ${solutionClass(solution.summary)} ${state.selectedSolutionId === solution.id ? "selected" : ""}" data-solution-id="${solution.id}">
+          <div class="solution-topline">
+            <h3>Solution ${solution.rank}</h3>
+            <span class="badge ${solution.summary.conflictPairs ? "conflict" : solution.summary.inBandGroups ? "good" : solution.summary.tooHighGroups ? "ok" : "warn"}">${solution.fitness.toFixed(2)}</span>
+          </div>
+          <div class="meta-row">
+            <span class="badge neutral">${solution.groups.length} groups</span>
+            <span class="badge neutral">Cohesion ${solution.summary.cohesion.toFixed(2)}</span>
+          </div>
+          <div class="meta-row">
+            <span class="badge ${solution.summary.conflictPairs ? "conflict" : "neutral"}">${solution.summary.conflictPairs} conflicts</span>
+            <span class="badge ${solution.summary.inBandGroups ? "good" : "warn"}">${solution.summary.inBandGroups} in band</span>
+          </div>
+          <div class="meta-row">
+            <span class="badge ${solution.summary.undersizePenalty || solution.summary.oversizePenalty ? "warn" : "neutral"}">${solution.summary.undersizePenalty + solution.summary.oversizePenalty} size penalty</span>
+            <span class="badge ${solution.summary.tooHighGroups || solution.summary.tooLowGroups ? "warn" : "neutral"}">${solution.summary.tooHighGroups} high / ${solution.summary.tooLowGroups} low</span>
+          </div>
+        </article>
+      `).join("");
+
+      els.solutionsGrid.querySelectorAll("[data-solution-id]").forEach(node => {
+        node.addEventListener("click", () => applySolution(node.dataset.solutionId));
+      });
+    }
+
+    function renderGroups() {
+      const groupCards = state.groups.map((group, index) => {
+        const presentation = getGroupPresentation(group);
+        const warnings = getConflictMapForStudents(presentation.students);
+        const displayName = getDisplayGroupName(group, presentation.students.map(student => student.id), index + 1);
+        const sizeText = presentation.students.length + " student" + (presentation.students.length === 1 ? "" : "s");
+        const scoreText = presentation.cohesion === null ? "N/A" : presentation.cohesion.toFixed(2);
+
+        return `
+          <section class="group-card ${presentation.className}" data-drop-target="${group.id}">
+            <div class="group-topline">
+              <h3>${escapeHtml(displayName)}</h3>
+              <span class="badge ${presentation.className === "conflict" ? "conflict" : presentation.className === "good" ? "good" : presentation.className === "ok" ? "ok" : presentation.className === "neutral" ? "neutral" : "warn"}">${escapeHtml(presentation.label)}</span>
+            </div>
+            <div class="group-meta">
+              <span class="muted">${escapeHtml(sizeText)}</span>
+              <span class="muted">Cohesion: ${escapeHtml(scoreText)}</span>
+            </div>
+            <div class="meta-row">
+              <span class="badge neutral">Target ${state.minSize}-${state.maxSize}</span>
+              <span class="badge ${presentation.conflicts.length ? "conflict" : "neutral"}">${presentation.conflicts.length} conflict pair${presentation.conflicts.length === 1 ? "" : "s"}</span>
+            </div>
+            <div class="dropzone">
+              ${presentation.students.length
+                ? presentation.students.map(student => renderStudentCard(student, warnings.get(student.id) || [])).join("")
+                : '<div class="placeholder">Drop students here.</div>'}
+            </div>
+          </section>
+        `;
+      });
+
+      groupCards.push(`
+        <section class="new-group" data-drop-target="new-group">
+          <h3>Create New Group</h3>
+          <p class="muted" style="margin: 0;">Drag a student here to create a manual group.</p>
+        </section>
+      `);
+
+      els.groupsGrid.innerHTML = groupCards.join("");
+    }
+
+    function attachDnD() {
+      const students = document.querySelectorAll(".student");
+      const targets = document.querySelectorAll("[data-drop-target]");
+
+      students.forEach(card => {
+        card.addEventListener("dragstart", event => {
+          event.dataTransfer.setData("text/plain", card.dataset.studentId);
+          event.dataTransfer.effectAllowed = "move";
+        });
+      });
+
+      targets.forEach(target => {
+        target.addEventListener("dragover", event => {
+          event.preventDefault();
+          target.classList.add("drag-over");
+        });
+        target.addEventListener("dragleave", () => {
+          target.classList.remove("drag-over");
+        });
+        target.addEventListener("drop", event => {
+          event.preventDefault();
+          target.classList.remove("drag-over");
+          const studentId = event.dataTransfer.getData("text/plain");
+          moveStudent(studentId, target.dataset.dropTarget);
+        });
+      });
+    }
+
+    function render() {
+      setActiveTab(state.activeTab || "setup");
+      renderStats();
+      renderHeaderDebug();
+      renderUnassigned();
+      renderSolutions();
+      renderGroups();
+      els.exportOutput.value = state.exportTsv || "";
+      attachDnD();
+      els.saveStatePill.textContent = formatSavedTime(state.lastSavedAt);
+    }
+
+    async function clearLocalData() {
+      localStorage.removeItem(STORAGE_KEY);
+      await clearEmbeddingsDb();
+      state.apiKey = "";
+      state.minSize = 2;
+      state.maxSize = 3;
+      state.populationSize = 120;
+      state.generations = 140;
+      state.mutationRate = 0.18;
+      state.optimizationMode = "balanced";
+      state.targetCohesionMin = 0.6;
+      state.targetCohesionMax = 0.8;
+      state.solutionCount = 5;
+      state.showStudentTags = true;
+      state.activeTab = "setup";
+      state.rawInput = "";
+      state.students = [];
+      state.groups = [];
+      state.solutions = [];
+      state.selectedSolutionId = null;
+      state.headerMap = {};
+      state.originalHeaders = [];
+      state.exportTsv = "";
+      state.idLookup = {};
+      state.lastStatus = "";
+      state.lastSavedAt = null;
+      els.apiKey.value = "";
+      els.minSize.value = 2;
+      els.maxSize.value = 3;
+      els.populationSize.value = 120;
+      els.generations.value = 140;
+      els.mutationRate.value = 0.18;
+      els.optimizationMode.value = "balanced";
+      els.targetCohesionMin.value = 0.6;
+      els.targetCohesionMax.value = 0.8;
+      els.solutionCount.value = 5;
+      els.showStudentTags.checked = true;
+      els.pasteInput.value = "";
+      els.exportOutput.value = "";
+      els.saveStatePill.textContent = "Not saved yet";
+      render();
+      setStatus("Local GA session data cleared.");
+    }
+
+    async function runTask(task, busyMessage) {
+      try {
+        setBusy(true);
+        setStatus(busyMessage);
+        await task();
+      } catch (error) {
+        console.error(error);
+        setStatus(error.message || "Something went wrong.");
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    els.apiKey.addEventListener("input", saveState);
+    els.minSize.addEventListener("input", () => { saveState(); render(); });
+    els.maxSize.addEventListener("input", () => { saveState(); render(); });
+    els.populationSize.addEventListener("input", saveState);
+    els.generations.addEventListener("input", saveState);
+    els.mutationRate.addEventListener("input", saveState);
+    els.optimizationMode.addEventListener("change", saveState);
+    els.targetCohesionMin.addEventListener("input", () => { saveState(); render(); });
+    els.targetCohesionMax.addEventListener("input", () => { saveState(); render(); });
+    els.solutionCount.addEventListener("input", saveState);
+    els.showStudentTags.addEventListener("change", () => { saveState(); render(); });
+    els.pasteInput.addEventListener("input", saveState);
+    document.querySelectorAll("[data-tab]").forEach(button => {
+      button.addEventListener("click", () => {
+        setActiveTab(button.dataset.tab);
+        saveState();
+      });
+    });
+
+    els.parseBtn.addEventListener("click", () => runTask(async () => {
+      validateGroupSizes();
+      await parseRoster();
+    }, "Parsing spreadsheet data locally..."));
+
+    els.embedBtn.addEventListener("click", () => runTask(async () => {
+      await fetchEmbeddings();
+    }, "Fetching topic embeddings from Gemini..."));
+
+    els.solveBtn.addEventListener("click", () => runTask(async () => {
+      await runGeneticSearch();
+    }, "Evolving candidate solutions locally..."));
+
+    els.addGroupBtn.addEventListener("click", () => {
+      state.selectedSolutionId = null;
+      createGroup("Custom Group", true);
+      saveState();
+      render();
+      setStatus("Added an empty manual group.");
+      saveState();
+    });
+
+    els.titleGroupsBtn.addEventListener("click", () => {
+      runTask(async () => {
+        await generateWorkspaceGroupTitles();
+      }, "Generating Gemini titles for current workspace groups...");
+    });
+
+    els.exportBtn.addEventListener("click", () => {
+      try {
+        generateExportTsv();
+      } catch (error) {
+        console.error(error);
+        setStatus(error.message || "Unable to generate export TSV.");
+      }
+    });
+
+    els.copyExportBtn.addEventListener("click", async () => {
+      try {
+        if (!state.exportTsv) {
+          generateExportTsv();
+        }
+        await navigator.clipboard.writeText(state.exportTsv);
+        setStatus("Copied export TSV to the clipboard.");
+        saveState();
+      } catch (error) {
+        console.error(error);
+        setStatus("Unable to copy automatically. The TSV is still available in the export box.");
+      }
+    });
+
+    els.exportSessionBtn.addEventListener("click", () => {
+      runTask(async () => {
+        await exportSessionBundle();
+      }, "Exporting session bundle...");
+    });
+
+    els.importSessionBtn.addEventListener("click", () => {
+      els.importSessionInput.click();
+    });
+
+    els.importSessionInput.addEventListener("change", () => {
+      const [file] = els.importSessionInput.files || [];
+      runTask(async () => {
+        await importSessionBundle(file);
+      }, "Importing session bundle...");
+      els.importSessionInput.value = "";
+    });
+
+    els.clearBtn.addEventListener("click", () => {
+      if (confirm("Clear all locally stored student data, embeddings, and genetic solutions?")) {
+        runTask(async () => {
+          await clearLocalData();
+        }, "Clearing local session data...");
+      }
+    });
+
+    (async () => {
+      await loadState();
+      render();
+    })();
+  </script>
+</body>
+</html>
