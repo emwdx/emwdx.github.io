@@ -1,0 +1,1316 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Daily Math Review</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js"></script>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #172026;
+      --muted: #5f6c72;
+      --line: #cbd8dc;
+      --soft: #eef4f3;
+      --accent: #126b74;
+      --accent-strong: #0b4f56;
+      --warn: #a84e00;
+      --good: #1f7a45;
+      --paper: #ffffff;
+      --stage: #f8fbfa;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--stage);
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      background: var(--accent);
+      color: white;
+      padding: 0.7rem 0.95rem;
+      cursor: pointer;
+      min-height: 42px;
+    }
+
+    button:hover,
+    button:focus-visible {
+      background: var(--accent-strong);
+      border-color: var(--accent-strong);
+    }
+
+    button.secondary {
+      background: white;
+      color: var(--accent-strong);
+    }
+
+    button.secondary:hover,
+    button.secondary:focus-visible {
+      background: var(--soft);
+    }
+
+    button.danger {
+      border-color: #8b1d1d;
+      background: #8b1d1d;
+    }
+
+    button.ghost {
+      border-color: transparent;
+      background: transparent;
+      color: var(--accent-strong);
+      padding-inline: 0.5rem;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: white;
+      color: var(--ink);
+      padding: 0.7rem;
+    }
+
+    textarea {
+      min-height: 6rem;
+      resize: vertical;
+    }
+
+    label {
+      display: grid;
+      gap: 0.35rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 650;
+    }
+
+    .app-shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    header {
+      border-bottom: 1px solid var(--line);
+      background: white;
+    }
+
+    .topbar {
+      width: min(1180px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 1rem 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-block-start: 0;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.35rem, 3vw, 2rem);
+      line-height: 1.1;
+    }
+
+    h2 {
+      font-size: 1.2rem;
+      margin-bottom: 0.7rem;
+    }
+
+    h3 {
+      font-size: 1rem;
+      margin-bottom: 0.45rem;
+    }
+
+    main {
+      width: min(1180px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 1rem 0 2rem;
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .tab {
+      color: var(--accent-strong);
+      background: white;
+      border-color: var(--line);
+    }
+
+    .tab[aria-selected="true"] {
+      color: white;
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .panel {
+      display: none;
+    }
+
+    .panel.active {
+      display: block;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 1rem;
+      align-items: start;
+    }
+
+    .box {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+
+    .span-4 {
+      grid-column: span 4;
+    }
+
+    .span-5 {
+      grid-column: span 5;
+    }
+
+    .span-7 {
+      grid-column: span 7;
+    }
+
+    .span-8 {
+      grid-column: span 8;
+    }
+
+    .span-12 {
+      grid-column: 1 / -1;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      align-items: center;
+    }
+
+    .status {
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.8rem;
+    }
+
+    .form-grid .wide {
+      grid-column: 1 / -1;
+    }
+
+    .question-list {
+      display: grid;
+      gap: 0.7rem;
+      max-height: 62vh;
+      overflow: auto;
+      padding-right: 0.2rem;
+    }
+
+    .question-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.75rem;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 0.8rem;
+      background: #fbfdfc;
+    }
+
+    .question-row p {
+      margin: 0.2rem 0 0;
+      white-space: pre-wrap;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      align-items: center;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 0.18rem 0.55rem;
+      color: var(--muted);
+      background: white;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .prompt-box {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 1rem;
+      white-space: pre-wrap;
+      color: #263238;
+      line-height: 1.45;
+      max-height: 50vh;
+      overflow: auto;
+    }
+
+    .deck-panel {
+      min-height: calc(100vh - 162px);
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 1rem;
+    }
+
+    .deck-toolbar {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 0.7rem;
+      align-items: end;
+    }
+
+    .stage {
+      position: relative;
+      min-height: 560px;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      padding: clamp(1rem, 3vw, 2.5rem);
+      box-shadow: 0 8px 28px rgba(20, 35, 40, 0.08);
+    }
+
+    .stage-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      color: var(--muted);
+      font-size: clamp(0.9rem, 1.4vw, 1.1rem);
+      font-weight: 750;
+    }
+
+    .question-stage {
+      display: grid;
+      align-content: center;
+      justify-items: center;
+      gap: clamp(1rem, 2vh, 1.8rem);
+      text-align: center;
+    }
+
+    .topic {
+      color: var(--accent-strong);
+      text-transform: uppercase;
+      letter-spacing: 0;
+      font-weight: 850;
+      font-size: clamp(0.9rem, 1.8vw, 1.35rem);
+    }
+
+    .question-text {
+      width: min(100%, 980px);
+      white-space: pre-wrap;
+      font-weight: 800;
+      line-height: 1.12;
+      font-size: clamp(2.4rem, 7vw, 5.8rem);
+    }
+
+    .answer-text {
+      display: none;
+      width: min(100%, 900px);
+      border-top: 3px solid var(--line);
+      padding-top: 1rem;
+      white-space: pre-wrap;
+      color: var(--good);
+      font-weight: 800;
+      line-height: 1.18;
+      font-size: clamp(1.8rem, 4.4vw, 3.5rem);
+    }
+
+    .stage.answer-visible .answer-text {
+      display: block;
+    }
+
+    .visual {
+      display: none;
+      width: min(100%, 900px);
+      color: var(--muted);
+      font-size: clamp(1rem, 2vw, 1.45rem);
+      line-height: 1.35;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 0.8rem;
+      background: #f7fbfb;
+    }
+
+    .stage.answer-visible .visual.has-visual {
+      display: block;
+    }
+
+    .question-image {
+      max-width: min(72vw, 720px);
+      max-height: 28vh;
+      object-fit: contain;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+    }
+
+    .deck-controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.7rem;
+    }
+
+    .fullscreen .app-shell > header,
+    .fullscreen .tabs,
+    .fullscreen .deck-toolbar {
+      display: none;
+    }
+
+    .fullscreen main {
+      width: 100%;
+      padding: 0;
+    }
+
+    .fullscreen .deck-panel {
+      min-height: 100vh;
+      gap: 0;
+    }
+
+    .fullscreen .stage {
+      min-height: 100vh;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .fullscreen .deck-controls {
+      position: fixed;
+      left: 50%;
+      bottom: 1rem;
+      transform: translateX(-50%);
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 0.6rem;
+    }
+
+    @media (max-width: 850px) {
+      .grid,
+      .form-grid,
+      .deck-toolbar {
+        grid-template-columns: 1fr;
+      }
+
+      .span-4,
+      .span-5,
+      .span-7,
+      .span-8,
+      .span-12 {
+        grid-column: 1;
+      }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .stage {
+        min-height: 520px;
+      }
+
+      .question-text {
+        font-size: clamp(2rem, 12vw, 4rem);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header>
+      <div class="topbar">
+        <div>
+          <h1>Daily Math Review</h1>
+          <p class="status" id="bankStatus">Loading question bank...</p>
+        </div>
+        <div class="actions">
+          <button class="secondary" id="exportBtn" type="button">Export JSON</button>
+          <button class="secondary" id="clearBtn" type="button">Clear Local Bank</button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <nav class="tabs" aria-label="App sections">
+        <button class="tab" type="button" data-tab="deck" aria-selected="true">Projector Display</button>
+        <button class="tab" type="button" data-tab="config" aria-selected="false">Config</button>
+        <button class="tab" type="button" data-tab="prompt" aria-selected="false">Generator Prompt</button>
+      </nav>
+
+      <section class="panel active" id="deckPanel">
+        <div class="deck-panel">
+          <div class="deck-toolbar">
+            <label>
+              Mode
+              <select id="modeSelect">
+                <option value="day">Assigned day</option>
+                <option value="due">Spaced recall due now</option>
+                <option value="random">Random five</option>
+              </select>
+            </label>
+            <label>
+              Day
+              <input id="dayInput" type="number" min="1" value="1">
+            </label>
+            <label>
+              Topic filter
+              <select id="topicFilter">
+                <option value="">All topics</option>
+              </select>
+            </label>
+            <label>
+              Questions
+              <input id="countInput" type="number" min="1" max="12" value="5">
+            </label>
+            <div class="actions">
+              <button id="buildDeckBtn" type="button">Build Set</button>
+              <button class="secondary" id="fullscreenBtn" type="button">Projector Mode</button>
+            </div>
+          </div>
+
+          <article class="stage" id="stage" aria-live="polite">
+            <div class="stage-meta">
+              <span id="slideCounter">Slide 1 of 5</span>
+              <span id="deckLabel">Day 1</span>
+            </div>
+            <div class="question-stage">
+              <div class="topic" id="stageTopic">Topic</div>
+              <img class="question-image" id="stageImage" alt="" hidden>
+              <div class="question-text math" id="stageQuestion">Load or build a question set.</div>
+              <div class="answer-text math" id="stageAnswer"></div>
+              <div class="visual" id="stageVisual"></div>
+            </div>
+            <div class="small" id="keyboardHelp">Keys: Space reveals answer, arrows move slides, 1 marks again, 2 marks good.</div>
+          </article>
+
+          <div class="deck-controls">
+            <button class="secondary" id="prevBtn" type="button">Previous</button>
+            <button id="answerBtn" type="button">Reveal Answer</button>
+            <button class="secondary" id="againBtn" type="button">Again</button>
+            <button class="secondary" id="goodBtn" type="button">Good</button>
+            <button class="secondary" id="nextBtn" type="button">Next</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="configPanel">
+        <div class="grid">
+          <section class="box span-5">
+            <h2>Import Questions</h2>
+            <p class="small">Use the day-based JSON already in this folder, or a flat array of question objects. Math can be typed as TeX, for example <code>\\frac{3}{4}</code>.</p>
+            <div class="actions">
+              <input id="fileInput" type="file" accept="application/json,.json">
+              <button id="loadSampleBtn" class="secondary" type="button">Load sample_questions.json</button>
+            </div>
+            <p class="small" id="importStatus"></p>
+          </section>
+
+          <section class="box span-7">
+            <h2>Add or Update a Question</h2>
+            <form id="questionForm" class="form-grid">
+              <input id="editId" type="hidden">
+              <label>
+                Day
+                <input id="formDay" type="number" min="1" value="1" required>
+              </label>
+              <label>
+                Topic
+                <input id="formTopic" type="text" placeholder="Ratios" required>
+              </label>
+              <label class="wide">
+                Question
+                <textarea id="formQuestion" placeholder="Solve: \\(2x + 3 = 11\\)" required></textarea>
+              </label>
+              <label class="wide">
+                Answer
+                <textarea id="formAnswer" placeholder="\\(x = 4\\)" required></textarea>
+              </label>
+              <label class="wide">
+                Visual suggestion
+                <textarea id="formVisual" placeholder="Number line, area model, coordinate plane, or none"></textarea>
+              </label>
+              <label class="wide">
+                Image URL or data URL
+                <input id="formImage" type="url" placeholder="https://...">
+              </label>
+              <div class="actions wide">
+                <button type="submit">Save Question</button>
+                <button class="secondary" id="resetFormBtn" type="button">Reset Form</button>
+              </div>
+            </form>
+          </section>
+
+          <section class="box span-12">
+            <div class="actions" style="justify-content: space-between;">
+              <h2 style="margin: 0;">Question Bank</h2>
+              <label style="max-width: 340px;">
+                Search
+                <input id="searchInput" type="search" placeholder="topic, question, answer">
+              </label>
+            </div>
+            <div class="question-list" id="questionList"></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="panel" id="promptPanel">
+        <div class="grid">
+          <section class="box span-8">
+            <h2>Prompt for Gemini or ChatGPT</h2>
+            <div class="prompt-box" id="promptText"></div>
+          </section>
+          <section class="box span-4">
+            <h2>Recommended Workflow</h2>
+            <p class="small">Ask the model for JSON instead of slides. Import the JSON here, then use this app as the projector deck. This avoids one-slide-at-a-time generation and keeps answer reveal, diagrams, and spaced recall under your control.</p>
+            <button id="copyPromptBtn" type="button">Copy Prompt</button>
+            <p class="small" id="copyStatus"></p>
+          </section>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const DB_NAME = "daily-math-review";
+    const DB_VERSION = 1;
+    const STORE = "questions";
+    const REVIEW_KEY = "dailyMathReviewState";
+    const SRS_INTERVALS = [1, 3, 5, 9, 15, 30, 60, 90, 120];
+
+    const els = {
+      bankStatus: document.getElementById("bankStatus"),
+      exportBtn: document.getElementById("exportBtn"),
+      clearBtn: document.getElementById("clearBtn"),
+      tabs: Array.from(document.querySelectorAll(".tab")),
+      panels: {
+        deck: document.getElementById("deckPanel"),
+        config: document.getElementById("configPanel"),
+        prompt: document.getElementById("promptPanel")
+      },
+      modeSelect: document.getElementById("modeSelect"),
+      dayInput: document.getElementById("dayInput"),
+      topicFilter: document.getElementById("topicFilter"),
+      countInput: document.getElementById("countInput"),
+      buildDeckBtn: document.getElementById("buildDeckBtn"),
+      fullscreenBtn: document.getElementById("fullscreenBtn"),
+      stage: document.getElementById("stage"),
+      slideCounter: document.getElementById("slideCounter"),
+      deckLabel: document.getElementById("deckLabel"),
+      stageTopic: document.getElementById("stageTopic"),
+      stageImage: document.getElementById("stageImage"),
+      stageQuestion: document.getElementById("stageQuestion"),
+      stageAnswer: document.getElementById("stageAnswer"),
+      stageVisual: document.getElementById("stageVisual"),
+      prevBtn: document.getElementById("prevBtn"),
+      answerBtn: document.getElementById("answerBtn"),
+      againBtn: document.getElementById("againBtn"),
+      goodBtn: document.getElementById("goodBtn"),
+      nextBtn: document.getElementById("nextBtn"),
+      fileInput: document.getElementById("fileInput"),
+      loadSampleBtn: document.getElementById("loadSampleBtn"),
+      importStatus: document.getElementById("importStatus"),
+      questionForm: document.getElementById("questionForm"),
+      editId: document.getElementById("editId"),
+      formDay: document.getElementById("formDay"),
+      formTopic: document.getElementById("formTopic"),
+      formQuestion: document.getElementById("formQuestion"),
+      formAnswer: document.getElementById("formAnswer"),
+      formVisual: document.getElementById("formVisual"),
+      formImage: document.getElementById("formImage"),
+      resetFormBtn: document.getElementById("resetFormBtn"),
+      questionList: document.getElementById("questionList"),
+      searchInput: document.getElementById("searchInput"),
+      promptText: document.getElementById("promptText"),
+      copyPromptBtn: document.getElementById("copyPromptBtn"),
+      copyStatus: document.getElementById("copyStatus")
+    };
+
+    let db;
+    let questions = [];
+    let reviewState = loadReviewState();
+    let deck = [];
+    let slideIndex = 0;
+
+    const generatorPrompt = `Role: You are an expert Math Instructional Designer specializing in Cognitive Load Theory (CLT), retrieval practice, and Spaced Repetition Systems (SRS).
+
+Task: Create a 10-day Daily Math Review question bank for students currently in Algebra 1 who need to maintain Pre-Algebra mastery.
+
+Output format: Return valid JSON only. Do not include markdown fences. Use this exact schema:
+[
+  {
+    "day": 1,
+    "questions": [
+      {
+        "topic": "Integers",
+        "questionText": "Question students answer in 1 minute. Use TeX for math when useful, such as \\\\(\\\\frac{3}{4}\\\\).",
+        "answerText": "Answer revealed after students respond.",
+        "visualSuggestion": "Short visual note, such as number line, coordinate plane, area model, double number line, table, or none.",
+        "imageUrl": ""
+      }
+    ]
+  }
+]
+
+Structural requirements:
+- Exactly 10 day objects.
+- Exactly 5 questions per day.
+- Each question must fit a 1-minute whiteboard response.
+- Tiered questions are allowed on one slide, but each day still has exactly 5 slides.
+- Use the forgetting curve intentionally. Revisit topics after intervals like Day 1, 3, 5, 9, 15, 30, and 60.
+- Keep question text minimalist and visually clean.
+- Put math expressions on their own line inside questionText. Example: "Simplify:\\n\\\\(4y - 2(y - 1)\\\\)".
+- Include answerText for every question.
+- Include visualSuggestion when a diagram would reduce cognitive load or support dual coding.
+- For complex answers, visualSuggestion should name the diagram that helps explain why the answer works.
+
+Content scope:
+- Integers and rational numbers
+- Expressions and equations, including one-step and multi-step equations
+- Ratios, proportions, and percents
+- Geometric formulas, including area, volume, and surface area
+- Linear functions and slope
+- Basic probability and statistics
+
+Modeling direction:
+- Use the vibe of a rapid-fire 3rd-grade daily review routine, adapted for Pre-Algebra.
+- Prioritize retrieval practice, limited writing, and clean prompts.
+- Avoid long word problems unless the numbers are simple and the reading load is low.
+- Spiral concepts across the 100 days so mastery is maintained rather than blocked by unit.`;
+
+    function openDb() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+        request.onupgradeneeded = () => {
+          const database = request.result;
+          if (!database.objectStoreNames.contains(STORE)) {
+            const store = database.createObjectStore(STORE, { keyPath: "id" });
+            store.createIndex("day", "day");
+            store.createIndex("topic", "topic");
+          }
+        };
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    function transaction(mode = "readonly") {
+      return db.transaction(STORE, mode).objectStore(STORE);
+    }
+
+    function getAllQuestions() {
+      return new Promise((resolve, reject) => {
+        const request = transaction().getAll();
+        request.onsuccess = () => resolve(request.result || []);
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    function putQuestions(items) {
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE, "readwrite");
+        const store = tx.objectStore(STORE);
+        items.forEach((item) => store.put(item));
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+      });
+    }
+
+    function deleteQuestion(id) {
+      return new Promise((resolve, reject) => {
+        const request = transaction("readwrite").delete(id);
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    function clearQuestions() {
+      return new Promise((resolve, reject) => {
+        const request = transaction("readwrite").clear();
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    function normalizeImport(data) {
+      const output = [];
+      if (!Array.isArray(data)) {
+        throw new Error("JSON must be an array.");
+      }
+
+      data.forEach((entry, entryIndex) => {
+        if (Array.isArray(entry.questions)) {
+          const day = positiveNumber(entry.day, entryIndex + 1);
+          entry.questions.forEach((question, questionIndex) => {
+            output.push(normalizeQuestion(question, day, questionIndex));
+          });
+        } else {
+          output.push(normalizeQuestion(entry, positiveNumber(entry.day, 1), entryIndex));
+        }
+      });
+
+      return output;
+    }
+
+    function normalizeQuestion(question, day, index) {
+      const topic = String(question.topic || "Mixed Review").trim();
+      const questionText = String(question.questionText || question.question || "").trim();
+      const answerText = String(question.answerText || question.answer || "").trim();
+      if (!questionText || !answerText) {
+        throw new Error("Each question needs questionText and answerText.");
+      }
+
+      const base = `${day}|${topic}|${questionText}|${answerText}`;
+      return {
+        id: question.id || `q_${hashText(base)}_${index}`,
+        day,
+        topic,
+        questionText,
+        answerText,
+        visualSuggestion: String(question.visualSuggestion || question.visual || "none").trim(),
+        imageUrl: String(question.imageUrl || question.image || "").trim(),
+        createdAt: question.createdAt || new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+    }
+
+    function positiveNumber(value, fallback) {
+      const parsed = Number(value);
+      return Number.isFinite(parsed) && parsed > 0 ? Math.round(parsed) : fallback;
+    }
+
+    function hashText(text) {
+      let hash = 5381;
+      for (let index = 0; index < text.length; index += 1) {
+        hash = ((hash << 5) + hash) + text.charCodeAt(index);
+        hash &= 0xffffffff;
+      }
+      return Math.abs(hash).toString(36);
+    }
+
+    function loadReviewState() {
+      try {
+        return JSON.parse(localStorage.getItem(REVIEW_KEY)) || {};
+      } catch {
+        return {};
+      }
+    }
+
+    function saveReviewState() {
+      localStorage.setItem(REVIEW_KEY, JSON.stringify(reviewState));
+    }
+
+    function renderMath(root = document.body) {
+      if (!window.renderMathInElement) {
+        return;
+      }
+      renderMathInElement(root, {
+        delimiters: [
+          { left: "$$", right: "$$", display: true },
+          { left: "\\[", right: "\\]", display: true },
+          { left: "\\(", right: "\\)", display: false }
+        ],
+        throwOnError: false
+      });
+    }
+
+    function setText(element, text) {
+      element.textContent = text;
+    }
+
+    function formatQuestionForDisplay(text) {
+      return String(text || "")
+        .replace(/\r\n/g, "\n")
+        .replace(/[ \t]+\\\(/g, "\n\\(")
+        .replace(/([^\n])\\\(/g, "$1\n\\(")
+        .replace(/\\\)([ \t]+)(?=[A-Za-z0-9])/g, "\\)\n")
+        .replace(/\n{3,}/g, "\n\n")
+        .trim();
+    }
+
+    function updateBankStatus() {
+      const days = new Set(questions.map((question) => question.day));
+      const due = questions.filter(isDue).length;
+      els.bankStatus.textContent = `${questions.length} questions, ${days.size} days, ${due} due for spaced recall`;
+    }
+
+    function updateTopicFilter() {
+      const current = els.topicFilter.value;
+      const topics = Array.from(new Set(questions.map((question) => question.topic))).sort((a, b) => a.localeCompare(b));
+      els.topicFilter.innerHTML = '<option value="">All topics</option>';
+      topics.forEach((topic) => {
+        const option = document.createElement("option");
+        option.value = topic;
+        option.textContent = topic;
+        els.topicFilter.append(option);
+      });
+      els.topicFilter.value = topics.includes(current) ? current : "";
+    }
+
+    function renderQuestionList() {
+      const term = els.searchInput.value.trim().toLowerCase();
+      const filtered = questions
+        .filter((question) => {
+          if (!term) return true;
+          return `${question.topic} ${question.questionText} ${question.answerText}`.toLowerCase().includes(term);
+        })
+        .sort((a, b) => a.day - b.day || a.topic.localeCompare(b.topic));
+
+      els.questionList.innerHTML = "";
+      if (!filtered.length) {
+        els.questionList.innerHTML = '<p class="small">No questions match this search.</p>';
+        return;
+      }
+
+      filtered.forEach((question) => {
+        const row = document.createElement("article");
+        row.className = "question-row";
+
+        const body = document.createElement("div");
+        const pills = document.createElement("div");
+        pills.className = "pill-row";
+        pills.innerHTML = `<span class="pill">Day ${question.day}</span><span class="pill"></span>`;
+        pills.lastChild.textContent = question.topic;
+
+        const text = document.createElement("p");
+        text.textContent = question.questionText;
+        body.append(pills, text);
+
+        const actions = document.createElement("div");
+        actions.className = "actions";
+        const edit = document.createElement("button");
+        edit.className = "secondary";
+        edit.type = "button";
+        edit.textContent = "Edit";
+        edit.addEventListener("click", () => fillForm(question));
+        const remove = document.createElement("button");
+        remove.className = "ghost";
+        remove.type = "button";
+        remove.textContent = "Delete";
+        remove.addEventListener("click", async () => {
+          if (!confirm("Delete this question from the local bank?")) return;
+          await deleteQuestion(question.id);
+          delete reviewState[question.id];
+          saveReviewState();
+          await refresh();
+        });
+        actions.append(edit, remove);
+        row.append(body, actions);
+        els.questionList.append(row);
+      });
+    }
+
+    function fillForm(question) {
+      showTab("config");
+      els.editId.value = question.id;
+      els.formDay.value = question.day;
+      els.formTopic.value = question.topic;
+      els.formQuestion.value = question.questionText;
+      els.formAnswer.value = question.answerText;
+      els.formVisual.value = question.visualSuggestion;
+      els.formImage.value = question.imageUrl;
+      els.formQuestion.focus();
+    }
+
+    function resetForm() {
+      els.editId.value = "";
+      els.formDay.value = els.dayInput.value || 1;
+      els.formTopic.value = "";
+      els.formQuestion.value = "";
+      els.formAnswer.value = "";
+      els.formVisual.value = "";
+      els.formImage.value = "";
+    }
+
+    function showTab(name) {
+      els.tabs.forEach((tab) => tab.setAttribute("aria-selected", String(tab.dataset.tab === name)));
+      Object.entries(els.panels).forEach(([panelName, panel]) => {
+        panel.classList.toggle("active", panelName === name);
+      });
+      if (name === "deck") {
+        renderSlide();
+      }
+    }
+
+    function topicFiltered(source) {
+      const topic = els.topicFilter.value;
+      return topic ? source.filter((question) => question.topic === topic) : source;
+    }
+
+    function buildDeck() {
+      const mode = els.modeSelect.value;
+      const count = positiveNumber(els.countInput.value, 5);
+      const day = positiveNumber(els.dayInput.value, 1);
+      let source = [];
+      let label = "";
+
+      if (mode === "day") {
+        source = questions.filter((question) => question.day === day);
+        label = `Day ${day}`;
+      } else if (mode === "due") {
+        source = questions.filter(isDue).sort((a, b) => dueScore(b) - dueScore(a));
+        label = "Spaced Recall";
+      } else {
+        source = shuffle([...questions]);
+        label = "Random Review";
+      }
+
+      deck = topicFiltered(source).slice(0, count);
+      if (!deck.length && questions.length) {
+        deck = topicFiltered(shuffle([...questions])).slice(0, count);
+        label += " fallback";
+      }
+      slideIndex = 0;
+      els.deckLabel.textContent = label;
+      renderSlide();
+    }
+
+    function isDue(question) {
+      const state = reviewState[question.id];
+      if (!state || !state.dueDate) return true;
+      return startOfToday(new Date()) >= startOfToday(new Date(state.dueDate));
+    }
+
+    function dueScore(question) {
+      const state = reviewState[question.id];
+      if (!state || !state.dueDate) return Number.MAX_SAFE_INTEGER;
+      return startOfToday(new Date()) - startOfToday(new Date(state.dueDate));
+    }
+
+    function startOfToday(date) {
+      return new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
+    }
+
+    function shuffle(items) {
+      for (let index = items.length - 1; index > 0; index -= 1) {
+        const swapIndex = Math.floor(Math.random() * (index + 1));
+        [items[index], items[swapIndex]] = [items[swapIndex], items[index]];
+      }
+      return items;
+    }
+
+    function renderSlide() {
+      const question = deck[slideIndex];
+      els.stage.classList.remove("answer-visible");
+
+      if (!question) {
+        setText(els.slideCounter, "Slide 0 of 0");
+        setText(els.stageTopic, "No questions");
+        setText(els.stageQuestion, "Import questions, then build a set.");
+        setText(els.stageAnswer, "");
+        setText(els.stageVisual, "");
+        els.stageVisual.classList.remove("has-visual");
+        els.stageImage.hidden = true;
+        return;
+      }
+
+      setText(els.slideCounter, `Slide ${slideIndex + 1} of ${deck.length}`);
+      setText(els.stageTopic, question.topic);
+      setText(els.stageQuestion, formatQuestionForDisplay(question.questionText));
+      setText(els.stageAnswer, question.answerText);
+
+      const visual = question.visualSuggestion && question.visualSuggestion.toLowerCase() !== "none"
+        ? `Visual: ${question.visualSuggestion}`
+        : "";
+      setText(els.stageVisual, visual);
+      els.stageVisual.classList.toggle("has-visual", Boolean(visual));
+
+      if (question.imageUrl) {
+        els.stageImage.src = question.imageUrl;
+        els.stageImage.alt = `${question.topic} visual`;
+        els.stageImage.hidden = false;
+      } else {
+        els.stageImage.hidden = true;
+        els.stageImage.removeAttribute("src");
+      }
+
+      renderMath(els.stage);
+    }
+
+    function revealAnswer() {
+      if (!deck.length) return;
+      els.stage.classList.add("answer-visible");
+      renderMath(els.stage);
+    }
+
+    function nextSlide() {
+      if (!deck.length) return;
+      slideIndex = Math.min(slideIndex + 1, deck.length - 1);
+      renderSlide();
+    }
+
+    function previousSlide() {
+      if (!deck.length) return;
+      slideIndex = Math.max(slideIndex - 1, 0);
+      renderSlide();
+    }
+
+    function markCurrent(result) {
+      const question = deck[slideIndex];
+      if (!question) return;
+
+      const state = reviewState[question.id] || {
+        box: 0,
+        attempts: 0,
+        correct: 0
+      };
+
+      state.attempts += 1;
+      state.lastSeen = new Date().toISOString();
+      if (result === "good") {
+        state.correct += 1;
+        state.box = Math.min((state.box || 0) + 1, SRS_INTERVALS.length - 1);
+      } else {
+        state.box = 0;
+      }
+
+      const due = new Date();
+      due.setDate(due.getDate() + SRS_INTERVALS[state.box]);
+      state.dueDate = due.toISOString();
+      reviewState[question.id] = state;
+      saveReviewState();
+      updateBankStatus();
+      nextSlide();
+    }
+
+    async function importJsonText(text) {
+      const parsed = JSON.parse(text);
+      const normalized = normalizeImport(parsed);
+      await putQuestions(normalized);
+      els.importStatus.textContent = `Imported ${normalized.length} questions.`;
+      await refresh();
+      buildDeck();
+    }
+
+    async function loadSample() {
+      try {
+        const response = await fetch("sample_questions.json");
+        if (!response.ok) throw new Error("Could not fetch sample_questions.json.");
+        await importJsonText(await response.text());
+      } catch (error) {
+        els.importStatus.textContent = `Open this page through a local server to use this button, or choose sample_questions.json with the file picker. ${error.message}`;
+      }
+    }
+
+    function exportJson() {
+      const grouped = Array.from(groupByDay(questions).entries()).map(([day, items]) => ({
+        day,
+        questions: items.map(({ topic, questionText, answerText, visualSuggestion, imageUrl }) => ({
+          topic,
+          questionText,
+          answerText,
+          visualSuggestion,
+          imageUrl
+        }))
+      }));
+
+      const blob = new Blob([JSON.stringify(grouped, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "daily_math_review_questions.json";
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function groupByDay(items) {
+      const map = new Map();
+      items
+        .slice()
+        .sort((a, b) => a.day - b.day)
+        .forEach((item) => {
+          if (!map.has(item.day)) map.set(item.day, []);
+          map.get(item.day).push(item);
+        });
+      return map;
+    }
+
+    async function refresh() {
+      questions = await getAllQuestions();
+      const migrations = questions
+        .map((question) => ({
+          ...question,
+          questionText: formatQuestionForDisplay(question.questionText)
+        }))
+        .filter((question, index) => question.questionText !== questions[index].questionText);
+
+      if (migrations.length) {
+        await putQuestions(migrations);
+        questions = await getAllQuestions();
+      }
+
+      updateBankStatus();
+      updateTopicFilter();
+      renderQuestionList();
+    }
+
+    async function init() {
+      db = await openDb();
+      els.promptText.textContent = generatorPrompt;
+      await refresh();
+      if (!questions.length) {
+        els.importStatus.textContent = "No local bank yet. Import sample_questions.json to begin.";
+      }
+      buildDeck();
+      renderMath();
+    }
+
+    els.tabs.forEach((tab) => tab.addEventListener("click", () => showTab(tab.dataset.tab)));
+    els.buildDeckBtn.addEventListener("click", buildDeck);
+    els.answerBtn.addEventListener("click", revealAnswer);
+    els.nextBtn.addEventListener("click", nextSlide);
+    els.prevBtn.addEventListener("click", previousSlide);
+    els.againBtn.addEventListener("click", () => markCurrent("again"));
+    els.goodBtn.addEventListener("click", () => markCurrent("good"));
+    els.modeSelect.addEventListener("change", buildDeck);
+    els.topicFilter.addEventListener("change", buildDeck);
+    els.searchInput.addEventListener("input", renderQuestionList);
+
+    els.fullscreenBtn.addEventListener("click", async () => {
+      document.body.classList.toggle("fullscreen");
+      if (document.body.classList.contains("fullscreen") && document.documentElement.requestFullscreen) {
+        try {
+          await document.documentElement.requestFullscreen();
+        } catch {
+          // Browser may block fullscreen if not directly initiated.
+        }
+      } else if (document.fullscreenElement) {
+        await document.exitFullscreen();
+      }
+      renderSlide();
+    });
+
+    document.addEventListener("fullscreenchange", () => {
+      document.body.classList.toggle("fullscreen", Boolean(document.fullscreenElement));
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement || event.target instanceof HTMLSelectElement) {
+        return;
+      }
+      if (event.key === " ") {
+        event.preventDefault();
+        revealAnswer();
+      } else if (event.key === "ArrowRight") {
+        nextSlide();
+      } else if (event.key === "ArrowLeft") {
+        previousSlide();
+      } else if (event.key === "1") {
+        markCurrent("again");
+      } else if (event.key === "2") {
+        markCurrent("good");
+      } else if (event.key === "Escape" && document.body.classList.contains("fullscreen")) {
+        document.body.classList.remove("fullscreen");
+      }
+    });
+
+    els.fileInput.addEventListener("change", async () => {
+      const file = els.fileInput.files[0];
+      if (!file) return;
+      try {
+        await importJsonText(await file.text());
+      } catch (error) {
+        els.importStatus.textContent = `Import failed: ${error.message}`;
+      } finally {
+        els.fileInput.value = "";
+      }
+    });
+
+    els.loadSampleBtn.addEventListener("click", loadSample);
+
+    els.questionForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const id = els.editId.value || `manual_${crypto.randomUUID ? crypto.randomUUID() : Date.now()}`;
+      const question = normalizeQuestion({
+        id,
+        topic: els.formTopic.value,
+        questionText: els.formQuestion.value,
+        answerText: els.formAnswer.value,
+        visualSuggestion: els.formVisual.value || "none",
+        imageUrl: els.formImage.value
+      }, positiveNumber(els.formDay.value, 1), 0);
+
+      await putQuestions([question]);
+      resetForm();
+      await refresh();
+      buildDeck();
+    });
+
+    els.resetFormBtn.addEventListener("click", resetForm);
+
+    els.exportBtn.addEventListener("click", exportJson);
+
+    els.clearBtn.addEventListener("click", async () => {
+      if (!confirm("Clear all locally stored questions and review history?")) return;
+      await clearQuestions();
+      reviewState = {};
+      saveReviewState();
+      deck = [];
+      await refresh();
+      renderSlide();
+    });
+
+    els.copyPromptBtn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(generatorPrompt);
+        els.copyStatus.textContent = "Prompt copied.";
+      } catch {
+        els.copyStatus.textContent = "Select the prompt text and copy it manually.";
+      }
+    });
+
+    init().catch((error) => {
+      els.bankStatus.textContent = `Could not start app: ${error.message}`;
+    });
+  </script>
+</body>
+</html>

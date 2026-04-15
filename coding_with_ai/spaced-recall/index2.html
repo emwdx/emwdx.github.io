@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Math Review - Presenter</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --text-color: #212529;
+            --accent-color: #0d6efd;
+            --secondary-text: #6c757d;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow: hidden; /* Prevents scrollbars in presentation mode */
+        }
+
+        /* --- Dashboard / Setup View --- */
+        #dashboard {
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background-color: #0b5ed7;
+        }
+
+        input[type="number"] {
+            padding: 8px;
+            font-size: 1rem;
+            width: 80px;
+        }
+
+        /* --- Presentation View --- */
+        #presentation {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            box-sizing: border-box;
+            text-align: center;
+            cursor: pointer; /* Indicates clicking advances slide */
+        }
+
+        .topic-header {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            font-size: 1.5rem;
+            color: var(--secondary-text);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .slide-counter {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            font-size: 1.5rem;
+            color: var(--secondary-text);
+        }
+
+        .question-box {
+            font-size: 4rem; /* Massive text for projector */
+            font-weight: bold;
+            margin-bottom: 2rem;
+            max-width: 90%;
+            line-height: 1.3;
+        }
+
+        .answer-box {
+            font-size: 3rem;
+            color: #198754; /* Success green */
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out; /* Smooth reveal */
+        }
+
+        .visual-suggestion {
+            margin-top: 1.5rem;
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            font-style: italic;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            max-width: 80%;
+            border: 2px dashed var(--accent-color);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        /* Helper class for animations */
+        .revealed {
+            opacity: 1 !important;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="dashboard">
+        <h1>Daily Math Review Setup</h1>
+        
+        <div class="card">
+            <h2>1. Load Question Data</h2>
+            <p>Upload your 100-day JSON file. This will be saved to your browser.</p>
+            <input type="file" id="jsonUpload" accept=".json">
+            <p id="uploadStatus" style="color: green; font-weight: bold;"></p>
+        </div>
+
+        <div class="card">
+            <h2>2. Start Presentation</h2>
+            <p>Select which day you want to present to the class.</p>
+            <label for="daySelect">Day:</label>
+            <input type="number" id="daySelect" min="1" max="100" value="1">
+            <button id="startBtn" style="margin-left: 10px;">Launch Slide Deck</button>
+            <p id="errorMsg" style="color: red;"></p>
+        </div>
+    </div>
+
+    <div id="presentation">
+        <div class="topic-header" id="slideTopic">Topic</div>
+        <div class="slide-counter" id="slideCounter">1/5</div>
+        
+        <div class="question-box" id="slideQuestion">Question goes here</div>
+        <div class="answer-box" id="slideAnswer">Answer goes here</div>
+        <div class="visual-suggestion" id="slideVisual">Visual suggestion goes here</div>
+    </div>
+
+    <script>
+        // App State
+        let deckData = [];
+        let currentDayQuestions = [];
+        let currentQuestionIndex = 0;
+        let isAnswerRevealed = false;
+
+        // DOM Elements
+        const dashboard = document.getElementById('dashboard');
+        const presentation = document.getElementById('presentation');
+        const uploadStatus = document.getElementById('uploadStatus');
+        const errorMsg = document.getElementById('errorMsg');
+        
+        // Slide Elements
+        const slideTopic = document.getElementById('slideTopic');
+        const slideCounter = document.getElementById('slideCounter');
+        const slideQuestion = document.getElementById('slideQuestion');
+        const slideAnswer = document.getElementById('slideAnswer');
+        const slideVisual = document.getElementById('slideVisual');
+
+        // Initialization: Check for saved data
+        window.onload = () => {
+            const savedData = localStorage.getItem('mathDeckData');
+            if (savedData) {
+                deckData = JSON.parse(savedData);
+                uploadStatus.innerText = `Loaded ${deckData.length} days of questions from browser memory.`;
+            }
+        };
+
+        // Handle JSON Upload
+        document.getElementById('jsonUpload').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        deckData = JSON.parse(e.target.result);
+                        localStorage.setItem('mathDeckData', JSON.stringify(deckData));
+                        uploadStatus.innerText = `Successfully saved ${deckData.length} days to browser storage!`;
+                        errorMsg.innerText = "";
+                    } catch (err) {
+                        uploadStatus.innerText = "";
+                        errorMsg.innerText = "Error parsing JSON file. Please check the format.";
+                    }
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        // Start Presentation
+        document.getElementById('startBtn').addEventListener('click', () => {
+            if (deckData.length === 0) {
+                errorMsg.innerText = "Please upload a JSON file first.";
+                return;
+            }
+
+            const selectedDay = parseInt(document.getElementById('daySelect').value);
+            const dayData = deckData.find(d => d.day === selectedDay);
+
+            if (!dayData || !dayData.questions) {
+                errorMsg.innerText = `No questions found for Day ${selectedDay}.`;
+                return;
+            }
+
+            currentDayQuestions = dayData.questions;
+            currentQuestionIndex = 0;
+            
+            // Switch UI
+            dashboard.style.display = 'none';
+            presentation.style.display = 'flex';
+            
+            renderSlide();
+        });
+
+        function formatQuestionForDisplay(text) {
+            return String(text || "")
+                .replace(/\r\n/g, "\n")
+                .replace(/[ \t]+\\\(/g, "\n\\(")
+                .replace(/([^\n])\\\(/g, "$1\n\\(")
+                .replace(/\\\)([ \t]+)(?=[A-Za-z0-9])/g, "\\)\n")
+                .replace(/\n{3,}/g, "\n\n")
+                .trim();
+        }
+
+        // Render current slide
+        function renderSlide() {
+            isAnswerRevealed = false;
+            const qData = currentDayQuestions[currentQuestionIndex];
+
+            // Update Text (replace newlines with <br> for tiered questions)
+            slideTopic.innerText = qData.topic;
+            slideCounter.innerText = `${currentQuestionIndex + 1} / ${currentDayQuestions.length}`;
+            slideQuestion.innerHTML = formatQuestionForDisplay(qData.questionText).replace(/\n/g, '<br>');
+            slideAnswer.innerHTML = qData.answerText.replace(/\n/g, '<br>');
+            
+            // Handle Visual Suggestion
+            if (qData.visualSuggestion && qData.visualSuggestion.toLowerCase() !== "none") {
+                slideVisual.innerText = "Instructor Visual: " + qData.visualSuggestion;
+                slideVisual.style.display = "block";
+            } else {
+                slideVisual.style.display = "none";
+            }
+
+            // Reset visibility
+            slideAnswer.classList.remove('revealed');
+            slideVisual.classList.remove('revealed');
+
+            // Render Math
+            renderMathInElement(presentation, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false}
+                ],
+                throwOnError: false
+            });
+        }
+
+        // Handle Click/Spacebar progression
+        function advancePresentation() {
+            if (!isAnswerRevealed) {
+                // Reveal Answer
+                slideAnswer.classList.add('revealed');
+                slideVisual.classList.add('revealed');
+                isAnswerRevealed = true;
+            } else {
+                // Move to next question or exit
+                currentQuestionIndex++;
+                if (currentQuestionIndex < currentDayQuestions.length) {
+                    renderSlide();
+                } else {
+                    // End of day, return to dashboard
+                    dashboard.style.display = 'flex';
+                    presentation.style.display = 'none';
+                }
+            }
+        }
+
+        // Event Listeners for Progression
+        presentation.addEventListener('click', advancePresentation);
+        document.addEventListener('keydown', (event) => {
+            if (presentation.style.display === 'flex' && (event.code === 'Space' || event.code === 'ArrowRight')) {
+                advancePresentation();
+            }
+        });
+    </script>
+</body>
+</html>
