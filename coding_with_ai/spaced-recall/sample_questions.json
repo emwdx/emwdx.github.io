@@ -1,0 +1,1002 @@
+[
+  {
+    "day": 1,
+    "questions": [
+      {
+        "topic": "Integers",
+        "questionText": "Evaluate:\n\\(-8 + (-12)\\)",
+        "answerText": "-20",
+        "visualSuggestion": "Number line starting at -8 and moving 12 units left.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Expressions",
+        "questionText": "Simplify:\n\\(3x + 5 - x + 2\\)",
+        "answerText": "2x + 7",
+        "visualSuggestion": "Tiles or shapes grouping like terms.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "One-Step Equations",
+        "questionText": "Solve for x:\n\\(x - 15 = 20\\)",
+        "answerText": "x = 35",
+        "visualSuggestion": "Balance scale showing addition of 15 to both sides.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Ratios",
+        "questionText": "Write the ratio of 4 apples to 12 oranges in simplest form.",
+        "answerText": "1:3",
+        "visualSuggestion": "Discrete objects grouped into sets of 1 and 3.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Geometry",
+        "questionText": "Area of a rectangle with length 8 and width 5.",
+        "answerText": "40 square units",
+        "visualSuggestion": "Area model grid (8 by 5).",
+        "imageUrl": ""
+      }
+    ]
+  },
+  {
+    "day": 2,
+    "questions": [
+      {
+        "topic": "Rational Numbers",
+        "questionText": "Evaluate:\n\\(\\frac{1}{2} + \\frac{1}{4}\\)",
+        "answerText": "\\(\\frac{3}{4}\\)",
+        "visualSuggestion": "Fraction circles or bars showing parts of a whole.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Integers",
+        "questionText": "Evaluate:\n\\(-5 \\times 6\\)",
+        "answerText": "-30",
+        "visualSuggestion": "None",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Multi-Step Equations",
+        "questionText": "Solve:\n\\(2x + 4 = 10\\)",
+        "answerText": "x = 3",
+        "visualSuggestion": "Balance scale removing 4 units then dividing by 2.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Percents",
+        "questionText": "What is 10% of 150?",
+        "answerText": "15",
+        "visualSuggestion": "Bar model divided into 10 equal sections.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Slope",
+        "questionText": "Find the slope of a line that rises 6 and runs 2.",
+        "answerText": "3",
+        "visualSuggestion": "Right triangle on a coordinate plane with rise/run labeled.",
+        "imageUrl": ""
+      }
+    ]
+  },
+  {
+    "day": 3,
+    "questions": [
+      {
+        "topic": "Integers (Review)",
+        "questionText": "Evaluate:\n\\(15 - (-4)\\)",
+        "answerText": "19",
+        "visualSuggestion": "Number line showing subtraction as adding the opposite.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Expressions",
+        "questionText": "Factor:\n\\(4x + 12\\)",
+        "answerText": "4(x + 3)",
+        "visualSuggestion": "Area model with 4 as the width and x + 3 as the length.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Proportions",
+        "questionText": "Solve:\n\\(\\frac{x}{10} = \\frac{3}{5}\\)",
+        "answerText": "x = 6",
+        "visualSuggestion": "Double number line showing equivalence.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Geometric Formulas",
+        "questionText": "Circumference of a circle with radius 7 (Use\n\\(\\pi \\approx \\frac{22}{7}\\)).",
+        "answerText": "44 units",
+        "visualSuggestion": "Circle with radius labeled.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Probability",
+        "questionText": "Probability of rolling an even number on a standard die.",
+        "answerText": "1/2 or 0.5",
+        "visualSuggestion": "Set diagram of {1,2,3,4,5,6} with evens circled.",
+        "imageUrl": ""
+      }
+    ]
+  },
+  {
+    "day": 4,
+    "questions": [
+      {
+        "topic": "Rational Numbers",
+        "questionText": "Evaluate:\n\\(0.25 \\times 8\\)",
+        "answerText": "2",
+        "visualSuggestion": "Four quarters making a whole.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Multi-Step Equations",
+        "questionText": "Solve:\n\\(3(x - 2) = 12\\)",
+        "answerText": "x = 6",
+        "visualSuggestion": "Flow chart: subtract 2, multiply by 3, equals 12.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Percents",
+        "questionText": "20 is what percent of 80?",
+        "answerText": "25%",
+        "visualSuggestion": "Tape diagram with 80 as the total.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Linear Functions",
+        "questionText": "Identify the y-intercept:\n\\(y = 4x - 7\\)",
+        "answerText": "-7",
+        "visualSuggestion": "Graph showing the point (0, -7).",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Statistics",
+        "questionText": "Mean of 5, 10, 15?",
+        "answerText": "10",
+        "visualSuggestion": "Leveling out stacks of cubes (5, 10, and 15).",
+        "imageUrl": ""
+      }
+    ]
+  },
+  {
+    "day": 5,
+    "questions": [
+      {
+        "topic": "Integers (Review)",
+        "questionText": "Evaluate:\n\\(-24 \\div (-3)\\)",
+        "answerText": "8",
+        "visualSuggestion": "None",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Expressions (Review)",
+        "questionText": "Simplify:\n\\(5(2x - 3)\\)",
+        "answerText": "10x - 15",
+        "visualSuggestion": "Area model showing distribution.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "One-Step Equations (Review)",
+        "questionText": "Solve:\n\\(\\frac{x}{4} = -3\\)",
+        "answerText": "x = -12",
+        "visualSuggestion": "Inverse operation diagram.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Geometry",
+        "questionText": "Volume of a cube with side 3.",
+        "answerText": "27 cubic units",
+        "visualSuggestion": "3D cube diagram with dimensions.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Slope",
+        "questionText": "Slope through points (0,0) and (2,4).",
+        "answerText": "2",
+        "visualSuggestion": "Coordinate plane with line connecting points.",
+        "imageUrl": ""
+      }
+    ]
+  },
+  {
+    "day": 6,
+    "questions": [
+      {
+        "topic": "Rational Numbers",
+        "questionText": "Convert\n\\(\\frac{3}{5}\\)\nto a decimal.",
+        "answerText": "0.6",
+        "visualSuggestion": "Bar model divided into 5 parts with 3 shaded.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Multi-Step Equations",
+        "questionText": "Solve:\n\\(5x - 2 = 18\\)",
+        "answerText": "x = 4",
+        "visualSuggestion": "Balance scale.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Percents",
+        "questionText": "Find 25% of 60.",
+        "answerText": "15",
+        "visualSuggestion": "Tape diagram split into quarters.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Geometric Formulas",
+        "questionText": "Area of a triangle: base = 10, height = 4.",
+        "answerText": "20",
+        "visualSuggestion": "Triangle inside a rectangle to show half area.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Linear Functions",
+        "questionText": "Is (1, 5) a solution to\n\\(y = 2x + 3\\)?",
+        "answerText": "Yes",
+        "visualSuggestion": "Table of values.",
+        "imageUrl": ""
+      }
+    ]
+  },
+  {
+    "day": 7,
+    "questions": [
+      {
+        "topic": "Integers",
+        "questionText": "Evaluate:\n\\(7 - 15\\)",
+        "answerText": "-8",
+        "visualSuggestion": "Number line.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Expressions",
+        "questionText": "Evaluate\n\\(2a + 3b\\)\nif\n\\(a=4, b=-1\\).",
+        "answerText": "5",
+        "visualSuggestion": "Substitution boxes.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Proportions",
+        "questionText": "Solve:\n\\(\\frac{2}{3} = \\frac{8}{x}\\)",
+        "answerText": "x = 12",
+        "visualSuggestion": "Scaling diagram.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Geometry",
+        "questionText": "Find the missing angle in a triangle with 40° and 60°.",
+        "answerText": "80°",
+        "visualSuggestion": "Triangle showing the sum of angles is 180°.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Statistics",
+        "questionText": "Median of 2, 8, 3, 10, 5?",
+        "answerText": "5",
+        "visualSuggestion": "Ordered list of numbers.",
+        "imageUrl": ""
+      }
+    ]
+  },
+  {
+    "day": 8,
+    "questions": [
+      {
+        "topic": "Rational Numbers",
+        "questionText": "Evaluate:\n\\(\\frac{2}{3} \\times \\frac{3}{4}\\)",
+        "answerText": "1/2 or 0.5",
+        "visualSuggestion": "Area model of fractions.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Multi-Step Equations",
+        "questionText": "Solve:\n\\(\\frac{x}{2} + 5 = 9\\)",
+        "answerText": "x = 8",
+        "visualSuggestion": "Inverse operations flow.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Percents",
+        "questionText": "Write 0.05 as a percent.",
+        "answerText": "5%",
+        "visualSuggestion": "100-square grid with 5 shaded.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Linear Functions",
+        "questionText": "Slope of a horizontal line?",
+        "answerText": "0",
+        "visualSuggestion": "Coordinate plane with a flat line.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Probability",
+        "questionText": "Probability of picking a red marble from 2 red and 8 blue.",
+        "answerText": "1/5 or 0.2",
+        "visualSuggestion": "Group of marbles.",
+        "imageUrl": ""
+      }
+    ]
+  },
+  {
+    "day": 9,
+    "questions": [
+      {
+        "topic": "Integers (Review)",
+        "questionText": "Evaluate:\n\\(-3 + (-4) + 10\\)",
+        "answerText": "3",
+        "visualSuggestion": "Number line hops.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Expressions",
+        "questionText": "Simplify:\n\\(x^2 + x^2\\)",
+        "answerText": "2x^2",
+        "visualSuggestion": "Area tiles for x squared.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Equations",
+        "questionText": "Solve:\n\\(x + x + 3 = 11\\)",
+        "answerText": "x = 4",
+        "visualSuggestion": "Grouping variables on balance.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Geometry",
+        "questionText": "Surface area of a cube with side 2.",
+        "answerText": "24",
+        "visualSuggestion": "Net of a cube.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Slope",
+        "questionText": "Identify slope in\n\\(y = -3x + 2\\).",
+        "answerText": "-3",
+        "visualSuggestion": "Linear equation format y = mx + b.",
+        "imageUrl": ""
+      }
+    ]
+  },
+  {
+    "day": 10,
+    "questions": [
+      {
+        "topic": "Rational Numbers",
+        "questionText": "Evaluate:\n\\(1.5 \\div 0.5\\)",
+        "answerText": "3",
+        "visualSuggestion": "Number line showing how many 0.5s fit in 1.5.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Multi-Step Equations",
+        "questionText": "Solve:\n\\(10 - x = 4\\)",
+        "answerText": "x = 6",
+        "visualSuggestion": "Number line or balance.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Ratios",
+        "questionText": "Are\n\\(\\frac{3}{4}\\)\nand\n\\(\\frac{9}{12}\\)\nproportional?",
+        "answerText": "Yes",
+        "visualSuggestion": "Cross-multiplication check or scaling.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Geometric Formulas",
+        "questionText": "Find area of a circle with diameter 10. (Use\n\\(\\pi\\))",
+        "answerText": "25π",
+        "visualSuggestion": "Circle with radius 5 labeled.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Statistics",
+        "questionText": "Range of 1, 4, 9, 12, 2?",
+        "answerText": "11",
+        "visualSuggestion": "Number line marking high and low.",
+        "imageUrl": ""
+      }
+    ]
+  },
+  {
+    "day": 11,
+    "questions": [
+      {
+        "topic": "Integers",
+        "questionText": "Evaluate:\n\\(-2 - (-9)\\)",
+        "answerText": "7",
+        "visualSuggestion": "Number line change of direction.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Expressions",
+        "questionText": "Simplify:\n\\(4y - 2(y - 1)\\)",
+        "answerText": "2y + 2",
+        "visualSuggestion": "Distribution diagram.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "One-Step Equations",
+        "questionText": "Solve:\n\\(-5x = 25\\)",
+        "answerText": "x = -5",
+        "visualSuggestion": "Inverse operations.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Percents",
+        "questionText": "What is 150% of 20?",
+        "answerText": "30",
+        "visualSuggestion": "Tape diagram (100% + 50%).",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Slope",
+        "questionText": "Find slope between (1, 2) and (1, 5).",
+        "answerText": "Undefined",
+        "visualSuggestion": "Vertical line on coordinate plane.",
+        "imageUrl": ""
+      }
+    ]
+  },
+  {
+    "day": 12,
+    "questions": [
+      {
+        "topic": "Rational Numbers",
+        "questionText": "Evaluate:\n\\(\\frac{2}{5} + 0.1\\)",
+        "answerText": "0.5 or 1/2",
+        "visualSuggestion": "Number line showing both forms.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Multi-Step Equations",
+        "questionText": "Solve:\n\\(4x + 1 = 2x + 9\\)",
+        "answerText": "x = 4",
+        "visualSuggestion": "Balance scale with variables on both sides.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Ratios",
+        "questionText": "Unit rate for 120 miles in 2 hours.",
+        "answerText": "60 mph",
+        "visualSuggestion": "Double number line.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Geometry",
+        "questionText": "Volume of a cylinder: r=2, h=5. (Use\n\\(\\pi\\))",
+        "answerText": "20π",
+        "visualSuggestion": "Cylinder with dimensions.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Linear Functions",
+        "questionText": "Find y if\n\\(y = 3x - 1\\)\nand\n\\(x = 2\\).",
+        "answerText": "5",
+        "visualSuggestion": "Function machine input/output.",
+        "imageUrl": ""
+      }
+    ]
+  },
+  {
+    "day": 13,
+    "questions": [
+      {
+        "topic": "Integers",
+        "questionText": "Evaluate:\n\\((-2)^3\\)",
+        "answerText": "-8",
+        "visualSuggestion": "Expanded multiplication notation.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Expressions",
+        "questionText": "Simplify:\n\\(10 - 2x + 4\\)",
+        "answerText": "14 - 2x",
+        "visualSuggestion": "Color coding like terms.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Proportions",
+        "questionText": "Solve:\n\\(\\frac{x}{4} = \\frac{15}{20}\\)",
+        "answerText": "x = 3",
+        "visualSuggestion": "Scale factor diagram.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Geometry",
+        "questionText": "Area of a trapezoid:\n\\(b_1=4, b_2=6, h=5\\).",
+        "answerText": "25",
+        "visualSuggestion": "Trapezoid diagram with formula labeled.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Statistics",
+        "questionText": "Mode of 4, 7, 4, 8, 9, 4?",
+        "answerText": "4",
+        "visualSuggestion": "Frequency table.",
+        "imageUrl": ""
+      }
+    ]
+  },
+  {
+    "day": 14,
+    "questions": [
+      {
+        "topic": "Rational Numbers",
+        "questionText": "Order from least to greatest: -0.5, -1, 0.",
+        "answerText": "-1, -0.5, 0",
+        "visualSuggestion": "Number line.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Equations",
+        "questionText": "Solve:\n\\(x/3 - 1 = 2\\)",
+        "answerText": "x = 9",
+        "visualSuggestion": "Reverse operations flow.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Percents",
+        "questionText": "Decrease 40 by 10%.",
+        "answerText": "36",
+        "visualSuggestion": "Tape diagram subtraction.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Linear Functions",
+        "questionText": "Does the line\n\\(y = x\\)\npass through the origin?",
+        "answerText": "Yes",
+        "visualSuggestion": "Graph of y = x.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Probability",
+        "questionText": "Total outcomes for flipping a coin twice.",
+        "answerText": "4",
+        "visualSuggestion": "Tree diagram.",
+        "imageUrl": ""
+      }
+    ]
+  },
+  {
+    "day": 15,
+    "questions": [
+      {
+        "topic": "Integers (Review)",
+        "questionText": "Evaluate:\n\\((-1)^{10}\\)",
+        "answerText": "1",
+        "visualSuggestion": "Pattern table (odd vs even powers).",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Expressions (Review)",
+        "questionText": "Simplify:\n\\(x + y - x + y\\)",
+        "answerText": "2y",
+        "visualSuggestion": "None",
+        "imageUrl": ""
+      },
+      {
+        "topic": "One-Step Equations (Review)",
+        "questionText": "Solve:\n\\(x + 12 = 5\\)",
+        "answerText": "x = -7",
+        "visualSuggestion": "Number line.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Geometry",
+        "questionText": "Find the hypotenuse of a right triangle with legs 3 and 4.",
+        "answerText": "5",
+        "visualSuggestion": "Right triangle with squares on sides.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Slope (Review)",
+        "questionText": "Find slope:\n\\(y = 2 - 5x\\).",
+        "answerText": "-5",
+        "visualSuggestion": "Rewriting in y=mx+b form.",
+        "imageUrl": ""
+      }
+    ]
+  },
+  {
+    "day": 16,
+    "questions": [
+      {
+        "topic": "Rational Numbers",
+        "questionText": "Evaluate:\n\\(\\frac{3}{4} \\div \\frac{1}{2}\\)",
+        "answerText": "3/2 or 1.5",
+        "visualSuggestion": "Keep-Change-Flip visual.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Equations",
+        "questionText": "Solve:\n\\(2(x + 5) = 20\\)",
+        "answerText": "x = 5",
+        "visualSuggestion": "Area model or balance.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Percents",
+        "questionText": "What is 20% of 20?",
+        "answerText": "4",
+        "visualSuggestion": "Grid with 20% shaded.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Geometry",
+        "questionText": "Area of a parallelogram: base 8, height 3.",
+        "answerText": "24",
+        "visualSuggestion": "Parallelogram showing height perpendicular to base.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Linear Functions",
+        "questionText": "Slope of a vertical line?",
+        "answerText": "Undefined",
+        "visualSuggestion": "Vertical line on graph.",
+        "imageUrl": ""
+      }
+    ]
+  },
+  {
+    "day": 17,
+    "questions": [
+      {
+        "topic": "Integers",
+        "questionText": "Evaluate:\n\\(-100 \\div 4\\)",
+        "answerText": "-25",
+        "visualSuggestion": "None",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Expressions",
+        "questionText": "Evaluate\n\\(x^2 - 5\\)\nwhen\n\\(x = -3\\).",
+        "answerText": "4",
+        "visualSuggestion": "Substitution parentheses.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Proportions",
+        "questionText": "If 3 sodas cost $4.50, how much for 1?",
+        "answerText": "$1.50",
+        "visualSuggestion": "Table of sodas and cost.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Geometry",
+        "questionText": "Volume of a rectangular prism: 2 by 3 by 4.",
+        "answerText": "24",
+        "visualSuggestion": "3D prism.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Statistics",
+        "questionText": "Mean of 10, 20, 30, 40?",
+        "answerText": "25",
+        "visualSuggestion": "Balance point on a number line.",
+        "imageUrl": ""
+      }
+    ]
+  },
+  {
+    "day": 18,
+    "questions": [
+      {
+        "topic": "Rational Numbers",
+        "questionText": "Is\n\\(\\sqrt{25}\\)\nrational or irrational?",
+        "answerText": "Rational (5)",
+        "visualSuggestion": "Square with side length 5.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Equations",
+        "questionText": "Solve:\n\\(0.5x = 10\\)",
+        "answerText": "x = 20",
+        "visualSuggestion": "Double number line.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Percents",
+        "questionText": "Convert 1/8 to a percent.",
+        "answerText": "12.5%",
+        "visualSuggestion": "Circle divided into 8 pieces.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Linear Functions",
+        "questionText": "Find the slope:\n\\(y = x + 10\\).",
+        "answerText": "1",
+        "visualSuggestion": "Equation highlighting the coefficient of x.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Probability",
+        "questionText": "Probability of NOT rolling a 6 on a die.",
+        "answerText": "5/6",
+        "visualSuggestion": "Complementary event diagram.",
+        "imageUrl": ""
+      }
+    ]
+  },
+  {
+    "day": 19,
+    "questions": [
+      {
+        "topic": "Integers",
+        "questionText": "Evaluate:\n\\(|-5| + |5|\\)",
+        "answerText": "10",
+        "visualSuggestion": "Number line showing distance from zero.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Expressions",
+        "questionText": "Simplify:\n\\(3(x + 2) + 4x\\)",
+        "answerText": "7x + 6",
+        "visualSuggestion": "Area model for 3(x+2) joined with 4x.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Equations",
+        "questionText": "Solve:\n\\(x - 7 = -10\\)",
+        "answerText": "x = -3",
+        "visualSuggestion": "Number line shift.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Geometry",
+        "questionText": "Find perimeter of a square with area 49.",
+        "answerText": "28",
+        "visualSuggestion": "Square with side length 7 labeled.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Slope",
+        "questionText": "Slope between (2, 3) and (4, 3).",
+        "answerText": "0",
+        "visualSuggestion": "Coordinate plane with horizontal segment.",
+        "imageUrl": ""
+      }
+    ]
+  },
+  {
+    "day": 20,
+    "questions": [
+      {
+        "topic": "Rational Numbers",
+        "questionText": "Evaluate:\n\\(\\frac{1}{3} \\times 12\\)",
+        "answerText": "4",
+        "visualSuggestion": "Set of 12 items divided into thirds.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Equations",
+        "questionText": "Solve:\n\\(2x/5 = 4\\)",
+        "answerText": "x = 10",
+        "visualSuggestion": "Tape diagram with 5 units.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Ratios",
+        "questionText": "Scale 2:5 to ?:25.",
+        "answerText": "10",
+        "visualSuggestion": "Table of equivalent ratios.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Geometric Formulas",
+        "questionText": "Surface area of a 1x1x1 cube.",
+        "answerText": "6",
+        "visualSuggestion": "Net of a cube showing 6 faces.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Statistics",
+        "questionText": "Find the range: -5, 0, 5.",
+        "answerText": "10",
+        "visualSuggestion": "Number line marking high and low.",
+        "imageUrl": ""
+      }
+    ]
+  },
+  {
+    "day": 21,
+    "questions": [
+      {
+        "topic": "Integers",
+        "questionText": "Evaluate:\n\\(-15 + 20 - 5\\)",
+        "answerText": "0",
+        "visualSuggestion": "Number line walking.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Expressions",
+        "questionText": "Simplify:\n\\(8w - (2w + 3)\\)",
+        "answerText": "6w - 3",
+        "visualSuggestion": "Distribution of the negative sign.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Equations",
+        "questionText": "Solve:\n\\(x + 1/2 = 3/2\\)",
+        "answerText": "x = 1",
+        "visualSuggestion": "Fraction bar.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Percents",
+        "questionText": "What is 5% of 200?",
+        "answerText": "10",
+        "visualSuggestion": "10% is 20, so 5% is half.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Linear Functions",
+        "questionText": "Find the y-intercept of\n\\(y = 2x\\).",
+        "answerText": "0",
+        "visualSuggestion": "Graph through the origin.",
+        "imageUrl": ""
+      }
+    ]
+  },
+  {
+    "day": 22,
+    "questions": [
+      {
+        "topic": "Rational Numbers",
+        "questionText": "Evaluate:\n\\(0.1^2\\)",
+        "answerText": "0.01",
+        "visualSuggestion": "10x10 grid with 1/100 shaded.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Equations",
+        "questionText": "Solve:\n\\(3x - 1 = x + 5\\)",
+        "answerText": "x = 3",
+        "visualSuggestion": "Balance scale.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Ratios",
+        "questionText": "Unit rate: $15 for 3 shirts.",
+        "answerText": "$5 per shirt",
+        "visualSuggestion": "Table.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Geometry",
+        "questionText": "Find diameter if area is 9π.",
+        "answerText": "6",
+        "visualSuggestion": "Circle with radius 3 labeled.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Probability",
+        "questionText": "Probability of rolling a number > 4 on a die.",
+        "answerText": "1/3 or 2/6",
+        "visualSuggestion": "Die faces {5, 6}.",
+        "imageUrl": ""
+      }
+    ]
+  },
+  {
+    "day": 23,
+    "questions": [
+      {
+        "topic": "Integers",
+        "questionText": "Evaluate:\n\\(-4 \\times (-3) \\times (-2)\\)",
+        "answerText": "-24",
+        "visualSuggestion": "Sign tracking rules.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Expressions",
+        "questionText": "Simplify:\n\\(2(3x - 4) + 8\\)",
+        "answerText": "6x",
+        "visualSuggestion": "Area model.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Proportions",
+        "questionText": "Solve:\n\\(2/x = 10/25\\)",
+        "answerText": "x = 5",
+        "visualSuggestion": "Scaling down 10 to 2.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Geometry",
+        "questionText": "Area of a square with perimeter 20.",
+        "answerText": "25",
+        "visualSuggestion": "Square with sides labeled 5.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Slope",
+        "questionText": "Slope from table: (0,1), (1,3), (2,5).",
+        "answerText": "2",
+        "visualSuggestion": "Vertical change over horizontal change in table.",
+        "imageUrl": ""
+      }
+    ]
+  },
+  {
+    "day": 24,
+    "questions": [
+      {
+        "topic": "Rational Numbers",
+        "questionText": "Is 0.333... rational?",
+        "answerText": "Yes (1/3)",
+        "visualSuggestion": "Repeating decimal notation.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Equations",
+        "questionText": "Solve:\n\\(-x = 14\\)",
+        "answerText": "x = -14",
+        "visualSuggestion": "Number line mirror.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Percents",
+        "questionText": "8 is what percent of 40?",
+        "answerText": "20%",
+        "visualSuggestion": "Tape diagram 8/40 = 1/5.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Linear Functions",
+        "questionText": "Slope of line parallel to\n\\(y = 3x - 5\\)?",
+        "answerText": "3",
+        "visualSuggestion": "Two parallel lines on graph.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Statistics",
+        "questionText": "Find median: 1, 1, 5, 10, 20.",
+        "answerText": "5",
+        "visualSuggestion": "Ordered set.",
+        "imageUrl": ""
+      }
+    ]
+  },
+  {
+    "day": 25,
+    "questions": [
+      {
+        "topic": "Integers",
+        "questionText": "Evaluate:\n\\(-10 + 2 \\times (-3)\\)",
+        "answerText": "-16",
+        "visualSuggestion": "Order of operations hierarchy.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Expressions",
+        "questionText": "Factor out the GCF:\n\\(5x + 10\\).",
+        "answerText": "5(x + 2)",
+        "visualSuggestion": "Area model.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Equations",
+        "questionText": "Solve:\n\\(x/2 = -10\\)",
+        "answerText": "x = -20",
+        "visualSuggestion": "Inverse operations.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Geometry",
+        "questionText": "Volume of a prism: base area = 15, height = 4.",
+        "answerText": "60",
+        "visualSuggestion": "3D prism showing V = Bh.",
+        "imageUrl": ""
+      },
+      {
+        "topic": "Slope",
+        "questionText": "Slope through (1,2) and (3,6).",
+        "answerText": "2",
+        "visualSuggestion": "Rise/run calculation.",
+        "imageUrl": ""
+      }
+    ]
+  }
+]
