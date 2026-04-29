@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moat Editor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100vw; height: 100vh;
+  overflow: hidden;
+  background: #E4DDD3;
+  font-family: 'Lato', sans-serif;
+}
+
+#mobile-msg {
+  display: none;
+  position: fixed; inset: 0;
+  align-items: center; justify-content: center;
+  padding: 40px; text-align: center;
+  color: #AAA; font-size: 15px; line-height: 1.7;
+}
+@media (max-width: 768px) {
+  #app { display: none; }
+  #mobile-msg { display: flex; }
+}
+
+#app { position: relative; width: 100vw; height: 100vh; }
+#app.online-locked { user-select: none; }
+
+#moat-svg {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  z-index: 1;
+}
+
+#canvas-wrapper {
+  position: absolute;
+  z-index: 2;
+  background: #FAF8F4;
+  border-bottom: 1px solid rgba(201, 186, 170, 0.48);
+  box-shadow: 0 10px 18px rgba(126, 112, 98, 0.08);
+  overflow: hidden;
+}
+
+#editor-col {
+  width: 100%; height: 100%;
+  display: flex; justify-content: center;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+#editor {
+  width: 100%;
+  max-width: 720px;
+  min-height: 100%;
+  background: transparent;
+  border: none; outline: none; resize: none;
+  font-family: 'Lato', Georgia, serif;
+  font-size: 19px;
+  line-height: 1.85;
+  color: #2A2520;
+  padding: 30px 30px 100px;
+  transition: opacity 0.5s;
+  word-break: break-word;
+}
+#editor::placeholder { color: #C4BAB2; }
+#editor:disabled {
+  color: #2A2520;
+  -webkit-text-fill-color: #2A2520;
+}
+#editor.dimmed {
+  opacity: 0.38;
+  pointer-events: none;
+  user-select: none;
+}
+
+#editor-shield {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  background: transparent;
+  cursor: default;
+}
+#editor-shield.hidden {
+  display: none;
+}
+
+#draft-saved {
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px; color: #C8C0BA;
+  opacity: 0; transition: opacity 0.4s;
+  pointer-events: none;
+  white-space: nowrap;
+}
+#draft-saved.show { opacity: 1; }
+
+.side-action {
+  position: fixed;
+  z-index: 18;
+  transform: translateX(-50%);
+  font-family: 'Lato', sans-serif;
+  font-size: 13px; color: #8A8078;
+  background: rgba(250, 248, 244, 0.58);
+  border: 1px solid #D4CCC4;
+  border-radius: 6px;
+  min-width: 94px;
+  min-height: 38px;
+  padding: 8px 18px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s, opacity 0.3s;
+}
+.side-action:hover:not(:disabled) {
+  background: rgba(250, 248, 244, 0.88);
+  color: #504840;
+  border-color: #A09890;
+}
+.side-action:disabled { opacity: 0.32; cursor: default; }
+
+#wifi-prompt {
+  position: absolute;
+  z-index: 5;
+  top: 118px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex; align-items: flex-start; gap: 12px;
+  width: min(360px, calc(100% - 64px));
+  padding: 18px 20px;
+  font-size: 14px; color: #8F8881;
+  line-height: 1.35;
+  background: rgba(250, 248, 244, 0.94);
+  border: 1px solid rgba(201, 186, 170, 0.42);
+  border-radius: 8px;
+  box-shadow: 0 14px 30px rgba(126, 112, 98, 0.12);
+  transition: opacity 0.35s, transform 0.35s;
+}
+#wifi-prompt.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%) translateY(-6px);
+}
+#wifi-prompt svg {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+}
+#wifi-title {
+  display: block;
+  color: #746C64;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+#wifi-detail {
+  display: block;
+  margin-top: 2px;
+}
+
+#test-controls {
+  position: fixed; top: 18px; right: 24px;
+  z-index: 20;
+  display: none;
+  align-items: center; gap: 8px;
+  color: #9D958E;
+  font-size: 12px;
+}
+#test-controls.show { display: flex; }
+#speed-buttons {
+  display: flex;
+  border: 1px solid #CFC6BC;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.test-btn,
+.speed-btn {
+  min-width: 34px;
+  height: 24px;
+  background: rgba(250, 248, 244, 0.72);
+  color: #8A8078;
+  font: inherit;
+  cursor: pointer;
+}
+.test-btn {
+  border: 1px solid #CFC6BC;
+  border-radius: 6px;
+  padding: 0 9px;
+}
+.speed-btn {
+  border: 0;
+  border-right: 1px solid #CFC6BC;
+}
+.speed-btn:last-child { border-right: 0; }
+.test-btn.active,
+.speed-btn.active {
+  background: #C9BAAA;
+  color: #FAF8F4;
+}
+
+#break-msg {
+  position: fixed; bottom: 18px; left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  font-size: 12px; color: #BCB4AC;
+  opacity: 0; transition: opacity 0.6s;
+  pointer-events: none; white-space: nowrap;
+}
+#break-msg.show { opacity: 1; }
+
+#reset-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(228, 221, 211, 0.42);
+}
+#reset-modal.hidden { display: none; }
+#reset-dialog {
+  width: min(360px, calc(100vw - 48px));
+  padding: 20px;
+  background: rgba(250, 248, 244, 0.96);
+  border: 1px solid rgba(201, 186, 170, 0.52);
+  border-radius: 8px;
+  box-shadow: 0 18px 42px rgba(126, 112, 98, 0.18);
+  color: #746C64;
+}
+#reset-dialog h2 {
+  margin-bottom: 8px;
+  font-size: 14px;
+  line-height: 1.3;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+#reset-dialog p {
+  font-size: 14px;
+  line-height: 1.45;
+  color: #8F8881;
+}
+#reset-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 18px;
+}
+.modal-btn {
+  min-height: 34px;
+  padding: 7px 14px;
+  border: 1px solid #D4CCC4;
+  border-radius: 6px;
+  background: transparent;
+  color: #8A8078;
+  font: inherit;
+  cursor: pointer;
+}
+.modal-btn:hover {
+  color: #504840;
+  border-color: #A09890;
+}
+.modal-btn.danger {
+  background: #C9BAAA;
+  color: #FAF8F4;
+  border-color: #C9BAAA;
+}
+
+@keyframes shimmer {
+  0%, 100% { opacity: 0.85; }
+  50%       { opacity: 0.97; }
+}
+</style>
+</head>
+<body>
+
+<div id="mobile-msg">
+  This app is designed for desktop use.<br>Please open it on a wider screen.
+</div>
+
+<div id="app">
+  <svg id="moat-svg" xmlns="http://www.w3.org/2000/svg"></svg>
+
+  <div id="canvas-wrapper">
+    <div id="editor-col">
+      <textarea id="editor" placeholder="Begin writing…" spellcheck="true"></textarea>
+    </div>
+    <div id="editor-shield" aria-hidden="true"></div>
+    <span id="draft-saved">Draft saved</span>
+    <div id="wifi-prompt">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12.55a11 11 0 0 1 14.08 0"/>
+        <path d="M1.42 9a16 16 0 0 1 21.16 0"/>
+        <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
+        <circle cx="12" cy="20" r="1" fill="currentColor"/>
+      </svg>
+      <span>
+        <span id="wifi-title">Go offline to write</span>
+        <span id="wifi-detail">Turn off Wi-Fi, then wait for the moat to start filling.</span>
+      </span>
+    </div>
+  </div>
+
+  <button id="reset-btn" class="side-action" type="button">Reset</button>
+  <button id="copy-btn" class="side-action" type="button" disabled>Copy text</button>
+
+  <div id="break-msg">Wi-Fi detected — moat paused</div>
+
+  <div id="test-controls" aria-label="Prototype test controls">
+    <button id="force-offline" class="test-btn" type="button" aria-pressed="false">Force offline</button>
+    <button id="force-online" class="test-btn" type="button" aria-pressed="false">Force online</button>
+    <div id="speed-buttons" aria-label="Moat speed">
+      <button class="speed-btn active" type="button" data-speed="1">1x</button>
+      <button class="speed-btn" type="button" data-speed="12">12x</button>
+      <button class="speed-btn" type="button" data-speed="40">40x</button>
+    </div>
+  </div>
+
+  <div id="reset-modal" class="hidden" role="dialog" aria-modal="true" aria-labelledby="reset-title">
+    <div id="reset-dialog">
+      <h2 id="reset-title">Reset draft?</h2>
+      <p>This clears the writing and moat for a new project. This cannot be undone.</p>
+      <div id="reset-actions">
+        <button id="cancel-reset" class="modal-btn" type="button">Cancel</button>
+        <button id="confirm-reset" class="modal-btn danger" type="button">Reset</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+const POLL_MS        = 2_000;
+const DEBOUNCE_MS    = 5_000;
+const SAVE_MS        = 500;
+const STORAGE_KEY    = 'moat-editor-draft';
+const MOAT_STORAGE_KEY = 'moat-editor-moat-state';
+const FILL_PX_PER_MS = 3 / 1000;
+const LZ_FRAC        = 0.14;
+const BOTTOM_GUTTER_PX = 64;
+const CHECK_TIMEOUT_MS = 2200;
+const TEST_MODE      = new URLSearchParams(window.location.search).has('test');
+const CHECK_URLS     = [
+  'https://www.google.com/favicon.ico',
+  'https://1.1.1.1/favicon.ico',
+  'https://www.cloudflare.com/favicon.ico',
+  'https://www.bing.com/favicon.ico',
+];
+
+// ── App state ────────────────────────────────────────────────────────────────
+let isOffline      = false;
+let debounceTimer  = null;
+let pendingTarget  = null;
+let connectionOverride = null;
+let speedMultiplier = 1;
+
+// Moat state
+let svgEl        = null;
+let dryEl        = null;
+let pathLen      = 0;
+let waterSegs    = [];      // moving water bands, [{start, end}] in path px
+let waterEls     = [];
+let workMarks    = [];      // px positions where writing happened while offline
+let workMarkEls  = [];
+let rafId        = null;
+let lastTs       = null;
+let moatSaveTimer = null;
+
+// ── Path builder ─────────────────────────────────────────────────────────────
+function clamp(value, min, max) {
+  return Math.min(max, Math.max(min, value));
+}
+
+function getMoatMetrics(W, H) {
+  const px = 24;
+  const stroke = 22;
+  const actionHeight = 38;
+  const actionGap = 8;
+  const zone = Math.round(clamp(W * LZ_FRAC, 180, 310));
+  const topY = Math.round(clamp(H * 0.095, 92, 132));
+  const bottomY = H - px;
+  const rowCount = Math.max(7, Math.round((bottomY - topY) / 92));
+  const step = (bottomY - topY) / rowCount;
+  const actionTopMin = px + stroke / 2 + actionGap;
+  const actionTopMax = topY - stroke / 2 - actionGap - actionHeight;
+
+  return {
+    px,
+    zone,
+    topY,
+    bottomY,
+    rowCount,
+    step,
+    leftOuterX: px,
+    leftInnerX: zone - px,
+    rightInnerX: W - zone + px,
+    rightOuterX: W - px,
+    actionTop: clamp((px + topY - actionHeight) / 2, actionTopMin, actionTopMax),
+  };
+}
+
+function buildPath(W, H) {
+  const m = getMoatMetrics(W, H);
+  const pts = [[m.leftOuterX, m.px], [m.leftOuterX, m.topY], [m.leftInnerX, m.topY]];
+
+  let x = m.leftInnerX;
+  for (let i = 1; i < m.rowCount; i += 1) {
+    const y = m.topY + m.step * i;
+    pts.push([x, y]);
+    x = x === m.leftInnerX ? m.leftOuterX : m.leftInnerX;
+    pts.push([x, y]);
+  }
+
+  pts.push([x, m.bottomY]);
+  pts.push([m.rightInnerX, m.bottomY]);
+
+  x = m.rightInnerX;
+  for (let i = m.rowCount - 1; i >= 0; i -= 1) {
+    const y = m.topY + m.step * i;
+    pts.push([x, y]);
+    x = x === m.rightOuterX ? m.rightInnerX : m.rightOuterX;
+    pts.push([x, y]);
+  }
+
+  if (x !== m.rightOuterX) pts.push([m.rightOuterX, m.topY]);
+  pts.push([m.rightOuterX, m.px]);
+
+  return 'M ' + pts.map(p => p.join(',')).join(' L ');
+}
+
+// ── SVG init / rebuild ────────────────────────────────────────────────────────
+function initSVG() {
+  const W = window.innerWidth;
+  const H = window.innerHeight;
+  const m = getMoatMetrics(W, H);
+  const priorPathLen = pathLen;
+
+  svgEl = document.getElementById('moat-svg');
+  svgEl.innerHTML = '';
+  svgEl.setAttribute('width', W);
+  svgEl.setAttribute('height', H);
+
+  const d = buildPath(W, H);
+
+  dryEl = svgPath(d, '#C9BAAA', 22, 1);
+  svgEl.appendChild(dryEl);
+  pathLen = dryEl.getTotalLength();
+  if (priorPathLen === 0) {
+    loadMoatState();
+  } else if (priorPathLen !== pathLen) {
+    const scale = pathLen / priorPathLen;
+    waterSegs = waterSegs.map(seg => ({ start: seg.start * scale, end: seg.end * scale }));
+    workMarks = workMarks.map(mark => mark * scale);
+    scheduleMoatSave();
+  }
+
+  const wrapper = document.getElementById('canvas-wrapper');
+  wrapper.style.left   = m.zone + 'px';
+  wrapper.style.top    = '0';
+  wrapper.style.width  = (W - m.zone * 2) + 'px';
+  wrapper.style.height = Math.max(420, H - BOTTOM_GUTTER_PX) + 'px';
+  positionSideActions(W, m);
+
+  renderWater();
+}
+
+function positionSideActions(W, m) {
+  const resetBtn = document.getElementById('reset-btn');
+  const copyBtn = document.getElementById('copy-btn');
+  resetBtn.style.left = (m.zone * 0.5) + 'px';
+  resetBtn.style.top = m.actionTop + 'px';
+  copyBtn.style.left = (W - m.zone * 0.5) + 'px';
+  copyBtn.style.top = m.actionTop + 'px';
+}
+
+function svgPath(d, stroke, width, opacity) {
+  const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  p.setAttribute('d', d);
+  p.setAttribute('fill', 'none');
+  p.setAttribute('stroke', stroke);
+  p.setAttribute('stroke-width', width);
+  p.setAttribute('stroke-linecap', 'round');
+  p.setAttribute('stroke-linejoin', 'round');
+  p.setAttribute('opacity', opacity);
+  return p;
+}
+
+function dashAttr(start, end) {
+  const len = end - start;
+  return { array: `${len},${pathLen + 1}`, offset: String(-start) };
+}
+
+function appendWaterEl(seg) {
+  if (!svgEl || !dryEl || seg.end <= 0 || seg.start >= pathLen) return;
+  const start = Math.max(0, seg.start);
+  const end = Math.min(pathLen, seg.end);
+  if (end <= start) return;
+
+  const da = dashAttr(start, end);
+  const p = svgPath(dryEl.getAttribute('d'), '#74C5E8', 20, 0.88);
+  p.setAttribute('stroke-dasharray', da.array);
+  p.setAttribute('stroke-dashoffset', da.offset);
+  p.style.animation = 'shimmer 3.5s ease-in-out infinite';
+  p.style.filter = 'drop-shadow(0 0 5px rgba(90,195,230,0.3))';
+  svgEl.appendChild(p);
+  waterEls.push(p);
+}
+
+function appendWorkMark(mark) {
+  if (!svgEl || !dryEl || mark <= 0 || mark >= pathLen) return;
+
+  const pt = dryEl.getPointAtLength(mark);
+  const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  c.setAttribute('cx', pt.x);
+  c.setAttribute('cy', pt.y);
+  c.setAttribute('r', 3.2);
+  c.setAttribute('fill', '#FAF8F4');
+  c.setAttribute('opacity', 0.78);
+  c.setAttribute('stroke', '#4FAFD8');
+  c.setAttribute('stroke-width', 1);
+  svgEl.appendChild(c);
+  workMarkEls.push(c);
+}
+
+function renderWater() {
+  waterEls.forEach(el => el.remove());
+  workMarkEls.forEach(el => el.remove());
+  waterEls = [];
+  workMarkEls = [];
+
+  waterSegs.forEach(seg => appendWaterEl(seg));
+  workMarks.forEach(mark => appendWorkMark(mark));
+}
+
+function loadMoatState() {
+  try {
+    const raw = localStorage.getItem(MOAT_STORAGE_KEY);
+    if (!raw) return;
+
+    const saved = JSON.parse(raw);
+    if (!saved || !Array.isArray(saved.waterSegs) || !Array.isArray(saved.workMarks)) return;
+
+    const savedPathLen = Number(saved.pathLen);
+    const scale = savedPathLen > 0 ? pathLen / savedPathLen : 1;
+    const elapsed = Math.max(0, Date.now() - Number(saved.savedAt || Date.now()));
+    const drift = saved.wasAnimating ? FILL_PX_PER_MS * elapsed : 0;
+
+    waterSegs = saved.waterSegs
+      .map(seg => ({ start: Number(seg.start) * scale + drift, end: Number(seg.end) * scale + drift }))
+      .filter(seg => Number.isFinite(seg.start) && Number.isFinite(seg.end));
+    workMarks = saved.workMarks
+      .map(mark => Number(mark) * scale + drift)
+      .filter(Number.isFinite);
+    normalizeWater();
+  } catch {
+    waterSegs = [];
+    workMarks = [];
+  }
+}
+
+function saveMoatStateNow() {
+  if (!pathLen) return;
+  try {
+    localStorage.setItem(MOAT_STORAGE_KEY, JSON.stringify({
+      version: 1,
+      pathLen,
+      waterSegs,
+      workMarks,
+      wasAnimating: isOffline || hasWater(),
+      savedAt: Date.now(),
+    }));
+  } catch {}
+}
+
+function scheduleMoatSave() {
+  clearTimeout(moatSaveTimer);
+  moatSaveTimer = setTimeout(saveMoatStateNow, 250);
+}
+
+function clearMoatState() {
+  clearTimeout(moatSaveTimer);
+  try {
+    localStorage.removeItem(MOAT_STORAGE_KEY);
+  } catch {}
+}
+
+function normalizeWater() {
+  waterSegs = waterSegs
+    .filter(seg => seg.end > 0 && seg.start < pathLen)
+    .sort((a, b) => a.start - b.start);
+
+  const merged = [];
+  waterSegs.forEach(seg => {
+    const current = { start: Math.max(0, seg.start), end: Math.min(pathLen, seg.end) };
+    if (current.end <= current.start) return;
+    const prev = merged[merged.length - 1];
+    if (prev && current.start <= prev.end + 1) {
+      prev.end = Math.max(prev.end, current.end);
+    } else {
+      merged.push(current);
+    }
+  });
+  waterSegs = merged;
+  workMarks = workMarks.filter(mark => mark > 0 && mark < pathLen);
+}
+
+function addWaterAtEntry(len) {
+  waterSegs.push({ start: 0, end: len });
+  normalizeWater();
+}
+
+function hasWater() {
+  return waterSegs.length > 0;
+}
+
+function addWorkMark() {
+  if (!isOffline) return;
+  const mark = 8;
+  const last = workMarks[workMarks.length - 1];
+  if (last !== undefined && Math.abs(mark - last) < 38) return;
+
+  workMarks.push(mark);
+  renderWater();
+  scheduleMoatSave();
+}
+
+function moveWater(delta) {
+  if (hasWater()) {
+    waterSegs = waterSegs.map(seg => ({ start: seg.start + delta, end: seg.end + delta }));
+    workMarks = workMarks.map(mark => mark + delta);
+  }
+
+  if (isOffline) addWaterAtEntry(delta);
+  normalizeWater();
+  renderWater();
+  scheduleMoatSave();
+}
+
+// ── Animation ─────────────────────────────────────────────────────────────────
+function tick(ts) {
+  if (!lastTs) lastTs = ts;
+  const dt = Math.min(ts - lastTs, 80);
+  lastTs = ts;
+
+  moveWater(FILL_PX_PER_MS * speedMultiplier * dt);
+
+  if (isOffline || hasWater()) {
+    rafId = requestAnimationFrame(tick);
+  } else {
+    rafId = null;
+    lastTs = null;
+  }
+}
+
+function ensureTicking() {
+  if (rafId === null) {
+    rafId = requestAnimationFrame(tick);
+  }
+}
+
+function stopTicking() {
+  if (rafId !== null) {
+    cancelAnimationFrame(rafId);
+    rafId = null;
+  }
+  lastTs = null;
+}
+
+function startFill() {
+  lastTs = null;
+  ensureTicking();
+}
+
+function stopFill() {
+  lastTs = null;
+  if (hasWater()) ensureTicking();
+}
+
+// ── Connectivity detection ────────────────────────────────────────────────────
+async function checkOnline() {
+  if (connectionOverride === 'offline') return false;
+  if (connectionOverride === 'online') return true;
+  if (navigator.onLine === false) return false;
+
+  const cacheBust = `moat=${Date.now()}`;
+  const checks = CHECK_URLS.map(u => checkUrl(`${u}${u.includes('?') ? '&' : '?'}${cacheBust}`));
+  const results = await Promise.all(checks);
+  return results.some(Boolean);
+}
+
+async function checkUrl(url) {
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), CHECK_TIMEOUT_MS);
+  try {
+    await fetch(url, { mode: 'no-cors', cache: 'no-store', signal: ctrl.signal });
+    clearTimeout(t);
+    return true;
+  } catch {
+    clearTimeout(t);
+    return false;
+  }
+}
+
+function applyOffline() {
+  isOffline = true;
+  document.getElementById('app').classList.remove('online-locked');
+  document.getElementById('editor-shield').classList.add('hidden');
+  document.getElementById('wifi-prompt').classList.add('hidden');
+  const editor = document.getElementById('editor');
+  editor.disabled = false;
+  editor.classList.remove('dimmed');
+  document.getElementById('copy-btn').disabled = false;
+  document.getElementById('break-msg').classList.remove('show');
+  startFill();
+  saveMoatStateNow();
+}
+
+function applyOnline() {
+  isOffline = false;
+  document.getElementById('app').classList.add('online-locked');
+  const editor = document.getElementById('editor');
+  editor.blur();
+  editor.disabled = true;
+  editor.classList.add('dimmed');
+  document.getElementById('editor-shield').classList.remove('hidden');
+  document.getElementById('copy-btn').disabled = true;
+  document.getElementById('wifi-prompt').classList.remove('hidden');
+  document.getElementById('break-msg').classList.add('show');
+  stopFill();
+  saveMoatStateNow();
+}
+
+async function poll() {
+  const online      = await checkOnline();
+  const needsChange = (online && isOffline) || (!online && !isOffline);
+  if (!needsChange) { clearTimeout(debounceTimer); pendingTarget = null; return; }
+
+  const target = online ? 'online' : 'offline';
+  if (pendingTarget === target) return;
+
+  clearTimeout(debounceTimer);
+  pendingTarget = target;
+  debounceTimer = setTimeout(() => {
+    pendingTarget = null;
+    online ? applyOnline() : applyOffline();
+  }, DEBOUNCE_MS);
+}
+
+function setupTestControls() {
+  if (!TEST_MODE) return;
+
+  const controls = document.getElementById('test-controls');
+  const forceOffline = document.getElementById('force-offline');
+  const forceOnline = document.getElementById('force-online');
+  controls.classList.add('show');
+
+  function setConnectionOverride(nextOverride) {
+    connectionOverride = connectionOverride === nextOverride ? null : nextOverride;
+    const offlineActive = connectionOverride === 'offline';
+    const onlineActive = connectionOverride === 'online';
+
+    forceOffline.classList.toggle('active', offlineActive);
+    forceOffline.setAttribute('aria-pressed', String(offlineActive));
+    forceOffline.textContent = offlineActive ? 'Offline forced' : 'Force offline';
+
+    forceOnline.classList.toggle('active', onlineActive);
+    forceOnline.setAttribute('aria-pressed', String(onlineActive));
+    forceOnline.textContent = onlineActive ? 'Online forced' : 'Force online';
+
+    clearTimeout(debounceTimer);
+    pendingTarget = null;
+
+    if (connectionOverride === 'offline') {
+      applyOffline();
+    } else if (connectionOverride === 'online') {
+      applyOnline();
+    } else {
+      checkOnline().then(online => {
+        online ? applyOnline() : applyOffline();
+      });
+    }
+  }
+
+  forceOffline.addEventListener('click', () => setConnectionOverride('offline'));
+  forceOnline.addEventListener('click', () => setConnectionOverride('online'));
+
+  document.querySelectorAll('.speed-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      speedMultiplier = Number(btn.dataset.speed);
+      document.querySelectorAll('.speed-btn').forEach(el => el.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+}
+
+function loadDraft() {
+  try {
+    return localStorage.getItem(STORAGE_KEY) || '';
+  } catch {
+    return '';
+  }
+}
+
+function saveDraft(value) {
+  try {
+    localStorage.setItem(STORAGE_KEY, value);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function clearDraft() {
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch {}
+}
+
+function showDraftStatus(text) {
+  const el = document.getElementById('draft-saved');
+  el.textContent = text;
+  el.classList.add('show');
+  setTimeout(() => {
+    el.classList.remove('show');
+    el.textContent = 'Draft saved';
+  }, 2000);
+}
+
+// ── Editor: save ──────────────────────────────────────────────────────────────
+let saveTimer = null;
+document.getElementById('editor').addEventListener('input', () => {
+  addWorkMark();
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    if (!saveDraft(document.getElementById('editor').value)) return;
+    showDraftStatus('Draft saved');
+  }, SAVE_MS);
+});
+
+document.getElementById('reset-btn').addEventListener('click', () => {
+  const editor = document.getElementById('editor');
+  clearTimeout(saveTimer);
+  editor.value = '';
+  clearDraft();
+  waterSegs = [];
+  workMarks = [];
+  renderWater();
+  clearMoatState();
+  showDraftStatus('Draft cleared');
+  if (!editor.classList.contains('dimmed')) editor.focus();
+});
+
+// ── Copy button ───────────────────────────────────────────────────────────────
+document.getElementById('copy-btn').addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(document.getElementById('editor').value);
+    const btn = document.getElementById('copy-btn');
+    btn.textContent = 'Copied!';
+    setTimeout(() => { btn.textContent = 'Copy text'; }, 1500);
+  } catch (_) {}
+});
+
+function clearEditorSelection() {
+  const editor = document.getElementById('editor');
+  try {
+    editor.setSelectionRange(0, 0);
+  } catch {}
+
+  const selection = window.getSelection();
+  if (selection) selection.removeAllRanges();
+}
+
+['pointerdown', 'mousedown', 'mousemove', 'selectstart', 'dragstart'].forEach(eventName => {
+  document.getElementById('editor-shield').addEventListener(eventName, event => {
+    if (isOffline) return;
+    event.preventDefault();
+    clearEditorSelection();
+  });
+});
+
+document.addEventListener('selectionchange', () => {
+  if (!isOffline) clearEditorSelection();
+});
+
+// ── Wi-Fi prompt placement ─────────────────────────────────────────────────────
+if (/Win/i.test(navigator.userAgent)) {
+  document.getElementById('wifi-detail').textContent = 'Open the network menu in the taskbar and disconnect Wi-Fi.';
+}
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', async () => {
+  const saved = loadDraft();
+  if (saved) document.getElementById('editor').value = saved;
+
+  initSVG();
+  setupTestControls();
+
+  const online = await checkOnline();
+  if (!online) {
+    applyOffline();
+  } else {
+    applyOnline();
+  }
+
+  setInterval(poll, POLL_MS);
+});
+
+let resizeTimer = null;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(initSVG, 200);
+});
+
+window.addEventListener('beforeunload', saveMoatStateNow);
+</script>
+</body>
+</html>
