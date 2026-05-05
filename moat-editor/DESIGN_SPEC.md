@@ -115,7 +115,7 @@ The moat animation state is not persisted between sessions — it resets on relo
 
 ## Wi-Fi Off Prompt
 
-When the app loads and detects that the user is online, a clear instructional nudge appears telling them to turn off their wi-fi to begin. This is not a modal or a blocker — it is a persistent inline message positioned where it is easiest to act on, based on platform.
+When the app loads and detects that the user is online, a clear explanatory nudge appears telling them what the site is and how to begin. This is not a modal or a blocker — it is a persistent inline message that sits over the inactive editor surface until the user goes offline.
 
 **macOS / Linux:** The prompt appears in the upper-left area of the screen, since the wi-fi toggle lives in the menu bar at the top-right of macOS (and equivalently in most Linux desktop environments). The logic is that the eye travels from the instruction across the top of the screen to the control. Suggested text: "Turn off Wi-Fi to begin writing." with a small wireless icon beside it.
 
@@ -125,7 +125,7 @@ Platform detection can be approximated via `navigator.userAgent` or `navigator.p
 
 The prompt disappears the moment the app detects offline status and the moat begins to fill. It should not reappear mid-session if the user goes back online — by that point they know how the app works.
 
-The prompt should be visually consistent with the rest of the app: no bright colors, no animation, no urgency. It is a quiet instruction, not an alarm.
+The prompt should be visually consistent with the rest of the app: no bright colors, no animation, no urgency. It is a quiet explanation, not an alarm. It should be large enough to explain the concept to someone arriving cold: the editor only opens offline, the moving water is a focus streak, and returning online pauses the editor while leaving a visible break in the moat.
 
 ---
 

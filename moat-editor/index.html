@@ -130,10 +130,10 @@ html, body {
   left: 50%;
   transform: translateX(-50%);
   display: flex; align-items: flex-start; gap: 12px;
-  width: min(360px, calc(100% - 64px));
-  padding: 18px 20px;
+  width: min(520px, calc(100% - 64px));
+  padding: 22px 24px;
   font-size: 14px; color: #8F8881;
-  line-height: 1.35;
+  line-height: 1.45;
   background: rgba(250, 248, 244, 0.94);
   border: 1px solid rgba(201, 186, 170, 0.42);
   border-radius: 8px;
@@ -154,14 +154,21 @@ html, body {
 #wifi-title {
   display: block;
   color: #746C64;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   letter-spacing: 0.02em;
   text-transform: uppercase;
 }
 #wifi-detail {
   display: block;
-  margin-top: 2px;
+  margin-top: 6px;
+}
+#wifi-note {
+  display: block;
+  margin-top: 10px;
+  color: #A39A91;
+  font-size: 13px;
+  line-height: 1.45;
 }
 
 #test-controls {
@@ -301,7 +308,8 @@ html, body {
       </svg>
       <span>
         <span id="wifi-title">Go offline to write</span>
-        <span id="wifi-detail">Turn off Wi-Fi, then wait for the moat to start filling.</span>
+        <span id="wifi-detail">Moat Editor is a distraction-free writing space that only opens when your internet is off. Turn off Wi-Fi, then wait for the moat to start filling.</span>
+        <span id="wifi-note">The moving water is your focus streak. If Wi-Fi comes back, the editor pauses and the gap in the moat records the break.</span>
       </span>
     </div>
   </div>
@@ -407,29 +415,23 @@ function getMoatMetrics(W, H) {
 
 function buildPath(W, H) {
   const m = getMoatMetrics(W, H);
-  const pts = [[m.leftOuterX, m.px], [m.leftOuterX, m.topY], [m.leftInnerX, m.topY]];
+  const leftPts = [[m.leftOuterX, m.px], [m.leftOuterX, m.topY], [m.leftInnerX, m.topY]];
 
   let x = m.leftInnerX;
   for (let i = 1; i < m.rowCount; i += 1) {
     const y = m.topY + m.step * i;
-    pts.push([x, y]);
+    leftPts.push([x, y]);
     x = x === m.leftInnerX ? m.leftOuterX : m.leftInnerX;
-    pts.push([x, y]);
+    leftPts.push([x, y]);
   }
 
-  pts.push([x, m.bottomY]);
-  pts.push([m.rightInnerX, m.bottomY]);
+  leftPts.push([x, m.bottomY]);
 
-  x = m.rightInnerX;
-  for (let i = m.rowCount - 1; i >= 0; i -= 1) {
-    const y = m.topY + m.step * i;
-    pts.push([x, y]);
-    x = x === m.rightOuterX ? m.rightInnerX : m.rightOuterX;
-    pts.push([x, y]);
-  }
-
-  if (x !== m.rightOuterX) pts.push([m.rightOuterX, m.topY]);
-  pts.push([m.rightOuterX, m.px]);
+  const rightPts = leftPts
+    .slice()
+    .reverse()
+    .map(([leftX, y]) => [W - leftX, y]);
+  const pts = leftPts.concat(rightPts);
 
   return 'M ' + pts.map(p => p.join(',')).join(' L ');
 }
@@ -445,6 +447,8 @@ function initSVG() {
   svgEl.innerHTML = '';
   svgEl.setAttribute('width', W);
   svgEl.setAttribute('height', H);
+  svgEl.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  svgEl.setAttribute('preserveAspectRatio', 'none');
 
   const d = buildPath(W, H);
 
@@ -890,7 +894,7 @@ document.addEventListener('selectionchange', () => {
 
 // ── Wi-Fi prompt placement ─────────────────────────────────────────────────────
 if (/Win/i.test(navigator.userAgent)) {
-  document.getElementById('wifi-detail').textContent = 'Open the network menu in the taskbar and disconnect Wi-Fi.';
+  document.getElementById('wifi-detail').textContent = 'Moat Editor is a distraction-free writing space that only opens when your internet is off. Open the network menu in the taskbar, disconnect Wi-Fi, then wait for the moat to start filling.';
 }
 
 // ── Boot ──────────────────────────────────────────────────────────────────────
