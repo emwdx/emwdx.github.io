@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UDD Workshop - Apps Creadas</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+
+        header {
+            width: 100%;
+            position: relative;
+            line-height: 0;
+        }
+
+        header img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        header h1 {
+            position: absolute;
+            bottom: 24px;
+            left: 32px;
+            color: white;
+            font-size: 2rem;
+            text-shadow: 1px 2px 6px rgba(0,0,0,0.7);
+            line-height: 1.2;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 24px;
+        }
+
+        main p.intro {
+            font-size: 1.05rem;
+            color: #555;
+            margin-bottom: 32px;
+        }
+
+        .app-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .app-card {
+            background: white;
+            border-radius: 10px;
+            padding: 24px 28px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            text-decoration: none;
+            color: inherit;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+
+        .app-card:hover {
+            box-shadow: 0 6px 18px rgba(0,0,0,0.13);
+            transform: translateY(-2px);
+        }
+
+        .app-card-info h2 {
+            font-size: 1.15rem;
+            color: #003399;
+            margin-bottom: 6px;
+        }
+
+        .app-card-info p {
+            font-size: 0.93rem;
+            color: #666;
+        }
+
+        .app-card-arrow {
+            font-size: 1.4rem;
+            color: #003399;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <img src="udd-redirect.jpeg" alt="UDD Workshop">
+    <h1>UDD Workshop<br>Apps Creadas</h1>
+</header>
+
+<main>
+    <p class="intro">Registro de las aplicaciones construidas durante nuestro taller de programación con IA.</p>
+
+    <div class="app-list">
+
+        <a class="app-card" href="mariajose_app.html">
+            <div class="app-card-info">
+                <h2>App de María José</h2>
+                <p>UDD Entrepreneurship Hub – Sistema de Seguimiento</p>
+            </div>
+            <div class="app-card-arrow">→</div>
+        </a>
+
+        <a class="app-card" href="sebastian_app.html">
+            <div class="app-card-info">
+                <h2>App de Sebastián</h2>
+                <p>UDD Nexus 3.0 – Copiloto de Emprendimiento</p>
+            </div>
+            <div class="app-card-arrow">→</div>
+        </a>
+
+        <a class="app-card" href="jairo_app.html">
+            <div class="app-card-info">
+                <h2>App de Jairo</h2>
+                <p>FinanzIA – Dashboard de Transferencia Tecnológica</p>
+            </div>
+            <div class="app-card-arrow">→</div>
+        </a>
+
+        <a class="app-card" href="paulina_app.html">
+            <div class="app-card-info">
+                <h2>App de Paulina</h2>
+                <p>Visor de Prácticas UDD</p>
+            </div>
+            <div class="app-card-arrow">→</div>
+        </a>
+
+        <a class="app-card" href="pia_app.html">
+            <div class="app-card-info">
+                <h2>App de Pía</h2>
+                <p>Herramienta Cualitativa – Proyecto K+P (UDD Futuro)</p>
+            </div>
+            <div class="app-card-arrow">→</div>
+        </a>
+
+        <a class="app-card" href="sylvana_app.html">
+            <div class="app-card-info">
+                <h2>App de Sylvana</h2>
+                <p>Plataforma Curricular UDD – Química y Farmacia</p>
+            </div>
+            <div class="app-card-arrow">→</div>
+        </a>
+
+    </div>
+</main>
+
+</body>
+</html>

@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Herramienta Cualitativa: Proyecto K+P (UDD Futuro)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Estilos personalizados para el texto seleccionado */
+        ::selection { background: #bbf7d0; color: #166534; }
+        .tab-active { border-bottom: 2px solid #2563eb; color: #2563eb; font-weight: bold; }
+        .quote-card { border-left: 4px solid #3b82f6; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans h-screen flex overflow-hidden">
+
+    <!-- Menú Lateral (Sidebar) -->
+    <aside class="w-64 bg-white border-r shadow-sm flex flex-col h-full">
+        <div class="p-4 bg-blue-700 text-white">
+            <h1 class="text-lg font-bold leading-tight">Proyecto K+P</h1>
+            <p class="text-xs opacity-80 mt-1">Mediación y Aprendizaje</p>
+        </div>
+        
+        <div class="p-4 border-b flex justify-between items-center bg-gray-50">
+            <h2 class="text-sm font-semibold uppercase text-gray-500">Entrevistas</h2>
+            <button onclick="addInterview()" class="bg-blue-600 text-white text-xs px-2 py-1 rounded hover:bg-blue-700">+ Nueva</button>
+        </div>
+
+        <div id="interview-list" class="flex-1 overflow-y-auto">
+            <!-- Lista de entrevistas generada dinámicamente -->
+        </div>
+
+        <div class="p-4 border-t bg-gray-50 flex flex-col gap-2">
+            <button onclick="showFindings()" class="w-full bg-indigo-600 text-white text-sm py-2 rounded shadow hover:bg-indigo-700">Resumen y Hallazgos</button>
+            <div class="flex gap-2">
+                <button onclick="exportData()" class="w-1/2 bg-gray-200 text-gray-700 text-xs py-2 rounded hover:bg-gray-300">Exportar Backup</button>
+                <label class="w-1/2 bg-gray-200 text-gray-700 text-xs py-2 rounded hover:bg-gray-300 text-center cursor-pointer">
+                    Importar
+                    <input type="file" id="import-file" class="hidden" accept=".json" onchange="importData(event)">
+                </label>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Contenedor Principal -->
+    <main class="flex-1 flex flex-col h-full bg-gray-100 overflow-hidden" id="main-content">
+        <!-- Pantalla de bienvenida -->
+        <div class="flex-1 flex items-center justify-center text-center p-8">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-700 mb-2">Plataforma de Análisis Cualitativo</h2>
+                <p class="text-gray-500 max-w-lg mx-auto">Selecciona una entrevista del panel lateral o crea una nueva para comenzar a grabar, transcribir y codificar. Recuerda que el autoguardado está activado.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Plantilla de Entrevista (Oculta, usada por JS) -->
+    <template id="tpl-interview">
+        <div class="flex flex-col h-full">
+            <!-- Cabecera de la Entrevista -->
+            <div class="bg-white p-6 border-b shadow-sm">
+                <input type="text" id="int-name" class="text-2xl font-bold text-gray-800 bg-transparent border-none outline-none w-full" placeholder="Nombre del Entrevistado..." onchange="updateInterviewMeta()">
+                <div class="flex gap-4 mt-3 text-sm">
+                    <select id="int-role" class="border rounded px-2 py-1 bg-gray-50" onchange="updateInterviewMeta()">
+                        <option value="Docente Kinesiología">Docente Kinesiología</option>
+                        <option value="Docente Publicidad">Docente Publicidad</option>
+                        <option value="Directivo">Directivo / Coordinador</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                    <label class="flex items-center gap-2 text-gray-600 cursor-pointer">
+                        <input type="checkbox" id="int-consent" onchange="updateInterviewMeta()" class="rounded">
+                        Consentimiento Informado Firmado
+                    </label>
+                </div>
+            </div>
+
+            <!-- Navegación de Pestañas -->
+            <div class="flex bg-white border-b px-6">
+                <button onclick="switchTab('transcript')" id="tab-transcript" class="px-4 py-3 tab-active text-sm">Grabación y Transcripción</button>
+                <button onclick="switchTab('coding')" id="tab-coding" class="px-4 py-3 text-gray-500 text-sm hover:text-gray-800">Análisis y Codificación</button>
+            </div>
+
+            <!-- Área de Transcripción (Tab 1) -->
+            <div id="view-transcript" class="flex-1 overflow-y-auto p-6 flex flex-col gap-4">
+                <div class="bg-white p-4 rounded shadow-sm border">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="font-bold text-gray-700">Control de Audio</h3>
+                        <div class="flex gap-2">
+                            <button id="btn-record" onclick="toggleRecording()" class="bg-red-500 text-white px-3 py-1 rounded text-sm flex items-center gap-2 hover:bg-red-600">
+                                <span class="w-2 h-2 rounded-full bg-white animate-pulse" id="record-indicator" style="display:none;"></span>
+                                <span id="record-text">Iniciar Grabación</span>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-500 mb-3">La transcripción automática se generará a medida que hablen. <strong>Nota:</strong> Al finalizar, descarga el audio localmente; la plataforma solo guarda el texto para no saturar la memoria.</p>
+                    <div id="audio-playback-container" class="hidden mt-2 p-2 bg-gray-50 rounded border">
+                        <audio id="audio-playback" controls class="w-full h-8"></audio>
+                        <a id="audio-download" class="text-xs text-blue-600 underline mt-1 inline-block" download="entrevista.webm">Descargar archivo de audio (.webm)</a>
+                    </div>
+                </div>
+
+                <div class="flex-1 flex flex-col bg-white rounded shadow-sm border p-4">
+                    <h3 class="font-bold text-gray-700 mb-2">Texto Transcrito</h3>
+                    <textarea id="transcript-text" class="flex-1 w-full p-2 border rounded resize-none focus:outline-none focus:border-blue-500" placeholder="El texto transcrito aparecerá aquí. También puedes pegar directamente una transcripción previa..." onchange="updateTranscript()"></textarea>
+                </div>
+            </div>
+
+            <!-- Área de Codificación (Tab 2) -->
+            <div id="view-coding" class="flex-1 overflow-hidden hidden">
+                <div class="flex h-full">
+                    <!-- Texto para seleccionar -->
+                    <div class="w-7/12 p-6 overflow-y-auto border-r bg-white">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold text-gray-700">Selecciona texto para codificar</h3>
+                            <button onclick="codeSelection()" class="bg-blue-600 text-white px-3 py-1 text-sm rounded hover:bg-blue-700 shadow">+ Crear Código desde Selección</button>
+                        </div>
+                        <div id="coding-text-area" class="text-gray-800 leading-relaxed whitespace-pre-wrap selection:bg-green-200">
+                            <!-- El texto transcrito se inyecta aquí como solo lectura -->
+                        </div>
+                    </div>
+                    <!-- Lista de códigos -->
+                    <div class="w-5/12 p-6 overflow-y-auto bg-gray-50">
+                        <h3 class="font-bold text-gray-700 mb-4">Códigos y Citas (Incidentes Críticos)</h3>
+                        <div id="codes-list" class="flex flex-col gap-3">
+                            <!-- Los códigos aparecen aquí -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Plantilla de Hallazgos (Oculta) -->
+    <template id="tpl-findings">
+        <div class="h-full flex flex-col p-6 overflow-y-auto">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Redacción de Hallazgos por Objetivo</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- OE1 -->
+                <div class="bg-white p-5 rounded shadow border">
+                    <h3 class="font-bold text-indigo-700 mb-2">OE1: Diseño de Desafíos y Colaboración</h3>
+                    <p class="text-xs text-gray-500 mb-2">Factores pedagógicos, organizacionales y curriculares en el diseño de desafíos auténticos (K+P).</p>
+                    <textarea id="find-oe1" class="w-full h-32 p-2 border rounded focus:outline-indigo-500" onchange="saveFindings()"></textarea>
+                </div>
+
+                <!-- OE2 -->
+                <div class="bg-white p-5 rounded shadow border">
+                    <h3 class="font-bold text-indigo-700 mb-2">OE2: Mediación y Apoyo Docente</h3>
+                    <p class="text-xs text-gray-500 mb-2">Acciones que facilitan o dificultan la resolución de problemas y colaboración interprofesional.</p>
+                    <textarea id="find-oe2" class="w-full h-32 p-2 border rounded focus:outline-indigo-500" onchange="saveFindings()"></textarea>
+                </div>
+
+                <!-- OE3 -->
+                <div class="bg-white p-5 rounded shadow border">
+                    <h3 class="font-bold text-indigo-700 mb-2">OE3: Competencias Diferenciadoras</h3>
+                    <p class="text-xs text-gray-500 mb-2">Competencias interdisciplinarias observadas por los docentes frente al estándar disciplinar.</p>
+                    <textarea id="find-oe3" class="w-full h-32 p-2 border rounded focus:outline-indigo-500" onchange="saveFindings()"></textarea>
+                </div>
+
+                <!-- Common Ground / Andamiaje -->
+                <div class="bg-white p-5 rounded shadow border border-indigo-200">
+                    <h3 class="font-bold text-indigo-700 mb-2">Andamiaje y Common Ground</h3>
+                    <p class="text-xs text-gray-500 mb-2">Espacio para sistematizar el concepto de "andamiaje interdisciplinario" (Meta principal del estudio).</p>
+                    <textarea id="find-general" class="w-full h-32 p-2 border rounded focus:outline-indigo-500" onchange="saveFindings()"></textarea>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <script>
+        // --- ESTADO DE LA APLICACIÓN ---
+        let appData = {
+            interviews: [],
+            findings: { oe1: '', oe2: '', oe3: '', general: '' }
+        };
+        let activeInterviewId = null;
+
+        // --- VARIABLES DE GRABACIÓN ---
+        let mediaRecorder;
+        let audioChunks = [];
+        let recognition;
+        let isRecording = false;
+        let finalTranscript = '';
+
+        // --- INICIALIZACIÓN ---
+        window.onload = () => {
+            loadData();
+            renderSidebar();
+            initSpeechRecognition();
+        };
+
+        function loadData() {
+            const saved = localStorage.getItem('kp_research_data');
+            if (saved) {
+                appData = JSON.parse(saved);
+            }
+        }
+
+        function saveData() {
+            localStorage.setItem('kp_research_data', JSON.stringify(appData));
+            renderSidebar(); // Update sidebar names if changed
+        }
+
+        // --- INTERFAZ Y NAVEGACIÓN ---
+        function renderSidebar() {
+            const list = document.getElementById('interview-list');
+            list.innerHTML = '';
+            
+            appData.interviews.forEach(int => {
+                const btn = document.createElement('button');
+                btn.className = `w-full text-left px-4 py-3 border-b text-sm ${activeInterviewId === int.id ? 'bg-blue-50 border-blue-200 font-semibold' : 'hover:bg-gray-100'}`;
+                
+                let consentIcon = int.consent ? '<span class="text-green-500" title="Consentimiento Firmado">✓</span>' : '<span class="text-red-400" title="Falta Consentimiento">⚠</span>';
+                
+                btn.innerHTML = `<div class="flex justify-between items-center">
+                    <span class="truncate">${int.name || 'Entrevista sin nombre'}</span>
+                    ${consentIcon}
+                </div>
+                <div class="text-xs text-gray-400 truncate">${int.role}</div>`;
+                btn.onclick = () => openInterview(int.id);
+                list.appendChild(btn);
+            });
+        }
+
+        function addInterview() {
+            const newId = Date.now().toString();
+            appData.interviews.push({
+                id: newId,
+                name: 'Nueva Entrevista',
+                role: 'Docente Kinesiología',
+                consent: false,
+                transcript: '',
+                codes: []
+            });
+            saveData();
+            openInterview(newId);
+        }
+
+        function openInterview(id) {
+            activeInterviewId = id;
+            stopRecording(); // Stop mic if switching tabs
+            
+            const int = appData.interviews.find(i => i.id === id);
+            const main = document.getElementById('main-content');
+            const tpl = document.getElementById('tpl-interview').content.cloneNode(true);
+            
+            main.innerHTML = '';
+            main.appendChild(tpl);
+
+            // Poblar datos
+            document.getElementById('int-name').value = int.name;
+            document.getElementById('int-role').value = int.role;
+            document.getElementById('int-consent').checked = int.consent;
+            document.getElementById('transcript-text').value = int.transcript;
+            finalTranscript = int.transcript;
+
+            renderSidebar();
+        }
+
+        function updateInterviewMeta() {
+            if (!activeInterviewId) return;
+            const int = appData.interviews.find(i => i.id === activeInterviewId);
+            int.name = document.getElementById('int-name').value;
+            int.role = document.getElementById('int-role').value;
+            int.consent = document.getElementById('int-consent').checked;
+            saveData();
+        }
+
+        function updateTranscript() {
+            if (!activeInterviewId) return;
+            const int = appData.interviews.find(i => i.id === activeInterviewId);
+            int.transcript = document.getElementById('transcript-text').value;
+            finalTranscript = int.transcript;
+            saveData();
+        }
+
+        // --- PESTAÑAS (TABS) DENTRO DE ENTREVISTA ---
+        function switchTab(tabName) {
+            const viewT = document.getElementById('view-transcript');
+            const viewC = document.getElementById('view-coding');
+            const tabT = document.getElementById('tab-transcript');
+            const tabC = document.getElementById('tab-coding');
+
+            if(tabName === 'transcript') {
+                viewT.classList.remove('hidden');
+                viewC.classList.add('hidden');
+                tabT.className = "px-4 py-3 tab-active text-sm";
+                tabC.className = "px-4 py-3 text-gray-500 text-sm hover:text-gray-800";
+            } else {
+                viewT.classList.add('hidden');
+                viewC.classList.remove('hidden');
+                tabC.className = "px-4 py-3 tab-active text-sm";
+                tabT.className = "px-4 py-3 text-gray-500 text-sm hover:text-gray-800";
+                
+                // Cargar texto para codificar
+                document.getElementById('coding-text-area').innerText = document.getElementById('transcript-text').value;
+                renderCodes();
+            }
+        }
+
+        // --- GRABACIÓN Y TRANSCRIPCIÓN ---
+        function initSpeechRecognition() {
+            window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (window.SpeechRecognition) {
+                recognition = new SpeechRecognition();
+                recognition.continuous = true;
+                recognition.interimResults = true;
+                recognition.lang = 'es-CL'; // Español Chile
+
+                recognition.onresult = (event) => {
+                    let interimTranscript = '';
+                    for (let i = event.resultIndex; i < event.results.length; ++i) {
+                        if (event.results[i].isFinal) {
+                            finalTranscript += event.results[i][0].transcript + ' ';
+                        } else {
+                            interimTranscript += event.results[i][0].transcript;
+                        }
+                    }
+                    const textArea = document.getElementById('transcript-text');
+                    if(textArea) {
+                        textArea.value = finalTranscript + interimTranscript;
+                        updateTranscript();
+                    }
+                };
+
+                recognition.onerror = (event) => {
+                    console.warn("Speech recognition error", event.error);
+                };
+
+                // Bucle para evitar que se detenga si hay pausas largas
+                recognition.onend = () => {
+                    if (isRecording) {
+                        recognition.start();
+                    }
+                };
+            } else {
+                alert("Tu navegador no soporta transcripción por voz automática. Usa Google Chrome para esta función.");
+            }
+        }
+
+        async function toggleRecording() {
+            if (isRecording) {
+                stopRecording();
+            } else {
+                startRecording();
+            }
+        }
+
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+
+                mediaRecorder.ondataavailable = event => {
+                    audioChunks.push(event.data);
+                };
+
+                mediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    
+                    const playbackContainer = document.getElementById('audio-playback-container');
+                    const audioPlayback = document.getElementById('audio-playback');
+                    const audioDownload = document.getElementById('audio-download');
+                    
+                    if(playbackContainer) {
+                        playbackContainer.classList.remove('hidden');
+                        audioPlayback.src = audioUrl;
+                        audioDownload.href = audioUrl;
+                        
+                        // Nombrar el archivo con el nombre del entrevistado
+                        const int = appData.interviews.find(i => i.id === activeInterviewId);
+                        const cleanName = (int.name || "entrevista").replace(/\s+/g, '_').toLowerCase();
+                        audioDownload.download = `Audio_KP_${cleanName}.webm`;
+                    }
+                };
+
+                mediaRecorder.start();
+                if(recognition) recognition.start();
+                
+                isRecording = true;
+                updateRecordUI(true);
+            } catch (err) {
+                alert("Error al acceder al micrófono: " + err.message);
+            }
+        }
+
+        function stopRecording() {
+            if (!isRecording) return;
+            
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+                mediaRecorder.stream.getTracks().forEach(track => track.stop());
+            }
+            if(recognition) recognition.stop();
+            
+            isRecording = false;
+            updateRecordUI(false);
+        }
+
+        function updateRecordUI(recording) {
+            const btn = document.getElementById('btn-record');
+            const indicator = document.getElementById('record-indicator');
+            const text = document.getElementById('record-text');
+            
+            if(!btn) return;
+
+            if (recording) {
+                btn.className = "bg-gray-800 text-white px-3 py-1 rounded text-sm flex items-center gap-2 hover:bg-gray-900";
+                indicator.style.display = "inline-block";
+                text.innerText = "Detener Grabación";
+            } else {
+                btn.className = "bg-red-500 text-white px-3 py-1 rounded text-sm flex items-center gap-2 hover:bg-red-600";
+                indicator.style.display = "none";
+                text.innerText = "Iniciar Grabación";
+            }
+        }
+
+        // --- CODIFICACIÓN ---
+        function codeSelection() {
+            const selection = window.getSelection();
+            const selectedText = selection.toString().trim();
+
+            if (!selectedText) {
+                alert("Primero selecciona una porción de texto en el panel izquierdo (Incidente Crítico).");
+                return;
+            }
+
+            const codeName = prompt("Ingresa el código (ej. Tensión epistémica, Andamiaje, ABP...):");
+            if (!codeName) return;
+
+            const themeName = prompt("¿A qué Tema / Dimensión pertenece? (Opcional):");
+
+            const int = appData.interviews.find(i => i.id === activeInterviewId);
+            if (!int.codes) int.codes = [];
+            
+            int.codes.push({
+                id: Date.now().toString(),
+                text: selectedText,
+                code: codeName,
+                theme: themeName || 'Sin tema'
+            });
+
+            saveData();
+            renderCodes();
+            selection.removeAllRanges(); // Deseleccionar
+        }
+
+        function renderCodes() {
+            const list = document.getElementById('codes-list');
+            if(!list) return;
+            list.innerHTML = '';
+
+            const int = appData.interviews.find(i => i.id === activeInterviewId);
+            if (!int.codes || int.codes.length === 0) {
+                list.innerHTML = '<p class="text-sm text-gray-400 italic">No hay códigos generados aún. Selecciona texto a la izquierda y presiona el botón azul.</p>';
+                return;
+            }
+
+            // Ordenar invertido para ver el más reciente arriba
+            [...int.codes].reverse().forEach(c => {
+                const div = document.createElement('div');
+                div.className = "bg-white p-3 rounded shadow-sm quote-card";
+                div.innerHTML = `
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded font-bold">${c.code}</span>
+                        <button onclick="deleteCode('${c.id}')" class="text-red-400 hover:text-red-600 text-xs">Eliminar</button>
+                    </div>
+                    <p class="text-sm italic text-gray-600 mb-2">"${c.text}"</p>
+                    <span class="text-xs text-gray-400">Tema: ${c.theme}</span>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        function deleteCode(codeId) {
+            if(!confirm("¿Borrar este código?")) return;
+            const int = appData.interviews.find(i => i.id === activeInterviewId);
+            int.codes = int.codes.filter(c => c.id !== codeId);
+            saveData();
+            renderCodes();
+        }
+
+        // --- HALLAZGOS Y RESULTADOS GLOBALES ---
+        function showFindings() {
+            activeInterviewId = null;
+            stopRecording();
+            renderSidebar(); // Update sidebar highlight
+
+            const main = document.getElementById('main-content');
+            const tpl = document.getElementById('tpl-findings').content.cloneNode(true);
+            
+            main.innerHTML = '';
+            main.appendChild(tpl);
+
+            document.getElementById('find-oe1').value = appData.findings.oe1 || '';
+            document.getElementById('find-oe2').value = appData.findings.oe2 || '';
+            document.getElementById('find-oe3').value = appData.findings.oe3 || '';
+            document.getElementById('find-general').value = appData.findings.general || '';
+        }
+
+        function saveFindings() {
+            appData.findings.oe1 = document.getElementById('find-oe1').value;
+            appData.findings.oe2 = document.getElementById('find-oe2').value;
+            appData.findings.oe3 = document.getElementById('find-oe3').value;
+            appData.findings.general = document.getElementById('find-general').value;
+            saveData();
+        }
+
+        // --- EXPORTAR E IMPORTAR DATOS (BACKUP) ---
+        function exportData() {
+            const dataStr = JSON.stringify(appData, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            const exportFileDefaultName = 'Proyecto_KP_Backup.json';
+
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if(imported.interviews && imported.findings) {
+                        appData = imported;
+                        saveData();
+                        alert("Datos importados exitosamente.");
+                        renderSidebar();
+                        // Ir a la pantalla de inicio
+                        document.getElementById('main-content').innerHTML = `<div class="flex-1 flex items-center justify-center p-8"><h2 class="text-2xl font-bold text-gray-700">Importación exitosa. Selecciona una entrevista.</h2></div>`;
+                    } else {
+                        alert("El archivo no tiene el formato correcto.");
+                    }
+                } catch(err) {
+                    alert("Error al leer el archivo JSON.");
+                }
+            };
+            reader.readAsText(file);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plataforma Curricular UDD - Química y Farmacia</title>
+    <style>
+        :root {
+            --primary-color: #0056b3;
+            --secondary-color: #f39c12; /* Color institucional UDD aproximado */
+            --ai-color: #8e44ad;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --bg-color: #f4f7f6;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #444;
+            font-size: 1.2em;
+            margin-top: 35px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .form-group { margin-bottom: 15px; }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #222;
+        }
+        .help-text {
+            font-size: 0.85em;
+            color: #666;
+            margin-bottom: 8px;
+            display: block;
+            font-style: italic;
+        }
+        input[type="text"], input[type="number"], textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+        textarea { resize: vertical; height: 90px; }
+        .row { display: flex; gap: 15px; }
+        .row .form-group { flex: 1; }
+        
+        /* Estilos del Asistente IA */
+        .ai-panel {
+            background: #fdf5ff;
+            border: 1px solid #e8c1f6;
+            padding: 20px;
+            border-radius: 6px;
+            margin-top: 15px;
+        }
+        .btn-ai {
+            background-color: var(--ai-color);
+            color: white;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        .btn-ai:hover { background-color: #732d91; }
+        .ai-suggestion-box {
+            display: none;
+            background: white;
+            border-left: 4px solid var(--ai-color);
+            padding: 15px;
+            margin-top: 15px;
+            font-size: 0.95em;
+        }
+
+        .alert { padding: 15px; margin-bottom: 20px; border-radius: 4px; display: none; }
+        .alert-danger { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .alert-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        
+        .btn-container { display: flex; justify-content: space-between; margin-top: 30px; }
+        button {
+            padding: 12px 20px; font-size: 16px; border: none;
+            border-radius: 4px; cursor: pointer; font-weight: bold; color: white;
+        }
+        .btn-submit { background-color: var(--primary-color); }
+        .btn-submit:hover { background-color: #004494; }
+        .btn-clear { background-color: var(--danger-color); }
+        
+        .status-bar {
+            font-size: 0.9em; color: #666; text-align: right;
+            margin-top: -10px; margin-bottom: 20px; font-style: italic;
+        }
+        .loader {
+            display: none; font-weight: bold; color: var(--ai-color); text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Redactor de Programas UDD - Q&F</h1>
+    <div class="status-bar" id="saveStatus">Los cambios se guardan automáticamente...</div>
+
+    <div id="errorAlert" class="alert alert-danger"></div>
+    <div id="successAlert" class="alert alert-success"></div>
+
+    <form id="syllabusForm">
+        <!-- SECCIÓN 1: IDENTIFICACIÓN -->
+        <h2>1. Identificación y Horas</h2>
+        <div class="row">
+            <div class="form-group">
+                <label>Nombre de la Asignatura *</label>
+                <input type="text" id="nombreAsignatura" placeholder="Ej: Farmacia Clínica I" required>
+            </div>
+            <div class="form-group">
+                <label>Horas Teóricas</label>
+                <input type="number" id="horasTeoria" min="0" value="0">
+            </div>
+            <div class="form-group">
+                <label>Horas Laboratorio</label>
+                <input type="number" id="horasLab" min="0" value="0">
+            </div>
+        </div>
+
+        <!-- SECCIÓN 2: COMPETENCIAS (NUEVO) -->
+        <h2>2. Perfil de Egreso y Competencias</h2>
+        <span class="help-text">Ingrese las competencias a las que aporta esta asignatura para alinear los Resultados de Aprendizaje.</span>
+        <div class="row">
+            <div class="form-group">
+                <label>Competencias Genéricas UDD *</label>
+                <textarea id="compUDD" placeholder="Ej: Comunicación, Pensamiento Crítico, Visión Global..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Competencias Específicas Q&F *</label>
+                <textarea id="compEspecificas" placeholder="Ej: CE1. Dispensar medicamentos aplicando bases farmacológicas. CE3. Gestionar servicios farmacéuticos..."></textarea>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 3: ASISTENTE IA PARA RESULTADOS DE APRENDIZAJE (NUEVO) -->
+        <h2>3. Resultados de Aprendizaje (RA)</h2>
+        <div class="ai-panel">
+            <label>Borrador del Docente (Ideas sueltas) *</label>
+            <span class="help-text">Escribe lo que quieres que el alumno aprenda en tus propias palabras. La plataforma lo corregirá.</span>
+            <textarea id="borradorRA" placeholder="Ej: Que el alumno sepa comunicar cómo se usa un medicamento. Entender la farmacocinética. Saber hacer recetas."></textarea>
+            
+            <button type="button" class="btn-ai" onclick="corregirConIA()">✨ Corregir Redacción y Alinear con Competencias (IA)</button>
+            
+            <div id="loadingAI" class="loader">Analizando verbos de Bloom y cruzando con modelo UDD... ⏳</div>
+
+            <div id="aiSuggestionBox" class="ai-suggestion-box">
+                <label style="color: var(--ai-color);">Sugerencia de la Plataforma:</label>
+                <textarea id="resultadoFinalRA" style="height: 120px; border-color: var(--ai-color);"></textarea>
+                <span class="help-text" style="margin-top: 5px;">Puedes editar esta sugerencia. Este será el texto oficial del programa.</span>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 4: EVALUACIONES -->
+        <h2>4. Sistema de Evaluación</h2>
+        <div class="row">
+            <div class="form-group">
+                <label>Cátedra (%)</label>
+                <input type="number" id="evalCatedra" min="0" max="100" value="0">
+            </div>
+            <div class="form-group">
+                <label>Laboratorio/Práctico (%)</label>
+                <input type="number" id="evalLab" min="0" max="100" value="0">
+            </div>
+            <div class="form-group">
+                <label>Examen (%)</label>
+                <input type="number" id="evalExamen" min="0" max="100" value="0">
+            </div>
+        </div>
+        <div class="form-group">
+            <strong>Total Ponderación: <span id="totalEvaluacion" style="color: var(--danger-color);">0%</span></strong>
+        </div>
+
+        <!-- BOTONES -->
+        <div class="btn-container">
+            <button type="button" class="btn-clear" onclick="clearData()">Borrar Todo</button>
+            <button type="button" class="btn-submit" onclick="validateAndSubmit()">Verificar y Generar Programa</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    const formInputs = document.querySelectorAll('input, textarea');
+    
+    // Al cargar la página
+    window.onload = function() {
+        formInputs.forEach(input => {
+            const savedValue = localStorage.getItem(input.id);
+            if (savedValue !== null) input.value = savedValue;
+        });
+        updateMath();
+        // Si ya hay un resultado final guardado, mostrar la caja de IA
+        if(document.getElementById('resultadoFinalRA').value.trim() !== '') {
+            document.getElementById('aiSuggestionBox').style.display = 'block';
+        }
+    };
+
+    // Autoguardado
+    formInputs.forEach(input => {
+        input.addEventListener('input', function() {
+            localStorage.setItem(this.id, this.value);
+            if(this.id.startsWith('eval')) updateMath();
+            
+            const status = document.getElementById('saveStatus');
+            status.textContent = "Guardado hace un instante...";
+            status.style.color = "green";
+            setTimeout(() => { status.style.color = "#666"; }, 1500);
+        });
+    });
+
+    function updateMath() {
+        const total = (parseInt(document.getElementById('evalCatedra').value) || 0) + 
+                      (parseInt(document.getElementById('evalLab').value) || 0) + 
+                      (parseInt(document.getElementById('evalExamen').value) || 0);
+        const spanTotal = document.getElementById('totalEvaluacion');
+        spanTotal.textContent = total + "%";
+        spanTotal.style.color = total === 100 ? "var(--success-color)" : "var(--danger-color)";
+    }
+
+    // ==========================================
+    // SIMULACIÓN DEL MOTOR DE INTELIGENCIA ARTIFICIAL
+    // ==========================================
+    function corregirConIA() {
+        const borrador = document.getElementById('borradorRA').value.trim();
+        const compUDD = document.getElementById('compUDD').value.trim();
+        const compEsp = document.getElementById('compEspecificas').value.trim();
+
+        if (borrador === '') {
+            alert("Por favor, escribe un borrador con tus ideas para que la IA pueda trabajar.");
+            return;
+        }
+
+        // Mostrar "Cargando..." para dar efecto realista
+        document.getElementById('loadingAI').style.display = 'block';
+        document.getElementById('aiSuggestionBox').style.display = 'none';
+
+        // En un caso real, aquí iría un `fetch('https://api.openai.com/... ')`
+        setTimeout(() => {
+            document.getElementById('loadingAI').style.display = 'none';
+            
+            // Simulación de respuesta de IA reemplazando verbos débiles (saber, entender) 
+            // por verbos de Bloom (Analizar, Comunicar, Diseñar)
+            let correccion = "RA1. Analizar los procesos farmacocinéticos y farmacodinámicos para la toma de decisiones clínicas.\n";
+            correccion += "RA2. Diseñar preparados farmacéuticos cumpliendo con la normativa sanitaria vigente (" + (compEsp ? "Vinculado a Competencia Específica" : "Falta Competencia Específica") + ").\n";
+            correccion += "RA3. Comunicar de manera efectiva la posología y precauciones al paciente, demostrando empatía y responsabilidad (" + (compUDD ? "Vinculado a Competencia UDD" : "Falta Competencia UDD") + ").";
+
+            const resultadoInput = document.getElementById('resultadoFinalRA');
+            resultadoInput.value = correccion;
+            localStorage.setItem('resultadoFinalRA', correccion); // Guardar
+            
+            document.getElementById('aiSuggestionBox').style.display = 'block';
+            
+        }, 2000); // Tarda 2 segundos simulando que "piensa"
+    }
+
+    function validateAndSubmit() {
+        let errors = [];
+        const alertBox = document.getElementById('errorAlert');
+        const successBox = document.getElementById('successAlert');
+        alertBox.style.display = 'none';
+        successBox.style.display = 'none';
+
+        if(!document.getElementById('nombreAsignatura').value.trim()) errors.push("Falta el Nombre de la asignatura.");
+        if(!document.getElementById('compUDD').value.trim()) errors.push("Debes declarar al menos una Competencia Genérica UDD.");
+        if(!document.getElementById('compEspecificas').value.trim()) errors.push("Debes declarar las Competencias Específicas de Q&F.");
+        
+        const finalRA = document.getElementById('resultadoFinalRA').value.trim();
+        if(finalRA === '') {
+            errors.push("No has generado los Resultados de Aprendizaje formales. Escribe un borrador y usa el botón 'Corregir con IA'.");
+        }
+
+        const totalEval = (parseInt(document.getElementById('evalCatedra').value) || 0) + 
+                          (parseInt(document.getElementById('evalLab').value) || 0) + 
+                          (parseInt(document.getElementById('evalExamen').value) || 0);
+        if (totalEval !== 100) errors.push("Las evaluaciones suman " + totalEval + "%. Deben sumar exactamente 100%.");
+
+        if (errors.length > 0) {
+            alertBox.innerHTML = "<strong>Corrige lo siguiente:</strong><ul>" + errors.map(e => "<li>"+e+"</li>").join('') + "</ul>";
+            alertBox.style.display = 'block';
+            window.scrollTo(0,0);
+        } else {
+            successBox.innerHTML = "<strong>¡Validación Exitosa!</strong> El programa cuadra matemáticamente y los Resultados de Aprendizaje están alineados al modelo UDD.";
+            successBox.style.display = 'block';
+            window.scrollTo(0,0);
+        }
+    }
+
+    function clearData() {
+        if(confirm("¿Estás seguro de borrar todo?")) {
+            localStorage.clear();
+            formInputs.forEach(input => {
+                if (input.type === 'number') input.value = 0;
+                else input.value = '';
+            });
+            document.getElementById('aiSuggestionBox').style.display = 'none';
+            updateMath();
+        }
+    }
+</script>
+
+</body>
+</html>
