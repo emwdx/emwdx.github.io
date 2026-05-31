@@ -1,0 +1,3343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Storyboard Studio - Google Flow Companion</title>
+  
+  <!-- Premium Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Vector Icons (FontAwesome) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- JSZip for packaging storyboards -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+  <style>
+    /* CSS variables defining the aesthetic styling */
+    :root {
+      --bg-dark-base: #0a0a0d;
+      --bg-dark-surface: #13131a;
+      --bg-dark-card: #181822;
+      --bg-dark-input: #0f0f13;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-color-hover: rgba(99, 102, 241, 0.4);
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      
+      --accent-color: #6366f1;
+      --accent-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      --accent-glow: 0 0 15px rgba(99, 102, 241, 0.35);
+      
+      --color-success: #10b981;
+      --color-error: #ef4444;
+      --color-warning: #f59e0b;
+      
+      --font-body: 'Inter', sans-serif;
+      --font-header: 'Outfit', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark-base);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* Custom Scrollbar styling */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-dark-base);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #272733;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #38384d;
+    }
+
+    /* Left Sidebar */
+    .sidebar {
+      width: 340px;
+      background-color: var(--bg-dark-surface);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      height: 100vh;
+      z-index: 50;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .sidebar-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .sidebar-header i {
+      font-size: 24px;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 2px 4px rgba(99, 102, 241, 0.3));
+    }
+
+    .sidebar-header h1 {
+      font-family: var(--font-header);
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      background: linear-gradient(to right, #ffffff, #cbd5e1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .sidebar-content {
+      padding: 24px;
+      overflow-y: auto;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    /* Form groups & panel UI */
+    .panel-section {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .section-title {
+      font-family: var(--font-header);
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .text-input {
+      width: 100%;
+      background-color: var(--bg-dark-input);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: var(--text-main);
+      font-size: 13.5px;
+      transition: all 0.2s ease;
+    }
+
+    .text-input:focus {
+      outline: none;
+      border-color: var(--accent-color);
+      box-shadow: 0 0 8px rgba(99, 102, 241, 0.2);
+    }
+
+    .api-key-container {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-icon {
+      background: var(--bg-dark-input);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      border-radius: 8px;
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-icon:hover {
+      border-color: var(--accent-color);
+      color: var(--text-main);
+    }
+
+    /* Reference Upload Zone */
+    .upload-zone {
+      border: 1px dashed var(--border-color);
+      background-color: rgba(255, 255, 255, 0.01);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      min-height: 120px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .upload-zone:hover, .upload-zone.dragover {
+      border-color: var(--accent-color);
+      background-color: rgba(99, 102, 241, 0.03);
+    }
+
+    .upload-zone i {
+      font-size: 24px;
+      color: var(--text-muted);
+      transition: color 0.2s ease;
+    }
+
+    .upload-zone:hover i {
+      color: var(--accent-color);
+    }
+
+    .upload-zone-text {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .upload-preview {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 11px;
+    }
+
+    .clear-upload-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: rgba(15, 15, 19, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 11px;
+      z-index: 10;
+      backdrop-filter: blur(4px);
+      transition: all 0.2s ease;
+    }
+
+    .clear-upload-btn:hover {
+      background: var(--color-error);
+      border-color: var(--color-error);
+    }
+
+    /* Style Preset Selector */
+    .style-presets-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .preset-card {
+      background: var(--bg-dark-input);
+      border: 1px solid var(--border-color);
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 11.5px;
+      font-weight: 500;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .preset-card:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .preset-card.active {
+      background: var(--accent-gradient);
+      border-color: transparent;
+      color: white;
+      box-shadow: var(--accent-glow);
+    }
+
+    /* Actions Panel bottom of sidebar */
+    .sidebar-footer {
+      padding: 20px 24px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .btn-primary {
+      background: var(--accent-gradient);
+      border: none;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-family: var(--font-header);
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: var(--accent-glow);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .btn-primary:hover {
+      opacity: 0.95;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-family: var(--font-header);
+      font-weight: 500;
+      font-size: 13.5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    /* Main Content panel */
+    .main-workspace {
+      flex: 1;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--bg-dark-base);
+    }
+
+    .workspace-header {
+      padding: 20px 32px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: var(--bg-dark-surface);
+    }
+
+    .project-title-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .project-name-input {
+      background: transparent;
+      border: none;
+      color: var(--text-main);
+      font-family: var(--font-header);
+      font-size: 22px;
+      font-weight: 700;
+      padding: 4px;
+      width: 300px;
+      border-bottom: 1px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .project-name-input:focus {
+      outline: none;
+      border-color: var(--accent-color);
+    }
+
+    .workspace-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Storyboard Grid Area */
+    .timeline-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 32px;
+    }
+
+    .timeline-grid {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: stretch;
+      gap: 20px;
+      width: 100%;
+    }
+
+    /* Interactive Storyboard Card */
+    .storycard {
+      width: 360px;
+      background: var(--bg-dark-card);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+      transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .storycard:hover {
+      border-color: var(--border-color-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-header {
+      padding: 12px 16px;
+      background: rgba(0, 0, 0, 0.2);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-index {
+      font-family: var(--font-header);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent-color);
+      background: rgba(99, 102, 241, 0.1);
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 4px;
+    }
+
+    .action-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.2s ease;
+    }
+
+    .action-btn:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+    }
+
+    .action-btn.btn-delete:hover {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--color-error);
+    }
+
+    /* 16:9 Image Area */
+    .card-visual-workspace {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: #0f0f14;
+      position: relative;
+      border-bottom: 1px solid var(--border-color);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-image-display {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: opacity 0.3s ease;
+    }
+
+    .visual-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 20px;
+      color: var(--text-muted);
+      width: 100%;
+      height: 100%;
+      text-align: center;
+    }
+
+    .visual-placeholder i {
+      font-size: 32px;
+      opacity: 0.5;
+    }
+
+    .visual-placeholder span {
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+
+    .placeholder-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-tiny {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-tiny:hover {
+      background: rgba(99, 102, 241, 0.15);
+      border-color: var(--accent-color);
+    }
+
+    /* Floating card image visual overlay toggles */
+    .visual-overlay-controls {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      display: flex;
+      gap: 4px;
+      z-index: 10;
+    }
+
+    .visual-tab {
+      background: rgba(15, 15, 21, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-muted);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      backdrop-filter: blur(4px);
+      transition: all 0.2s ease;
+    }
+
+    .visual-tab:hover {
+      color: var(--text-main);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .visual-tab.active {
+      background: var(--accent-color);
+      border-color: var(--accent-color);
+      color: white;
+    }
+
+    /* Settings below visual inside card */
+    .card-body {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+    }
+
+    .card-meta-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .meta-selector-container {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .meta-selector-container label {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+    }
+
+    .meta-select {
+      background: var(--bg-dark-input);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      border-radius: 6px;
+      padding: 6px 8px;
+      font-size: 12px;
+      outline: none;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.2s ease;
+    }
+
+    .meta-select:focus {
+      border-color: var(--accent-color);
+    }
+
+    .card-desc-textarea {
+      width: 100%;
+      min-height: 70px;
+      background: var(--bg-dark-input);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 8px 10px;
+      color: var(--text-main);
+      font-family: var(--font-body);
+      font-size: 12.5px;
+      resize: vertical;
+      transition: all 0.2s ease;
+      outline: none;
+    }
+
+    .card-desc-textarea:focus {
+      border-color: var(--accent-color);
+    }
+
+    .card-status {
+      font-size: 11px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 500;
+    }
+    
+    .status-idle {
+      background: rgba(255, 255, 255, 0.02);
+      color: var(--text-muted);
+    }
+
+    .status-loading {
+      background: rgba(245, 158, 11, 0.08);
+      color: var(--color-warning);
+    }
+
+    .status-success {
+      background: rgba(16, 185, 129, 0.08);
+      color: var(--color-success);
+    }
+
+    .status-error {
+      background: rgba(239, 68, 68, 0.08);
+      color: var(--color-error);
+    }
+
+    .card-footer-buttons {
+      display: flex;
+      gap: 8px;
+      margin-top: auto;
+    }
+
+    .card-footer-buttons button {
+      flex: 1;
+    }
+
+    /* Prompt optimization details preview */
+    .prompt-preview-container {
+      display: none;
+      background: rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      border-radius: 8px;
+      padding: 8px;
+      margin-bottom: 8px;
+    }
+
+    .prompt-preview-header {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .prompt-preview-textarea {
+      width: 100%;
+      height: 60px;
+      background: transparent;
+      border: none;
+      color: var(--text-main);
+      font-size: 11px;
+      font-family: monospace;
+      resize: none;
+      outline: none;
+    }
+
+    /* Inserting Cards Between Elements */
+    .timeline-insert-spacer {
+      width: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      cursor: pointer;
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 20;
+    }
+
+    .timeline-insert-spacer:hover {
+      width: 48px;
+    }
+
+    .timeline-insert-spacer::before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      bottom: 20px;
+      width: 2px;
+      background: rgba(255, 255, 255, 0.04);
+      transition: background 0.3s ease;
+    }
+
+    .timeline-insert-spacer:hover::before {
+      background: var(--accent-color);
+      box-shadow: 0 0 8px var(--accent-color);
+    }
+
+    .insert-bubble {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--bg-dark-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      opacity: 0;
+      transform: scale(0.6);
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: absolute;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    }
+
+    .timeline-insert-spacer:hover .insert-bubble {
+      opacity: 1;
+      transform: scale(1.1);
+      border-color: var(--accent-color);
+      color: var(--text-main);
+      background: var(--accent-gradient);
+    }
+
+    /* Drawing Board Modal overlay screen */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(7, 7, 10, 0.85);
+      backdrop-filter: blur(12px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .modal-container {
+      background: var(--bg-dark-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      width: 90%;
+      max-width: 1080px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+      transform: scale(0.9);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .modal-overlay.active .modal-container {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-header h2 {
+      font-family: var(--font-header);
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .modal-body {
+      padding: 24px;
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+    }
+
+    .sketch-workspace {
+      flex: 1;
+      aspect-ratio: 16/9;
+      background: #0f0f13;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+    }
+
+    .sketch-canvas {
+      width: 100%;
+      height: 100%;
+      background-color: #121217;
+      background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 20px 20px;
+      cursor: crosshair;
+      display: block;
+    }
+
+    .sketch-toolbar {
+      width: 220px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .tool-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .tool-group-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+    }
+
+    .color-picker {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .color-swatch {
+      width: 100%;
+      aspect-ratio: 1;
+      border-radius: 6px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .color-swatch:hover {
+      transform: scale(1.1);
+    }
+
+    .color-swatch.active {
+      border-color: #ffffff;
+      box-shadow: 0 0 10px currentColor;
+    }
+
+    .brush-size-btn-group {
+      display: flex;
+      gap: 6px;
+    }
+
+    .brush-size-btn {
+      flex: 1;
+      background: var(--bg-dark-input);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      border-radius: 6px;
+      padding: 8px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .brush-size-btn.active, .brush-size-btn:hover {
+      border-color: var(--accent-color);
+      color: var(--text-main);
+      background: rgba(99, 102, 241, 0.1);
+    }
+
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    /* Director's Presentation Screen */
+    .playback-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #060608;
+      display: none;
+      flex-direction: column;
+      z-index: 1100;
+    }
+
+    .playback-header {
+      padding: 16px 32px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(0, 0, 0, 0.4);
+    }
+
+    .playback-title {
+      font-family: var(--font-header);
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .playback-close {
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 20px;
+      transition: color 0.2s ease;
+    }
+
+    .playback-close:hover {
+      color: #ffffff;
+    }
+
+    .playback-viewport {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      gap: 24px;
+    }
+
+    .playback-screen-outer {
+      width: 90%;
+      max-width: 960px;
+      aspect-ratio: 16/9;
+      background: #000000;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .playback-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .playback-text-box {
+      width: 90%;
+      max-width: 960px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .playback-metadata {
+      font-family: monospace;
+      color: var(--accent-color);
+      font-size: 14px;
+      letter-spacing: 1px;
+    }
+
+    .playback-desc {
+      font-size: 18px;
+      font-weight: 400;
+      line-height: 1.6;
+      color: var(--text-main);
+    }
+
+    .playback-controls {
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.4);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+    }
+
+    .playback-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      transition: all 0.2s ease;
+    }
+
+    .playback-btn:hover {
+      background: rgba(255,255,255,0.05);
+      color: #ffffff;
+    }
+
+    .playback-btn.btn-play-toggle {
+      background: var(--text-main);
+      color: #000000;
+      font-size: 18px;
+    }
+
+    .playback-btn.btn-play-toggle:hover {
+      background: #ffffff;
+      transform: scale(1.05);
+    }
+
+    .settings-control-pill {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 6px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .settings-control-pill select {
+      background: transparent;
+      border: none;
+      color: var(--text-main);
+      cursor: pointer;
+      outline: none;
+    }
+
+    /* Print styling rules */
+    @media print {
+      body {
+        background: white !important;
+        color: black !important;
+        overflow: auto !important;
+        height: auto !important;
+      }
+      .sidebar, .workspace-header, .timeline-insert-spacer, .card-actions, .card-footer-buttons, .visual-overlay-controls, .card-status {
+        display: none !important;
+      }
+      .main-workspace {
+        height: auto !important;
+        overflow: visible !important;
+      }
+      .timeline-container {
+        padding: 0 !important;
+        overflow: visible !important;
+      }
+      .timeline-grid {
+        display: block !important;
+      }
+      .storycard {
+        page-break-inside: avoid;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-bottom: 30px;
+        border: 2px solid #000000 !important;
+        background: white !important;
+        box-shadow: none !important;
+        transform: none !important;
+      }
+      .card-visual-workspace {
+        border-bottom: 2px solid #000000 !important;
+        background: #eeeeee !important;
+      }
+      .card-body {
+        color: black !important;
+        background: white !important;
+      }
+      .card-desc-textarea {
+        background: white !important;
+        color: black !important;
+        border: none !important;
+        resize: none !important;
+      }
+      .meta-select {
+        background: white !important;
+        color: black !important;
+        border: none !important;
+        appearance: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <i class="fa-solid fa-clapperboard"></i>
+      <h1>Storyboard Studio</h1>
+    </div>
+    
+    <div class="sidebar-content">
+      
+      <!-- Story Project Manager -->
+      <div class="panel-section">
+        <div class="section-title">
+          <i class="fa-solid fa-folder-open"></i> Story Manager
+        </div>
+        <select id="project-select" class="meta-select" style="padding:10px; margin-bottom:8px;">
+          <!-- Populated by JS -->
+        </select>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+          <button id="new-project-btn" class="btn-secondary" title="Create empty story">
+            <i class="fa-solid fa-plus"></i> New Story
+          </button>
+          <button id="clone-project-btn" class="btn-secondary" title="Duplicate current story">
+            <i class="fa-solid fa-copy"></i> Clone Story
+          </button>
+        </div>
+        <div style="display:grid; grid-template-columns:1.2fr 0.8fr; gap:8px; margin-top:8px;">
+          <button id="import-zip-btn" class="btn-secondary" title="Import story ZIP">
+            <i class="fa-solid fa-file-import"></i> Import ZIP
+          </button>
+          <button id="delete-project-btn" class="btn-secondary" style="border-color:rgba(239,68,68,0.2); color:#fca5a5;" title="Delete current story">
+            <i class="fa-solid fa-trash"></i> Delete
+          </button>
+        </div>
+      </div>
+
+      <!-- API Configuration Panel -->
+      <div class="panel-section">
+        <div class="section-title">
+          <i class="fa-solid fa-key"></i> API Configuration
+        </div>
+        <div class="api-key-container">
+          <div class="input-wrapper" style="flex:1;">
+            <input type="password" id="api-key-input" class="text-input" placeholder="Gemini API Key...">
+          </div>
+          <button id="toggle-key-visibility" class="btn-icon" title="Toggle visibility">
+            <i class="fa-solid fa-eye"></i>
+          </button>
+        </div>
+        <div class="input-wrapper" style="margin-top:8px;">
+          <select id="model-select" class="meta-select" style="padding:10px;">
+            <option value="gemini-3-pro-image">Gemini 3 Pro Image (Nano Banana Pro)</option>
+            <option value="gemini-3-flash-image">Gemini 3 Flash Image (Nano Banana 2)</option>
+            <option value="gemini-3.1-pro-image">Gemini 3.1 Pro Image (Preview)</option>
+            <option value="gemini-3.1-flash-image">Gemini 3.1 Flash Image (Preview)</option>
+            <option value="imagen-3.0-generate-002">Imagen 3</option>
+          </select>
+        </div>
+        <span style="font-size:10px; color:var(--text-muted); line-height:1.4;">
+          Your key is saved locally in your browser and used to call the selected model directly.
+        </span>
+      </div>
+
+      <!-- Character Reference Slot -->
+      <div class="panel-section">
+        <div class="section-title">
+          <i class="fa-solid fa-user-ninja"></i> Character Reference
+        </div>
+        <div class="input-wrapper" style="margin-bottom:8px;">
+          <input type="text" id="char-name-input" class="text-input" placeholder="Character descriptor (e.g. LEGO astronaut)...">
+        </div>
+        <div id="char-upload-zone" class="upload-zone">
+          <i class="fa-solid fa-cloud-arrow-up"></i>
+          <span class="upload-zone-text">Click or drag character reference</span>
+          <img id="char-preview" class="upload-preview" style="display:none;">
+          <button id="clear-char-btn" class="clear-upload-btn" style="display:none;" title="Remove image">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Scene Reference Slot -->
+      <div class="panel-section">
+        <div class="section-title">
+          <i class="fa-solid fa-mountain-sun"></i> Scene / Style Reference
+        </div>
+        <div id="scene-upload-zone" class="upload-zone">
+          <i class="fa-solid fa-cloud-arrow-up"></i>
+          <span class="upload-zone-text">Click or drag environment reference</span>
+          <img id="scene-preview" class="upload-preview" style="display:none;">
+          <button id="clear-scene-btn" class="clear-upload-btn" style="display:none;" title="Remove image">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Style Presets Selector -->
+      <div class="panel-section">
+        <div class="section-title">
+          <i class="fa-solid fa-palette"></i> Style Preset
+        </div>
+        <div class="style-presets-grid">
+          <div class="preset-card active" data-preset="lego">LEGO Minifigure</div>
+          <div class="preset-card" data-preset="cinematic">35mm Film</div>
+          <div class="preset-card" data-preset="claymation">Claymation</div>
+          <div class="preset-card" data-preset="anime">Anime Cel</div>
+          <div class="preset-card" data-preset="pixel">16-Bit Pixel</div>
+          <div class="preset-card" data-preset="watercolor">Watercolor</div>
+          <div class="preset-card" data-preset="noir">Noir B&W</div>
+          <div class="preset-card" data-preset="custom">Custom...</div>
+        </div>
+        <div id="custom-style-container" class="input-wrapper" style="display:none; margin-top:8px;">
+          <input type="text" id="custom-style-input" class="text-input" placeholder="Type custom style description...">
+        </div>
+      </div>
+
+      <!-- Color Grading Style -->
+      <div class="panel-section">
+        <div class="section-title">
+          <i class="fa-solid fa-film"></i> Color Grading
+        </div>
+        <select id="color-grade-select" class="meta-select" style="padding:10px;">
+          <option value="neutral">Cinematic Natural</option>
+          <option value="teal_orange">Teal & Orange Blockbuster</option>
+          <option value="warm_vintage">Warm Vintage Gold</option>
+          <option value="cool_scifi">Cool Cyberpunk Neon</option>
+          <option value="monochromatic">Monochromatic High-Contrast</option>
+        </select>
+      </div>
+
+    </div>
+
+    <!-- Export & Play Actions Footer -->
+    <div class="sidebar-footer">
+      <button id="play-storyboard-btn" class="btn-primary">
+        <i class="fa-solid fa-play"></i> Play Presentation
+      </button>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+        <button id="export-zip-btn" class="btn-secondary" title="Export assets ZIP">
+          <i class="fa-solid fa-file-zipper"></i> ZIP Package
+        </button>
+        <button id="export-json-btn" class="btn-secondary" title="Export JSON for Flow">
+          <i class="fa-solid fa-file-code"></i> Flow JSON
+        </button>
+      </div>
+      <button id="print-storyboard-btn" class="btn-secondary">
+        <i class="fa-solid fa-print"></i> Print to PDF
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Workspace -->
+  <div class="main-workspace">
+    <!-- Header -->
+    <div class="workspace-header">
+      <div class="project-title-container">
+        <input type="text" id="project-name-input" class="project-name-input" value="Untitled Storyboard">
+      </div>
+      <div class="workspace-header-actions">
+        <button id="clear-all-cards-btn" class="btn-secondary" style="border-color:rgba(239, 68, 68, 0.2); color:#fca5a5;">
+          <i class="fa-solid fa-trash-can"></i> Clear Studio
+        </button>
+      </div>
+    </div>
+
+    <!-- Timeline / Timeline list -->
+    <div class="timeline-container">
+      <div id="timeline-grid" class="timeline-grid">
+        <!-- Storycards and spacers will be dynamically generated by JS here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Drawing pad Canvas Modal -->
+  <div id="drawing-modal" class="modal-overlay">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h2 id="modal-card-title">Draw Storyboard Concept</h2>
+        <span id="close-drawing-modal" class="playback-close">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="sketch-workspace">
+          <canvas id="sketch-canvas" class="sketch-canvas" width="1280" height="720"></canvas>
+        </div>
+        <div class="sketch-toolbar">
+          
+          <div class="tool-group">
+            <div class="tool-group-label">Drawing Tool</div>
+            <div class="color-picker">
+              <div class="color-swatch active" style="background:#00f0ff; color:#00f0ff;" data-color="#00f0ff" title="Neon Cyan"></div>
+              <div class="color-swatch" style="background:#ff007f; color:#ff007f;" data-color="#ff007f" title="Neon Pink"></div>
+              <div class="color-swatch" style="background:#39ff14; color:#39ff14;" data-color="#39ff14" title="Neon Green"></div>
+              <div class="color-swatch" style="background:#ffffff; color:#ffffff;" data-color="#ffffff" title="White"></div>
+            </div>
+            <button id="eraser-btn" class="btn-secondary" style="margin-top:4px;">
+              <i class="fa-solid fa-eraser"></i> Eraser
+            </button>
+          </div>
+
+          <div class="tool-group">
+            <div class="tool-group-label">Brush Thickness</div>
+            <div class="brush-size-btn-group">
+              <button class="brush-size-btn" data-size="4">Thin</button>
+              <button class="brush-size-btn active" data-size="10">Medium</button>
+              <button class="brush-size-btn" data-size="24">Thick</button>
+            </div>
+          </div>
+
+          <div class="tool-group" style="margin-top:auto;">
+            <button id="undo-btn" class="btn-secondary">
+              <i class="fa-solid fa-rotate-left"></i> Undo
+            </button>
+            <button id="redo-btn" class="btn-secondary">
+              <i class="fa-solid fa-rotate-right"></i> Redo
+            </button>
+            <button id="clear-canvas-btn" class="btn-secondary" style="border-color:rgba(239,68,68,0.2); color:#fca5a5;">
+              <i class="fa-solid fa-trash-can"></i> Clear Frame
+            </button>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="cancel-drawing-btn" class="btn-secondary">Cancel</button>
+        <button id="save-drawing-btn" class="btn-primary">
+          <i class="fa-solid fa-check"></i> Save Sketch to Scene
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Director's Slideshow Presentation Playback Modal -->
+  <div id="playback-overlay" class="playback-overlay">
+    <div class="playback-header">
+      <div class="playback-title" id="playback-title">SCENE 1 / 10</div>
+      <div id="close-playback" class="playback-close">
+        <i class="fa-solid fa-xmark"></i>
+      </div>
+    </div>
+    
+    <div class="playback-viewport">
+      <div class="playback-screen-outer">
+        <img id="playback-image" class="playback-img" src="" alt="Storyboard Scene">
+      </div>
+      <div class="playback-text-box">
+        <div class="playback-metadata" id="playback-meta">WIDE SHOT • LOW ANGLE</div>
+        <div class="playback-desc" id="playback-desc">Narrating storyboard script details...</div>
+      </div>
+    </div>
+
+    <div class="playback-controls">
+      <div class="settings-control-pill">
+        <i class="fa-solid fa-volume-high"></i>
+        <span>Narration voice:</span>
+        <input type="checkbox" id="playback-voice-toggle" checked style="cursor:pointer; accent-color:var(--accent-color);">
+      </div>
+
+      <div class="settings-control-pill">
+        <i class="fa-solid fa-clock"></i>
+        <span>Slide Interval:</span>
+        <select id="playback-interval">
+          <option value="3">3 Seconds</option>
+          <option value="5" selected>5 Seconds</option>
+          <option value="8">8 Seconds</option>
+          <option value="12">12 Seconds</option>
+        </select>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:12px;">
+        <button id="playback-prev" class="playback-btn" title="Previous scene (Left Arrow)">
+          <i class="fa-solid fa-backward-step"></i>
+        </button>
+        <button id="playback-play-toggle" class="playback-btn btn-play-toggle" title="Play / Pause (Spacebar)">
+          <i class="fa-solid fa-play"></i>
+        </button>
+        <button id="playback-next" class="playback-btn" title="Next scene (Right Arrow)">
+          <i class="fa-solid fa-forward-step"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Core Javascript Implementation -->
+  <script>
+    // System instruction prompt to guide Gemini's visual synthesis
+    const promptSynthesizerSystemPrompt = `You are a professional cinematographer and storyboard prompt engineer for film.
+Your goal is to write a highly detailed, descriptive image generation prompt for Nano Banana 2.
+You are given various multi-modal visual reference materials and technical parameters:
+1. Character Reference: A visual of a character (e.g., a Lego minifigure) that MUST exist in this shot.
+2. Scene Style Reference: An image detailing the mood, color palette, lighting, textures, and aesthetic to match.
+3. Sketch: A director's rough drawing showing the composition layout, perspective, and object positioning.
+4. Scene details: The shot type, camera angle, action description, style description, and color grading.
+
+Synthesize these inputs. Your output prompt should describe:
+- The character, incorporating appearance details from the character reference, doing the action in the scene.
+- The environment and scene design, matching the style reference.
+- The layout, placement, framing, and perspective as indicated by the sketch.
+- The specific shot type (e.g. Extreme Close Up, Wide Shot), camera angle (e.g. Dutch Angle), lighting setup, and mood.
+
+Output ONLY the final image generation prompt text in a single paragraph. Do NOT add any preamble, comments, quotes, or formatting. Just write the prompt text itself.`;
+
+    // Map style presets to text blocks
+    const STYLE_PRESETS = {
+      lego: "Cinematic LEGO minifigure style, photorealistic toys, highly detailed plastic texture, studio lighting, depth of field.",
+      claymation: "Laika style claymation, handcrafted clay textures, fingerprints in clay, stop-motion animation aesthetic, cinematic.",
+      cinematic: "Modern 35mm cinematic film style, highly realistic, dramatic lighting, moody atmosphere, depth of field, detailed textures.",
+      anime: "Studio Ghibli style hand-drawn anime, lush painterly backgrounds, beautiful detailed cel animation style.",
+      pixel: "Sleek 16-bit modern pixel art style, detailed pixel textures, rich color palette, cinematic lighting.",
+      watercolor: "Beautiful watercolor wash painting, soft textures, ink outlines, artistic concept art.",
+      noir: "Classic film noir style, high contrast black and white, dramatic chiaroscuro lighting, moody, rain-slicked streets."
+    };
+
+    // Database configurations
+    const DB_NAME = 'StoryboardStudioDB';
+    const DB_VERSION = 1;
+    const STORE_NAME = 'projects';
+
+    // Application state
+    let appState = {
+      id: 'default',
+      name: 'Untitled Storyboard',
+      characterImage: null,
+      characterMime: null,
+      characterName: '',
+      sceneImage: null,
+      sceneMime: null,
+      stylePreset: 'cinematic',
+      customStyle: '',
+      colorGrade: 'neutral',
+      model: 'gemini-3-pro-image',
+      cards: []
+    };
+
+    // Helper for unique ID generation
+    function generateId() {
+      return 'card_' + Math.random().toString(36).substring(2, 9);
+    }
+
+    // Default template card generator
+    function createDefaultCard() {
+      return {
+        id: generateId(),
+        shotType: 'WS',
+        cameraAngle: 'Eye Level',
+        description: '',
+        sketchData: null,
+        uploadedSketch: null,
+        uploadedSketchMime: null,
+        generatedImage: null,
+        optimizedPrompt: '',
+        isGenerating: false,
+        useContinuity: false,
+        activeTab: 'visual' // 'visual' (shows gen image or sketch) or 'sketch' (shows original sketch)
+      };
+    }
+
+    // --- IndexedDB Operations ---
+    function initDB() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+        request.onerror = () => reject(request.error);
+        request.onsuccess = () => resolve(request.result);
+        request.onupgradeneeded = (e) => {
+          const db = e.target.result;
+          if (!db.objectStoreNames.contains(STORE_NAME)) {
+            db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+          }
+        };
+      });
+    }
+
+    async function saveProject(projectData) {
+      const db = await initDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, 'readwrite');
+        const store = tx.objectStore(STORE_NAME);
+        const request = store.put(projectData);
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    async function loadProject(id) {
+      const db = await initDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, 'readonly');
+        const store = tx.objectStore(STORE_NAME);
+        const request = store.get(id);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    async function listProjects() {
+      const db = await initDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, 'readonly');
+        const store = tx.objectStore(STORE_NAME);
+        const request = store.getAll();
+        request.onsuccess = () => resolve(request.result || []);
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    async function deleteProjectFromDB(id) {
+      const db = await initDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, 'readwrite');
+        const store = tx.objectStore(STORE_NAME);
+        const request = store.delete(id);
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    // Debounce save function to optimize typing save rates
+    let saveDebounceTimer;
+    function triggerStateSave() {
+      clearTimeout(saveDebounceTimer);
+      saveDebounceTimer = setTimeout(async () => {
+        try {
+          await saveProject(appState);
+          console.log("State autosaved to IndexedDB.");
+        } catch (err) {
+          console.error("Autosave failed:", err);
+        }
+      }, 800);
+    }
+
+    function getMimeType(filename) {
+      if (filename.endsWith('.png')) return 'image/png';
+      if (filename.endsWith('.webp')) return 'image/webp';
+      return 'image/jpeg';
+    }
+
+    async function loadProjectList() {
+      const select = document.getElementById('project-select');
+      select.innerHTML = '';
+      try {
+        const list = await listProjects();
+        if (list.length === 0) {
+          // Create default project
+          appState = {
+            id: 'default',
+            name: 'Untitled Storyboard',
+            characterImage: null,
+            characterMime: null,
+            characterName: '',
+            sceneImage: null,
+            sceneMime: null,
+            stylePreset: 'cinematic',
+            customStyle: '',
+            colorGrade: 'neutral',
+            model: 'gemini-3-pro-image',
+            cards: [createDefaultCard()]
+          };
+          await saveProject(appState);
+          list.push(appState);
+        }
+        
+        list.forEach(proj => {
+          const opt = document.createElement('option');
+          opt.value = proj.id;
+          opt.text = proj.name || 'Untitled Story';
+          if (proj.id === appState.id) opt.selected = true;
+          select.appendChild(opt);
+        });
+      } catch (err) {
+        console.error("Failed to load project list:", err);
+      }
+    }
+
+    function loadActiveProjectUI() {
+      document.getElementById('project-name-input').value = appState.name || 'Untitled Story';
+      document.getElementById('char-name-input').value = appState.characterName || '';
+      document.getElementById('color-grade-select').value = appState.colorGrade || 'neutral';
+      
+      if (!appState.model) appState.model = 'gemini-3-pro-image';
+      document.getElementById('model-select').value = appState.model;
+      
+      const charPreview = document.getElementById('char-preview');
+      const clearCharBtn = document.getElementById('clear-char-btn');
+      if (appState.characterImage) {
+        charPreview.src = appState.characterImage;
+        charPreview.style.display = 'block';
+        clearCharBtn.style.display = 'flex';
+      } else {
+        charPreview.style.display = 'none';
+        clearCharBtn.style.display = 'none';
+      }
+      
+      const scenePreview = document.getElementById('scene-preview');
+      const clearSceneBtn = document.getElementById('clear-scene-btn');
+      if (appState.sceneImage) {
+        scenePreview.src = appState.sceneImage;
+        scenePreview.style.display = 'block';
+        clearSceneBtn.style.display = 'flex';
+      } else {
+        scenePreview.style.display = 'none';
+        clearSceneBtn.style.display = 'none';
+      }
+      
+      document.querySelectorAll('.preset-card').forEach(card => {
+        card.classList.remove('active');
+        if (card.dataset.preset === appState.stylePreset) {
+          card.classList.add('active');
+          if (appState.stylePreset === 'custom') {
+            document.getElementById('custom-style-container').style.display = 'block';
+            document.getElementById('custom-style-input').value = appState.customStyle || '';
+          } else {
+            document.getElementById('custom-style-container').style.display = 'none';
+          }
+        }
+      });
+      
+      renderTimeline();
+    }
+
+    async function importStoryZip(file) {
+      try {
+        const zip = await JSZip.loadAsync(file);
+        const manifestFile = zip.file("storyboard_manifest.json");
+        if (!manifestFile) {
+          throw new Error("Missing storyboard_manifest.json in the ZIP package.");
+        }
+        const manifestText = await manifestFile.async("text");
+        const manifest = JSON.parse(manifestText);
+        
+        // Setup new project attributes
+        manifest.id = 'project_' + Math.random().toString(36).substring(2, 9);
+        manifest.name = "Imported: " + (manifest.name || "Untitled Story");
+        
+        // Restore references
+        if (manifest.characterImage && zip.file(manifest.characterImage)) {
+          const base64 = await zip.file(manifest.characterImage).async("base64");
+          manifest.characterImage = `data:${getMimeType(manifest.characterImage)};base64,${base64}`;
+        }
+        if (manifest.sceneImage && zip.file(manifest.sceneImage)) {
+          const base64 = await zip.file(manifest.sceneImage).async("base64");
+          manifest.sceneImage = `data:${getMimeType(manifest.sceneImage)};base64,${base64}`;
+        }
+        
+        // Restore cards
+        for (let i = 0; i < manifest.cards.length; i++) {
+          const card = manifest.cards[i];
+          if (card.sketchData && zip.file(card.sketchData)) {
+            const base64 = await zip.file(card.sketchData).async("base64");
+            card.sketchData = `data:image/jpeg;base64,${base64}`;
+          }
+          if (card.uploadedSketch && zip.file(card.uploadedSketch)) {
+            const base64 = await zip.file(card.uploadedSketch).async("base64");
+            card.uploadedSketch = `data:${getMimeType(card.uploadedSketch)};base64,${base64}`;
+          }
+          if (card.generatedImage && zip.file(card.generatedImage)) {
+            const base64 = await zip.file(card.generatedImage).async("base64");
+            card.generatedImage = `data:image/jpeg;base64,${base64}`;
+          }
+          if (card.sceneBackdrop && zip.file(card.sceneBackdrop)) {
+            const base64 = await zip.file(card.sceneBackdrop).async("base64");
+            card.sceneBackdrop = `data:${getMimeType(card.sceneBackdrop)};base64,${base64}`;
+          }
+        }
+        
+        await saveProject(manifest);
+        appState = manifest;
+        localStorage.setItem('active_storyboard_project_id', appState.id);
+        
+        await loadProjectList();
+        loadActiveProjectUI();
+        
+        alert(`Successfully imported story: "${manifest.name}"!`);
+      } catch (err) {
+        alert("Failed to import ZIP: " + err.message);
+      }
+    }
+
+    // --- UI Interactions & App logic ---
+    document.addEventListener('DOMContentLoaded', async () => {
+      // 1. Determine active project ID and load it
+      let activeId = localStorage.getItem('active_storyboard_project_id');
+      try {
+        const list = await listProjects();
+        if (list.length > 0) {
+          const activeProj = list.find(p => p.id === activeId) || list[0];
+          appState = activeProj;
+          localStorage.setItem('active_storyboard_project_id', appState.id);
+        } else {
+          appState = {
+            id: 'default',
+            name: 'Untitled Storyboard',
+            characterImage: null,
+            characterMime: null,
+            characterName: '',
+            sceneImage: null,
+            sceneMime: null,
+            stylePreset: 'cinematic',
+            customStyle: '',
+            colorGrade: 'neutral',
+            model: 'gemini-3-pro-image',
+            cards: [createDefaultCard()]
+          };
+          await saveProject(appState);
+          localStorage.setItem('active_storyboard_project_id', appState.id);
+        }
+      } catch (e) {
+        console.warn("Could not read project DB, initializing fresh:", e);
+        appState.cards = [createDefaultCard()];
+      }
+
+      // 2. Initialize project manager dropdown and UI state values
+      await loadProjectList();
+      loadActiveProjectUI();
+      
+      // Load API Key
+      const savedKey = localStorage.getItem('storyboard_gemini_api_key');
+      if (savedKey) {
+        document.getElementById('api-key-input').value = savedKey;
+      }
+
+      // 3. Register Story Project Manager Action Triggers
+      document.getElementById('project-select').addEventListener('change', async (e) => {
+        const id = e.target.value;
+        const proj = await loadProject(id);
+        if (proj) {
+          appState = proj;
+          localStorage.setItem('active_storyboard_project_id', id);
+          loadActiveProjectUI();
+        }
+      });
+
+      document.getElementById('new-project-btn').addEventListener('click', async () => {
+        const newProj = {
+          id: 'project_' + Math.random().toString(36).substring(2, 9),
+          name: 'New Storyboard',
+          characterImage: null,
+          characterMime: null,
+          characterName: '',
+          sceneImage: null,
+          sceneMime: null,
+          stylePreset: 'cinematic',
+          customStyle: '',
+          colorGrade: 'neutral',
+          model: 'gemini-3-pro-image',
+          cards: [createDefaultCard()]
+        };
+        await saveProject(newProj);
+        appState = newProj;
+        localStorage.setItem('active_storyboard_project_id', appState.id);
+        await loadProjectList();
+        loadActiveProjectUI();
+      });
+
+      document.getElementById('clone-project-btn').addEventListener('click', async () => {
+        const clone = JSON.parse(JSON.stringify(appState));
+        clone.id = 'project_' + Math.random().toString(36).substring(2, 9);
+        clone.name = `Clone of ${appState.name}`;
+        await saveProject(clone);
+        appState = clone;
+        localStorage.setItem('active_storyboard_project_id', appState.id);
+        await loadProjectList();
+        loadActiveProjectUI();
+      });
+
+      document.getElementById('delete-project-btn').addEventListener('click', async () => {
+        const list = await listProjects();
+        if (list.length <= 1) {
+          alert("Cannot delete the only remaining story. Create a new story first.");
+          return;
+        }
+        if (confirm(`Are you sure you want to delete the story: "${appState.name}"? This cannot be undone.`)) {
+          await deleteProjectFromDB(appState.id);
+          const remaining = await listProjects();
+          appState = remaining[0];
+          localStorage.setItem('active_storyboard_project_id', appState.id);
+          await loadProjectList();
+          loadActiveProjectUI();
+        }
+      });
+
+      document.getElementById('import-zip-btn').addEventListener('click', () => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.zip';
+        input.onchange = async e => {
+          if (e.target.files.length > 0) {
+            const file = e.target.files[0];
+            await importStoryZip(file);
+          }
+        };
+        input.click();
+      });
+
+      // 3. Setup drag & drops
+      setupDragAndDrop('char-upload-zone', async (file) => {
+        const base64Data = await fileToBase64(file);
+        appState.characterImage = base64Data.dataUrl;
+        appState.characterMime = base64Data.mimeType;
+        const preview = document.getElementById('char-preview');
+        preview.src = base64Data.dataUrl;
+        preview.style.display = 'block';
+        document.getElementById('clear-char-btn').style.display = 'flex';
+        triggerStateSave();
+      });
+
+      setupDragAndDrop('scene-upload-zone', async (file) => {
+        const base64Data = await fileToBase64(file);
+        appState.sceneImage = base64Data.dataUrl;
+        appState.sceneMime = base64Data.mimeType;
+        const preview = document.getElementById('scene-preview');
+        preview.src = base64Data.dataUrl;
+        preview.style.display = 'block';
+        document.getElementById('clear-scene-btn').style.display = 'flex';
+        triggerStateSave();
+      });
+
+      // 4. Sidebar interactions
+      document.getElementById('api-key-input').addEventListener('input', (e) => {
+        localStorage.setItem('storyboard_gemini_api_key', e.target.value.trim());
+      });
+
+      document.getElementById('toggle-key-visibility').addEventListener('click', () => {
+        const input = document.getElementById('api-key-input');
+        const icon = document.querySelector('#toggle-key-visibility i');
+        if (input.type === 'password') {
+          input.type = 'text';
+          icon.className = 'fa-solid fa-eye-slash';
+        } else {
+          input.type = 'password';
+          icon.className = 'fa-solid fa-eye';
+        }
+      });
+
+      document.getElementById('char-name-input').addEventListener('input', (e) => {
+        appState.characterName = e.target.value;
+        triggerStateSave();
+      });
+
+      document.getElementById('clear-char-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        appState.characterImage = null;
+        appState.characterMime = null;
+        document.getElementById('char-preview').style.display = 'none';
+        document.getElementById('clear-char-btn').style.display = 'none';
+        triggerStateSave();
+      });
+
+      document.getElementById('clear-scene-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        appState.sceneImage = null;
+        appState.sceneMime = null;
+        document.getElementById('scene-preview').style.display = 'none';
+        document.getElementById('clear-scene-btn').style.display = 'none';
+        triggerStateSave();
+      });
+
+      document.querySelectorAll('.preset-card').forEach(card => {
+        card.addEventListener('click', () => {
+          document.querySelectorAll('.preset-card').forEach(c => c.classList.remove('active'));
+          card.classList.add('active');
+          appState.stylePreset = card.dataset.preset;
+          
+          const customStyleInput = document.getElementById('custom-style-container');
+          if (appState.stylePreset === 'custom') {
+            customStyleInput.style.display = 'block';
+          } else {
+            customStyleInput.style.display = 'none';
+          }
+          triggerStateSave();
+        });
+      });
+
+      document.getElementById('custom-style-input').addEventListener('input', (e) => {
+        appState.customStyle = e.target.value;
+        triggerStateSave();
+      });
+
+      document.getElementById('color-grade-select').addEventListener('change', (e) => {
+        appState.colorGrade = e.target.value;
+        triggerStateSave();
+      });
+
+      document.getElementById('model-select').addEventListener('change', (e) => {
+        appState.model = e.target.value;
+        triggerStateSave();
+      });
+
+      document.getElementById('project-name-input').addEventListener('input', (e) => {
+        appState.name = e.target.value;
+        const opt = document.querySelector(`#project-select option[value="${appState.id}"]`);
+        if (opt) opt.text = appState.name || 'Untitled Story';
+        triggerStateSave();
+      });
+
+      // Clear studio setup
+      document.getElementById('clear-all-cards-btn').addEventListener('click', () => {
+        if (confirm("Are you sure you want to delete all cards and reset the board? This cannot be undone.")) {
+          appState.cards = [createDefaultCard()];
+          triggerStateSave();
+          renderTimeline();
+        }
+      });
+
+      // Export pipelines
+      document.getElementById('export-json-btn').addEventListener('click', () => {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
+        const dlAnchorElem = document.createElement('a');
+        dlAnchorElem.setAttribute("href", dataStr);
+        dlAnchorElem.setAttribute("download", `${appState.name.toLowerCase().replace(/\s+/g, '_')}_flow_storyboard.json`);
+        dlAnchorElem.click();
+      });
+
+      document.getElementById('export-zip-btn').addEventListener('click', exportZip);
+      document.getElementById('print-storyboard-btn').addEventListener('click', () => window.print());
+
+      // Playback engine
+      document.getElementById('play-storyboard-btn').addEventListener('click', () => startPlayback());
+
+      // 5. Draw modal interface setup
+      setupCanvasDrawingTools();
+
+      // Render default state timeline grid
+      renderTimeline();
+    });
+
+    // Helper functions for drag & drop
+    function setupDragAndDrop(elementId, callback) {
+      const el = document.getElementById(elementId);
+      
+      el.addEventListener('click', () => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.onchange = e => {
+          if (e.target.files.length > 0) callback(e.target.files[0]);
+        };
+        input.click();
+      });
+
+      el.addEventListener('dragover', e => {
+        e.preventDefault();
+        el.classList.add('dragover');
+      });
+
+      el.addEventListener('dragleave', () => {
+        el.classList.remove('dragover');
+      });
+
+      el.addEventListener('drop', e => {
+        e.preventDefault();
+        el.classList.remove('dragover');
+        if (e.dataTransfer.files.length > 0) callback(e.dataTransfer.files[0]);
+      });
+    }
+
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+          resolve({
+            dataUrl: reader.result,
+            mimeType: file.type
+          });
+        };
+        reader.onerror = error => reject(error);
+      });
+    }
+
+    // --- Timeline Render engine ---
+    function renderTimeline() {
+      const container = document.getElementById('timeline-grid');
+      container.innerHTML = '';
+
+      // First insert card spacer
+      container.appendChild(createSpacerElement(0));
+
+      appState.cards.forEach((card, index) => {
+        container.appendChild(createCardUIElement(card, index));
+        container.appendChild(createSpacerElement(index + 1));
+      });
+    }
+
+    function createSpacerElement(index) {
+      const spacer = document.createElement('div');
+      spacer.className = 'timeline-insert-spacer';
+      spacer.title = `Insert scene card here`;
+      
+      const bubble = document.createElement('div');
+      bubble.className = 'insert-bubble';
+      bubble.innerHTML = '<i class="fa-solid fa-plus"></i>';
+      spacer.appendChild(bubble);
+
+      spacer.addEventListener('click', () => {
+        const newCard = createDefaultCard();
+        appState.cards.splice(index, 0, newCard);
+        triggerStateSave();
+        renderTimeline();
+      });
+
+      return spacer;
+    }
+
+    function createCardUIElement(card, index) {
+      const el = document.createElement('div');
+      el.className = 'storycard';
+      el.id = `card-${card.id}`;
+
+      // Card Header
+      const header = document.createElement('div');
+      header.className = 'card-header';
+      
+      const indexTag = document.createElement('span');
+      indexTag.className = 'card-index';
+      indexTag.innerText = `Scene ${index + 1}`;
+      header.appendChild(indexTag);
+
+      const actions = document.createElement('div');
+      actions.className = 'card-actions';
+
+      // Reorder buttons
+      const btnLeft = document.createElement('button');
+      btnLeft.className = 'action-btn';
+      btnLeft.innerHTML = '<i class="fa-solid fa-chevron-left"></i>';
+      btnLeft.title = "Move scene left";
+      btnLeft.disabled = index === 0;
+      btnLeft.addEventListener('click', () => swapCards(index, index - 1));
+      actions.appendChild(btnLeft);
+
+      const btnRight = document.createElement('button');
+      btnRight.className = 'action-btn';
+      btnRight.innerHTML = '<i class="fa-solid fa-chevron-right"></i>';
+      btnRight.title = "Move scene right";
+      btnRight.disabled = index === appState.cards.length - 1;
+      btnRight.addEventListener('click', () => swapCards(index, index + 1));
+      actions.appendChild(btnRight);
+
+      // Delete button
+      const btnDel = document.createElement('button');
+      btnDel.className = 'action-btn btn-delete';
+      btnDel.innerHTML = '<i class="fa-solid fa-trash"></i>';
+      btnDel.title = "Delete scene";
+      btnDel.addEventListener('click', () => {
+        if (confirm("Delete this scene card?")) {
+          appState.cards.splice(index, 1);
+          if (appState.cards.length === 0) appState.cards = [createDefaultCard()];
+          triggerStateSave();
+          renderTimeline();
+        }
+      });
+      actions.appendChild(btnDel);
+
+      header.appendChild(actions);
+      el.appendChild(header);
+
+      // Card 16:9 visual board
+      const visualWorkspace = document.createElement('div');
+      visualWorkspace.className = 'card-visual-workspace';
+      
+      const hasGen = !!card.generatedImage;
+      const hasSketch = !!(card.sketchData || card.uploadedSketch);
+
+      if (!hasGen && !hasSketch) {
+        // Empty Workspace view
+        const placeholder = document.createElement('div');
+        placeholder.className = 'visual-placeholder';
+        placeholder.innerHTML = `
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+          <span>No visual layout set</span>
+        `;
+        
+        const placeholderBtns = document.createElement('div');
+        placeholderBtns.className = 'placeholder-buttons';
+        
+        const btnSketch = document.createElement('button');
+        btnSketch.className = 'btn-tiny';
+        btnSketch.innerHTML = '<i class="fa-solid fa-pen-ruler"></i> Sketch';
+        btnSketch.addEventListener('click', () => openDrawingCanvasModal(card.id));
+        placeholderBtns.appendChild(btnSketch);
+
+        const btnUpload = document.createElement('button');
+        btnUpload.className = 'btn-tiny';
+        btnUpload.innerHTML = '<i class="fa-solid fa-file-arrow-up"></i> Upload';
+        btnUpload.addEventListener('click', () => triggerSketchUpload(card.id));
+        placeholderBtns.appendChild(btnUpload);
+
+        placeholder.appendChild(placeholderBtns);
+        visualWorkspace.appendChild(placeholder);
+      } else {
+        // Image view exists
+        const img = document.createElement('img');
+        img.className = 'card-image-display';
+        
+        // Tab switching representation
+        const currentTab = card.activeTab || 'visual';
+        if (currentTab === 'visual' && hasGen) {
+          img.src = card.generatedImage;
+        } else {
+          img.src = card.sketchData || card.uploadedSketch;
+        }
+        visualWorkspace.appendChild(img);
+
+        // Visual Tabs triggers
+        const tabsContainer = document.createElement('div');
+        tabsContainer.className = 'visual-overlay-controls';
+
+        if (hasGen) {
+          const tabGen = document.createElement('div');
+          tabGen.className = `visual-tab ${currentTab === 'visual' ? 'active' : ''}`;
+          tabGen.innerText = "Generated";
+          tabGen.addEventListener('click', () => {
+            card.activeTab = 'visual';
+            renderTimeline();
+          });
+          tabsContainer.appendChild(tabGen);
+        }
+
+        if (hasSketch) {
+          const tabSketch = document.createElement('div');
+          tabSketch.className = `visual-tab ${currentTab === 'sketch' || !hasGen ? 'active' : ''}`;
+          tabSketch.innerText = card.sketchData ? "Canvas Sketch" : "Uploaded Sketch";
+          tabSketch.addEventListener('click', () => {
+            card.activeTab = 'sketch';
+            renderTimeline();
+          });
+          tabsContainer.appendChild(tabSketch);
+
+          // Clear Sketch action
+          const removeSketchBtn = document.createElement('div');
+          removeSketchBtn.className = 'visual-tab';
+          removeSketchBtn.innerHTML = '<i class="fa-solid fa-eraser"></i>';
+          removeSketchBtn.title = "Delete sketch reference";
+          removeSketchBtn.style.color = '#fca5a5';
+          removeSketchBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (confirm("Delete this layout sketch?")) {
+              card.sketchData = null;
+              card.uploadedSketch = null;
+              card.activeTab = 'visual';
+              triggerStateSave();
+              renderTimeline();
+            }
+          });
+          tabsContainer.appendChild(removeSketchBtn);
+        }
+
+        // Always show Sketch Canvas Edit action on visual if sketch tab active
+        if (card.sketchData && (currentTab === 'sketch' || !hasGen)) {
+          const editSketchBtn = document.createElement('div');
+          editSketchBtn.className = 'visual-tab';
+          editSketchBtn.innerHTML = '<i class="fa-solid fa-pencil"></i> Edit';
+          editSketchBtn.title = "Redraw on canvas";
+          editSketchBtn.addEventListener('click', () => openDrawingCanvasModal(card.id));
+          tabsContainer.appendChild(editSketchBtn);
+        }
+
+        visualWorkspace.appendChild(tabsContainer);
+      }
+
+      // Drag and drop handler to drop visual layout sketches directly
+      setupCardVisualDragDrop(visualWorkspace, card.id);
+
+      el.appendChild(visualWorkspace);
+
+      // Card settings body
+      const body = document.createElement('div');
+      body.className = 'card-body';
+
+      // Cinematography parameters
+      const metaRow = document.createElement('div');
+      metaRow.className = 'card-meta-row';
+
+      // Shot Type WS/CU select
+      const colShot = document.createElement('div');
+      colShot.className = 'meta-selector-container';
+      colShot.innerHTML = `<label>Shot framing</label>`;
+      const selectShot = document.createElement('select');
+      selectShot.className = 'meta-select';
+      [
+        {v: 'WS', n: 'Wide Shot (WS)'},
+        {v: 'EWS', n: 'Extreme Wide (EWS)'},
+        {v: 'MS', n: 'Medium Shot (MS)'},
+        {v: 'MCU', n: 'Medium Close Up (MCU)'},
+        {v: 'CU', n: 'Close Up (CU)'},
+        {v: 'ECU', n: 'Extreme Close Up (ECU)'},
+        {v: 'OTS', n: 'Over the Shoulder (OTS)'}
+      ].forEach(opt => {
+        const o = document.createElement('option');
+        o.value = opt.v;
+        o.text = opt.n;
+        if (card.shotType === opt.v) o.selected = true;
+        selectShot.appendChild(o);
+      });
+      selectShot.addEventListener('change', (e) => {
+        card.shotType = e.target.value;
+        triggerStateSave();
+      });
+      colShot.appendChild(selectShot);
+      metaRow.appendChild(colShot);
+
+      // Camera Angle Dutch/Low select
+      const colAngle = document.createElement('div');
+      colAngle.className = 'meta-selector-container';
+      colAngle.innerHTML = `<label>Camera Angle</label>`;
+      const selectAngle = document.createElement('select');
+      selectAngle.className = 'meta-select';
+      [
+        {v: 'Eye Level', n: 'Eye Level'},
+        {v: 'Low Angle', n: 'Low Angle'},
+        {v: 'High Angle', n: 'High Angle'},
+        {v: 'Dutch Angle', n: 'Dutch Angle'},
+        {v: 'Bird\'s Eye', n: 'Bird\'s Eye View'},
+        {v: 'Worm\'s Eye', n: 'Worm\'s Eye View'}
+      ].forEach(opt => {
+        const o = document.createElement('option');
+        o.value = opt.v;
+        o.text = opt.n;
+        if (card.cameraAngle === opt.v) o.selected = true;
+        selectAngle.appendChild(o);
+      });
+      selectAngle.addEventListener('change', (e) => {
+        card.cameraAngle = e.target.value;
+        triggerStateSave();
+      });
+      colAngle.appendChild(selectAngle);
+      metaRow.appendChild(colAngle);
+
+      body.appendChild(metaRow);
+
+      // Continuity checkbox (if index > 0)
+      if (index > 0) {
+        const contRow = document.createElement('div');
+        contRow.style = 'display:flex; align-items:center; gap:8px; margin: 4px 0 10px 0;';
+        
+        const contCheck = document.createElement('input');
+        contCheck.type = 'checkbox';
+        contCheck.id = `continuity-${card.id}`;
+        contCheck.style = 'cursor:pointer; accent-color:var(--accent-color);';
+        contCheck.checked = !!card.useContinuity;
+        contCheck.addEventListener('change', (e) => {
+          card.useContinuity = e.target.checked;
+          triggerStateSave();
+        });
+        
+        const contLabel = document.createElement('label');
+        contLabel.htmlFor = `continuity-${card.id}`;
+        contLabel.style = 'font-size:11px; font-weight:500; cursor:pointer; color:var(--text-muted); user-select:none;';
+        contLabel.innerText = 'Ground to previous scene rendering';
+        
+        contRow.appendChild(contCheck);
+        contRow.appendChild(contLabel);
+        body.appendChild(contRow);
+      }
+
+      // Description text input
+      const descInput = document.createElement('textarea');
+      descInput.className = 'card-desc-textarea';
+      descInput.placeholder = "Describe action, character position, scripting details...";
+      descInput.value = card.description;
+      descInput.addEventListener('input', (e) => {
+        card.description = e.target.value;
+        triggerStateSave();
+      });
+      body.appendChild(descInput);
+
+      // Prompt optimization output segment
+      const promptPreview = document.createElement('div');
+      promptPreview.className = 'prompt-preview-container';
+      promptPreview.id = `prompt-preview-${card.id}`;
+      if (card.optimizedPrompt) {
+        promptPreview.style.display = 'block';
+      }
+      promptPreview.innerHTML = `
+        <div class="prompt-preview-header">
+          <span>Optimized generation prompt</span>
+          <i class="fa-solid fa-lock-open" style="cursor:help;" title="Editable generator instruction"></i>
+        </div>
+        <textarea class="prompt-preview-textarea" placeholder="Optimized prompt will display here...">${card.optimizedPrompt}</textarea>
+      `;
+      // Allow manually editing optimized prompt
+      promptPreview.querySelector('.prompt-preview-textarea').addEventListener('input', (e) => {
+        card.optimizedPrompt = e.target.value;
+        triggerStateSave();
+      });
+      body.appendChild(promptPreview);
+
+      // API card status alert bar
+      const statusAlert = document.createElement('div');
+      statusAlert.className = 'card-status status-idle';
+      statusAlert.innerHTML = `<i class="fa-solid fa-circle-info"></i> Ready to render`;
+      body.appendChild(statusAlert);
+
+      // Core action buttons
+      const footerBtns = document.createElement('div');
+      footerBtns.className = 'card-footer-buttons';
+
+      const btnOptimize = document.createElement('button');
+      btnOptimize.className = 'btn-secondary';
+      btnOptimize.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Build Prompt';
+      btnOptimize.title = "Uses Gemini 2.5 Flash to synthesize visual references & settings";
+      btnOptimize.addEventListener('click', () => optimizeScenePrompt(card.id));
+      footerBtns.appendChild(btnOptimize);
+
+      const btnGenImage = document.createElement('button');
+      btnGenImage.className = 'btn-primary';
+      btnGenImage.innerHTML = '<i class="fa-solid fa-image"></i> Render';
+      btnGenImage.title = "Uses Nano Banana 2 to generate rendering";
+      btnGenImage.addEventListener('click', () => renderSceneImage(card.id));
+      footerBtns.appendChild(btnGenImage);
+
+      body.appendChild(footerBtns);
+      el.appendChild(body);
+
+      return el;
+    }
+
+    function swapCards(indexA, indexB) {
+      const temp = appState.cards[indexA];
+      appState.cards[indexA] = appState.cards[indexB];
+      appState.cards[indexB] = temp;
+      triggerStateSave();
+      renderTimeline();
+    }
+
+    function triggerSketchUpload(cardId) {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.onchange = async e => {
+        if (e.target.files.length > 0) {
+          const file = e.target.files[0];
+          const base64Data = await fileToBase64(file);
+          const card = appState.cards.find(c => c.id === cardId);
+          card.uploadedSketch = base64Data.dataUrl;
+          card.uploadedSketchMime = base64Data.mimeType;
+          card.sketchData = null; // Clear canvas drawing since file uploaded
+          card.activeTab = 'sketch';
+          triggerStateSave();
+          renderTimeline();
+        }
+      };
+      input.click();
+    }
+
+    function setupCardVisualDragDrop(container, cardId) {
+      container.addEventListener('dragover', e => {
+        e.preventDefault();
+        container.style.borderColor = 'var(--accent-color)';
+        container.style.background = 'rgba(99, 102, 241, 0.05)';
+      });
+
+      container.addEventListener('dragleave', () => {
+        container.style.borderColor = '';
+        container.style.background = '';
+      });
+
+      container.addEventListener('drop', async e => {
+        e.preventDefault();
+        container.style.borderColor = '';
+        container.style.background = '';
+        
+        if (e.dataTransfer.files.length > 0) {
+          const file = e.dataTransfer.files[0];
+          if (file.type.startsWith('image/')) {
+            const base64Data = await fileToBase64(file);
+            const card = appState.cards.find(c => c.id === cardId);
+            card.uploadedSketch = base64Data.dataUrl;
+            card.uploadedSketchMime = base64Data.mimeType;
+            card.sketchData = null;
+            card.activeTab = 'sketch';
+            triggerStateSave();
+            renderTimeline();
+          }
+        }
+      });
+    }
+
+    // --- Interactive drawing canvas board ---
+    let activeDrawingCardId = null;
+    let canvasDrawingState = false;
+    let canvasContext = null;
+    let drawColor = '#00f0ff';
+    let drawThickness = 10;
+    let canvasHistoryList = [];
+    let canvasHistoryIdx = -1;
+
+    function setupCanvasDrawingTools() {
+      const canvas = document.getElementById('sketch-canvas');
+      canvasContext = canvas.getContext('2d');
+
+      // Drawing cursor logic
+      function getCanvasPoints(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        
+        // Map pointer position on canvas node coordinates to internal high-res grid
+        const x = (clientX - rect.left) * (canvas.width / rect.width);
+        const y = (clientY - rect.top) * (canvas.height / rect.height);
+        return { x, y };
+      }
+
+      function startStroke(e) {
+        e.preventDefault();
+        canvasDrawingState = true;
+        const { x, y } = getCanvasPoints(e);
+        
+        canvasContext.beginPath();
+        canvasContext.moveTo(x, y);
+
+        // Draw instant circle at cursor start
+        canvasContext.fillStyle = drawColor === 'eraser' ? '#121217' : drawColor;
+        canvasContext.beginPath();
+        canvasContext.arc(x, y, drawThickness / 2, 0, Math.PI * 2);
+        canvasContext.fill();
+
+        canvasContext.beginPath();
+        canvasContext.moveTo(x, y);
+      }
+
+      function paintStroke(e) {
+        if (!canvasDrawingState) return;
+        e.preventDefault();
+        const { x, y } = getCanvasPoints(e);
+
+        canvasContext.lineWidth = drawThickness;
+        canvasContext.lineCap = 'round';
+        canvasContext.lineJoin = 'round';
+        canvasContext.strokeStyle = drawColor === 'eraser' ? '#121217' : drawColor;
+
+        canvasContext.lineTo(x, y);
+        canvasContext.stroke();
+      }
+
+      function endStroke() {
+        if (!canvasDrawingState) return;
+        canvasDrawingState = false;
+        saveCanvasHistory();
+      }
+
+      // Cursor trackers
+      canvas.addEventListener('mousedown', startStroke);
+      canvas.addEventListener('mousemove', paintStroke);
+      canvas.addEventListener('mouseup', endStroke);
+      canvas.addEventListener('mouseleave', endStroke);
+
+      // Touch trackers
+      canvas.addEventListener('touchstart', startStroke);
+      canvas.addEventListener('touchmove', paintStroke);
+      canvas.addEventListener('touchend', endStroke);
+
+      // Custom Color swatch selector triggers
+      document.querySelectorAll('.color-swatch').forEach(swatch => {
+        swatch.addEventListener('click', () => {
+          document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+          document.getElementById('eraser-btn').classList.remove('active');
+          swatch.classList.add('active');
+          drawColor = swatch.dataset.color;
+        });
+      });
+
+      // Eraser trigger
+      document.getElementById('eraser-btn').addEventListener('click', () => {
+        document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+        document.getElementById('eraser-btn').classList.add('active');
+        drawColor = 'eraser';
+      });
+
+      // Thickness selections
+      document.querySelectorAll('.brush-size-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.brush-size-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          drawThickness = parseInt(btn.dataset.size);
+        });
+      });
+
+      // Drawing history undo/redo triggers
+      document.getElementById('undo-btn').addEventListener('click', undoDrawingStroke);
+      document.getElementById('redo-btn').addEventListener('click', redoDrawingStroke);
+      document.getElementById('clear-canvas-btn').addEventListener('click', () => clearCanvasArea(true));
+
+      // Modal bottom actions
+      document.getElementById('cancel-drawing-btn').addEventListener('click', closeDrawingBoard);
+      document.getElementById('close-drawing-modal').addEventListener('click', closeDrawingBoard);
+
+      document.getElementById('save-drawing-btn').addEventListener('click', () => {
+        if (!activeDrawingCardId) return;
+        
+        // Export high resolution canvas sketch
+        const card = appState.cards.find(c => c.id === activeDrawingCardId);
+        
+        // Check if anything drawn
+        const emptyCheckCanvas = document.createElement('canvas');
+        emptyCheckCanvas.width = canvas.width;
+        emptyCheckCanvas.height = canvas.height;
+        
+        const currentData = getExportedCanvasDataURL(canvas, '#121217');
+        
+        card.sketchData = currentData;
+        card.uploadedSketch = null; // Clear uploaded file to prioritize canvas edit
+        card.activeTab = 'sketch';
+        
+        triggerStateSave();
+        renderTimeline();
+        closeDrawingBoard();
+      });
+    }
+
+    function openDrawingCanvasModal(cardId) {
+      activeDrawingCardId = cardId;
+      const card = appState.cards.find(c => c.id === cardId);
+      const modal = document.getElementById('drawing-modal');
+      
+      // Initialize modal header
+      document.getElementById('modal-card-title').innerText = `Sketch Scene frame - Card ${appState.cards.indexOf(card) + 1}`;
+
+      // Show overlay modal
+      modal.style.display = 'flex';
+      // Force repaint
+      modal.offsetHeight;
+      modal.classList.add('active');
+
+      // Clear layout drawing history
+      canvasHistoryList = [];
+      canvasHistoryIdx = -1;
+
+      // Draw original sketch state if exists
+      const canvas = document.getElementById('sketch-canvas');
+      canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+      
+      if (card.sketchData) {
+        const img = new Image();
+        img.onload = () => {
+          canvasContext.drawImage(img, 0, 0);
+          saveCanvasHistory();
+        };
+        img.src = card.sketchData;
+      } else {
+        saveCanvasHistory();
+      }
+    }
+
+    function closeDrawingBoard() {
+      const modal = document.getElementById('drawing-modal');
+      modal.classList.remove('active');
+      setTimeout(() => {
+        modal.style.display = 'none';
+        activeDrawingCardId = null;
+      }, 300);
+    }
+
+    function saveCanvasHistory() {
+      const canvas = document.getElementById('sketch-canvas');
+      if (canvasHistoryIdx < canvasHistoryList.length - 1) {
+        canvasHistoryList = canvasHistoryList.slice(0, canvasHistoryIdx + 1);
+      }
+      canvasHistoryList.push(canvas.toDataURL());
+      if (canvasHistoryList.length > 25) {
+        canvasHistoryList.shift();
+      }
+      canvasHistoryIdx = canvasHistoryList.length - 1;
+    }
+
+    function undoDrawingStroke() {
+      if (canvasHistoryIdx > 0) {
+        canvasHistoryIdx--;
+        loadCanvasHistoryState();
+      } else if (canvasHistoryIdx === 0) {
+        canvasHistoryIdx = -1;
+        clearCanvasArea(false);
+      }
+    }
+
+    function redoDrawingStroke() {
+      if (canvasHistoryIdx < canvasHistoryList.length - 1) {
+        canvasHistoryIdx++;
+        loadCanvasHistoryState();
+      }
+    }
+
+    function loadCanvasHistoryState() {
+      const canvas = document.getElementById('sketch-canvas');
+      const img = new Image();
+      img.onload = () => {
+        canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+        canvasContext.drawImage(img, 0, 0);
+      };
+      img.src = canvasHistoryList[canvasHistoryIdx];
+    }
+
+    function clearCanvasArea(resetHistory) {
+      const canvas = document.getElementById('sketch-canvas');
+      canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+      if (resetHistory) {
+        saveCanvasHistory();
+      }
+    }
+
+    // Exports drawing canvas layered over a solid visual bg color
+    function getExportedCanvasDataURL(canvas, backgroundColor) {
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = canvas.width;
+      tempCanvas.height = canvas.height;
+      const tempCtx = tempCanvas.getContext('2d');
+      
+      tempCtx.fillStyle = backgroundColor;
+      tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+      tempCtx.drawImage(canvas, 0, 0);
+      
+      return tempCanvas.toDataURL('image/jpeg', 0.9);
+    }
+
+    // --- Google AI API Client pipeline ---
+    async function optimizeScenePrompt(cardId) {
+      const card = appState.cards.find(c => c.id === cardId);
+      if (!card) return;
+
+      const key = localStorage.getItem('storyboard_gemini_api_key');
+      const cardEl = document.getElementById(`card-${cardId}`);
+      const statusEl = cardEl.querySelector('.card-status');
+      
+      if (!key) {
+        alert("Please set a valid Gemini API Key in the left sidebar configuration panel first.");
+        return;
+      }
+
+      statusEl.innerText = "Synthesizing layout references...";
+      statusEl.className = "card-status status-loading";
+      statusEl.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Synthesizing references...`;
+
+      try {
+        const parts = [
+          { text: promptSynthesizerSystemPrompt }
+        ];
+
+        // Character ref injection
+        if (appState.characterImage) {
+          parts.push({ text: "Here is the exact character reference image. The characters in the generated sequence should look identical to this minifigure character:" });
+          parts.push({
+            inlineData: {
+              mimeType: appState.characterMime || "image/png",
+              data: appState.characterImage.split(',')[1]
+            }
+          });
+        }
+
+        // Style reference injection (prefer card specific scene backdrop over global)
+        const sceneImageToUse = card.sceneBackdrop || appState.sceneImage;
+        const sceneMimeToUse = card.sceneBackdrop ? card.sceneBackdropMime : appState.sceneMime;
+        if (sceneImageToUse) {
+          parts.push({ text: "Here is the style reference image. Match the overall scene details, color grades, and rendering mediums:" });
+          parts.push({
+            inlineData: {
+              mimeType: sceneMimeToUse || "image/png",
+              data: sceneImageToUse.split(',')[1]
+            }
+          });
+        }
+
+        // Sketch injection
+        const sketchData = card.sketchData || card.uploadedSketch;
+        if (sketchData) {
+          const isCanvas = !!card.sketchData;
+          parts.push({ text: "Here is the director's composition layout sketch. Replicate the object positioning, angle viewpoints, and background depth of field:" });
+          parts.push({
+            inlineData: {
+              mimeType: isCanvas ? "image/jpeg" : (card.uploadedSketchMime || "image/png"),
+              data: sketchData.split(',')[1]
+            }
+          });
+        }
+
+        // Continuity image injection
+        const cardIndex = appState.cards.indexOf(card);
+        if (card.useContinuity && cardIndex > 0) {
+          const prevCard = appState.cards[cardIndex - 1];
+          const prevImage = prevCard.generatedImage || prevCard.sketchData || prevCard.uploadedSketch;
+          if (prevImage) {
+            parts.push({ text: "Here is the visual rendering from the previous scene card. Ensure that the next scene generated flows logically from this one, maintaining character position continuity, wardrobe details, and background room architecture where applicable:" });
+            parts.push({
+              inlineData: {
+                mimeType: "image/jpeg",
+                data: prevImage.split(',')[1]
+              }
+            });
+          }
+        }
+
+        const presetText = appState.stylePreset === 'custom' ? appState.customStyle : (STYLE_PRESETS[appState.stylePreset] || "");
+        
+        // Metadata textual prompt parameters
+        parts.push({
+          text: `TECHNICAL PARAMETERS:
+- Character Name/Description: ${appState.characterName || 'the minifigure character'}
+- Shot Framing Type: ${card.shotType}
+- Camera Angle Type: ${card.cameraAngle}
+- Style description to merge: ${presetText}
+- Color grade grading: ${appState.colorGrade}
+- Shot description & action details: ${card.description || 'Establishing shot of the action'}`
+        });
+
+        // Calling generative language content model API
+        console.log("Gemini Prompt Optimizer payload parts:", parts);
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`;
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ contents: [{ parts }] })
+        });
+
+        if (!response.ok) {
+          const errBody = await response.json();
+          throw new Error(errBody.error?.message || "Failed API status check");
+        }
+
+        const resData = await response.json();
+        const textResult = resData.candidates?.[0]?.content?.parts?.[0]?.text;
+        
+        if (!textResult) throw new Error("Empty text output returned from Gemini optimizer.");
+
+        card.optimizedPrompt = textResult.trim();
+        triggerStateSave();
+
+        // Reveal prompt preview fields
+        const previewContainer = document.getElementById(`prompt-preview-${cardId}`);
+        previewContainer.style.display = 'block';
+        previewContainer.querySelector('.prompt-preview-textarea').value = card.optimizedPrompt;
+
+        statusEl.innerText = "Prompt optimized! Ready to render.";
+        statusEl.className = "card-status status-success";
+        statusEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> Prompt ready for rendering`;
+
+      } catch (e) {
+        console.error(e);
+        statusEl.innerText = `API Failure: ${e.message}`;
+        statusEl.className = "card-status status-error";
+        statusEl.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> API error: ${e.message}`;
+      }
+    }
+
+    async function renderSceneImage(cardId) {
+      const card = appState.cards.find(c => c.id === cardId);
+      if (!card) return;
+
+      const key = localStorage.getItem('storyboard_gemini_api_key');
+      const cardEl = document.getElementById(`card-${cardId}`);
+      const statusEl = cardEl.querySelector('.card-status');
+
+      // Simulation mode verification if key empty
+      if (!key) {
+        const acceptSimulation = confirm("No Google API Key detected. Would you like to generate a beautiful schematic storyboard concept card in Simulation Mode?");
+        if (acceptSimulation) {
+          statusEl.className = "card-status status-loading";
+          statusEl.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Simulation loading...`;
+          setTimeout(() => {
+            const index = appState.cards.indexOf(card);
+            const mockImg = drawBlueprintSimulationStoryboard(card, index);
+            card.generatedImage = mockImg;
+            card.activeTab = 'visual';
+            triggerStateSave();
+            renderTimeline();
+          }, 1000);
+        }
+        return;
+      }
+
+      // Check prompt parameter existence
+      const finalPrompt = card.optimizedPrompt || card.description;
+      if (!finalPrompt) {
+        alert("Please write a scene action description or click 'Build Prompt' to optimize reference parameters first.");
+        return;
+      }
+
+      const selectedModel = appState.model || 'gemini-3-pro-image';
+      
+      let modelDisplayName = 'Imagen 3';
+      if (selectedModel.includes('flash')) modelDisplayName = 'Nano Banana 2';
+      else if (selectedModel.includes('pro')) modelDisplayName = 'Nano Banana Pro';
+
+      statusEl.className = "card-status status-loading";
+      statusEl.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Rendering storyboard (${modelDisplayName})...`;
+
+      try {
+        let response;
+        let base64Content = null;
+
+        if (selectedModel.startsWith('gemini-')) {
+          // Gemini image generation models use generateContent method
+          const parts = [
+            { text: finalPrompt }
+          ];
+
+          // Character ref injection for image generator
+          if (appState.characterImage) {
+            parts.push({ text: "Character reference image (ensure this exact character design and features are rendered in the scene):" });
+            parts.push({
+              inlineData: {
+                mimeType: appState.characterMime || "image/png",
+                data: appState.characterImage.split(',')[1]
+              }
+            });
+          }
+
+          // Scene style/environment reference injection for image generator (prefer card specific scene backdrop over global)
+          const sceneImageToUse = card.sceneBackdrop || appState.sceneImage;
+          const sceneMimeToUse = card.sceneBackdrop ? card.sceneBackdropMime : appState.sceneMime;
+          if (sceneImageToUse) {
+            parts.push({ text: "Scene environment reference image (render the character within this environment, matching this background scenery, architecture, and lighting):" });
+            parts.push({
+              inlineData: {
+                mimeType: sceneMimeToUse || "image/png",
+                data: sceneImageToUse.split(',')[1]
+              }
+            });
+          }
+
+          // Sketch layout injection for image generator
+          const sketchData = card.sketchData || card.uploadedSketch;
+          if (sketchData) {
+            const isCanvas = !!card.sketchData;
+            parts.push({ text: "Composition layout sketch (replicate the camera angle, framing, and positioning of elements as shown here):" });
+            parts.push({
+              inlineData: {
+                mimeType: isCanvas ? "image/jpeg" : (card.uploadedSketchMime || "image/png"),
+                data: sketchData.split(',')[1]
+              }
+            });
+          }
+
+          // Continuity grounding reference for image generator
+          const cardIndex = appState.cards.indexOf(card);
+          if (card.useContinuity && cardIndex > 0) {
+            const prevCard = appState.cards[cardIndex - 1];
+            const prevImage = prevCard.generatedImage || prevCard.sketchData || prevCard.uploadedSketch;
+            if (prevImage) {
+              parts.push({ text: "Previous scene visual reference (ensure visual continuity of outfits, expressions, lighting, and layout flows logically from this previous shot):" });
+              parts.push({
+                inlineData: {
+                  mimeType: "image/jpeg",
+                  data: prevImage.split(',')[1]
+                }
+              });
+            }
+          }
+
+          console.log("Gemini Image Generator payload parts:", parts);
+          const url = `https://generativelanguage.googleapis.com/v1beta/models/${selectedModel}:generateContent?key=${key}`;
+          response = await fetch(url, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              contents: [
+                {
+                  parts: parts
+                }
+              ],
+              generationConfig: {
+                responseModalities: ["TEXT", "IMAGE"]
+              }
+            })
+          });
+
+          if (!response.ok) {
+            const errBody = await response.json();
+            throw new Error(errBody.error?.message || "Gemini image rendering failure");
+          }
+
+          const resData = await response.json();
+          // Find the inlineData part in the parts array
+          if (resData.candidates?.[0]?.content?.parts) {
+            for (const part of resData.candidates[0].content.parts) {
+              if (part.inlineData && part.inlineData.data) {
+                base64Content = part.inlineData.data;
+                break;
+              }
+            }
+          }
+          
+          if (!base64Content) {
+            throw new Error("No image data returned in Gemini response. Ensure your API key has access to the model.");
+          }
+
+        } else {
+          // Imagen 3 uses predict method
+          const url = `https://generativelanguage.googleapis.com/v1beta/models/${selectedModel}:predict?key=${key}`;
+          response = await fetch(url, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              instances: [{ prompt: finalPrompt }],
+              parameters: {
+                sampleCount: 1,
+                aspectRatio: "16:9",
+                outputMimeType: "image/jpeg"
+              }
+            })
+          });
+
+          if (!response.ok) {
+            const errBody = await response.json();
+            throw new Error(errBody.error?.message || "Imagen image rendering failure");
+          }
+
+          const resData = await response.json();
+          base64Content = resData.predictions?.[0]?.bytesBase64Encoded;
+          
+          if (!base64Content) {
+            throw new Error("No rendering bytes returned in Imagen response.");
+          }
+        }
+
+        card.generatedImage = `data:image/jpeg;base64,${base64Content}`;
+        card.activeTab = 'visual';
+        
+        triggerStateSave();
+        renderTimeline();
+
+      } catch (e) {
+        console.error(e);
+        statusEl.className = "card-status status-error";
+        statusEl.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> Rendering error: ${e.message}`;
+      }
+    }
+
+    // Creates blueprint drawing simulations for card visuals
+    function drawBlueprintSimulationStoryboard(card, cardIndex) {
+      const c = document.createElement('canvas');
+      c.width = 1280;
+      c.height = 720;
+      const ctx = c.getContext('2d');
+
+      // Blueprint color style
+      const g = ctx.createLinearGradient(0,0,1280,720);
+      g.addColorStop(0, '#0f172a');
+      g.addColorStop(1, '#020617');
+      ctx.fillStyle = g;
+      ctx.fillRect(0,0,1280,720);
+
+      // Drafting grids
+      ctx.strokeStyle = 'rgba(99, 102, 241, 0.1)';
+      ctx.lineWidth = 1;
+      const grid = 40;
+      for (let x = 0; x < 1280; x += grid) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 720); ctx.stroke();
+      }
+      for (let y = 0; y < 720; y += grid) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(1280, y); ctx.stroke();
+      }
+
+      // Outer design border
+      ctx.strokeStyle = 'rgba(99, 102, 241, 0.4)';
+      ctx.lineWidth = 4;
+      ctx.strokeRect(20, 20, 1240, 680);
+
+      // Card counter marker
+      ctx.fillStyle = '#6366f1';
+      ctx.beginPath(); ctx.arc(90, 90, 45, 0, Math.PI * 2); ctx.fill();
+      
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 42px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(`#${cardIndex + 1}`, 90, 90);
+
+      // Drafting label titles
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+      ctx.font = 'bold 24px monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText(`FRAMING: ${card.shotType}`, 170, 75);
+      ctx.fillText(`ANGLE: ${card.cameraAngle}`, 170, 110);
+
+      ctx.fillStyle = '#f59e0b';
+      ctx.font = 'bold 20px sans-serif';
+      ctx.fillText(`ESTHETIC PRESET: ${(appState.stylePreset || 'custom').toUpperCase()}`, 170, 145);
+
+      // Draw continuity active tag in simulation
+      if (card.useContinuity && cardIndex > 0) {
+        ctx.fillStyle = 'rgba(16, 185, 129, 0.15)';
+        ctx.strokeStyle = '#10b981';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.roundRect(960, 50, 260, 45, 8);
+        ctx.fill();
+        ctx.stroke();
+        
+        ctx.fillStyle = '#10b981';
+        ctx.font = 'bold 15px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText("🔗 CONTINUITY GROUNDED", 1090, 78);
+      }
+
+      // Drawing layout placeholder wireframes
+      ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+      ctx.strokeRect(340, 190, 600, 340);
+
+      // Draw draft LEGO blueprint character outline
+      ctx.strokeStyle = '#00f0ff';
+      ctx.lineWidth = 4;
+      ctx.shadowColor = '#00f0ff';
+      ctx.shadowBlur = 10;
+      
+      // LEGO head
+      ctx.beginPath();
+      ctx.arc(640, 270, 32, 0, Math.PI*2);
+      ctx.stroke();
+      // Stud on head
+      ctx.strokeRect(625, 226, 30, 12);
+      
+      // Torso trapezoid
+      ctx.beginPath();
+      ctx.moveTo(600, 315);
+      ctx.lineTo(680, 315);
+      ctx.lineTo(695, 415);
+      ctx.lineTo(585, 415);
+      ctx.closePath();
+      ctx.stroke();
+
+      // Left arm and hand
+      ctx.beginPath();
+      ctx.moveTo(600, 325);
+      ctx.lineTo(560, 375);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(550, 385, 12, 0, Math.PI*2);
+      ctx.stroke();
+
+      // Right arm and hand
+      ctx.beginPath();
+      ctx.moveTo(680, 325);
+      ctx.lineTo(720, 375);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(730, 385, 12, 0, Math.PI*2);
+      ctx.stroke();
+
+      // Legs/Hips
+      ctx.strokeRect(588, 415, 104, 30);
+      ctx.strokeRect(588, 445, 48, 50);
+      ctx.strokeRect(644, 445, 48, 50);
+
+      ctx.shadowBlur = 0; // reset shadows
+
+      // Print description text
+      ctx.fillStyle = '#f1f5f9';
+      ctx.font = '28px sans-serif';
+      ctx.textAlign = 'center';
+
+      const desc = card.description || "(Write scene details to preview)";
+      const words = desc.split(' ');
+      let line = '';
+      let y = 580;
+      
+      for (let i = 0; i < words.length; i++) {
+        let test = line + words[i] + ' ';
+        if (ctx.measureText(test).width > 960 && i > 0) {
+          ctx.fillText(line, 640, y);
+          line = words[i] + ' ';
+          y += 38;
+        } else {
+          line = test;
+        }
+      }
+      ctx.fillText(line, 640, y);
+
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
+      ctx.font = 'italic 18px sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText("Google Flow Pre-Production Blueprint [SIMULATION]", 1220, 680);
+
+      return c.toDataURL('image/jpeg');
+    }
+
+    // --- Presentation slideshow playback overlay mode ---
+    let isSlideshowPlaying = false;
+    let slideshowTimer = null;
+    let playbackCursorIdx = 0;
+
+    function startPlayback() {
+      if (appState.cards.length === 0) return;
+      
+      const overlay = document.getElementById('playback-overlay');
+      overlay.style.display = 'flex';
+      
+      // Event binds
+      document.getElementById('close-playback').onclick = stopPlayback;
+      document.getElementById('playback-prev').onclick = playPreviousSlide;
+      document.getElementById('playback-next').onclick = playNextSlide;
+      document.getElementById('playback-play-toggle').onclick = toggleSlideshowPlay;
+      
+      // Keyboard navigations
+      window.addEventListener('keydown', handlePlaybackKeybinds);
+
+      isSlideshowPlaying = false;
+      toggleSlideshowPlayStateIcon(false);
+      
+      renderActiveSlide(0);
+    }
+
+    function stopPlayback() {
+      isSlideshowPlaying = false;
+      clearTimeout(slideshowTimer);
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
+      
+      document.getElementById('playback-overlay').style.display = 'none';
+      window.removeEventListener('keydown', handlePlaybackKeybinds);
+    }
+
+    function handlePlaybackKeybinds(e) {
+      if (e.key === 'ArrowRight') playNextSlide();
+      if (e.key === 'ArrowLeft') playPreviousSlide();
+      if (e.key === ' ') {
+        e.preventDefault();
+        toggleSlideshowPlay();
+      }
+      if (e.key === 'Escape') stopPlayback();
+    }
+
+    function renderActiveSlide(idx) {
+      if (idx < 0 || idx >= appState.cards.length) {
+        stopPlayback();
+        return;
+      }
+      playbackCursorIdx = idx;
+      const card = appState.cards[idx];
+
+      const img = document.getElementById('playback-image');
+      
+      // Visual fallback triggers
+      const imgSource = card.generatedImage || card.sketchData || card.uploadedSketch;
+      if (imgSource) {
+        img.src = imgSource;
+        img.style.display = 'block';
+      } else {
+        // Build mock placeholder if visual empty
+        img.src = drawBlueprintSimulationStoryboard(card, idx);
+        img.style.display = 'block';
+      }
+
+      document.getElementById('playback-title').innerText = `SCENE ${idx + 1} / ${appState.cards.length}`;
+      document.getElementById('playback-meta').innerText = `${card.shotType} • ${card.cameraAngle}`;
+      document.getElementById('playback-desc').innerText = card.description || "(No scene description provided)";
+
+      // Voice Narration trigger
+      const voiceChecked = document.getElementById('playback-voice-toggle').checked;
+      
+      if (voiceChecked && window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+        
+        const textToSpeak = `Scene ${idx + 1}. Framing is ${card.shotType}. ${card.description || 'No description'}`;
+        const utterance = new SpeechSynthesisUtterance(textToSpeak);
+        
+        utterance.onend = () => {
+          if (isSlideshowPlaying) {
+            slideshowTimer = setTimeout(playNextSlide, 1500);
+          }
+        };
+
+        window.speechSynthesis.speak(utterance);
+      } else if (isSlideshowPlaying) {
+        // Use timeout slide progression
+        const interval = parseInt(document.getElementById('playback-interval').value) * 1000;
+        slideshowTimer = setTimeout(playNextSlide, interval);
+      }
+    }
+
+    function playNextSlide() {
+      clearTimeout(slideshowTimer);
+      if (playbackCursorIdx < appState.cards.length - 1) {
+        renderActiveSlide(playbackCursorIdx + 1);
+      } else {
+        stopPlayback();
+      }
+    }
+
+    function playPreviousSlide() {
+      clearTimeout(slideshowTimer);
+      if (playbackCursorIdx > 0) {
+        renderActiveSlide(playbackCursorIdx - 1);
+      }
+    }
+
+    function toggleSlideshowPlay() {
+      isSlideshowPlaying = !isSlideshowPlaying;
+      toggleSlideshowPlayStateIcon(isSlideshowPlaying);
+      
+      if (isSlideshowPlaying) {
+        // trigger progression logic
+        const voiceChecked = document.getElementById('playback-voice-toggle').checked;
+        if (voiceChecked && window.speechSynthesis) {
+          renderActiveSlide(playbackCursorIdx);
+        } else {
+          const interval = parseInt(document.getElementById('playback-interval').value) * 1000;
+          slideshowTimer = setTimeout(playNextSlide, interval);
+        }
+      } else {
+        clearTimeout(slideshowTimer);
+        if (window.speechSynthesis) window.speechSynthesis.cancel();
+      }
+    }
+
+    function toggleSlideshowPlayStateIcon(playing) {
+      const btn = document.getElementById('playback-play-toggle');
+      if (playing) {
+        btn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+        btn.title = "Pause Slideshow (Spacebar)";
+      } else {
+        btn.innerHTML = '<i class="fa-solid fa-play"></i>';
+        btn.title = "Play Slideshow (Spacebar)";
+      }
+    }
+
+    // --- ZIP and Flow export structures ---
+    async function exportZip() {
+      if (appState.cards.length === 0) return;
+      
+      const zip = new JSZip();
+      
+      // Clone state mapping local zip path names
+      const manifest = JSON.parse(JSON.stringify(appState));
+      
+      // Save sidebar reference elements
+      if (appState.characterImage) {
+        const charBlob = convertDataURLtoBlob(appState.characterImage);
+        zip.file("references/character_reference.jpg", charBlob);
+        manifest.characterImage = "references/character_reference.jpg";
+      }
+      if (appState.sceneImage) {
+        const sceneBlob = convertDataURLtoBlob(appState.sceneImage);
+        zip.file("references/scene_reference.jpg", sceneBlob);
+        manifest.sceneImage = "references/scene_reference.jpg";
+      }
+
+      // Loop cards saving layout sketches & rendered graphics
+      for (let i = 0; i < manifest.cards.length; i++) {
+        const card = manifest.cards[i];
+        const origCard = appState.cards[i];
+
+        if (origCard.sketchData) {
+          const blob = convertDataURLtoBlob(origCard.sketchData);
+          const path = `assets/scene_${String(i+1).padStart(2, '0')}_canvas_sketch.jpg`;
+          zip.file(path, blob);
+          card.sketchData = path;
+        }
+
+        if (origCard.uploadedSketch) {
+          const blob = convertDataURLtoBlob(origCard.uploadedSketch);
+          const ext = origCard.uploadedSketchMime === "image/png" ? "png" : "jpg";
+          const path = `assets/scene_${String(i+1).padStart(2, '0')}_uploaded_sketch.${ext}`;
+          zip.file(path, blob);
+          card.uploadedSketch = path;
+        }
+
+        if (origCard.generatedImage) {
+          const blob = convertDataURLtoBlob(origCard.generatedImage);
+          const path = `assets/scene_${String(i+1).padStart(2, '0')}_rendered.jpg`;
+          zip.file(path, blob);
+          card.generatedImage = path;
+        }
+
+        if (origCard.sceneBackdrop) {
+          const blob = convertDataURLtoBlob(origCard.sceneBackdrop);
+          const ext = origCard.sceneBackdropMime === "image/png" ? "png" : "jpg";
+          const path = `assets/scene_${String(i+1).padStart(2, '0')}_backdrop.${ext}`;
+          zip.file(path, blob);
+          card.sceneBackdrop = path;
+        }
+      }
+
+      // Add project settings manifest
+      zip.file("storyboard_manifest.json", JSON.stringify(manifest, null, 2));
+
+      // Build compilation downloader
+      const content = await zip.generateAsync({ type: "blob" });
+      const downloadLink = document.createElement("a");
+      downloadLink.href = URL.createObjectURL(content);
+      downloadLink.download = `${appState.name.toLowerCase().replace(/\s+/g, '_')}_storyboard_pack.zip`;
+      downloadLink.click();
+    }
+
+    function convertDataURLtoBlob(dataUrl) {
+      const splitSegments = dataUrl.split(',');
+      const mime = splitSegments[0].match(/:(.*?);/)[1];
+      const binaryString = atob(splitSegments[1]);
+      let index = binaryString.length;
+      const arrayBufferView = new Uint8Array(index);
+      
+      while (index--) {
+        arrayBufferView[index] = binaryString.charCodeAt(index);
+      }
+      
+      return new Blob([arrayBufferView], { type: mime });
+    }
+  </script>
+</body>
+</html>
