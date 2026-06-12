@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FYS PSA Gradebook & Rubric Builder</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    /* Printable Rubric Styling */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #print-area, #print-area * {
+        visibility: visible;
+      }
+      #print-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-indigo-900 text-white shadow-md border-b border-indigo-950">
+    <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="p-2 bg-indigo-600 rounded-lg text-white">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0/0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-xl font-bold tracking-tight">FYS PSA Rubric Gradebook</h1>
+          <p class="text-xs text-indigo-200">First Year Seminar: Communication, Consent & Sexuality Education Assessment</p>
+        </div>
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <button id="btn-export-all" class="bg-indigo-800 hover:bg-indigo-700 text-white text-xs font-semibold px-3 py-2 rounded-md transition-colors border border-indigo-700 flex items-center gap-1.5">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+          Export Class Data (JSON)
+        </button>
+        <button id="btn-import-all" class="bg-indigo-800 hover:bg-indigo-700 text-white text-xs font-semibold px-3 py-2 rounded-md transition-colors border border-indigo-700 flex items-center gap-1.5" onclick="triggerJSONImport()">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l4-4m0 0l4 4m-4-4v12" /></svg>
+          Import Class Data
+        </button>
+        <input type="file" id="file-import" class="hidden" accept=".json" onchange="importClassJSON(event)">
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Workspace Layout -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-6 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-6">
+    
+    <!-- Left Panel: Classes & Roster -->
+    <section class="lg:col-span-4 space-y-6">
+      
+      <!-- Class Selector & Creator -->
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+        <h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">Class Settings</h2>
+        
+        <div class="space-y-3">
+          <div>
+            <label for="select-class" class="block text-xs font-medium text-slate-700 mb-1">Select Class / Block</label>
+            <div class="flex gap-2">
+              <select id="select-class" class="block w-full rounded-md border-slate-300 border bg-slate-50 p-2 text-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" onchange="onClassChange()">
+                <!-- Populated via JS -->
+              </select>
+              <button onclick="openClassModal()" class="bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100 p-2 rounded-md transition-all" title="Create New Class">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                </svg>
+              </button>
+              <button onclick="deleteCurrentClass()" class="bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 p-2 rounded-md transition-all" title="Delete Current Class">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Student Roster & Quick Actions -->
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex flex-col max-h-[500px] lg:max-h-[650px]">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+          <div>
+            <h2 class="text-sm font-semibold text-slate-800">Student Roster</h2>
+            <p class="text-xs text-slate-500" id="roster-count">0 Students listed</p>
+          </div>
+          <div class="flex gap-1.5">
+            <button onclick="openImportModal()" class="text-indigo-600 hover:text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 px-2.5 py-1 rounded text-xs font-semibold transition-all">
+              + Import
+            </button>
+            <button onclick="addSingleStudentPrompt()" class="text-slate-700 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-2.5 py-1 rounded text-xs font-semibold transition-all">
+              + One
+            </button>
+          </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="mb-3 relative">
+          <input type="text" id="roster-search" placeholder="Search students..." class="w-full text-xs rounded-md border-slate-300 border bg-slate-50 p-2 pl-8 focus:ring focus:ring-indigo-100 outline-none" oninput="renderRoster()">
+          <span class="absolute left-2.5 top-2.5 text-slate-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+          </span>
+        </div>
+
+        <!-- Roster List container (Scrollable) -->
+        <div class="flex-1 overflow-y-auto space-y-1 pr-1" id="roster-list-container">
+          <!-- Populated via JS -->
+        </div>
+
+        <!-- Quick Clear option -->
+        <div class="border-t border-slate-100 pt-3 mt-3 flex justify-between items-center text-xs text-slate-500">
+          <button onclick="clearCurrentRoster()" class="text-rose-500 hover:text-rose-700 font-medium">Clear All Roster</button>
+          <span id="save-status" class="italic text-green-600 flex items-center gap-1">
+            <span class="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse"></span> Auto-saved
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Panel: Grading Workspace -->
+    <section class="lg:col-span-8">
+      
+      <!-- Default Selection View -->
+      <div id="workspace-empty-state" class="bg-white rounded-xl shadow-sm border border-slate-200 p-12 text-center h-full flex flex-col justify-center items-center">
+        <div class="p-4 bg-indigo-50 text-indigo-600 rounded-full mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+        </div>
+        <h3 class="text-lg font-bold text-slate-800 mb-1">No Student Selected</h3>
+        <p class="text-slate-500 max-w-sm text-sm mb-4">Select a student from the sidebar roster on the left, or import a roster to start grading.</p>
+        <div class="flex gap-3">
+          <button onclick="openImportModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-4 py-2.5 rounded-md transition-all shadow-sm">
+            Import Class Spreadsheet
+          </button>
+          <button onclick="addSingleStudentPrompt()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 text-xs font-semibold px-4 py-2.5 rounded-md transition-all">
+            Add Single Student
+          </button>
+        </div>
+      </div>
+
+      <!-- Grading Interface -->
+      <div id="workspace-grading-view" class="hidden space-y-6">
+        
+        <!-- Active Student Overview Profile Card -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-medium text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md tracking-wider uppercase" id="badge-active-class">CLASS BLOCK</span>
+              <span id="graded-indicator" class="text-xs font-medium px-2 py-0.5 rounded-md tracking-wider uppercase"></span>
+            </div>
+            <h2 class="text-2xl font-extrabold text-slate-800 mt-1" id="active-student-name">Student Name</h2>
+          </div>
+          
+          <div class="flex items-center gap-6 bg-slate-50 p-3 rounded-xl border border-slate-100 w-full md:w-auto">
+            <div class="text-center px-4 border-r border-slate-200">
+              <div class="text-2xl font-black text-indigo-600" id="workspace-calc-score">-</div>
+              <div class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Average Scale</div>
+            </div>
+            <div class="flex-1 flex flex-col gap-1 text-xs">
+              <div class="flex justify-between gap-4">
+                <span class="text-slate-500">Graded Categories:</span>
+                <span id="completed-count-badge" class="font-semibold text-slate-700">0/3</span>
+              </div>
+              <div class="w-24 bg-slate-200 rounded-full h-1.5">
+                <div id="grading-progress-bar" class="bg-indigo-600 h-1.5 rounded-full" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Criterion 1: Health Interpersonal Communication -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+          <div class="bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="text-[10px] font-extrabold uppercase tracking-widest text-emerald-100">Rubric Scale 1</span>
+                <h3 class="text-lg font-bold">Health Interpersonal Communication</h3>
+                <p class="text-xs text-emerald-500 bg-white inline-block px-1.5 py-0.5 rounded font-semibold mt-0.5">Competency: Interpersonal communication skills to enhance health</p>
+              </div>
+              <div class="text-right">
+                <div class="text-xs text-emerald-100">Currently Awarded:</div>
+                <div class="text-2xl font-black text-white" id="score-badge-c1">N/A</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-5 space-y-4">
+            <!-- Score Selector Slider/Pills -->
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Select Scale Score:</label>
+              <div class="grid grid-cols-5 gap-1 bg-slate-100 p-1 rounded-lg">
+                <button onclick="setScore('c1', 2.0)" id="btn-c1-2.0" class="score-btn py-2 text-xs font-semibold rounded-md transition-all border border-transparent">2.0</button>
+                <button onclick="setScore('c1', 2.5)" id="btn-c1-2.5" class="score-btn py-2 text-xs font-semibold rounded-md transition-all border border-transparent">2.5</button>
+                <button onclick="setScore('c1', 3.0)" id="btn-c1-3.0" class="score-btn py-2 text-xs font-semibold rounded-md transition-all border border-transparent">3.0</button>
+                <button onclick="setScore('c1', 3.5)" id="btn-c1-3.5" class="score-btn py-2 text-xs font-semibold rounded-md transition-all border border-transparent">3.5</button>
+                <button onclick="setScore('c1', 4.0)" id="btn-c1-4.0" class="score-btn py-2 text-xs font-semibold rounded-md transition-all border border-transparent">4.0</button>
+              </div>
+            </div>
+
+            <!-- Rubric Guide Reference Visualizer -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div id="card-c1-2" class="p-3 rounded-lg border border-slate-200 text-xs space-y-1 bg-slate-50 transition-colors">
+                <span class="font-bold text-slate-600 block mb-1 border-b border-slate-200 pb-1">Developing (2.0)</span>
+                <p class="text-slate-500 italic">Vague or Passive Messaging</p>
+                <p class="text-slate-600">• Terminology used but not actively modeled inside roleplay scenario</p>
+                <p class="text-slate-600">• Simplistic, one-sided, or makes situation worse</p>
+              </div>
+              <div id="card-c1-3" class="p-3 rounded-lg border border-slate-200 text-xs space-y-1 bg-slate-50 transition-colors">
+                <span class="font-bold text-emerald-700 block mb-1 border-b border-emerald-100 pb-1">Proficient (3.0) Target</span>
+                <p class="text-emerald-800 italic font-medium">Assertive & Respectful</p>
+                <p class="text-slate-600">• Characters clearly assert needs/wants</p>
+                <p class="text-slate-600">• Respectful dialogue modeling safety</p>
+                <p class="text-slate-600">• Action falls into "caring decisions" quadrant</p>
+              </div>
+              <div id="card-c1-4" class="p-3 rounded-lg border border-slate-200 text-xs space-y-1 bg-slate-50 transition-colors">
+                <span class="font-bold text-purple-700 block mb-1 border-b border-purple-100 pb-1">Exemplary (4.0)</span>
+                <p class="text-purple-800 italic font-medium">Empowerment & Nuance</p>
+                <p class="text-slate-600">• Considers multiple sides or complexity</p>
+                <p class="text-slate-600">• Models how characters help *others* self-advocate</p>
+                <p class="text-slate-600">• Transferable community resource potential</p>
+              </div>
+            </div>
+
+            <!-- Notes & Rationale -->
+            <div>
+              <label for="notes-c1" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Scale 1 Specific Rationale & Notes</label>
+              <textarea id="notes-c1" rows="2" placeholder="Describe the strengths, missed targets, or specific moments in their communication scripting..." class="w-full text-xs rounded-md border-slate-300 border p-2 focus:ring focus:ring-emerald-100 focus:border-emerald-500 outline-none" oninput="saveActiveStudentGrading()"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Criterion 2: Health Comprehensive Sexuality Education -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+          <div class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white p-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="text-[10px] font-extrabold uppercase tracking-widest text-blue-100">Rubric Scale 2</span>
+                <h3 class="text-lg font-bold">Health: Comprehensive Sexuality Education</h3>
+                <p class="text-xs text-blue-500 bg-white inline-block px-1.5 py-0.5 rounded font-semibold mt-0.5">Competency: Students comprehend functional health knowledge</p>
+              </div>
+              <div class="text-right">
+                <div class="text-xs text-blue-100">Currently Awarded:</div>
+                <div class="text-2xl font-black text-white" id="score-badge-c2">N/A</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-5 space-y-4">
+            <!-- Score Selector Slider/Pills -->
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Select Scale Score:</label>
+              <div class="grid grid-cols-5 gap-1 bg-slate-100 p-1 rounded-lg">
+                <button onclick="setScore('c2', 2.0)" id="btn-c2-2.0" class="score-btn py-2 text-xs font-semibold rounded-md transition-all border border-transparent">2.0</button>
+                <button onclick="setScore('c2', 2.5)" id="btn-c2-2.5" class="score-btn py-2 text-xs font-semibold rounded-md transition-all border border-transparent">2.5</button>
+                <button onclick="setScore('c2', 3.0)" id="btn-c2-3.0" class="score-btn py-2 text-xs font-semibold rounded-md transition-all border border-transparent">3.0</button>
+                <button onclick="setScore('c2', 3.5)" id="btn-c2-3.5" class="score-btn py-2 text-xs font-semibold rounded-md transition-all border border-transparent">3.5</button>
+                <button onclick="setScore('c2', 4.0)" id="btn-c2-4.0" class="score-btn py-2 text-xs font-semibold rounded-md transition-all border border-transparent">4.0</button>
+              </div>
+            </div>
+
+            <!-- Rubric Guide Reference Visualizer -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div id="card-c2-2" class="p-3 rounded-lg border border-slate-200 text-xs space-y-1 bg-slate-50 transition-colors">
+                <span class="font-bold text-slate-600 block mb-1 border-b border-slate-200 pb-1">Developing (2.0)</span>
+                <p class="text-slate-500 italic">Basic Identification Only</p>
+                <p class="text-slate-600">• Struggles to link scenario to healthy decision-making</p>
+                <p class="text-slate-600">• Relationship warning signs or digital tracking shown as "no big deal"</p>
+              </div>
+              <div id="card-c2-3" class="p-3 rounded-lg border border-slate-200 text-xs space-y-1 bg-slate-50 transition-colors">
+                <span class="font-bold text-blue-700 block mb-1 border-b border-blue-100 pb-1">Proficient (3.0) Target</span>
+                <p class="text-blue-800 italic font-medium">Value-Based Decisions</p>
+                <p class="text-slate-600">• Addresses authentic Nido HS peers scenarios (phone privacy, Find My boundaries, trust)</p>
+                <p class="text-slate-600">• Promotes caring, values-centered actions</p>
+              </div>
+              <div id="card-c2-4" class="p-3 rounded-lg border border-slate-200 text-xs space-y-1 bg-slate-50 transition-colors">
+                <span class="font-bold text-purple-700 block mb-1 border-b border-purple-100 pb-1">Exemplary (4.0)</span>
+                <p class="text-purple-800 italic font-medium">Systemic & Cultural Context</p>
+                <p class="text-slate-600">• Connects scenario directly to broader relationship trust or safety dynamics</p>
+                <p class="text-slate-600">• Reflects generational or cultural nuances in sexual health attitudes</p>
+              </div>
+            </div>
+
+            <!-- Notes & Rationale -->
+            <div>
+              <label for="notes-c2" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Scale 2 Specific Rationale & Notes</label>
+              <textarea id="notes-c2" rows="2" placeholder="Notes on how accurately and deeply they handled consent, privacy bounds, and relationship values..." class="w-full text-xs rounded-md border-slate-300 border p-2 focus:ring focus:ring-blue-100 focus:border-indigo-500 outline-none" oninput="saveActiveStudentGrading()"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Criterion 3: Technology Creative Communicator -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+          <div class="bg-gradient-to-r from-orange-500 to-amber-600 text-white p-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="text-[10px] font-extrabold uppercase tracking-widest text-orange-100">Rubric Scale 3</span>
+                <h3 class="text-lg font-bold">Technology: Creative Communicator</h3>
+                <p class="text-xs text-orange-500 bg-white inline-block px-1.5 py-0.5 rounded font-semibold mt-0.5">Competency: Choose a platform or tool to craft & convey a message</p>
+              </div>
+              <div class="text-right">
+                <div class="text-xs text-orange-100">Currently Awarded:</div>
+                <div class="text-2xl font-black text-white" id="score-badge-c3">N/A</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-5 space-y-4">
+            <!-- Score Selector Slider/Pills -->
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Select Scale Score:</label>
+              <div class="grid grid-cols-5 gap-1 bg-slate-100 p-1 rounded-lg">
+                <button onclick="setScore('c3', 2.0)" id="btn-c3-2.0" class="score-btn py-2 text-xs font-semibold rounded-md transition-all border border-transparent">2.0</button>
+                <button onclick="setScore('c3', 2.5)" id="btn-c3-2.5" class="score-btn py-2 text-xs font-semibold rounded-md transition-all border border-transparent">2.5</button>
+                <button onclick="setScore('c3', 3.0)" id="btn-c3-3.0" class="score-btn py-2 text-xs font-semibold rounded-md transition-all border border-transparent">3.0</button>
+                <button onclick="setScore('c3', 3.5)" id="btn-c3-3.5" class="score-btn py-2 text-xs font-semibold rounded-md transition-all border border-transparent">3.5</button>
+                <button onclick="setScore('c3', 4.0)" id="btn-c3-4.0" class="score-btn py-2 text-xs font-semibold rounded-md transition-all border border-transparent">4.0</button>
+              </div>
+            </div>
+
+            <!-- Rubric Guide Reference Visualizer -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div id="card-c3-2" class="p-3 rounded-lg border border-slate-200 text-xs space-y-1 bg-slate-50 transition-colors">
+                <span class="font-bold text-slate-600 block mb-1 border-b border-slate-200 pb-1">Developing (2.0)</span>
+                <p class="text-slate-500 italic">Production Pitfalls</p>
+                <p class="text-slate-600">• Vertical (portrait) video, shaky camera, bad audio/lighting</p>
+                <p class="text-slate-600">• Overly long or too short (well outside 0:45-1:00 min constraints)</p>
+              </div>
+              <div id="card-c3-3" class="p-3 rounded-lg border border-slate-200 text-xs space-y-1 bg-slate-50 transition-colors">
+                <span class="font-bold text-orange-700 block mb-1 border-b border-orange-100 pb-1">Proficient (3.0) Target</span>
+                <p class="text-orange-800 italic font-medium">Technical Fundamentals</p>
+                <p class="text-slate-600">• Strictly Landscape orientation, Rule of Thirds camera grid, stable tripod/grip</p>
+                <p class="text-slate-600">• Clean editing, balanced music levels, exact duration (0:45-1:00)</p>
+              </div>
+              <div id="card-c3-4" class="p-3 rounded-lg border border-slate-200 text-xs space-y-1 bg-slate-50 transition-colors">
+                <span class="font-bold text-purple-700 block mb-1 border-b border-purple-100 pb-1">Exemplary (4.0)</span>
+                <p class="text-purple-800 italic font-medium">Cinematic Master</p>
+                <p class="text-slate-600">• Sophisticated timing, overlays, and color pacing (e.g. creative CapCut edits)</p>
+                <p class="text-slate-600">• Clear design identity and voice tailored carefully to Nido peer culture</p>
+              </div>
+            </div>
+
+            <!-- Notes & Rationale -->
+            <div>
+              <label for="notes-c3" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Scale 3 Specific Rationale & Notes</label>
+              <textarea id="notes-c3" rows="2" placeholder="Critique the camera stabilization, lighting levels, editing style, and visual alignment to Rule of Thirds..." class="w-full text-xs rounded-md border-slate-300 border p-2 focus:ring focus:ring-orange-100 focus:border-orange-500 outline-none" oninput="saveActiveStudentGrading()"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Overall Feedback & Automated Rationale Generator -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-4">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+            <div>
+              <h3 class="text-lg font-bold text-slate-800">Overall Assessment & Action Plan</h3>
+              <p class="text-xs text-slate-500">Provide an overall summary or generate a consolidated markdown outline for direct pasting into Canvas.</p>
+            </div>
+            <button onclick="generateAutomatedFeedback()" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-semibold px-3 py-2 rounded-md transition-all border border-indigo-200 flex items-center gap-1.5">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+              Auto-Generate Rationale Draft
+            </button>
+          </div>
+
+          <div>
+            <label for="overall-feedback" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Consolidated Feedback</label>
+            <textarea id="overall-feedback" rows="4" placeholder="Your overall review. Use the Auto-Generator or write custom notes here..." class="w-full text-xs rounded-md border-slate-300 border p-3 focus:ring focus:ring-indigo-100 focus:border-indigo-500 outline-none" oninput="saveActiveStudentGrading()"></textarea>
+          </div>
+
+          <!-- Markdown Export Card -->
+          <div class="bg-slate-50 rounded-lg p-4 border border-slate-200 space-y-3">
+            <div class="flex justify-between items-center">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-slate-600 tracking-wider uppercase">Canvas Clipboard Export (Markdown)</span>
+                <span class="bg-green-100 text-green-800 text-[10px] px-1.5 py-0.5 rounded font-extrabold uppercase tracking-wide">Ready</span>
+              </div>
+              <div class="flex gap-1">
+                <button onclick="copyFeedbackMarkdown()" class="bg-slate-800 hover:bg-slate-950 text-white text-xs font-semibold px-3 py-1.5 rounded transition-all flex items-center gap-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
+                  Copy Raw Text
+                </button>
+                <button onclick="printRubric()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-3 py-1.5 rounded transition-all flex items-center gap-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4" /></svg>
+                  Print Rubric Handout
+                </button>
+              </div>
+            </div>
+            
+            <div class="bg-slate-900 rounded p-3 text-slate-200 text-xs font-mono whitespace-pre-wrap overflow-x-auto max-h-48" id="markdown-preview">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- Danger Zone: Student deletion -->
+          <div class="pt-2 border-t border-slate-100 flex justify-end">
+            <button onclick="deleteActiveStudent()" class="text-rose-600 hover:text-rose-800 text-xs font-medium flex items-center gap-1">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+              Remove Student from Roster
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+  </main>
+
+  <!-- Modal Backdrop: Create Class -->
+  <div id="modal-class" class="fixed inset-0 bg-slate-950/60 z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-sm w-full p-6 space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="text-base font-bold text-slate-800">Create New Class Block</h3>
+        <button onclick="closeClassModal()" class="text-slate-400 hover:text-slate-600">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+        </button>
+      </div>
+      <div>
+        <label for="input-class-name" class="block text-xs font-medium text-slate-700 mb-1">Class Name / Period</label>
+        <input type="text" id="input-class-name" placeholder="e.g. Block A FYS" class="w-full rounded-md border-slate-300 border p-2 text-sm focus:ring outline-none focus:ring-indigo-200 focus:border-indigo-500">
+      </div>
+      <div class="flex justify-end gap-2 text-xs">
+        <button onclick="closeClassModal()" class="bg-slate-100 text-slate-700 border border-slate-200 px-3 py-2 rounded-md hover:bg-slate-200">Cancel</button>
+        <button onclick="submitNewClass()" class="bg-indigo-600 text-white px-3 py-2 rounded-md hover:bg-indigo-700 font-bold">Create Class</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Backdrop: Paste Bulk Roster -->
+  <div id="modal-import" class="fixed inset-0 bg-slate-950/60 z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-lg w-full p-6 space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="text-base font-bold text-slate-800">Bulk Import Student Names</h3>
+          <p class="text-xs text-slate-500">Paste names directly from an Excel/Google Sheet column, or comma/line separated lists.</p>
+        </div>
+        <button onclick="closeImportModal()" class="text-slate-400 hover:text-slate-600">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+        </button>
+      </div>
+      <div>
+        <label for="textarea-bulk-names" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Paste Names Below:</label>
+        <textarea id="textarea-bulk-names" rows="8" placeholder="e.g.&#10;Agustin Silva&#10;Isidora Gonzalez&#10;Matias Contreras&#10;Sophie Dubois" class="w-full text-xs font-mono rounded-md border-slate-300 border p-3 focus:ring outline-none focus:ring-indigo-100"></textarea>
+      </div>
+      <div class="flex items-center justify-between">
+        <span class="text-xs text-slate-500">Each non-empty line will generate a separate grading portfolio.</span>
+        <div class="flex gap-2 text-xs">
+          <button onclick="closeImportModal()" class="bg-slate-100 text-slate-700 border border-slate-200 px-3 py-2 rounded-md hover:bg-slate-200">Cancel</button>
+          <button onclick="submitBulkImport()" class="bg-indigo-600 text-white px-3 py-2 rounded-md hover:bg-indigo-700 font-bold">Import To Block</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Alert Banner Toast System -->
+  <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white text-xs px-4 py-2.5 rounded-lg shadow-lg hidden items-center gap-2 transition-all">
+    <span id="toast-message">Message</span>
+  </div>
+
+  <!-- Invisible Print Sandbox Content Container -->
+  <div id="print-area" class="hidden">
+    <!-- Generated dynamically upon trigger to prevent inline DOM visual clutter -->
+  </div>
+
+  <!-- Main Logic Script Block -->
+  <script>
+    // --- Application State Model ---
+    let appState = {
+      classes: {
+        "FYS Block A (Sample)": [
+          {
+            id: "s-1",
+            name: "Agustin Silva",
+            scores: { c1: 3.0, c2: 3.5, c3: 4.0 },
+            notes: {
+              c1: "Agustin spoke clearly and respected his classmate's right to establish limits on mobile alerts.",
+              c2: "Great integration explaining how the Find My app can cause relationship tension and set digital boundaries.",
+              c3: "Wonderful horizontal framing. The timing in Capcut was precisely 0:54 with solid background volume balance."
+            },
+            overall: ""
+          },
+          {
+            id: "s-2",
+            name: "Sophie Dubois",
+            scores: { c1: null, c2: null, c3: null },
+            notes: { c1: "", c2: "", c3: "" },
+            overall: ""
+          }
+        ]
+      },
+      selectedClass: "FYS Block A (Sample)",
+      selectedStudentId: null
+    };
+
+    // --- Core Rubric Text References ---
+    const RubricGuide = {
+      c1: {
+        title: "Health Interpersonal Communication",
+        competency: "Students demonstrate effective interpersonal communication skills to enhance health.",
+        levels: {
+          "2.0": { label: "Developing (2.0)", criteria: "The wording is vague & passive; terminology listed/mentioned but not modeled in roleplay. Conflict unresolved or made worse." },
+          "3.0": { label: "Proficient (3.0)", criteria: "Assertive communication used. Respectful dialogue modeling safety. Curation Matrix alignment (Promotes caring and informed decisions)." },
+          "4.0": { label: "Exemplary (4.0)", criteria: "In addition to 3.0: High level of nuance & multiple perspectives explored; models peer-to-peer empowerment & self-advocacy skill building." }
+        }
+      },
+      c2: {
+        title: "Health: Comprehensive Sexuality Education",
+        competency: "Students comprehend functional health knowledge to enhance health.",
+        levels: {
+          "2.0": { label: "Developing (2.0)", criteria: "Basic identification of facts only. Struggles to relate scenario to healthy boundary decisions. May treat warning signs lightly." },
+          "3.0": { label: "Proficient (3.0)", criteria: "Value-based analysis of how decisions impact self & others. Addresses realistic, localized Nido high school boundary scenarios." },
+          "4.0": { label: "Exemplary (4.0)", criteria: "In addition to 3.0: Exceptional complexity, connecting specific digital rules to deep interpersonal trust or safety system dynamics." }
+        }
+      },
+      c3: {
+        title: "Technology: Creative Communicator",
+        competency: "Choose a platform or tool to craft and communicate a message.",
+        levels: {
+          "2.0": { label: "Developing (2.0)", criteria: "Production issues (shaky camera, bad audio/lighting or portrait vertical video). Out of the 0:45 - 1:00 time constraints." },
+          "3.0": { label: "Proficient (3.0)", criteria: "Strictly Landscape framing, Stable Camera, Rule of Thirds composition. Clean editing/sound mix, exactly 0:45 to 1:00 duration." },
+          "4.0": { label: "Exemplary (4.0)", criteria: "In addition to 3.0: High level editing creativity (CapCut filters/overlays/pacing), customized perfectly to Nido peer culture." }
+        }
+      }
+    };
+
+    // --- On Window Startup ---
+    window.onload = function() {
+      loadFromStorage();
+      populateClassSelector();
+      renderRoster();
+      updateWorkspaceView();
+    };
+
+    // --- Storage Routines ---
+    function saveToStorage() {
+      localStorage.setItem('fys_psa_gradebook_state', JSON.stringify(appState));
+      const saveStatus = document.getElementById('save-status');
+      saveStatus.classList.remove('opacity-0');
+      saveStatus.innerHTML = `<span class="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse"></span> Auto-saved`;
+    }
+
+    function loadFromStorage() {
+      const stored = localStorage.getItem('fys_psa_gradebook_state');
+      if (stored) {
+        try {
+          appState = JSON.parse(stored);
+        } catch (e) {
+          console.error("Error restoring from localStorage, resetting data model", e);
+        }
+      }
+    }
+
+    // --- Class Management Controllers ---
+    function populateClassSelector() {
+      const selectClass = document.getElementById('select-class');
+      selectClass.innerHTML = '';
+      
+      const classes = Object.keys(appState.classes);
+      if (classes.length === 0) {
+        // Fallback placeholder
+        appState.classes["My First FYS Block"] = [];
+        appState.selectedClass = "My First FYS Block";
+      }
+
+      Object.keys(appState.classes).forEach(className => {
+        const option = document.createElement('option');
+        option.value = className;
+        option.textContent = className;
+        if (className === appState.selectedClass) {
+          option.selected = true;
+        }
+        selectClass.appendChild(option);
+      });
+    }
+
+    function onClassChange() {
+      const selectClass = document.getElementById('select-class');
+      appState.selectedClass = selectClass.value;
+      appState.selectedStudentId = null; // reset selected student
+      renderRoster();
+      updateWorkspaceView();
+      saveToStorage();
+    }
+
+    function openClassModal() {
+      document.getElementById('modal-class').classList.remove('hidden');
+      document.getElementById('input-class-name').focus();
+    }
+
+    function closeClassModal() {
+      document.getElementById('modal-class').classList.add('hidden');
+      document.getElementById('input-class-name').value = '';
+    }
+
+    function submitNewClass() {
+      const nameInput = document.getElementById('input-class-name').value.trim();
+      if (!nameInput) {
+        showToast("Please provide a valid class block name.");
+        return;
+      }
+      if (appState.classes[nameInput]) {
+        showToast("This class block already exists!");
+        return;
+      }
+
+      appState.classes[nameInput] = [];
+      appState.selectedClass = nameInput;
+      appState.selectedStudentId = null;
+      
+      populateClassSelector();
+      renderRoster();
+      updateWorkspaceView();
+      closeClassModal();
+      saveToStorage();
+      showToast(`Class Block "${nameInput}" created.`);
+    }
+
+    function deleteCurrentClass() {
+      const className = appState.selectedClass;
+      if (confirm(`Are you absolutely sure you want to delete the class "${className}" and all student grade records?`)) {
+        delete appState.classes[className];
+        const keys = Object.keys(appState.classes);
+        if (keys.length > 0) {
+          appState.selectedClass = keys[0];
+        } else {
+          appState.classes["My First FYS Block"] = [];
+          appState.selectedClass = "My First FYS Block";
+        }
+        appState.selectedStudentId = null;
+        populateClassSelector();
+        renderRoster();
+        updateWorkspaceView();
+        saveToStorage();
+        showToast("Class block deleted.");
+      }
+    }
+
+    // --- Roster Logic Controllers ---
+    function renderRoster() {
+      const container = document.getElementById('roster-list-container');
+      const searchVal = document.getElementById('roster-search').value.toLowerCase().trim();
+      container.innerHTML = '';
+
+      const students = appState.classes[appState.selectedClass] || [];
+      document.getElementById('roster-count').textContent = `${students.length} Student${students.length === 1 ? '' : 's'} in Block`;
+
+      const filtered = students.filter(student => student.name.toLowerCase().includes(searchVal));
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-8 text-slate-400 text-xs italic">
+            No matching students found
+          </div>
+        `;
+        return;
+      }
+
+      filtered.forEach(student => {
+        // Calculate status and scoring metrics
+        const completed = Object.values(student.scores).filter(s => s !== null).length;
+        const isGraded = completed === 3;
+        
+        let avgStr = "N/A";
+        if (completed > 0) {
+          const sum = Object.values(student.scores).reduce((acc, s) => acc + (s || 0), 0);
+          avgStr = (sum / completed).toFixed(1);
+        }
+
+        const isSelected = student.id === appState.selectedStudentId;
+
+        const div = document.createElement('div');
+        div.className = `p-3 rounded-lg flex items-center justify-between cursor-pointer transition-all border ${
+          isSelected 
+            ? 'bg-indigo-50 border-indigo-200 text-indigo-900 shadow-sm font-medium' 
+            : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-700'
+        }`;
+        div.onclick = () => selectStudent(student.id);
+
+        div.innerHTML = `
+          <div class="flex-1 min-w-0 pr-2">
+            <h4 class="text-xs font-semibold truncate ${isSelected ? 'text-indigo-950 font-bold' : 'text-slate-800'}">${student.name}</h4>
+            <div class="flex items-center gap-2 mt-0.5">
+              <span class="text-[9px] px-1.5 py-0.5 rounded ${
+                isGraded 
+                  ? 'bg-green-100 text-green-800 font-semibold' 
+                  : completed > 0 
+                    ? 'bg-amber-100 text-amber-800' 
+                    : 'bg-slate-100 text-slate-500'
+              }">
+                ${completed}/3 Graded
+              </span>
+            </div>
+          </div>
+          <div class="text-right">
+            <span class="text-xs font-black ${completed > 0 ? 'text-indigo-600' : 'text-slate-400'}">
+              ${avgStr}
+            </span>
+          </div>
+        `;
+
+        container.appendChild(div);
+      });
+    }
+
+    function selectStudent(id) {
+      appState.selectedStudentId = id;
+      renderRoster();
+      updateWorkspaceView();
+    }
+
+    function addSingleStudentPrompt() {
+      const name = prompt("Enter new student's full name:");
+      if (name && name.trim()) {
+        const studentObj = {
+          id: "s-" + Date.now(),
+          name: name.trim(),
+          scores: { c1: null, c2: null, c3: null },
+          notes: { c1: "", c2: "", c3: "" },
+          overall: ""
+        };
+        appState.classes[appState.selectedClass].push(studentObj);
+        appState.selectedStudentId = studentObj.id;
+        
+        renderRoster();
+        updateWorkspaceView();
+        saveToStorage();
+        showToast(`Added ${name.trim()} to Block.`);
+      }
+    }
+
+    function openImportModal() {
+      document.getElementById('modal-import').classList.remove('hidden');
+      document.getElementById('textarea-bulk-names').focus();
+    }
+
+    function closeImportModal() {
+      document.getElementById('modal-import').classList.add('hidden');
+      document.getElementById('textarea-bulk-names').value = '';
+    }
+
+    function submitBulkImport() {
+      const rawText = document.getElementById('textarea-bulk-names').value;
+      const lines = rawText.split('\n');
+      let count = 0;
+
+      lines.forEach(line => {
+        const cleanName = line.trim();
+        if (cleanName) {
+          const studentObj = {
+            id: "s-" + Date.now() + "-" + Math.random().toString(36).substr(2, 4),
+            name: cleanName,
+            scores: { c1: null, c2: null, c3: null },
+            notes: { c1: "", c2: "", c3: "" },
+            overall: ""
+          };
+          appState.classes[appState.selectedClass].push(studentObj);
+          count++;
+        }
+      });
+
+      if (count > 0) {
+        renderRoster();
+        updateWorkspaceView();
+        closeImportModal();
+        saveToStorage();
+        showToast(`Successfully imported ${count} students.`);
+      } else {
+        showToast("No valid student names found to import.");
+      }
+    }
+
+    function clearCurrentRoster() {
+      const className = appState.selectedClass;
+      if (confirm(`Reset and delete all student records for "${className}"?`)) {
+        appState.classes[className] = [];
+        appState.selectedStudentId = null;
+        renderRoster();
+        updateWorkspaceView();
+        saveToStorage();
+        showToast("Roster cleared.");
+      }
+    }
+
+    // --- Interactive Assessment Workspace Controllers ---
+    function updateWorkspaceView() {
+      const emptyState = document.getElementById('workspace-empty-state');
+      const gradingView = document.getElementById('workspace-grading-view');
+
+      if (!appState.selectedStudentId) {
+        emptyState.classList.remove('hidden');
+        gradingView.classList.add('hidden');
+        return;
+      }
+
+      const student = getSelectedStudent();
+      if (!student) {
+        appState.selectedStudentId = null;
+        emptyState.classList.remove('hidden');
+        gradingView.classList.add('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      gradingView.classList.remove('hidden');
+
+      // Update Basic Info badges
+      document.getElementById('active-student-name').textContent = student.name;
+      document.getElementById('badge-active-class').textContent = appState.selectedClass;
+
+      // Render Active Grading details
+      renderCriterionControls('c1', student);
+      renderCriterionControls('c2', student);
+      renderCriterionControls('c3', student);
+
+      // Render Overalls
+      document.getElementById('overall-feedback').value = student.overall || '';
+
+      updateAggregateCalculation(student);
+      generateMarkdownPreview(student);
+    }
+
+    function getSelectedStudent() {
+      const list = appState.classes[appState.selectedClass] || [];
+      return list.find(s => s.id === appState.selectedStudentId);
+    }
+
+    function renderCriterionControls(criterionId, student) {
+      const score = student.scores[criterionId];
+      const notesField = document.getElementById(`notes-${criterionId}`);
+      const scoreBadge = document.getElementById(`score-badge-${criterionId}`);
+
+      // Set Badge Text
+      scoreBadge.textContent = score !== null ? score.toFixed(1) : 'N/A';
+      notesField.value = student.notes[criterionId] || '';
+
+      // Clear button highlight states
+      const possibleScores = [2.0, 2.5, 3.0, 3.5, 4.0];
+      possibleScores.forEach(val => {
+        const btn = document.getElementById(`btn-${criterionId}-${val.toFixed(1)}`);
+        if (btn) {
+          // Reset default classes
+          btn.className = "score-btn py-2 text-xs font-semibold rounded-md transition-all border border-transparent bg-slate-200 text-slate-700 hover:bg-slate-300";
+        }
+      });
+
+      // Highlight target selection
+      if (score !== null) {
+        const activeBtn = document.getElementById(`btn-${criterionId}-${score.toFixed(1)}`);
+        if (activeBtn) {
+          let colorClass = "bg-indigo-600 text-white shadow-sm border-indigo-700 hover:bg-indigo-700";
+          if (criterionId === 'c1') colorClass = "bg-emerald-600 text-white shadow-sm border-emerald-700 hover:bg-emerald-700";
+          if (criterionId === 'c2') colorClass = "bg-indigo-600 text-white shadow-sm border-indigo-700 hover:bg-indigo-700";
+          if (criterionId === 'c3') colorClass = "bg-orange-600 text-white shadow-sm border-orange-700 hover:bg-orange-700";
+          
+          activeBtn.className = `score-btn py-2 text-xs font-bold rounded-md transition-all border ${colorClass}`;
+        }
+      }
+
+      // Live Highlight Rubric Visualized Guides
+      updateRubricVisualCards(criterionId, score);
+    }
+
+    function updateRubricVisualCards(criterionId, score) {
+      // Clear highlight backgrounds on indicator cards
+      const card2 = document.getElementById(`card-${criterionId}-2`);
+      const card3 = document.getElementById(`card-${criterionId}-3`);
+      const card4 = document.getElementById(`card-${criterionId}-4`);
+
+      if (!card2 || !card3 || !card4) return;
+
+      // Base Styles reset
+      card2.className = "p-3 rounded-lg border border-slate-200 text-xs space-y-1 bg-slate-50 transition-colors";
+      card3.className = "p-3 rounded-lg border border-slate-200 text-xs space-y-1 bg-slate-50 transition-colors";
+      card4.className = "p-3 rounded-lg border border-slate-200 text-xs space-y-1 bg-slate-50 transition-colors";
+
+      if (score === null) return;
+
+      if (score <= 2.5) {
+        // Highlight 2.0
+        card2.className = "p-3 rounded-lg border border-rose-300 text-xs space-y-1 bg-rose-50 shadow-sm transition-colors ring-2 ring-rose-200";
+      } else if (score >= 3.0 && score <= 3.5) {
+        // Highlight 3.0
+        const activeTheme = criterionId === 'c3' ? "border-orange-300 bg-orange-50 ring-orange-200" : "border-emerald-300 bg-emerald-50 ring-emerald-200";
+        card3.className = `p-3 rounded-lg border text-xs space-y-1 shadow-sm transition-colors ring-2 ${activeTheme}`;
+      } else if (score === 4.0) {
+        // Highlight 4.0
+        card4.className = "p-3 rounded-lg border border-purple-300 text-xs space-y-1 bg-purple-50 shadow-sm transition-colors ring-2 ring-purple-200";
+      }
+    }
+
+    function setScore(criterionId, val) {
+      const student = getSelectedStudent();
+      if (!student) return;
+
+      student.scores[criterionId] = val;
+      renderCriterionControls(criterionId, student);
+      updateAggregateCalculation(student);
+      generateMarkdownPreview(student);
+      saveToStorage();
+      renderRoster(); // update roster mini score
+    }
+
+    function saveActiveStudentGrading() {
+      const student = getSelectedStudent();
+      if (!student) return;
+
+      student.notes.c1 = document.getElementById('notes-c1').value;
+      student.notes.c2 = document.getElementById('notes-c2').value;
+      student.notes.c3 = document.getElementById('notes-c3').value;
+      student.overall = document.getElementById('overall-feedback').value;
+
+      generateMarkdownPreview(student);
+      saveToStorage();
+    }
+
+    function updateAggregateCalculation(student) {
+      const scoreValues = Object.values(student.scores).filter(s => s !== null);
+      const completed = scoreValues.length;
+
+      document.getElementById('completed-count-badge').textContent = `${completed}/3`;
+      
+      const progressBar = document.getElementById('grading-progress-bar');
+      const progressPercent = (completed / 3) * 100;
+      progressBar.style.width = `${progressPercent}%`;
+
+      const scoreAvgBadge = document.getElementById('workspace-calc-score');
+      const gradedIndicatorBadge = document.getElementById('graded-indicator');
+
+      if (completed > 0) {
+        const sum = scoreValues.reduce((acc, curr) => acc + curr, 0);
+        const average = sum / completed;
+        scoreAvgBadge.textContent = average.toFixed(1);
+      } else {
+        scoreAvgBadge.textContent = "-";
+      }
+
+      if (completed === 3) {
+        gradedIndicatorBadge.className = "text-xs font-semibold px-2 py-0.5 rounded-md tracking-wider bg-green-100 text-green-800";
+        gradedIndicatorBadge.textContent = "All scales Complete";
+      } else if (completed > 0) {
+        gradedIndicatorBadge.className = "text-xs font-semibold px-2 py-0.5 rounded-md tracking-wider bg-amber-100 text-amber-800";
+        gradedIndicatorBadge.textContent = "In Progress";
+      } else {
+        gradedIndicatorBadge.className = "text-xs font-semibold px-2 py-0.5 rounded-md tracking-wider bg-slate-100 text-slate-500";
+        gradedIndicatorBadge.textContent = "Unstarted";
+      }
+    }
+
+    function deleteActiveStudent() {
+      const student = getSelectedStudent();
+      if (!student) return;
+
+      if (confirm(`Remove "${student.name}" from class roster? This cannot be undone.`)) {
+        const list = appState.classes[appState.selectedClass];
+        appState.classes[appState.selectedClass] = list.filter(s => s.id !== student.id);
+        appState.selectedStudentId = null;
+        
+        renderRoster();
+        updateWorkspaceView();
+        saveToStorage();
+        showToast("Student deleted.");
+      }
+    }
+
+    // --- Automated Generative Comments Builder ---
+    function generateAutomatedFeedback() {
+      const student = getSelectedStudent();
+      if (!student) return;
+
+      let generatedText = `### FYS PSA Assessment: Final feedback for ${student.name}\n\n`;
+
+      // C1 Review
+      const c1Val = student.scores.c1;
+      const c1Notes = student.notes.c1.trim();
+      if (c1Val !== null) {
+        generatedText += `* **Health Communication (Score: ${c1Val.toFixed(1)}):** `;
+        if (c1Val >= 3.5) {
+          generatedText += `Superb demonstration of assertive and constructive refusal and conflict resolution modeling. `;
+        } else if (c1Val >= 3.0) {
+          generatedText += `Consistently models assertive communication strategies and respectful boundaries. `;
+        } else {
+          generatedText += `The modeled interaction was somewhat passive or incomplete. Work to focus on clearer messaging. `;
+        }
+        if (c1Notes) generatedText += `${c1Notes} `;
+        generatedText += `\n`;
+      }
+
+      // C2 Review
+      const c2Val = student.scores.c2;
+      const c2Notes = student.notes.c2.trim();
+      if (c2Val !== null) {
+        generatedText += `* **Sexual Health & Consent Knowledge (Score: ${c2Val.toFixed(1)}):** `;
+        if (c2Val >= 3.5) {
+          generatedText += `Deep integration of societal values and systemic relationship context. Great work analyzing the local high school environment. `;
+        } else if (c2Val >= 3.0) {
+          generatedText += `Successfully addresses real-world, localized boundaries and promotes healthy sexual self-determination/decisions. `;
+        } else {
+          generatedText += `Work to deepen the connection between personal boundaries and general relationship health values. `;
+        }
+        if (c2Notes) generatedText += `${c2Notes} `;
+        generatedText += `\n`;
+      }
+
+      // C3 Review
+      const c3Val = student.scores.c3;
+      const c3Notes = student.notes.c3.trim();
+      if (c3Val !== null) {
+        generatedText += `* **Creative Communicator Tech Skill (Score: ${c3Val.toFixed(1)}):** `;
+        if (c3Val >= 3.5) {
+          generatedText += `High cinematic quality, creative editing, clean sound mix levels, and precise horizontal rule-of-thirds composition. `;
+        } else if (c3Val >= 3.0) {
+          generatedText += `Strong application of foundational camera stabilization, landscape framing, and editing parameters (pacing 0:45-1:00). `;
+        } else {
+          generatedText += `Ensure framing remains landscape and use stabilized tripods or steady holds to reduce shake. `;
+        }
+        if (c3Notes) generatedText += `${c3Notes} `;
+        generatedText += `\n`;
+      }
+
+      generatedText += `\n**Next Action Steps:** Continue practicing active, direct peer-to-peer modeling, and refine technical pacing during post-production editing!`;
+
+      document.getElementById('overall-feedback').value = generatedText;
+      student.overall = generatedText;
+      
+      generateMarkdownPreview(student);
+      saveToStorage();
+      showToast("Draft generated. Review and refine.");
+    }
+
+    // --- Markdown Generation System ---
+    function generateMarkdownPreview(student) {
+      if (!student) return;
+
+      const scoreValues = Object.values(student.scores).filter(s => s !== null);
+      let avgStr = "N/A";
+      if (scoreValues.length > 0) {
+        const sum = scoreValues.reduce((acc, curr) => acc + curr, 0);
+        avgStr = (sum / scoreValues.length).toFixed(1);
+      }
+
+      const c1Score = student.scores.c1 !== null ? student.scores.c1.toFixed(1) : "N/A";
+      const c2Score = student.scores.c2 !== null ? student.scores.c2.toFixed(1) : "N/A";
+      const c3Score = student.scores.c3 !== null ? student.scores.c3.toFixed(1) : "N/A";
+
+      const markdown = `## FYS PSA Project Assessment: ${student.name}
+**Block:** ${appState.selectedClass}
+**Overall Calculated Score (Average):** **${avgStr}**
+
+---
+
+### Scale 1: Health Interpersonal Communication
+* **Score Awarded:** **${c1Score} / 4.0**
+* **Teacher Commentary & Notes:**
+  _${student.notes.c1 || "No specific feedback noted."}_
+
+### Scale 2: Comprehensive Sexuality Education (CSE)
+* **Score Awarded:** **${c2Score} / 4.0**
+* **Teacher Commentary & Notes:**
+  _${student.notes.c2 || "No specific feedback noted."}_
+
+### Scale 3: Technology Creative Communicator
+* **Score Awarded:** **${c3Score} / 4.0**
+* **Teacher Commentary & Notes:**
+  _${student.notes.c3 || "No specific feedback noted."}_
+
+---
+
+### Overall Assessment Review & Target Action Steps
+${student.overall || "No overall notes generated yet."}`;
+
+      document.getElementById('markdown-preview').textContent = markdown;
+    }
+
+    // --- Clipboard Controller (Utilizing document.execCommand fallback as directed) ---
+    function copyFeedbackMarkdown() {
+      const text = document.getElementById('markdown-preview').textContent;
+      
+      // Hidden Textarea Fallback Mechanism
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed'; // Prevents scrolling to bottom
+      document.body.appendChild(textarea);
+      textarea.select();
+      
+      try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+          showToast("Copied Markdown Feedback successfully!");
+        } else {
+          showToast("Failed to copy. Try selecting manually.");
+        }
+      } catch (err) {
+        showToast("Error copying feedback to clipboard.");
+      }
+      
+      document.body.removeChild(textarea);
+    }
+
+    // --- Toast / Message Alert System ---
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      const toastMessage = document.getElementById('toast-message');
+      
+      toastMessage.textContent = msg;
+      toast.classList.remove('hidden');
+      toast.classList.add('flex');
+      
+      setTimeout(() => {
+        toast.classList.add('hidden');
+        toast.classList.remove('flex');
+      }, 3000);
+    }
+
+    // --- Print Routine & Layout Generator ---
+    function printRubric() {
+      const student = getSelectedStudent();
+      if (!student) return;
+
+      const scoreValues = Object.values(student.scores).filter(s => s !== null);
+      const avgStr = scoreValues.length > 0 
+        ? (scoreValues.reduce((acc, curr) => acc + curr, 0) / scoreValues.length).toFixed(1) 
+        : "N/A";
+
+      const printContainer = document.getElementById('print-area');
+      
+      printContainer.innerHTML = `
+        <div class="p-8 space-y-6 text-slate-900 bg-white">
+          <div class="border-b-2 border-indigo-900 pb-4 flex justify-between items-end">
+            <div>
+              <h1 class="text-3xl font-extrabold text-indigo-900">PSA Assessment Report</h1>
+              <p class="text-xs font-semibold text-slate-500 uppercase tracking-widest mt-1">First Year Seminar: Communication & Sexuality Ed</p>
+            </div>
+            <div class="text-right">
+              <span class="text-xs font-bold text-slate-500 block">Overall Score</span>
+              <span class="text-4xl font-black text-indigo-700">${avgStr}</span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4 text-xs bg-slate-100 p-3 rounded-lg">
+            <div><strong>Student:</strong> ${student.name}</div>
+            <div><strong>Date Assessed:</strong> ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
+            <div><strong>Block:</strong> ${appState.selectedClass}</div>
+            <div><strong>Assessment Target:</strong> High School Communication & Consent PSA Video (0:45-1:00 min)</div>
+          </div>
+
+          <div class="space-y-4">
+            <!-- Criterion 1 -->
+            <div class="border border-slate-300 rounded p-4 space-y-2">
+              <div class="flex justify-between items-center bg-slate-50 p-2 border-b border-slate-200">
+                <span class="font-bold text-slate-800 text-sm">Scale 1: Interpersonal Communication</span>
+                <span class="font-black text-slate-900">Score: ${student.scores.c1 !== null ? student.scores.c1.toFixed(1) : "N/A"} / 4.0</span>
+              </div>
+              <p class="text-xs text-slate-500 italic">Core Standard: Students demonstrate effective interpersonal communication skills to enhance health.</p>
+              <p class="text-xs"><strong>Rubric Standard Match:</strong> ${getRubricDescriptorText('c1', student.scores.c1)}</p>
+              <div class="bg-slate-50 p-2.5 rounded text-xs">
+                <strong>Specific Notes/Rationale:</strong><br>
+                ${student.notes.c1 || "No specific feedback provided for this scale."}
+              </div>
+            </div>
+
+            <!-- Criterion 2 -->
+            <div class="border border-slate-300 rounded p-4 space-y-2">
+              <div class="flex justify-between items-center bg-slate-50 p-2 border-b border-slate-200">
+                <span class="font-bold text-slate-800 text-sm">Scale 2: Comprehensive Sexuality Education</span>
+                <span class="font-black text-slate-900">Score: ${student.scores.c2 !== null ? student.scores.c2.toFixed(1) : "N/A"} / 4.0</span>
+              </div>
+              <p class="text-xs text-slate-500 italic">Core Standard: Students comprehend functional health knowledge to enhance health.</p>
+              <p class="text-xs"><strong>Rubric Standard Match:</strong> ${getRubricDescriptorText('c2', student.scores.c2)}</p>
+              <div class="bg-slate-50 p-2.5 rounded text-xs">
+                <strong>Specific Notes/Rationale:</strong><br>
+                ${student.notes.c2 || "No specific feedback provided for this scale."}
+              </div>
+            </div>
+
+            <!-- Criterion 3 -->
+            <div class="border border-slate-300 rounded p-4 space-y-2">
+              <div class="flex justify-between items-center bg-slate-50 p-2 border-b border-slate-200">
+                <span class="font-bold text-slate-800 text-sm">Scale 3: Technology Creative Communicator</span>
+                <span class="font-black text-slate-900">Score: ${student.scores.c3 !== null ? student.scores.c3.toFixed(1) : "N/A"} / 4.0</span>
+              </div>
+              <p class="text-xs text-slate-500 italic">Core Standard: Choose a platform or tool to craft and communicate a message.</p>
+              <p class="text-xs"><strong>Rubric Standard Match:</strong> ${getRubricDescriptorText('c3', student.scores.c3)}</p>
+              <div class="bg-slate-50 p-2.5 rounded text-xs">
+                <strong>Specific Notes/Rationale:</strong><br>
+                ${student.notes.c3 || "No specific feedback provided for this scale."}
+              </div>
+            </div>
+          </div>
+
+          <div class="border-t border-slate-300 pt-4 mt-6">
+            <h4 class="font-bold text-sm text-slate-800">Overall Assessment & Rationale Plan</h4>
+            <p class="text-xs text-slate-700 whitespace-pre-wrap mt-1">${student.overall || "No overall assessment written."}</p>
+          </div>
+        </div>
+      `;
+
+      // Trigger standard print dialog
+      window.print();
+    }
+
+    function getRubricDescriptorText(criterionId, score) {
+      if (score === null) return "No score awarded yet.";
+      if (score <= 2.5) return RubricGuide[criterionId].levels["2.0"].criteria;
+      if (score >= 3.0 && score <= 3.5) return RubricGuide[criterionId].levels["3.0"].criteria;
+      if (score === 4.0) return RubricGuide[criterionId].levels["4.0"].criteria;
+      return "Score awarded falls between default grading steps.";
+    }
+
+    // --- JSON Backup Export ---
+    document.getElementById('btn-export-all').onclick = function() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `fys_psa_gradebook_${appState.selectedClass.replace(/\s+/g, '_')}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showToast("Class Database file exported.");
+    };
+
+    function triggerJSONImport() {
+      document.getElementById('file-import').click();
+    }
+
+    function importClassJSON(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const imported = JSON.parse(e.target.result);
+          if (imported.classes && imported.selectedClass) {
+            appState = imported;
+            populateClassSelector();
+            renderRoster();
+            updateWorkspaceView();
+            saveToStorage();
+            showToast("Database file loaded successfully.");
+          } else {
+            showToast("Invalid data structure. Could not parse database.");
+          }
+        } catch (err) {
+          showToast("Error processing JSON file.");
+        }
+      };
+      reader.readAsText(file);
+    }
+  </script>
+</body>
+</html>
