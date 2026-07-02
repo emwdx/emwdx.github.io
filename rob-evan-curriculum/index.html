@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notes</title>
+<style>
+  :root{
+    --bg:#ffffff;
+    --bg-sidebar:#fafafa;
+    --bg-hover:#f0f0f0;
+    --bg-code:#f5f5f5;
+    --border:#e4e4e4;
+    --text:#1f1f1f;
+    --text-muted:#6b6b6b;
+    --text-faint:#9a9a9a;
+    --accent:#3454d1;
+    --accent-soft:#eef1fc;
+    --broken:#b3532c;
+    --broken-soft:#fbf0ea;
+  }
+  html[data-theme="dark"]{
+    --bg:#191919;
+    --bg-sidebar:#151515;
+    --bg-hover:#242424;
+    --bg-code:#222222;
+    --border:#2c2c2c;
+    --text:#e7e7e7;
+    --text-muted:#9a9a9a;
+    --text-faint:#6e6e6e;
+    --accent:#7c9cff;
+    --accent-soft:#1e2436;
+    --broken:#e0895f;
+    --broken-soft:#2c211b;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;height:100%}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    font-size:15.5px;
+    line-height:1.65;
+  }
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  header.top{
+    height:52px;display:flex;align-items:center;gap:12px;
+    padding:0 14px;border-bottom:1px solid var(--border);
+    background:var(--bg);position:sticky;top:0;z-index:20;
+  }
+  header.top .app-name{font-weight:700;font-size:14.5px;white-space:nowrap;letter-spacing:.2px}
+  header.top .app-name span{color:var(--text-faint);font-weight:400}
+  #sidebar-toggle{
+    display:none;background:transparent;border:1px solid var(--border);color:var(--text);
+    width:30px;height:30px;border-radius:6px;cursor:pointer;font-size:15px;
+  }
+  #search{
+    flex:1;max-width:360px;background:var(--bg-sidebar);border:1px solid var(--border);
+    color:var(--text);padding:7px 11px;border-radius:7px;font-size:13.5px;outline:none;
+  }
+  #search:focus{border-color:var(--accent)}
+  #theme-toggle{
+    margin-left:auto;background:transparent;border:1px solid var(--border);color:var(--text);
+    width:30px;height:30px;border-radius:6px;cursor:pointer;font-size:14px;flex-shrink:0;
+  }
+  #theme-toggle:hover, #sidebar-toggle:hover{background:var(--bg-hover)}
+
+  .layout{display:flex;min-height:calc(100vh - 52px)}
+
+  aside.sidebar{
+    width:270px;flex-shrink:0;border-right:1px solid var(--border);
+    background:var(--bg-sidebar);padding:14px 8px 40px;
+    overflow-y:auto;max-height:calc(100vh - 52px);position:sticky;top:52px;
+  }
+  aside.sidebar .group{margin-bottom:2px}
+  aside.sidebar summary{
+    cursor:pointer;padding:6px 10px;font-size:11.5px;font-weight:700;
+    text-transform:uppercase;letter-spacing:.6px;color:var(--text-muted);
+    list-style:none;display:flex;align-items:center;gap:6px;border-radius:6px;
+  }
+  aside.sidebar summary::-webkit-details-marker{display:none}
+  aside.sidebar summary:hover{background:var(--bg-hover);color:var(--text)}
+  aside.sidebar summary:before{content:"▸";display:inline-block;transition:transform .15s;font-size:10px}
+  aside.sidebar details[open]>summary:before{transform:rotate(90deg)}
+  aside.sidebar .subgroup{margin-left:10px}
+  aside.sidebar .subgroup summary{font-size:11px;text-transform:none;font-weight:600}
+  ul.filelist{list-style:none;margin:0;padding:0}
+  ul.filelist li a{
+    display:block;padding:6px 10px 6px 22px;border-radius:6px;color:var(--text);
+    font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  ul.filelist li a:hover{background:var(--bg-hover);text-decoration:none}
+  ul.filelist li a.active{background:var(--accent-soft);color:var(--accent);font-weight:600}
+  li.no-match{display:none}
+
+  main.content{flex:1;min-width:0;padding:38px 26px 90px;overflow-y:auto}
+  .content-inner{max-width:720px;margin:0 auto}
+
+  .breadcrumb{font-size:12.5px;color:var(--text-faint);margin-bottom:16px}
+  .breadcrumb a{color:var(--text-faint)}
+  .breadcrumb a:hover{color:var(--accent)}
+
+  .meta-box{
+    border:1px solid var(--border);border-radius:9px;padding:12px 16px;
+    margin-bottom:22px;background:var(--bg-sidebar);font-size:13px;
+  }
+  .meta-row{display:flex;gap:8px;padding:3px 0;align-items:baseline}
+  .meta-row .k{color:var(--text-muted);font-weight:600;flex-shrink:0;min-width:82px;text-transform:capitalize}
+  .meta-row .v{color:var(--text)}
+  .meta-row .v em{color:var(--text-muted)}
+  .chip{
+    display:inline-block;background:var(--accent-soft);color:var(--accent);
+    padding:1px 9px;border-radius:999px;font-size:11.5px;margin:2px 4px 2px 0;
+  }
+
+  article h1{font-size:26px;margin:0 0 18px;line-height:1.3}
+  article h2{font-size:19px;margin:34px 0 10px;padding-top:6px;border-top:1px solid var(--border)}
+  article h1 + h2{border-top:none;padding-top:0;margin-top:22px}
+  article h3{font-size:15.5px;margin:22px 0 8px}
+  article h4{font-size:13.5px;margin:18px 0 6px;text-transform:uppercase;letter-spacing:.4px;color:var(--text-muted)}
+  article p{margin:0 0 14px}
+  article ul,article ol{margin:0 0 14px;padding-left:22px}
+  article li{margin:4px 0}
+  article li>ul,article li>ol{margin-top:4px;margin-bottom:4px}
+  article blockquote{
+    margin:0 0 14px;padding:2px 16px;border-left:3px solid var(--border);
+    color:var(--text-muted);font-style:italic;
+  }
+  article hr{border:none;border-top:1px solid var(--border);margin:26px 0}
+  article code{
+    background:var(--bg-code);border:1px solid var(--border);border-radius:4px;
+    padding:1px 5px;font-size:.9em;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  article table{border-collapse:collapse;width:100%;margin:0 0 18px;font-size:13.5px}
+  article th,article td{border:1px solid var(--border);padding:7px 10px;text-align:left;vertical-align:top}
+  article th{background:var(--bg-sidebar);font-weight:700}
+  article strong{font-weight:700}
+  .wikilink{border-bottom:1px solid var(--accent-soft)}
+  .wikilink.broken{color:var(--broken);background:var(--broken-soft);border-bottom:1px dashed var(--broken);
+    padding:0 3px;border-radius:3px;cursor:default}
+
+  .backlinks{margin-top:44px;padding-top:18px;border-top:1px solid var(--border)}
+  .backlinks h4{margin:0 0 10px}
+  .backlinks ul{list-style:none;margin:0;padding:0}
+  .backlinks li{margin:5px 0;font-size:13.5px}
+  .backlinks .empty{color:var(--text-faint);font-size:13px}
+
+  .home-stats{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0 28px}
+  .stat{border:1px solid var(--border);border-radius:9px;padding:12px 16px;background:var(--bg-sidebar);min-width:100px}
+  .stat .num{font-size:22px;font-weight:700}
+  .stat .lab{font-size:11.5px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.4px}
+
+  #source-toggle{
+    display:inline-block;font-size:12px;color:var(--text-muted);border:1px solid var(--border);
+    padding:4px 10px;border-radius:6px;cursor:pointer;margin-bottom:20px;background:var(--bg);
+  }
+  #source-toggle:hover{background:var(--bg-hover)}
+  pre.source{
+    background:var(--bg-code);border:1px solid var(--border);border-radius:8px;padding:14px 16px;
+    overflow-x:auto;font-size:12.5px;line-height:1.55;white-space:pre-wrap;word-wrap:break-word;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+
+  @media (max-width: 780px){
+    #sidebar-toggle{display:inline-block}
+    aside.sidebar{
+      position:fixed;left:0;top:52px;bottom:0;z-index:15;
+      transform:translateX(-100%);transition:transform .2s;box-shadow:2px 0 12px rgba(0,0,0,.15);
+    }
+    aside.sidebar.open{transform:none}
+    main.content{padding:26px 18px 80px}
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <button id="sidebar-toggle" title="Toggle file list">≡</button>
+  <div class="app-name">Notes <span>· curriculum source files</span></div>
+  <input id="search" type="text" placeholder="Filter files…" autocomplete="off">
+  <button id="theme-toggle" title="Toggle light/dark">◐</button>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="content"><div class="content-inner" id="content"></div></main>
+</div>
+
+<script id="md-data" type="application/json">{"artifacts/ai-implementation-debate.md":"---\ntitle: The AI Implementation Debate: Tool or Threat?\ntype: Discussion Protocol\ndescription: A structured discussion framework to explore the tension between AI as a tool for creativity and AI as a source of cognitive offloading.\ntags: [discussion, ai, ethics, education]\n---\n\n# The AI Implementation Debate: Tool or Threat?\n\n## Overview\nAs Artificial Intelligence becomes integrated into classrooms, educators and students face a fundamental tension: Is AI a tool that enhances human problem-solving, or is it a mechanism for \"cognitive offloading\" that diminishes critical thinking? This protocol is designed to help you navigate this nuance through structured debate.\n\n## The Core Tension\n*   **The \"Problem-Solving\" Perspective:** AI allows students to refine answers, hone their thinking, build new ideas, and create complex projects that were previously impossible.\n*   **The \"Cognitive Offloading\" Perspective:** AI may lead to social and cognitive harms by replacing the mental effort required for deep learning and critical thought.\n\n## Discussion Roles\nTo ensure a productive conversation, assign students to the following roles:\n\n1.  **The Innovator:** Argues from the perspective of AI as a creative partner. Focus on how AI can be used to \"build\" and \"refine\" rather than just \"replace.\"\n2.  **The Skeptic:** Argues from the perspective of cognitive preservation. Focus on the risks of over-reliance, the loss of foundational skills, and the potential for social/cognitive harm.\n3.  **The Researcher (Mediator):** Focuses on the \"nuance.\" Their job is to move the conversation away from \"all or nothing\" stances and toward what the current (often inconclusive) research actually says.\n\n## Discussion Prompts\n\n### Phase 1: Defining the Boundary\n*   Where is the line between \"using a tool to enhance thinking\" and \"using a tool to replace thinking\"?\n*   Can you provide an example of a task where AI is clearly a \"problem-solving tool\"?\n*   Can you provide an example of a task where AI is clearly \"cognitive offloading\"?\n\n### Phase 2: The Impact of Sentiment\n*   If a majority of people in a community (like a school faculty) are \"100% anti-AI,\" how does that affect the ability to use the technology effectively?\n*   How does \"opinion-based\" policy differ from \"research-based\" policy when implementing new technology?\n\n### Phase 3: Finding the Nuance\n*   The current research suggests there is \"no agreement\" on the impact of AI. How should we make decisions in an environment of uncertainty?\n*   How can we design educational experiences that embrace the \"pioneer\" spirit of using new tech while still protecting the cognitive development of the student?\n\n---\n\n---\ntitle: The AI Tension: Tool vs. Distraction\ntype: Discussion Protocol\ndescription: A structured debate framework for discussing the ethical and functional implications of AI integration in educational and professional tools.\ntags: [ai, ethics, discussion, pedagogy]\n---\n\n# The AI Tension: Tool vs. Distraction\n\n## Introduction\nThe integration of AI into workflows is rarely viewed the same way by all stakeholders. What one person sees as a \"productivity booster,\" another sees as a \"distraction\" or a \"threat to integrity.\" This protocol uses two case studies from the transcript to explore this tension.\n\n## Case Study 1: The \"Focus\" App\n**The Scenario:** A developer built a writing app that only works when Wi-Fi is turned off. \n* **The Entrepreneurship Perspective:** They rejected it because they need access to their digital tools to work efficiently.\n* **The English Department Perspective:** They loved it because it forces deep work and prevents academic dishonesty.\n\n**Discussion Prompts:**\n1. Is \"forced disconnection\" a valid product feature, or is it a failure to understand the user's workflow?\n2. Where is the line between a tool that *supports* focus and a tool that *restricts* freedom?\n\n## Case Study 2: The \"AI Tagging\" Feature\n**The Scenario:** To save organizers time, an app uses AI to read a presenter's session description and automatically suggest \"tags\" (categories). The presenter then simply clicks \"Approve\" or \"Edit.\"\n* **The Benefit:** Massive reduction in administrative workload for organizers.\n* **The Risk:** The presenter loses a layer of manual control, and the \"human touch\" in curation is replaced by an algorithm.\n\n**Discussion Prompts:**\n1. Does adding an \"extra step\" (the approval process) for the presenter negate the benefit of the AI?\n2. In a professional setting, when is it appropriate to let AI \"suggest\" and when should it be \"autonomous\"?\n\n## Debate Format\n* **Divide into two groups:** The \"Efficiency Advocates\" (focusing on speed and automation) and the \"Integrity/Control Advocates\" (focusing on human agency and deep work).\n* **Task:** Argue for or against the implementation of the \"AI Tagging\" feature based on your assigned perspective.\n\n---","artifacts/ai-nuance-analysis.md":"---\ntitle: The Nuance of AI: Research vs. Sentiment\ntype: Case Study Analysis\ndescription: An analysis task exploring the tension between stakeholder sentiment and emerging research regarding AI in schools.\ntags: [case-study, research, ai, policy]\n---\n\n# The Nuance of AI: Research vs. Sentiment\n\n## Scenario\nA school administrator is attempting to navigate the integration of AI in the classroom. During a professional development meeting, a faculty survey is conducted to gauge teacher sentiment. The results show a significant bias: out of 14 respondents, 12 are \"100% anti-AI,\" citing concerns about cheating and the loss of critical thinking skills.\n\nSimultaneously, the administrator is reviewing the latest academic research. The research is highly complex and inconclusive; some studies suggest AI can increase productivity and idea generation, while others suggest it may impact how the brain processes tasks. There is no scientific consensus, and some meta-analyses have even been retracted due to a lack of evidence.\n\nThe administrator is caught between the vocal frustrations of the faculty and the complex, shifting landscape of scientific research.\n\n## Analysis Tasks\n\n### 1. Identifying Bias\nIn the scenario above, the survey received 14 responses out of 50 colleagues. \n*   What are the potential implications of this response rate?\n*   Why might the results be skewed toward \"100% anti-AI\" sentiment?\n*   How might this \"vocal minority\" affect the school's ability to develop a balanced AI policy?\n\n### 2. Evaluating Evidence\nThe administrator is looking at research that is \"wishy-washy\" (lacking clear, consistent evidence) and even includes retracted studies.\n*   Why is it dangerous to base school-wide technology policies solely on \"opinion\" or \"sentiment\"?\n*   Why is it equally dangerous to base policies solely on \"inconclusive research\"?\n*   How should an administrator act when the \"latest agreement is that there's no agreement\"?\n\n### 3. Proposing a Nuanced Approach\nThe goal is to move away from \"all or nothing\" thinking. \n*   **Task:** Propose a \"Nuanced Policy Framework\" for this school. Instead of a \"Yes\" or \"No\" on AI, what specific guidelines could the school implement to allow for \"problem-solving\" while mitigating \"cognitive offloading\"?\n*   **Consider:** How would you address the concerns of the \"anti-AI\" faculty while still allowing \"pioneering\" students to use the tools?","artifacts/ai-pedagogy-discussion-protocol.md":"---\ntitle: The AI Paradox: Cognitive Offloading vs. Creative Augmentation\ntype: Discussion Protocol\ndescription: A structured discussion guide for exploring the dual impact of AI in educational settings.\ntags: [ai, education, ethics, discussion, pedagogy]\n---\n# The AI Paradox: Cognitive Offloading vs. Creative Augmentation\n\n## Overview\nThe integration of Artificial Intelligence in education has created a profound tension among educators. On one side, there is a fear of \"cognitive offloading\"—the idea that AI will replace critical thinking and lead to academic dishonesty. On the other side, there is the observation of students using AI as a powerful tool for problem-solving, ideation, and creative expression.\n\nThis protocol is designed to help students and educators navigate this \"shaky ground\" by exploring the nuance between these two perspectives.\n\n## The Two Perspectives\n\n### Perspective A: The Risk of Cognitive Offloading\n* **Core Concern:** AI as a tool for cheating or a way to bypass the \"struggle\" of learning.\n* **Key Argument:** Over-reliance on AI may diminish a student's ability to think critically, research independently, and develop foundational cognitive skills.\n* **Focus:** The social and cognitive harms of automated thinking.\n\n### Perspective B: The Opportunity for Creative Augmentation\n* **Core Observation:** AI as a partner in the creative process.\n* **Key Argument:** AI can help students refine answers, hone their thinking, brainstorm complex ideas, and build things that were previously impossible.\n* **Focus:** The potential for AI to act as a \"force multiplier\" for human intelligence and problem-solving.\n\n## Discussion Protocol\n\n### Phase 1: Individual Reflection\nBefore joining the group, take five minutes to consider the following:\n1. Can you identify a time when a tool (like a calculator or a search engine) changed how you learned? Was it a \"shortcut\" or an \"augmentation\"?\n2. Where is the line between \"using a tool to help you think\" and \"using a tool to think *for* you\"?\n\n### Phase 2: Structured Debate\nDivide into two groups. One group will argue the \"Risks/Offloading\" perspective, and the other will argue the \"Opportunities/Augmentation\" perspective. \n\n**Discussion Prompts:**\n* **The \"Struggle\" Factor:** If learning requires a certain level of \"productive struggle,\" does AI remove that struggle entirely, or does it just change the nature of the struggle?\n* **The Definition of Skill:** If a student uses AI to generate a project outline, is the \"skill\" being moved from \"writing\" to \"prompt engineering/curation\"? Is that a valid skill?\n* **The Evidence Gap:** How can educators distinguish between a student using AI to bypass learning and a student using AI to deepen their understanding?\n\n### Phase 3: Synthesis (The Nuance)\nAs a group, attempt to find the \"middle ground.\" \n* **Goal:** Develop a set of \"Best Practices\" for using AI that maximizes **augmentation** while minimizing **offloading**.\n* **Output:** Create a list of three \"Golden Rules\" for using AI in a classroom setting.","artifacts/feature-ideation-worksheet.md":"---\ntitle: Feature Ideation & UX Refinement\ntype: Planning Template\ndescription: A template for transforming raw brainstorming notes into structured, user-centric product features.\ntags: [product-design, ideation, ux, planning]\n---\n\n# Feature Ideation & UX Refinement\n\n## Overview\nRaw brainstorming often results in \"feature soup\"—a list of ideas without context or structure. To move from a conversation to a product roadmap, we must transform raw ideas into structured features that address specific user needs.\n\n## Task: From Brainstorming to Product Requirements\nBelow are raw notes extracted from a brainstorming session regarding a new conference app. Your task is to refine these into a **Feature Specification Document**.\n\n### Raw Brainstorming Notes:\n* *\"Netflix-style curation (more like this).\"*\n* *\"A toggle for visibility (do you want to be seen in the room or not?).\"*\n* *\"AI-suggested tags for presenters to approve.\"*\n* *\"Visualizing schedule overlaps/calendar styles.\"*\n* *\"Spontaneous meetups via discussion posts.\"*\n* *\"Plan B/Backup sessions.\"*\n\n## Refinement Template\n\nUse the table below to transform the raw notes into actionable product features.\n\n| Raw Idea | Target User | Problem it Solves | Feature Description (The \"How\") |\n| :--- | :--- | :--- | :--- |\n| *Example: AI Tagging* | *Presenter/Organizer* | *Manual data entry is slow and error-prone.* | *AI reads description $\\rightarrow$ suggests tags $\\rightarrow$ user clicks 'Approve'.* |\n| | | | |\n| | | | |\n| | | | |\n| | | | |\n\n## UX Challenge: The \"Decision Overload\" Problem\nOne of the primary concerns mentioned in the transcript is **\"Decision Overload.\"**\n\n1. **Identify:** Look at your refined features above. Which ones help *reduce* decision overload, and which ones might *increase* it?\n2. **Design:** Choose one feature from your table. Describe how the user interface (UI) should look to ensure the user feels \"guided\" rather than \"overwhelmed.\" (e.g., Use of whitespace, progressive disclosure, or simplified menus).","artifacts/innovation-complexity-case-study.md":"---\ntitle: The Hidden Complexity of Innovation\ntype: Case Study\ndescription: An analysis of the \"Square vs. Amazon\" scenario to understand the depth of original product development versus imitation.\ntags: [business, product-design, innovation, case-study]\n---\n# The Hidden Complexity of Innovation\n\n## Overview\nIn the world of product development, there is a significant difference between creating a solution from scratch and attempting to replicate a successful competitor. This case study explores the \"unseen\" work required to build a successful product and why imitation often fails to capture the essence of innovation.\n\n## The Scenario: Square vs. Amazon\nConsider the story of the payment processing company, Square. As Square gained significant market share, a massive competitor—Amazon—attempted to enter the same space with a similar product. \n\nDespite Amazon's vast resources, they struggled to replicate the success of Square. In a strategic move, Square actually sent their own devices to Amazon's users, essentially saying, \"We are here, we are reliable, and we are the original.\" Not only did Square survive the competition, but they actually gained more users through the encounter.\n\n## The \"20 vs. 3\" Rule\nThe reason for this outcome lies in the nature of creation. When a company builds a product from scratch, they must solve a vast array of problems—often dozens of them—that are not visible to the consumer on the surface. \n\nWhen a competitor attempts to copy a product, they typically only identify and replicate the most visible features—the \"surface\" features. They often miss the underlying infrastructure, the specific user experience nuances, and the complex problem-solving that makes the product truly functional and indispensable.\n\n## Analysis Tasks\n\n### 1. Identifying the \"Unseen\"\nIn a successful product, there are many \"hidden\" problems that must be solved. Based on the concept of the \"20 vs. 3\" rule, list five potential \"unseen\" challenges a company might face when building a new technology from scratch that a copycat might overlook.\n\n1. \n2. \n3. \n4. \n5. \n\n### 2. The Value of Prototyping\nThe transcript suggests that \"doing\" and \"prototyping\" is essential because it allows you to learn through the process of solving these hidden problems. \n* **Question:** Why is it better to release an imperfect prototype rather than waiting for a \"perfect\" product that has been heavily modeled after a competitor?\n\n### 3. Strategic Differentiation\nIf you were a product manager at a company that was being \"copied\" by a larger competitor, what strategies (other than price) could you use to demonstrate your \"unseen\" value to customers?","artifacts/mvp-feature-prioritization.md":"---\ntitle: MVP Feature Prioritization & Design\ntype: Planning Template\ndescription: A template for designing a Minimum Viable Product (MVP) by stripping away complexity to focus on core value.\ntags: [product-strategy, mvp, design, planning]\n---\n\n# MVP Feature Prioritization & Design\n\n## Overview\nA Minimum Viable Product (MVP) is the simplest version of a product that allows a team to collect the maximum amount of validated learning about customers with the least effort. In the conversation, the designers discuss \"redesigning from the ground up\" to find the \"bare minimum\" that solves the core problem.\n\n## Part 1: The Core Problem\nBased on the transcript, define the \"Core Problem\" this new app is trying to solve. Avoid generic terms like \"managing a conference.\" Focus on the specific gap left by competitors like Hoova or Siven.\n\n**Problem Statement:**\n\\\n\\\n\\\n\n## Part 2: The \"Bare Minimum\" Feature Set\nThe transcript suggests that instead of a massive list of add-ons, we should focus on the \"bare minimum\" needed by each user. List the absolute essential features required to solve the core problem.\n\n*   **Essential Feature 1:** \n*   **Essential Feature 2:** \n*   **Essential Feature 3:** \n*   **Essential Feature 4:** \n\n## Part 3: The Value Proposition & Pricing\nThe conversation suggests a shift from \"complex add-on pricing\" to a \"flat fee\" model. \n\n1.  **The \"Loop\":** What is the \"loop\" or the \"main thing\" that makes this app better than the current market leaders?\n    \\\n    \\\n    \\\n2.  **Pricing Strategy:** If you were to sell this app for a flat fee of $2,000 (as suggested in the transcript), how would you justify that price to an organizer compared to the \"standard amount + $1,500 per add-on\" model used by competitors?\n    \\\n    \\\n    \\\n\n---\n\n---\ntitle: MVP Feature Prioritization Template\ntype: Planning Template\ndescription: A template for refining a broad list of features into a Minimum Viable Product (MVP) by focusing on the \"purest form\" of the solution.\ntags: [product-management, mvp, strategy, prioritization]\n---\n\n# MVP Feature Prioritization Template\n\n## Overview\nWhen building a new product, it is easy to become overwhelmed by the \"full user flow\" and the desire to include every possible feature. To move quickly and test a concept, we use the **Minimum Viable Product (MVP)** approach: identifying the bare minimum required to solve the core problem.\n\n## Instructions\n\n### Step 1: The \"Brainstorm\" List\nList all the features you have identified for the conference management app. Don't worry about complexity yet—just get them all down.\n\n*   *Feature A*\n*   *Feature B*\n*   *Feature C*\n*   *Feature D*\n*   *Feature E*\n\n### Step 2: \"Removing the Fat\"\nReview your list. If you had to strip the app down to its **purest form**—the version that provides the most value with the least amount of complexity—which features would remain? \n\n**Select your Top 3 \"Must-Have\" Features:**\n1. __________________________________________________________\n2. __________________________________________________________\n3. __________________________________________________________\n\n### Step 3: The \"Value vs. Complexity\" Filter\nFor your top 3 features, answer the following:\n\n| Feature | What is the core problem this solves? | How does this facilitate human connection? |\n| :--- | :--- | :--- |\n| | | |\n| | | |\n| | | |\n\n## Reflection: The \"Rip It Apart\" Test\nImagine you are presenting this \"stripped-down\" version to a skeptical stakeholder. \n\n**What is the strongest argument they might use to say this version is \"not enough\"?**\n\\\n\\\n\\\n**How would you defend this MVP as being \"twice as good\" as a bloated, complex competitor?**\n\\\n\\\n\\","artifacts/pain-point-analysis.md":"---\ntitle: Pain Point Analysis: Technical vs. Social\ntype: Analysis Task\ndescription: A comparative analysis task to categorize user frustrations into technical and social categories.\ntags: [analysis, ux, product-design]\n---\n\n# Pain Point Analysis: Technical vs. Social\n\n## Overview\nSuccessful product design requires distinguishing between **Technical Pain Points** (friction caused by the tool itself) and **Social Pain Points** (friction caused by the environment or human interaction that the tool *should* facilitate).\n\n## Instructions\nReview the transcript. Identify the specific frustrations mentioned by the speakers and categorize them into the table below.\n\n| Category | Specific Pain Point (from text) | Impact on User Experience |\n| :--- | :--- | :--- |\n| **Technical** | *Example: High cost of add-ons* | *Increases budget uncertainty for organizers* |\n| **Technical** | | |\n| **Technical** | | |\n| **Social** | *Example: Difficulty connecting in person* | *Users leave without making meaningful connections* |\n| **Social** | | |\n| **Social** | | |\n\n## Critical Thinking: The \"Hybrid\" Problem\nSome pain points are both technical and social. For example, if a room is overbooked (Technical), the organizer cannot communicate the change to the attendees (Social/Communication).\n\n**Task:** Identify one \"Hybrid\" pain point from the transcript. Explain how a failure in the technology directly causes a failure in the social experience of the conference.\n\n**Hybrid Pain Point:**\n\\\n\\\n**Technical Failure:**\n\\\n\\\n**Social Consequence:**\n\\\n\\","artifacts/user-persona-mapping.md":"---\ntitle: User Persona Mapping: Conference Ecosystem\ntype: Worksheet\ndescription: A worksheet to identify and map the specific needs, pain points, and goals of different stakeholders in a conference management environment.\ntags: [ux, product-design, persona, analysis]\n---\n\n# User Persona Mapping: Conference Ecosystem\n\n## Overview\nIn product design, understanding the \"user\" is not a monolith. A single product often serves multiple stakeholders, each with conflicting needs and different definitions of success. In the context of a conference management app, we must map out the specific experiences of the Organizer, the Presenter, and the Attendee/Sponsor.\n\n## Instructions\nBased on the provided case study (the conversation between Evan and Rob), complete the mapping table below. For each persona, identify their primary goal, their biggest \"pain point\" (the friction they experience), and a potential feature that could solve that friction.\n\n| Persona | Primary Goal | Key Pain Point(s) | Potential Solution/Feature |\n| :--- | :--- | :--- | :--- |\n| **The Organizer** | | | |\n| **The Presenter** | | | |\n| **The Attendee / Sponsor** | | | |\n\n## Deep Dive Analysis\n\n### 1. The Conflict of Interest\nIn the transcript, the Organizer mentions that \"the people in the booths are the ones completely funding it all.\" \n* **Question:** How might the needs of a **Sponsor** (who wants visibility and engagement) conflict with the needs of an **Attendee** (who wants to learn without being \"sold\" to)? How can a product designer bridge this gap?\n\n### 2. The \"Plan B\" Requirement\nThe transcript mentions the need for \"Plan B\" or \"secondary options\" in scheduling.\n* **Question:** Why is a \"Plan B\" important for the user experience of a conference? How should the app visually communicate these options to prevent \"decision overload\"?\n\n---\n\n---\n\n---\ntitle: User Persona Mapping: Conference Management App\ntype: Worksheet\ndescription: An analysis task to identify the specific needs, goals, and pain points for different stakeholders in a conference ecosystem.\ntags: [ux, persona, product-design, analysis]\n---\n\n# User Persona Mapping: Conference Management App\n\n## Overview\nIn product design, understanding your users is the first step toward building a successful product. A \"persona\" is a semi-fictional character that represents a user type within your targeted demographic. Based on the provided transcript regarding the new conference management app, complete the mapping table below.\n\n## Instructions\nRead the transcript carefully. For each stakeholder (persona) listed below, identify their primary **Goal** (what they want to achieve), their **Technical Pain Points** (issues with software/tools), and their **Social Pain Points** (issues with human interaction/connection).\n\n| Persona | Primary Goal | Technical Pain Points | Social Pain Points |\n| :--- | :--- | :--- | :--- |\n| **The Organizer** | | | |\n| **The Presenter** | | | |\n| **The Sponsor** | | | |\n| **The Attendee** | | | |\n\n## Deep Dive Questions\n\n1. **The \"App Fatigue\" Problem:** The transcript mentions that many attendees download the app at the venue but delete it immediately after. Why does this happen, and how does this behavior impact the long-term value of the app?\n   \\\n   \\\n   \\\n2. **Real-Time Friction:** The organizer mentioned the need to \"switch a room and communicate with users on the spot.\" Why is this a critical requirement for a \"live\" event, and what happens if the technology fails to do this?\n   \\\n   \\\n   \\\n3. **The Connection Gap:** The transcript suggests that current apps fail to help people \"talk to each other in person.\" Based on the text, what is the \"missing link\" between the digital app and physical interaction?\n   \\\n   \\\n   \\","artifacts/user-persona-pain-point-analysis.md":"---\ntitle: User Persona & Pain Point Analysis\ntype: Worksheet\ndescription: A stakeholder analysis tool to identify the specific needs and frustrations of different conference participants to inform product design.\ntags: [ux, persona, analysis, stakeholder-mapping]\n---\n\n# User Persona & Pain Point Analysis\n\n## Overview\nIn product design, understanding the \"fat\" (unnecessary features) versus the \"core\" (essential value) requires a deep understanding of the people using the product. This worksheet asks you to map out the specific experiences of different stakeholders to identify where current solutions fail and where a new product can provide unique value.\n\n## Instructions\nUsing the provided case study context, complete the table below. For each persona, identify their current experience, their primary frustrations (pain points), and a potential \"human connection\" opportunity that current, large-scale platforms might be missing.\n\n| Persona | Current Experience (How they use tools now) | Primary Pain Points (What frustrates them?) | Connection Opportunity (How can we add value?) |\n| :--- | :--- | :--- | :--- |\n| **The Organizer** | | | |\n| **The Presenter** | | | |\n| **The Attendee / Sponsor** | | | |\n\n## Deep Dive Questions\n\n1. **The \"Gap\" Analysis:** Looking at your table, what is the common thread among the pain points? Is there a specific area where all three personas are underserved by existing, large-scale platforms?\n   \\\n   \\\n   \\\n   \\\n2. **The Disruption Strategy:** One of the speakers mentions that \"big companies\" have a weakness because they focus on scale rather than specific human needs. Based on your analysis, what is the \"niche\" or specific human need that a smaller, more focused app could disrupt the market with?\n   \\\n   \\\n   \\\n   \\\n3. **The \"Human\" Element:** How can a digital tool facilitate a \"serendipitous\" connection (like meeting someone by chance on a bus) without feeling like a forced, \"gamified\" task?\n   \\\n   \\\n   \\\n   \\","wiki/ai-augmentation-vs-offloading.md":"# AI: Augmentation vs. Offloading\n\n**What this is**\nThere is a tension in how AI is used in education. It generally falls into two categories:\n1. **Cognitive Offloading:** Using AI to bypass the thinking process entirely (e.g., \"Write this essay for me\"). This can lead to social harms or \"cheating\" and is often driven by the goal to finish a task as fast as possible.\n2. **Cognitive Augmentation:** Using AI to refine answers, hone thinking, brainstorm ideas, or research complex topics (e.g., using AI to solve complex problems at a hackathon). The goal is to reach a higher level of complexity than one could alone.\n\n**How to teach it**\n* **The \"Two Sides\" Discussion:** Instead of debating whether AI is \"good\" or \"bad,\" have students debate the *intent* of the use.\n* **Demonstrate the Difference:** Show students contrasting scenarios:\n    * **Offloading:** A student using AI to summarize a text they haven't read or writing an essay from a single prompt.\n    * **Augmentation:** A student using AI to generate a prompt for a research topic, brainstorm ideas, or debug code for a complex project.\n* **Discuss the \"Why\":** Ask students why they are using the tool. Is the goal to finish the task as fast as possible, or to reach a higher level of complexity than they could alone?\n\n**Student prompts**\n* \"Is this tool helping me think more deeply, or is it doing the thinking for me?\"\n* \"How can I use AI to refine my existing ideas rather than replace them?\"\n* \"How can I use this tool to refine my idea rather than just generating a final answer?\"\n\n**Teacher notes**\n* When faculty or parents express concern about AI, use this framework to move the conversation away from \"AI is cheating\" or \"AI is good/bad\" and toward \"How do we use this to enhance thinking\" or \"How do we use this to solve problems?\"\n\ntags: [ai, pedagogy, critical-thinking, cognitive-science]","wiki/ai-for-tier-1-support.md":"---\ntype: Concept\ntitle: AI for Tier 1 Support\ndescription: Using AI to create resources that support student variability within the general classroom setting.\ntags: [ai, differentiation, tier-1, student-variability]\n---\n# AI for Tier 1 Support\n\n## What this is\nUsing AI to create \"Tier 1\" resources—meaning tools and materials that support the diverse needs of *all* students in a general classroom setting, rather than just for specific interventions.\n\n## How to teach it\n* **Focus on Variability:** Use AI to quickly generate multiple versions of the same resource to accommodate different reading levels or learning styles.\n* **Integration:** Show how AI can be used to support \"student variability\" by providing different ways for students to access the same core content.\n\n## Student prompts\n* \"How can AI help us reach the student who is struggling with the current reading level of this text?\"\n* \"In what ways can AI provide different ways for students to demonstrate mastery of this concept?\"\n* \"How can we use AI to ensure our Tier 1 resources are accessible to everyone in the room?\"","wiki/ai-resistance-vs-integration.md":"---\ntype: Case Study\ntitle: AI Resistance vs. AI Integration\ndescription: A case study exploring how different stakeholders (e.g., Entrepreneurship vs. English departments) view the same technology based on their specific goals.\ntags: [ai, stakeholder-perspectives, case-study]\n---\n# AI Resistance vs. AI Integration\n\n## What this is\nA case study about a \"Writing App\" designed to work only when Wi-Fi is turned off. This tool creates a conflict between different user groups: those who need digital tools to function (Entrepreneurship) and those who want to prevent distraction or cheating (English Department).\n\n## How to teach it\nUse this to demonstrate that \"the problem\" isn't the technology itself, but how that technology interacts with the user's specific goals.\n\n**The Scenario:**\n* **The Tool:** A writing app that disables all internet access and prevents copying/pasting.\n* **Group A (The Entrepreneurs):** They rejected it because they need access to digital tools and research to work effectively.\n* **Group B (The English Department):** They loved it because it solves the problem of cheating and distraction during exams.\n\n## Student prompts\n* \"Why would an entrepreneur see this tool as a hindrance rather than a help?\"\n* \"In what specific classroom scenarios would the English department's perspective be the priority?\"\n* \"How can a designer build a tool that satisfies both groups, or is that impossible?\"\n\n---","wiki/ai-workflow-optimization.md":"---\ntype: Method\ntitle: AI Workflow Optimization\ndescription: Using AI to bridge the gap between messy human input and organized professional data.\ntags: [ai, workflow, productivity]\n---\n# AI Workflow Optimization\n\n## What this is\nA method for using AI to handle the \"middle man\" work—taking raw, unorganized data from a user and turning it into clean, usable data for an organizer.\n\n## How to teach it\nUse the \"Speaker Tagging\" workflow to show how AI can be used for *augmentation* (helping a human) rather than *offloading* (replacing a human).\n\n**The Workflow:**\n1. **Input:** The presenter types a session title and description (raw data).\n2. **AI Processing:** The AI analyzes the text and suggests a list of relevant tags.\n3. **Human Approval:** The presenter reviews the tags, accepts them, or edits them.\n4. **Output:** The organizer receives perfectly tagged, clean data without having to manually sort through it.\n\n## Teacher notes\n* **The Value Prop:** This solves two problems at once: it makes the task easier for the user (the presenter) and it removes a massive administrative burden from the organizer.\n* **The \"Human in the Loop\":** Emphasize that the presenter still has final control. This prevents the \"AI error\" problem while still gaining the speed of AI.\n\n## Student prompts\n* \"Where in your own workflow do you spend time 'cleaning up' data or organizing notes?\"\n* \"How could AI help you categorize your own assignments or study materials?\"\n\n---","wiki/building-from-scratch.md":"---\ntype: Concept\ntitle: Building from Scratch vs. Copying\ndescription: The principle that true innovation comes from solving the \"unseen\" problems that surface-level competitors ignore.\ntags: [innovation, product-design, problem-solving]\n---\n# Building from Scratch vs. Copying\n\n## What this is\nWhen you build something from scratch, you have to solve dozens of \"unseen\" problems—logistics, user experience, edge cases, and technical hurdles. When competitors try to copy a successful product, they usually only copy the 3 or 4 visible features that the user sees. Because they didn't do the hard work of solving the underlying problems, their version often crumbles.\n\n## How to teach it\n* **Use the Square vs. Amazon Case Study:** Tell the story of how Square succeeded even when Amazon tried to compete. Amazon only copied the surface features, while Square had already solved the deep, invisible problems required to make the service work.\n* **Discuss \"Surface Features\" vs. \"Core Infrastructure\":** Ask students to identify a product they use. Ask: \"What are the visible features? What are the invisible problems the company had to solve to make those features work?\"\n\n## Teacher notes\n* Use this to encourage students (or staff) who feel overwhelmed by the complexity of a new project. The difficulty is actually a competitive advantage; if it were easy, anyone could copy it.","wiki/collaborative-reflection-routine.md":"---\ntype: Routine\ntitle: Collaborative Reflection Routine\ndescription: A two-step process for synthesizing large amounts of information through individual reflection and shared digital synthesis.\ntags: [collaboration, synthesis, routine]\n---\n# Collaborative Reflection Routine\n\n## What this is\nA method to move from \"having a ton of info\" to \"having actionable takeaways\" by combining physical reflection with digital collaboration.\n\n## How to teach it\n* **Step 1: The Physical Reflection**: \n    * Provide students with raw notes (either printed or handwritten).\n    * Have students sit with a physical pen and reflect over the notes.\n    * The goal is to identify \"what jumped out\" at them during the reading.\n* **Step 2: The Digital Synthesis**: \n    * Move the reflections to a shared digital document.\n    * Each participant must add their \"Big 5 Takeaways\" to the document.\n    * Use these takeaways to start a conversation and decide on next steps.\n\n## Student prompts\n* \"What jumped out at you from these notes?\"\n* \"What are our top five takeaways?\"\n* \"Based on these takeaways, what is our next move?\"\n\n## What students produce\n* A shared digital document containing a curated list of \"Big 5 Takeaways\" from a larger body of information.","wiki/designing-for-human-connection.md":"---\ntype: Method\ntitle: Designing for Human Connection\ndescription: A design philosophy that prioritizes organic, comfortable social interactions over gamified or task-heavy engagement.\ntags: [UX, design, social]\n---\n# Designing for Human Connection\n\n## What this is\nMany modern engagement tools rely on \"gamification\" (rankings, badges, photo prompts, tasks) that can lead to user burnout. This approach focuses on \"reverse engineering\" natural, comfortable human interactions to create meaningful connections.\n\n## How to teach it\n* **Reverse Engineer Serendipity**: Ask students to think about a time they met someone by chance (e.g., sitting on a bus together). Ask: \"How can we design a space that makes that kind of comfortable, low-pressure interaction possible?\"\n* **Gamification vs. Connection**: Present a list of \"engagement\" features (e.g., \"Did you take a photo?\", \"What is your rank?\") and ask students to debate whether these features actually help people connect or if they just create \"noise\" and burnout.\n* **The \"Comfort\" Test**: When designing a feature, ask: \"Is this interaction comfortable for both parties, or does it force a social interaction that feels unnatural?\"\n\n## Student prompts\n* \"How do we get people to leave feeling they made a really great connection?\"\n* \"How can we make this interaction comfortable for someone who doesn't want to talk to too many people?\"\n* \"Are we adding tasks, or are we adding connection?\"\n\n## What students produce\n* A design plan or feature set that prioritizes ease of interaction and organic social opportunities over gamified tasks.\n\n---","wiki/index.md":"# Curriculum Map of Content (MoC)\n\nThis index tracks all established curriculum topics.\n\n* **[[ai-augmentation-vs-offloading]]** (AI: Augmentation vs. Offloading): There is a tension in how AI is used in education. It generally falls into two categories:...\n* **[[ai-for-tier-1-support]]** (AI for Tier 1 Support): Using AI to create \"Tier 1\" resources—meaning tools and materials that support the diverse needs of *all* students in a ...\n* **[[ai-resistance-vs-integration]]** (AI Resistance vs. AI Integration): A case study about a \"Writing App\" designed to work only when Wi-Fi is turned off. This tool creates a conflict between ...\n* **[[ai-workflow-optimization]]** (AI Workflow Optimization): A method for using AI to handle the \"middle man\" work—taking raw, unorganized data from a user and turning it into clean...\n* **[[building-from-scratch]]** (Building from Scratch vs. Copying): When you build something from scratch, you have to solve dozens of \"unseen\" problems—logistics, user experience, edge ca...\n* **[[managing-stakeholder-expectations]]** (Managing Stakeholder Expectations): The ability to communicate changes in project scale (e.g., fewer attendees than expected) or timing (e.g., shifting a pr...\n* **[[navigating-ai-resistance]]** (Navigating AI Resistance): When introducing AI, you will inevitably face \"anti\" sentiment. Stakeholders may focus exclusively on the harms (cheatin...\n* **[[navigating-ai-stakeholder-nuance]]** (Navigating AI Stakeholder Nuance): When introducing new technology like AI, you will inevitably face \"anti\" sentiment. Stakeholders may focus exclusively o...\n* **[[prototyping-educational-concepts]]** (Prototyping Educational Concepts): Instead of launching a massive, fully-funded program or event, you run a \"prototype.\" The goal is to see what \"sticks\" w...\n* **[[prototyping-with-imperfection]]** (Prototyping with Imperfection): Innovation requires a \"prototype\" mindset. This means launching an idea, workshop, or program before it is perfect. The ...\n* **[[querying-research-with-ai]]** (Querying Research with AI): Instead of reading dozens of individual papers to find a consensus, you can use AI to act as a research assistant to hel...\n* **[[solving-decision-overload]]** (Solving Decision Overload): In complex environments like conferences, users don't just need \"information\" (like a schedule); they need help managing...\n* **[[stakeholder-needs-mapping]]** (Stakeholder Needs Mapping): To build a successful product, you must identify the distinct needs and \"pain points\" of every person involved in the ec...\n* **[[the-nuance-of-ai-impact]]** (The Nuance of AI Impact): There is no single \"agreement\" on how AI affects the brain or learning. The impact is not binary; it depends entirely on...\n","wiki/managing-stakeholder-expectations.md":"---\ntype: Skill\ntitle: Managing Stakeholder Expectations\ndescription: Navigating tensions when project scope, scale, or timing changes to ensure all partners remain aligned.\ntags: [communication, stakeholder-management, project-management]\n---\n# Managing Stakeholder Expectations\n\n## What this is\nThe ability to communicate changes in project scale (e.g., fewer attendees than expected) or timing (e.g., shifting a project to a different month) to partners and stakeholders to prevent friction and \"snippy\" responses.\n\n## How to teach it\n* **Case Study: The Scale Gap:** Use the example of a conference where the organizer expected 100+ attendees but only had 23. Discuss how the sudden change in scale affects the involvement of external partners/speakers.\n* **Discuss Timing:** Discuss why certain times of year (e.g., May) might be difficult for specific types of engagement (like Professional Development) and how to communicate that to stakeholders.\n\n## Student prompts\n* \"How do you tell a partner that the scale of a project has changed significantly?\"\n* \"How do you handle a stakeholder who is frustrated because their expectations weren't met?\"\n* \"When is the best time to suggest postponing a project to a more suitable season?\"","wiki/mvp-strategy.md":"---\ntype: Method\ntitle: MVP (Minimum Viable Product) Strategy\ndescription: A strategy for testing ideas by building the simplest possible version to gather feedback before investing significant resources.\ntags: [design, product, strategy]\n---\n# MVP (Minimum Viable Product) Strategy\n\n## What this is\nInstead of building a massive, fully-featured platform, you build the \"bare minimum\" required to solve a problem. The goal is to see if the core idea works before spending time and money on \"fat\" or extra features.\n\n## How to teach it\n* **The \"Rip It Apart\" Method**: Have students create a very simple, stripped-down version of their project (a single webpage, a paper prototype, or a basic sketch). \n* **Stakeholder Testing**: Once the simple version is ready, have students present it to a \"stakeholder\" (a peer or teacher) with the specific instruction: \"Try to rip this apart. Tell me what is missing and what is unnecessary.\"\n* **Iterative Refinement**: Use the feedback from the \"ripping apart\" session to decide which features are essential and which can be discarded.\n\n## Student prompts\n* \"What is the bare minimum we need for this to work?\"\n* \"If we had to strip this down to just one feature, what would it be?\"\n* \"What is the simplest, purest form of this idea?\"\n\n## What students produce\n* A \"stripped-down\" prototype or concept that focuses on one core function.\n\n---","wiki/navigating-ai-resistance.md":"---\ntype: Method\ntitle: Navigating AI Resistance\ndescription: Strategies for managing \"anti-AI\" sentiment among faculty and stakeholders.\ntags: [stakeholders, professional-development, communication]\n---\n# Navigating AI Resistance\n\n## What this is\nWhen introducing AI, you will inevitably face \"anti\" sentiment. Stakeholders may focus exclusively on the harms (cheating, social issues, loss of cognitive skills) and may be resistant to any \"pro-AI\" messaging.\n\n## How to teach it\n* **Use surveys to gauge sentiment:** Don't guess how people feel. Send out a survey asking: \"Where are you on the AI spectrum?\" and \"What are your specific concerns?\"\n* **Acknowledge the \"Anti\" voice:** If you only talk about the benefits of AI, you will be seen as a \"mouthpiece for the administration.\" Acknowledge that the concerns about cognitive offloading and social harms are valid.\n* **Address the research:** When people express fear, respond with evidence. Use actual research papers to address specific concerns rather than offering opinions.\n\n## Teacher notes\nThe loudest voices in a survey are often the ones who are 100% anti-AI. Don't ignore them; use their concerns as the starting point for a deeper conversation about how to implement the technology safely.","wiki/navigating-ai-stakeholder-nuance.md":"---\ntype: Strategy\ntitle: Navigating AI Stakeholder Nuance\ndescription: How to lead conversations about AI when facing strong opposition or \"anti-AI\" sentiment.\ntags: [leadership, stakeholder-management, ai]\n---\n# Navigating AI Stakeholder Nuance\n\n## What this is\nWhen introducing new technology like AI, you will inevitably face \"anti\" sentiment. Stakeholders may focus exclusively on the harms (cheating, social harms, cognitive offloading) and ignore the benefits (problem-solving, creativity, research). Effective leadership requires acknowledging the nuance and addressing the concerns with evidence.\n\n## How to teach it\n* **Acknowledge the \"Anti\" Side:** Do not dismiss people who are worried about AI. Their concerns about cognitive offloading and social harms are valid.\n* **Use Research as a Bridge:** When faced with opposition, bring the conversation back to the latest research. Use data to show how AI can be used as a problem-solving tool.\n* **The \"Nuance\" Approach:** Avoid taking a hard \"pro\" or \"anti\" stance. Instead, aim for clarity by demonstrating that you understand both the risks and the opportunities.\n\n## Teacher notes\n* If you are leading a school or department through a tech transition, use tools like NotebookLM to synthesize large amounts of research. This allows you to answer specific faculty questions with evidence rather than just opinion.\n* **Key takeaway for leaders:** The people who provide clarity in a shifting landscape are those who understand the nuance and can hold space for both the frustrations of teachers and the potential of the technology.","wiki/prototyping-educational-concepts.md":"---\ntype: Method\ntitle: Prototyping Educational Concepts\ndescription: Using a \"test and see\" approach to new ideas or event formats to determine what works before full commitment.\ntags: [prototyping, experimentation, pilot-programs]\n---\n# Prototyping Educational Concepts\n\n## What this is\nInstead of launching a massive, fully-funded program or event, you run a \"prototype.\" The goal is to see what \"sticks\" with the audience and what doesn't before you invest significant time or money.\n\n## How to teach it\n* **Start small:** Use a small group of people (e.g., 23 people instead of 100) to test a new conference format or workshop idea.\n* **Observe and collect feedback:** Focus on what people actually engage with rather than what you *thought* they would engage with.\n* **Iterate:** Use the results of the prototype to decide whether to scale up, pivot, or abandon the idea.\n\n## Student prompts\n* \"What part of this concept actually worked for you?\"\n* \"What part of this didn't 'stick'?\"\n* \"Based on this pilot, how should we change the full version?\"","wiki/prototyping-with-imperfection.md":"---\ntype: Mindset\ntitle: Prototyping with Imperfection\ndescription: Approaching new initiatives by accepting that they won't be perfect and that \"not having it all figured out\" is a necessary part of the process.\ntags: [prototyping, mindset, innovation]\n---\n# Prototyping with Imperfection\n\n## What this is\nInnovation requires a \"prototype\" mindset. This means launching an idea, workshop, or program before it is perfect. The goal is to get it out there to see what \"sticks\" and to learn from the process, rather than waiting for a perfect, fully-funded plan.\n\n## How to teach it\n* **Normalize the \"Awkward\" Phase:** Remind students that building something new is often awkward and difficult because you aren't just following a template.\n* **Embrace the \"Not Figured Out\" State:** When launching a new project, explicitly tell participants: \"We don't have everything figured out yet, and that's okay. We are testing this to learn.\"\n\n## Student prompts\n* \"What is the simplest, most imperfect version of this idea we can test right now?\"\n* \"What are we willing to 'fail' at in order to learn something new?\"\n\n## Teacher notes\n* This is a tool for managing expectations. When a teacher or leader tries something new (like a new workshop series), they should lead with the fact that it is a prototype. This reduces the pressure to be perfect and allows for real learning.","wiki/querying-research-with-ai.md":"---\ntype: Method\ntitle: Querying Research with AI\ndescription: Using AI tools to synthesize and ask questions of large volumes of academic literature.\ntags: [research, ai-tools, synthesis]\n---\n# Querying Research with AI\n\n## What this is\nInstead of reading dozens of individual papers to find a consensus, you can use AI to act as a research assistant to help you navigate the latest evidence.\n\n## How to teach it\n* **Setup:** Gather a collection of PDFs (e.g., 30 recent papers on a specific topic).\n* **Tooling:** Upload the collection into a tool like NotebookLM.\n* **The \"Ask\" Routine:** Instead of reading every page, use the AI to ask specific questions to find the \"latest agreement\" or to find evidence for/against a specific claim.\n\n## Student prompts\n* \"What is the latest consensus in these papers regarding [topic]?\"\n* \"Is there a conflict in the findings between these different studies?\"\n* \"What are the most common criticisms mentioned in this collection of research?\"\n\n## Teacher notes\nBe careful with \"wishy-washy\" research. Not all papers are equal; some meta-analyses may be retracted or lack sufficient evidence. Use the AI to find the evidence, but use your professional judgment to verify the quality.","wiki/scope-and-sequence.md":"# Scope and Sequence\n\n## Teaching Use: Professional Autonomy and Career Transitions\n\n### Teaching Purpose\nTo explore the tension between institutional employment (stability/structure) and independent consulting (autonomy/risk) within educational leadership and specialized instruction.\n\n### Discussion Moves\n* **The Autonomy vs. Stability Debate**: Present the scenario of a highly skilled educator transitioning from a school role to independent consulting. Ask students to analyze the trade-offs mentioned in the text: the \"control\" over one's schedule and client selection versus the \"psychological\" toll of institutional roles.\n* **The \"Value of Skill\" Analysis**: Use the dialogue regarding \"skills and capabilities\" to discuss how educators can translate classroom expertise into market-ready consulting services.\n\n### Core Activities\n* **Role-Play: The Career Pivot**: One student acts as a school administrator (offering stability but high administrative/emotional load) and another as a consultant (offering freedom but variable income). They must negotiate the \"worth\" of the transition based on the conversation's themes.\n\n## Teaching Use: Stakeholder Management and Expectation Setting\n\n### Teaching Purpose\nTo analyze how communication gaps regarding project scale and scope can lead to professional friction and how to mitigate these risks.\n\n### Discussion Moves\n* **The Scale Misalignment Case Study**: Use the \"Saba\" scenario—where a speaker expects 100+ attendees but the organizer only has 24—to discuss the importance of radical transparency in event planning. \n* **Mitigating Friction**: Discuss the \"relieved\" response from the stakeholder when the scope was clarified. Ask: \"Is it better to postpone involvement or proceed with a smaller-than-expected group?\"\n\n### Content and Skills\n* [[managing-stakeholder-expectations]]\n* Communication clarity\n* Risk assessment in event logistics\n\n## Teaching Use: Prototyping Educational Models\n\n### Teaching Purpose\nTo introduce the concept of the Minimum Viable Product (MVP) and iterative design within educational programming and professional development.\n\n### Discussion Moves\n* **The \"What Sticks\" Strategy**: Discuss the decision to \"prototype this concept\" for the conference rather than committing to a full-scale rollout. Focus on the pedagogical value of testing ideas to see \"what does and doesn't stick with people.\"\n\n### Core Activities\n* **Concept Prototyping Workshop**: Students take an existing educational initiative (e.g., a new grading policy or a new tech tool) and design a \"low-stakes\" version to test with a small group before a school-wide launch.\n\n### Content and Skills\n* [[prototyping-educational-concepts]]\n* [[mvp-strategy]]\n* Iterative design\n\n## Teaching Use: AI for Tier 1 Support and Variability\n\n### Teaching Purpose\nTo introduce the application of AI in supporting student variability and providing foundational (Tier 1) resources.\n\n### Discussion Moves\n* **AI for Foundational Differentiation**: Using the mention of the middle school workshop, discuss how AI can be used to create diverse resources for a single lesson to meet varying student needs at the Tier 1 level.\n\n### Content and Skills\n* [[ai-for-tier-1-support]]\n* Addressing student variability\n* Resource differentiation\n\n---\n\n## Teaching Use: The Depth of Innovation (Building vs. Copying)\n\n### Teaching Purpose\nTo use the \"Square vs. Amazon\" case study to illustrate the difference between surface-level imitation and deep, original problem-solving in product design and entrepreneurship.\n\n### Core Activities\n* **The \"20 vs. 3\" Analysis**: Present students with the Square vs. Amazon anecdote. Facilitate a discussion on why copycats often fail: they only solve the visible 3 problems (the surface features), while the original creator has solved the 20 hidden problems (the infrastructure, logistics, and edge cases).\n* **Prototyping with Imperfection**: A design-thinking exercise where students are tasked with creating a \"messy\" version of a solution. The goal is to move past the \"ego\" of perfectionism and embrace the \"awkward\" phase of creation to foster [[prototyping-with-imperfection]].\n\n### Content and Skills\n* **Competitive Advantage**: Understanding that true innovation lies in the complexity of the underlying systems, not just the user interface.\n* **Resilience in Design**: Learning to navigate the \"awkward\" and \"dumbass\" phase of early-stage development.\n* **Product Lifecycle**: Moving from a concept to a functional prototype through iterative \"doing.\"\n\n## Teaching Use: Navigating the AI Paradox in Schools\n\n### Teaching Purpose\nTo provide a case study for educational leaders and teachers on managing the tension between faculty resistance and the reality of student innovation.\n\n### Core Activities\n* **The Resistance Spectrum Mapping**: Using the faculty survey results mentioned in the text, have students map out the spectrum of [[ai-resistance-vs-integration]]. Categorize responses from \"100% anti-AI\" to \"AI as a problem-solving tool\" to understand the different stakeholder perspectives.\n* **Research vs. Sentiment Debate**: A structured debate or seminar focused on the tension between \"cognitive offloading\" (the fear of losing thinking skills) and \"cognitive augmentation\" (using AI to refine and hone thinking). \n* **The Research Inquiry Lab**: Using tools like NotebookLM to query large sets of research papers. Students practice extracting \"the latest agreement\" (or lack thereof) from complex meta-analyses to move beyond anecdotal fears.\n\n### Content and Skills\n* **[[the-nuance-of-ai-impact]]**: Understanding that AI's impact is not binary (good vs. bad) but depends on whether it is used to replace thinking or to expand it.\n* **Stakeholder Management**: Navigating the \"blowback\" from faculty and administration when introducing new technologies.\n* **Critical Literacy**: Evaluating the validity of research (e.g., identifying retracted meta-analyses or \"wishy-washy\" evidence) to inform pedagogical decisions.\n\n### Pivotal Questions for Discussion\n* \"When does using a tool cross the line from 'refining an answer' to 'cognitive offloading'?\"\n* \"How can we shift the institutional conversation from 'AI as cheating' to 'AI as a tool for creation'?\"\n* \"Why is it necessary to embrace the 'shaky ground' of new technology rather than waiting for total consensus?\"\n\n---\n\n## Teaching Use: Navigating the AI Tension in Education\n\n### Teaching Purpose\nTo provide a case study for the tension between AI as a tool for student creation versus AI as a tool for cognitive offloading, and to demonstrate how to use evidence-based research to navigate stakeholder resistance.\n\n### Core Activities\n\n**The \"Two Sides of the Coin\" Debate**\n*   **Scenario:** Present the conflict between student success (e.g., students solving complex problems at a hackathon) and faculty concerns (e.g., the fear of \"cheating\" and \"cognitive offloading\").\n*   **Instructional Move:** Ask students to map the \"both sides\" argument. On one side, list the benefits of AI for \"refining answers, honing thinking, and building ideas.\" On the other, list the \"social harms\" and \"cognitive offloading\" concerns.\n*   **Goal:** To move beyond the binary of \"AI is good\" vs. \"AI is bad\" and toward understanding [[the-nuance-of-ai-impact]].\n\n**The Research vs. Opinion Lab**\n*   **Scenario:** Use the example of the \"retracted meta-analysis\" (where a study was pulled due to lack of evidence) to discuss the importance of vetting information.\n*   **Instructional Move:** Discuss the danger of \"wishy-washy\" research that isn't supported by evidence. Have students practice distinguishing between anecdotal \"opinions\" (e.g., \"AI is a mouthpiece for administration\") and empirical data.\n*   **Goal:** To teach students how to use AI tools (like NotebookLM) to query large datasets of research to find \"the latest agreement\" rather than relying on emotional responses.\n\n**The \"Pioneer\" Framework: Tech + Liberal Arts**\n*   **Scenario:** Use the \"Steve Jobs\" analogy—combining technology with the liberal arts and user interface—to discuss how to approach new, \"shaky\" technological ground.\n*   **Instructional Move:** Small group discussion: \"How can we integrate a new technology (like AI) while maintaining the human connection and critical thinking essential to the liberal arts?\"\n*   **Goal:** To encourage a mindset of \"nuance\" where the user understands both the technical capabilities and the human/social implications.\n\n### Content and Skills\n*   **Critical Analysis:** Distinguishing between evidence-based research and anecdotal sentiment.\n*   **Conflict Management:** Strategies for [[navigating-ai-resistance]] within an organization or classroom.\n*   **Nuanced Synthesis:** Understanding that AI's impact is contingent upon the *method* of use (e.g., using it to \"hone thinking\" vs. using it to \"offload tasks\").\n\n### Evidence of Learning\n*   **Argument Mapping:** Students can successfully map the specific arguments used by both \"pro-AI\" and \"anti-AI\" stakeholders.\n*   **Research Synthesis:** Students can use an AI tool to summarize a collection of research papers and identify where a consensus exists versus where the \"nuance\" lies.\n\n---\n\n## Teaching Use: Product-Market Fit & User Persona Conflict\n\n### Teaching Purpose\nTo explore how a product's core value proposition can be perceived as a \"feature\" by one user group and a \"barrier\" by another, highlighting the necessity of understanding diverse user personas.\n\n### Core Activities\n**Persona Reaction Analysis:**\nPresent a case study of the \"Offline Writing App\" (a tool that disables Wi-Fi to force focus). Students analyze the conflicting feedback from two distinct groups:\n- **Group A (The Entrepreneurship Class):** Rejected the product because it removes access to essential digital tools.\n- **Group B (The English Department):** Embraced the product as a solution for deep work and exam preparation.\n\n**Discussion Moves:**\n- **Pivotal Question:** \"When does a 'solution' for one user become a 'restriction' for another?\"\n- **Pivotal Question:** \"How do you design a product that satisfies the need for focus without sacrificing the need for utility?\"\n\n### Content and Skills\n- [[navigating-ai-resistance]] (Understanding why users resist certain technological constraints).\n- User Persona Mapping (Identifying conflicting needs within a single product ecosystem).\n- Product-Market Fit (Analyzing the tension between feature sets and user workflows).\n\n## Teaching Use: Problem Reframing & Decision Architecture\n\n### Teaching Purpose\nTo demonstrate the shift from \"feature-based thinking\" (building a tool to do X) to \"problem-based thinking\" (solving the underlying human struggle).\n\n### Core Activities\n**The \"Why\" Deep Dive:**\nStudents move through a hierarchy of needs for a conference attendee:\n1. **Surface Level:** \"I need a schedule app.\"\n2. **Deep Level:** \"I am experiencing decision overload.\"\n\n**Cognitive Progression:**\nSilent identification of user frustrations $\\rightarrow$ Group brainstorming of \"The Real Problem\" $\\rightarrow$ Synthesis of features that address the *feeling* of the event rather than just the logistics.\n\n### Content and Skills\n- [[solving-decision-overload]]\n- Problem Reframing (Moving from symptoms to root causes).\n- User Experience (UX) Design (Focusing on cognitive load rather than just information display).\n\n## Teaching Use: AI-Augmented Workflows\n\n### Teaching Purpose\nTo illustrate how AI can be used to bridge the gap between user input and administrative efficiency by automating tedious data processing.\n\n### Core Activities\n**Workflow Mapping: The \"Tagging\" Model:**\nStudents map out a three-step automated workflow designed to solve the \"Organizer's Pain Point\" (manual data entry/tagging):\n1. **Input:** The Presenter enters a session title and description.\n2. **Augmentation:** The AI analyzes the text and suggests a list of relevant tags.\n3. **Approval:** The Presenter reviews and approves/edits the tags, sending \"clean\" data directly to the Organizer.\n\n**Discussion Moves:**\n- **Pivotal Question:** \"How can we add a step for the user that actually reduces the workload for the administrator?\"\n- **Pivotal Question:** \"Where is the line between 'AI doing the work' and 'AI assisting the human'?\"\n\n### Content and Skills\n- [[ai-augmentation-vs-offloading]]\n- [[solving-specific-pain-points]]\n- Workflow Optimization (Reducing manual administrative overhead through intelligent automation).\n\n## Teaching Use: Designing for Social Connection\n\n### Teaching Purpose\nTo discuss the tension between digital tools and physical presence, specifically regarding user agency and social visibility.\n\n### Core Activities\n**The \"Visibility Toggle\" Debate:**\nStudents analyze the concept of a \"Visibility Toggle\" in a social networking app.\n- **The Problem:** Some users (e.g., administrators) want to learn without being \"gamified\" or forced into social interactions.\n- **The Solution:** A user-controlled setting that determines whether a person is visible for networking or remains \"incognito\" to focus on learning.\n\n**Discussion Moves:**\n- **Pivotal Question:** \"How do you design a tool that facilitates organic connection (like meeting at a coffee station) without forcing artificial interaction?\"\n- **Pivotal Question:** \"How can digital tools bridge the gap between online messaging and physical space?\"\n\n### Content and Skills\n- [[designing-for-human-connection]]\n- User Agency (Providing control over social exposure).\n- Hybrid UX (Designing for the intersection of digital tools and physical environments).\n\n---\n\n## Teaching Use: UX Design & User Journey Mapping\n\n### Teaching Purpose\nTo analyze how user behavior (specifically \"transient usage\" patterns) dictates product design and to identify friction points in event-based technology.\n\n### Core Activities\n*   **The \"Friction Point\" Audit:** Using the transcript's observation that 86% of users don't check schedules until the week of the event and delete the app immediately after, students map the \"User Lifecycle.\" \n    *   *Instructional Move:* Ask students to identify the \"dead zones\" in the current user journey (e.g., the gap between downloading the app and actually using it for connection).\n*   **Multi-Portal Persona Mapping:** Students must design distinct user interfaces for four specific personas mentioned in the text:\n    1.  **The Organizer:** Needs real-time room management and communication tools.\n    2.  **The Presenter:** Needs a streamlined way to manage sessions.\n    3.  **The Sponsor:** Needs a dedicated portal for booth engagement.\n    4.  **The Attendee:** Needs a tool that facilitates [[designing-for-human-connection]] rather than just digital scrolling.\n\n### Content and Skills\n*   **User Experience (UX) Friction Analysis:** Identifying why users abandon apps (the \"download-use-delete\" cycle).\n*   **Stakeholder Needs Mapping:** Recognizing that a single app must serve multiple, distinct user groups with different requirements.\n*   **Real-time UX Requirements:** Designing for \"fluidity\" (e.g., instant room-change notifications).\n\n### Evidence of Learning\n*   **Persona Friction Map:** A visual representation showing where a user's digital experience fails to translate into physical, in-person connection.\n\n## Teaching Use: MVP Strategy & Competitive Positioning\n\n### Teaching Purpose\nTo explore the tension between feature-heavy, high-cost legacy software and streamlined, value-driven new entrants using an [[mvp-strategy]].\n\n### Core Activities\n*   **The \"Hoover vs. Steven\" Case Study:** A comparative analysis of two business models:\n    *   *Model A (The \"Hoover\" Model):* High base cost + aggressive \"nickel-and-diming\" for every additional feature/gigabyte.\n    *   *Model B (The \"Steven\" Model):* Streamlined, purpose-driven, and cost-effective.\n    *   *Discussion Move:* Ask students: \"At what point does feature richness become a barrier to entry for a customer?\"\n*   **The \"Whiteboard\" Prototyping Exercise:** Students are tasked with \"stripping the app to the bone.\" \n    *   *Instructional Move:* Using a whiteboard, students must identify the \"bare minimum\" functionality required to solve [[solving-specific-pain-points]] for a teacher or sponsor, ignoring all \"nice-to-have\" features.\n\n### Content and Skills\n*   **[[mvp-strategy]]:** Learning to build the simplest version of a product to validate market fit.\n*   **Pricing Strategy:** Comparing flat-fee models vs. tiered/add-on models and how they impact [[managing-stakeholder-expectations]].\n*   **Market Entry:** Identifying gaps left by \"Fortune 500\" style legacy software.\n\n### Evidence of Learning\n*   **The \"Bare Minimum\" Feature List:** A prioritized list of features that solves the core problem without the complexity of legacy systems.\n\n---\n\n## Teaching Use: MVP and Feature Prioritization\n### Teaching Purpose\nTo teach students how to strip a product down to its most essential value proposition to test viability and reduce development costs.\n### Core Activities\n**The Fat-Trimming Workshop**: Students are given a bloated feature list for a hypothetical product. They must perform a \"reductionist audit,\" identifying \"fat\" (non-essential features) versus \"core value\" (the purest form). They must present a version of the product that contains only the absolute minimum required to solve the primary problem.\n### Pivotal Questions & Content\n- \"What is the bare minimum that you need for this to work?\"\n- \"If we stripped everything else away, what is the one thing that makes this valuable?\"\n- \"How can we show a stakeholder the 'purest form' of an idea to get immediate, actionable feedback?\"\n### Evidence of Learning\nA \"Reduced Feature List\" that demonstrates a clear understanding of [[mvp-strategy]].\n### Pacing Notes\nStart with a brainstorming session of \"all possible features,\" followed by a silent \"reductionist audit,\" and conclude with a pitch of the \"purest form\" to the class.\n\n## Teaching Use: Designing for Human Connection\n### Teaching Purpose\nTo explore the tension between \"gamified engagement\" (tasks, rankings, photos) and \"meaningful connection\" (organic interaction).\n### Core Activities\n**Reverse Engineering Serendipity**: Students analyze a \"chance encounter\" (e.g., meeting someone on a bus) and attempt to design a digital \"nudge\" that facilitates that same feeling of organic connection without the \"burnout\" of gamified tasks.\n### Pivotal Questions & Content\n- \"How do we design for presence rather than just engagement?\"\n- \"How can we avoid 'gamification burnout' where users feel pressured by tasks?\"\n- \"How can we design for the user who 'just wants to show up and go to things'?\"\n### Evidence of Learning\nA design proposal that prioritizes [[designing-for-human-connection]] over traditional gamification metrics.\n\n## Teaching Use: Competitive Disruption and Market Gaps\n### Teaching Purpose\nTo identify how small, focused players can disrupt large, established companies by solving specific, neglected user needs.\n### Core Activities\n**The Disruption Map**: Students research a large-scale platform and identify \"the space for disruption.\" They must identify one specific user experience gap that large companies are too \"heavy\" to address.\n### Pivotal Questions & Content\n- \"Where is the space for disruption in a market dominated by large players?\"\n- \"How can a smaller, more focused lens provide a better user experience than a massive, multi-purpose platform?\"\n- \"How can we use our specific 'lens' to solve problems that generalist platforms ignore?\"\n### Evidence of Learning\nA \"Disruption Thesis\" identifying a specific niche where a focused product can outperform a generalist one by [[solving-specific-pain-points]].\n\n## Teaching Use: Asynchronous Collaborative Reflection\n### Teaching Purpose\nTo model high-impact, asynchronous feedback loops that facilitate deep thinking and collaborative decision-making.\n### Core Activities\n**The Five-Comment Protocol**: Instead of an unstructured discussion, students use a shared document to leave exactly five high-level \"takeaways\" or \"big questions.\" This forces brevity and focuses the subsequent synchronous conversation on the most critical points.\n### Pivotal Questions & Content\n- \"What are the five biggest takeaways from this data?\"\n- \"What is the most important thing to tackle right now?\"\n- \"What is the biggest question we still need to answer?\"\n### Evidence of Learning\nA collaborative document demonstrating a [[collaborative-reflection-routine]] through concise, high-value commentary.\n\n---\n\n","wiki/solving-decision-overload.md":"---\ntype: Design Principle\ntitle: Solving Decision Overload\ndescription: A UX principle focused on reducing cognitive load by providing curated options rather than just raw data.\ntags: [ux, product-design, cognitive-load]\n---\n# Solving Decision Overload\n\n## What this is\nIn complex environments like conferences, users don't just need \"information\" (like a schedule); they need help managing the overwhelming number of choices. The goal is to move from providing raw data to providing a curated experience.\n\n## How to teach it\nUse the \"Conference App\" example to show how to move beyond basic features to solve actual human problems.\n\n**Key UX Strategies to Discuss:**\n* **The \"Plan B\" Concept:** Providing secondary options or backups so users don't feel stuck if a session doesn't \"click.\"\n* **Buffer Blocks:** Explicitly accounting for travel time and breaks in a schedule to prevent back-to-back exhaustion.\n* **Curation (The \"Netflix\" Model):** Instead of a long list, use \"more like this\" logic to help users find relevant content quickly.\n\n## Student prompts\n* \"When you attend an event, what is the hardest part: finding information or deciding what to do with it?\"\n* \"How can we design a schedule that accounts for 'human' factors like travel time and mental fatigue?\"\n* \"How does 'curation' differ from a simple 'search' function?\"\n\n---","wiki/solving-specific-pain-points.md":"---\ntype: Method\ntitle: Solving Specific Pain Points\ndescription: A method for focusing design efforts on high-impact problems rather than attempting to solve an entire user flow at once.\ntags: [design, problem-solving]\n---\n# Solving Specific Pain Points\n\n## What this is\nIn complex systems, users often feel overwhelmed by the sheer number of tasks. Instead of trying to fix the entire \"user flow\" from beginning to end, identify one specific, high-impact \"pain point\" and solve it.\n\n## How to teach it\n* **Identify the \"Fat\"**: Have students list all the features or steps in a process. Ask them to identify which parts are \"fat\" (unnecessary) and which parts are \"pain points\" (where users get stuck or frustrated).\n* **The Two-Week Focus**: Challenge students to ignore the entire system for a set period (e.g., one week or two weeks) and focus exclusively on solving one specific problem (e.g., \"How do we make check-in easier?\" or \"How do we make the sign-up process faster?\").\n* **Prioritization Mapping**: Have students categorize problems into \"Organizers,\" \"Presenters,\" and \"Attendees\" to see which pain point is most urgent for each group.\n\n## Student prompts\n* \"What is the biggest question we need to answer right now?\"\n* \"What is the most important thing to tackle first?\"\n* \"Which part of this process is causing the most frustration?\"\n\n## What students produce\n* A prioritized list of problems, with the most critical pain point identified for immediate action.\n\n---","wiki/stakeholder-needs-mapping.md":"---\ntype: Framework\ntitle: Stakeholder Needs Mapping\ndescription: A framework for identifying the specific pain points of different users in a complex system.\ntags: [ux, stakeholders, persona-mapping]\n---\n# Stakeholder Needs Mapping\n\n## What this is\nTo build a successful product, you must identify the distinct needs and \"pain points\" of every person involved in the ecosystem.\n\n## How to teach it\nHave students map out the specific requirements for the three main personas in an event management scenario.\n\n**The Three Personas:**\n1. **The Organizer:**\n    * **Primary Need:** Efficiency and data accuracy.\n    * **Pain Point:** The manual labor of collecting, cleaning, and organizing information from hundreds of people.\n2. **The Presenter:**\n    * **Primary Need:** Ease of submission.\n    * **Pain Point:** The friction of uploading files and correctly categorizing their work.\n3. **The Attendee:**\n    * **Primary Need:** Connection and visibility.\n    * **Pain Point:** Decision overload and the difficulty of finding specific types of people (e.g., \"I want to find other administrators in this room\").\n\n## Student activities\n**Persona Mapping Exercise:**\n* Assign students one of the three roles.\n* Ask them to list three things that would make their experience \"seamless\" and three things that would make it \"frustrating.\"\n* **Discussion:** How can one feature (like a \"visibility toggle\") serve multiple stakeholders?","wiki/the-nuance-of-ai-impact.md":"---\ntype: Concept\ntitle: The Nuance of AI Impact\ndescription: Understanding that AI's effect on learning depends entirely on the user's intent and method.\ntags: [ai, learning-science, nuance]\n---\n# The Nuance of AI Impact\n\n## What this is\nThere is no single \"agreement\" on how AI affects the brain or learning. The impact is not binary; it depends entirely on the use case.\n\n## How to teach it\n* **The \"It Depends\" Framework:** Teach students (and colleagues) that the impact of AI is determined by the *intent*:\n    * **If used to refine answers/hone thinking:** It increases capability and helps with idea generation.\n    * **If used to replace tasks:** It affects cognitive processes and thinking patterns differently.\n* **Case Study Analysis:** Present different ways of using AI and ask: \"Does this use case increase or decrease the user's cognitive engagement?\"\n\n## Student prompts\n* \"How does the way I am using this tool change the way I am thinking?\"\n* \"Am I using this to expand my ability, or to bypass the struggle of learning?\"\n\n## Teacher notes\nAvoid looking for a \"silver bullet\" or a single \"best practice.\" The most effective way to use AI is to understand the nuance of how it interacts with specific tasks and cognitive processes."}</script>
+<script>
+(function(){
+"use strict";
+
+var DATA = JSON.parse(document.getElementById('md-data').textContent);
+
+/* ---------------- markdown renderer ---------------- */
+
+function parseFrontmatter(raw) {
+  var lines = raw.split('\n');
+  if (lines[0] !== '---') return { meta: {}, body: raw };
+  var end = -1;
+  for (var i = 1; i < lines.length; i++) {
+    if (lines[i] === '---') { end = i; break; }
+  }
+  if (end === -1) return { meta: {}, body: raw };
+  var meta = {};
+  for (var j = 1; j < end; j++) {
+    var line = lines[j];
+    var idx = line.indexOf(':');
+    if (idx === -1) continue;
+    var key = line.slice(0, idx).trim();
+    var val = line.slice(idx + 1).trim();
+    if (val.charAt(0) === '[' && val.charAt(val.length - 1) === ']') {
+      val = val.slice(1, -1).split(',').map(function(s){return s.trim();}).filter(Boolean);
+    } else if ((val.charAt(0) === '"' && val.charAt(val.length-1) === '"') || (val.charAt(0) === "'" && val.charAt(val.length-1) === "'")) {
+      val = val.slice(1, -1);
+    }
+    meta[key] = val;
+  }
+  var body = lines.slice(end + 1).join('\n');
+  return { meta: meta, body: body };
+}
+
+function firstH1(body) {
+  var m = body.match(/^#\s+(.+)$/m);
+  return m ? m[1].trim() : null;
+}
+
+function humanize(slug) {
+  var smallWords = {a:1,an:1,and:1,the:1,for:1,with:1,of:1,in:1,on:1,to:1,vs:1};
+  var upper = {ai:1,ux:1,mvp:1,moc:1};
+  return slug.split(/[-_]/).map(function(w, i){
+    var lw = w.toLowerCase();
+    if (upper[lw]) return lw.toUpperCase();
+    if (i > 0 && smallWords[lw]) return lw;
+    return lw ? lw.charAt(0).toUpperCase() + lw.slice(1) : lw;
+  }).join(' ');
+}
+
+function getTitle(filePath, meta, body) {
+  if (meta.title) return meta.title;
+  var h1 = firstH1(body);
+  if (h1) return h1;
+  if (meta.name) return humanize(meta.name);
+  var base = filePath.split('/').pop().replace(/\.md$/, '');
+  return humanize(base);
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function inline(text, resolveWikilink) {
+  var s = escapeHtml(text);
+
+  var codeStore = [];
+  s = s.replace(/`([^`]+)`/g, function(m, code){
+    codeStore.push(code);
+    return ' CODE' + (codeStore.length - 1) + ' ';
+  });
+
+  s = s.replace(/\[\[([^\]|]+)(\|([^\]]+))?\]\]/g, function(m, slug, _p, label){
+    var cleanSlug = slug.trim();
+    var displayLabel = (label || cleanSlug).trim();
+    var hit = resolveWikilink ? resolveWikilink(cleanSlug) : null;
+    if (hit) {
+      return '<a href="#' + encodeURIComponent(hit.path) + '" class="wikilink" data-path="' + hit.path + '">' + escapeHtml(displayLabel) + '</a>';
+    }
+    return '<span class="wikilink broken" title="No matching note">' + escapeHtml(displayLabel) + '</span>';
+  });
+
+  s = s.replace(/\[([^\]]+)\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g, function(m, label, url){
+    if (/^https?:\/\//i.test(url)) {
+      return '<a href="' + url + '" target="_blank" rel="noopener">' + label + '</a>';
+    }
+    return '<span class="wikilink broken" title="' + escapeHtml(url) + '">' + label + '</span>';
+  });
+
+  s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  s = s.replace(/__(.+?)__/g, '<strong>$1</strong>');
+  s = s.replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
+  s = s.replace(/(^|[^\w])_([^_\n]+)_(?!\w)/g, '$1<em>$2</em>');
+
+  s = s.replace(/ CODE(\d+) /g, function(m, i){ return '<code>' + escapeHtml(codeStore[Number(i)]) + '</code>'; });
+
+  return s;
+}
+
+function parseListItems(rawLines) {
+  var items = [];
+  for (var k = 0; k < rawLines.length; k++) {
+    var line = rawLines[k];
+    var m = line.match(/^(\s*)([-*]|\d+\.)\s+(.*)$/);
+    if (!m) continue;
+    var indent = m[1].replace(/\t/g, '    ').length;
+    var ordered = /\d+\./.test(m[2]);
+    var text = m[3];
+    var checked = null;
+    var cb = text.match(/^\[( |x|X)\]\s+(.*)$/);
+    if (cb) { checked = cb[1].toLowerCase() === 'x'; text = cb[2]; }
+    items.push({ indent: indent, ordered: ordered, checked: checked, text: text });
+  }
+  return items;
+}
+
+function buildList(items, start, minIndent, resolveWikilink) {
+  var ordered = items[start].ordered;
+  var tag = ordered ? 'ol' : 'ul';
+  var html = '<' + tag + '>';
+  var i = start;
+  while (i < items.length && items[i].indent >= minIndent) {
+    if (items[i].indent > minIndent) break;
+    var it = items[i];
+    var itemHtml = inline(it.text, resolveWikilink);
+    var checkboxHtml = it.checked === null ? '' : ('<input type="checkbox" disabled ' + (it.checked ? 'checked' : '') + '> ');
+    i++;
+    if (i < items.length && items[i].indent > minIndent) {
+      var nested = buildList(items, i, items[i].indent, resolveWikilink);
+      itemHtml += nested[0];
+      i = nested[1];
+    }
+    html += '<li>' + checkboxHtml + itemHtml + '</li>';
+  }
+  html += '</' + tag + '>';
+  return [html, i];
+}
+
+function renderList(rawLines, resolveWikilink) {
+  var items = parseListItems(rawLines);
+  if (!items.length) return '';
+  var result = buildList(items, 0, items[0].indent, resolveWikilink);
+  return result[0];
+}
+
+function isTableSep(line) {
+  return /^\s*\|?\s*:?-{2,}:?\s*(\|\s*:?-{2,}:?\s*)*\|?\s*$/.test(line) && line.indexOf('-') !== -1;
+}
+
+function splitRow(line) {
+  var s = line.trim();
+  if (s.charAt(0) === '|') s = s.slice(1);
+  if (s.charAt(s.length - 1) === '|') s = s.slice(0, -1);
+  return s.split('|').map(function(c){return c.trim();});
+}
+
+function renderTable(headerLine, sepLine, bodyLines, resolveWikilink) {
+  var headers = splitRow(headerLine);
+  var aligns = splitRow(sepLine).map(function(c){
+    var left = c.charAt(0) === ':'; var right = c.charAt(c.length - 1) === ':';
+    if (left && right) return 'center';
+    if (right) return 'right';
+    if (left) return 'left';
+    return '';
+  });
+  var html = '<table><thead><tr>';
+  headers.forEach(function(h, i){
+    var a = aligns[i] ? (' style="text-align:' + aligns[i] + '"') : '';
+    html += '<th' + a + '>' + inline(h, resolveWikilink) + '</th>';
+  });
+  html += '</tr></thead><tbody>';
+  bodyLines.forEach(function(line){
+    var cells = splitRow(line);
+    html += '<tr>';
+    headers.forEach(function(_, i){
+      var a = aligns[i] ? (' style="text-align:' + aligns[i] + '"') : '';
+      html += '<td' + a + '>' + inline(cells[i] || '', resolveWikilink) + '</td>';
+    });
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+  return html;
+}
+
+function renderMarkdown(body, resolveWikilink) {
+  var lines = body.split('\n');
+  var html = '';
+  var i = 0;
+  while (i < lines.length) {
+    var line = lines[i];
+
+    if (line.trim() === '') { i++; continue; }
+
+    var m = line.match(/^(#{1,6})\s+(.*)$/);
+    if (m) {
+      var level = m[1].length;
+      html += '<h' + level + '>' + inline(m[2], resolveWikilink) + '</h' + level + '>';
+      i++; continue;
+    }
+
+    if (line.indexOf('|') !== -1 && i + 1 < lines.length && isTableSep(lines[i + 1])) {
+      var header = line;
+      var sep = lines[i + 1];
+      var bodyRows = [];
+      var j = i + 2;
+      while (j < lines.length && lines[j].trim() !== '' && lines[j].indexOf('|') !== -1) {
+        bodyRows.push(lines[j]);
+        j++;
+      }
+      html += renderTable(header, sep, bodyRows, resolveWikilink);
+      i = j; continue;
+    }
+
+    if (/^(---+|\*\*\*+|___+)$/.test(line.trim())) {
+      html += '<hr>';
+      i++; continue;
+    }
+
+    if (/^\s*>/.test(line)) {
+      var quoteLines = [];
+      var jj = i;
+      while (jj < lines.length && /^\s*>/.test(lines[jj])) {
+        quoteLines.push(lines[jj].replace(/^\s*>\s?/, ''));
+        jj++;
+      }
+      html += '<blockquote><p>' + inline(quoteLines.join(' '), resolveWikilink) + '</p></blockquote>';
+      i = jj; continue;
+    }
+
+    if (/^\s*([-*]|\d+\.)\s+/.test(line)) {
+      var listLines = [];
+      var jjj = i;
+      while (jjj < lines.length) {
+        if (/^\s*([-*]|\d+\.)\s+/.test(lines[jjj])) {
+          listLines.push(lines[jjj]);
+          jjj++;
+        } else if (lines[jjj].trim() === '' && jjj + 1 < lines.length && /^\s*([-*]|\d+\.)\s+/.test(lines[jjj + 1])) {
+          jjj++;
+        } else {
+          break;
+        }
+      }
+      html += renderList(listLines, resolveWikilink);
+      i = jjj; continue;
+    }
+
+    // paragraph
+    var paraLines = [];
+    var p = i;
+    while (p < lines.length && lines[p].trim() !== ''
+      && !/^(#{1,6})\s+/.test(lines[p])
+      && !/^\s*([-*]|\d+\.)\s+/.test(lines[p])
+      && !/^\s*>/.test(lines[p])
+      && !/^(---+|\*\*\*+|___+)$/.test(lines[p].trim())
+      && !(lines[p].indexOf('|') !== -1 && p + 1 < lines.length && isTableSep(lines[p + 1]))) {
+      paraLines.push(lines[p]);
+      p++;
+    }
+    if (paraLines.length) {
+      html += '<p>' + inline(paraLines.join(' '), resolveWikilink) + '</p>';
+      i = p;
+    } else {
+      i++;
+    }
+  }
+  return html;
+}
+
+/* ---------------- app ---------------- */
+
+var FILES = Object.keys(DATA).sort();
+var GROUP_LABELS = { wiki: 'Wiki', artifacts: 'Artifacts' };
+var GROUP_ORDER = ['wiki', 'artifacts'];
+
+var slugIndex = {};
+var fileMeta = {}; // path -> {meta, body, title}
+
+FILES.forEach(function(p){
+  var parsed = parseFrontmatter(DATA[p]);
+  var title = getTitle(p, parsed.meta, parsed.body);
+  fileMeta[p] = { meta: parsed.meta, body: parsed.body, title: title };
+  var slug = p.split('/').pop().replace(/\.md$/, '').toLowerCase();
+  slugIndex[slug] = p;
+});
+
+function resolveWikilink(rawSlug) {
+  var slug = rawSlug.trim().toLowerCase();
+  var p = slugIndex[slug];
+  if (!p) return null;
+  return { path: p, title: fileMeta[p].title };
+}
+
+function groupOf(p) {
+  var parts = p.split('/');
+  return parts.length === 1 ? '' : parts[0];
+}
+
+function buildSidebar() {
+  var groups = {};
+  GROUP_ORDER.forEach(function(g){ groups[g] = []; });
+  FILES.forEach(function(p){
+    var g = groupOf(p);
+    if (!groups[g]) groups[g] = [];
+    groups[g].push(p);
+  });
+
+  var html = '';
+  GROUP_ORDER.forEach(function(g){
+    var items = groups[g];
+    if (!items || !items.length) return;
+    var label = GROUP_LABELS[g] || g;
+
+    var sorted = items.slice().sort(function(a,b){ return fileMeta[a].title.localeCompare(fileMeta[b].title); });
+    if (g === 'wiki') {
+      var idx = sorted.indexOf('wiki/index.md');
+      if (idx > 0) { sorted.splice(idx, 1); sorted.unshift('wiki/index.md'); }
+    }
+    html += '<details class="group" open><summary>' + label + '</summary>' + fileListHtml(sorted) + '</details>';
+  });
+
+  document.getElementById('sidebar').innerHTML = html;
+}
+
+function fileListHtml(paths) {
+  var html = '<ul class="filelist">';
+  paths.forEach(function(p){
+    html += '<li data-title="' + escapeHtml(fileMeta[p].title.toLowerCase()) + '" data-path="' + p + '">'
+      + '<a href="#' + encodeURIComponent(p) + '" data-path="' + p + '">' + escapeHtml(fileMeta[p].title) + '</a></li>';
+  });
+  html += '</ul>';
+  return html;
+}
+
+function breadcrumbFor(p) {
+  var g = groupOf(p);
+  var segs = ['<a href="#">Home</a>', GROUP_LABELS[g] || g];
+  return segs.join(' <span style="opacity:.4">/</span> ');
+}
+
+function metaBoxHtml(meta) {
+  var keys = Object.keys(meta).filter(function(k){ return k !== 'title'; });
+  if (!keys.length) return '';
+  var html = '<div class="meta-box">';
+  keys.forEach(function(k){
+    var v = meta[k];
+    var vHtml;
+    if (Array.isArray(v)) {
+      vHtml = v.map(function(t){ return '<span class="chip">' + escapeHtml(t) + '</span>'; }).join('');
+    } else if (k === 'description') {
+      vHtml = '<em>' + escapeHtml(v) + '</em>';
+    } else {
+      vHtml = escapeHtml(v);
+    }
+    html += '<div class="meta-row"><span class="k">' + escapeHtml(k) + '</span><span class="v">' + vHtml + '</span></div>';
+  });
+  html += '</div>';
+  return html;
+}
+
+function backlinksHtml(p) {
+  var slug = p.split('/').pop().replace(/\.md$/, '').toLowerCase();
+  var re = new RegExp('\\[\\[\\s*' + slug.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\s*(\\||\\])', 'i');
+  var linkedFrom = FILES.filter(function(other){
+    return other !== p && re.test(DATA[other]);
+  });
+  var html = '<div class="backlinks"><h4>Linked from</h4>';
+  if (!linkedFrom.length) {
+    html += '<p class="empty">No other notes link here.</p>';
+  } else {
+    html += '<ul>' + linkedFrom.map(function(other){
+      return '<li><a href="#' + encodeURIComponent(other) + '" data-path="' + other + '">' + escapeHtml(fileMeta[other].title) + '</a> <span style="color:var(--text-faint)">(' + other + ')</span></li>';
+    }).join('') + '</ul>';
+  }
+  html += '</div>';
+  return html;
+}
+
+function renderHome() {
+  document.title = 'Notes';
+  var groups = {};
+  FILES.forEach(function(p){ var g = groupOf(p); groups[g] = (groups[g]||0)+1; });
+  var html = '<h1>Notes</h1>';
+  html += '<p>A plain-text browser for the curriculum source files in this project. Pick a note from the sidebar, or open a file below. Wikilinks (like <code>[[stakeholder-needs-mapping]]</code>) are clickable and jump straight to the linked note.</p>';
+  html += '<div class="home-stats">';
+  html += '<div class="stat"><div class="num">' + FILES.length + '</div><div class="lab">Files</div></div>';
+  GROUP_ORDER.forEach(function(g){
+    if (!groups[g]) return;
+    html += '<div class="stat"><div class="num">' + groups[g] + '</div><div class="lab">' + (GROUP_LABELS[g] || g) + '</div></div>';
+  });
+  html += '</div>';
+  html += '<h2>Start here</h2><ul>';
+  ['wiki/index.md'].forEach(function(p){
+    if (fileMeta[p]) html += '<li><a href="#' + encodeURIComponent(p) + '" data-path="' + p + '">' + escapeHtml(fileMeta[p].title) + '</a></li>';
+  });
+  html += '</ul>';
+  document.getElementById('content').innerHTML = html;
+  setActiveSidebarLink(null);
+}
+
+var showingSource = {};
+
+function renderFile(p) {
+  if (!fileMeta[p]) { renderHome(); return; }
+  var fm = fileMeta[p];
+  document.title = fm.title + ' · Notes';
+
+  var html = '<div class="breadcrumb">' + breadcrumbFor(p) + '</div>';
+  html += metaBoxHtml(fm.meta);
+  html += '<button id="source-toggle" data-path="' + p + '">' + (showingSource[p] ? 'Show rendered' : 'Show source') + '</button>';
+  html += '<article id="article-body">';
+  if (showingSource[p]) {
+    html += '<pre class="source">' + escapeHtml(DATA[p]) + '</pre>';
+  } else {
+    html += renderMarkdown(fm.body, resolveWikilink);
+  }
+  html += '</article>';
+  html += backlinksHtml(p);
+
+  document.getElementById('content').innerHTML = html;
+  document.getElementById('content').scrollTop = 0;
+  window.scrollTo(0, 0);
+  setActiveSidebarLink(p);
+}
+
+function setActiveSidebarLink(p) {
+  var links = document.querySelectorAll('.filelist a');
+  links.forEach(function(a){
+    a.classList.toggle('active', a.getAttribute('data-path') === p);
+  });
+}
+
+function currentPathFromHash() {
+  var h = location.hash.replace(/^#/, '');
+  if (!h) return null;
+  try { return decodeURIComponent(h); } catch (e) { return h; }
+}
+
+function route() {
+  var p = currentPathFromHash();
+  if (p && fileMeta[p]) renderFile(p);
+  else renderHome();
+}
+
+window.addEventListener('hashchange', route);
+
+document.addEventListener('click', function(e){
+  var toggle = e.target.closest('#source-toggle');
+  if (toggle) {
+    var p = toggle.getAttribute('data-path');
+    showingSource[p] = !showingSource[p];
+    renderFile(p);
+    return;
+  }
+  var closeSidebarOn = e.target.closest('.filelist a, .wikilink[data-path]');
+  if (closeSidebarOn && window.innerWidth <= 780) {
+    document.getElementById('sidebar').classList.remove('open');
+  }
+});
+
+document.getElementById('search').addEventListener('input', function(e){
+  var q = e.target.value.trim().toLowerCase();
+  var items = document.querySelectorAll('.filelist li');
+  items.forEach(function(li){
+    var match = !q || li.getAttribute('data-title').indexOf(q) !== -1;
+    li.classList.toggle('no-match', !match);
+  });
+  document.querySelectorAll('details.group, details.subgroup').forEach(function(d){
+    var anyVisible = d.querySelectorAll('.filelist li:not(.no-match)').length > 0;
+    if (q) d.open = anyVisible;
+  });
+});
+
+document.getElementById('sidebar-toggle').addEventListener('click', function(){
+  document.getElementById('sidebar').classList.toggle('open');
+});
+
+document.getElementById('theme-toggle').addEventListener('click', function(){
+  var html = document.documentElement;
+  var next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  if (next === 'dark') html.setAttribute('data-theme', 'dark');
+  else html.removeAttribute('data-theme');
+  try { localStorage.setItem('notes-theme', next); } catch(e){}
+});
+
+try {
+  var saved = localStorage.getItem('notes-theme');
+  if (saved === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+} catch(e){}
+
+buildSidebar();
+route();
+
+})();
+</script>
+</body>
+</html>
