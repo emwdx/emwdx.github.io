@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ohio 2026 — Port Clinton Itinerary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@500;600&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#12293B;
+    --navy-2:#1B3C52;
+    --teal:#2F7C82;
+    --sand:#F3ECDB;
+    --sand-deep:#E8DEC4;
+    --card:#FFFDF8;
+    --ink:#1D2B32;
+    --ink-soft:#5B6C74;
+    --coral:#E4572E;
+    --line:#D7CDAF;
+    --line-soft:#ECE3C8;
+    --rope:#B7A97C;
+    --shadow:0 1px 2px rgba(18,41,59,.08), 0 4px 10px rgba(18,41,59,.06);
+    --pxmin: 1.4; /* pixels per minute of the timeline */
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--sand);
+    color:var(--ink);
+    font-family:'Work Sans',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important;}
+  }
+
+  /* ---------- Header ---------- */
+  header.board{
+    background:
+      radial-gradient(1200px 300px at 20% -40%, rgba(255,255,255,.06), transparent 60%),
+      linear-gradient(180deg, var(--navy) 0%, var(--navy-2) 100%);
+    color:#F4EFE0;
+    padding:34px 24px 22px;
+    position:relative; overflow:hidden;
+    border-bottom:6px solid var(--rope);
+  }
+  header.board::before{
+    content:""; position:absolute; inset:0;
+    background-image:repeating-linear-gradient(90deg, rgba(255,255,255,.025) 0 2px, transparent 2px 46px);
+    pointer-events:none;
+  }
+  .board-inner{max-width:1300px;margin:0 auto;position:relative;}
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace; font-size:11.5px; letter-spacing:.16em;
+    text-transform:uppercase; color:#C9DCD9; display:flex; align-items:center; gap:8px;
+  }
+  .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--coral);display:inline-block;}
+  h1{
+    font-family:'Archivo Black',sans-serif; font-weight:400;
+    font-size:clamp(34px,6vw,58px); letter-spacing:.01em; margin:6px 0 4px;
+    text-shadow:0 1px 0 rgba(255,255,255,.08), 0 3px 10px rgba(0,0,0,.35);
+  }
+  .subtitle{font-size:15px; color:#CBD9D5; margin:0 0 18px;}
+  .route{position:relative; height:26px; margin-top:6px;}
+  .route svg{width:100%;height:100%;display:block;}
+
+  /* ---------- Toolbar / legend ---------- */
+  .toolbar{
+    max-width:1300px; margin:0 auto; display:flex; flex-wrap:wrap; gap:10px;
+    align-items:center; padding:14px 24px;
+  }
+  .toolbar .hint{font-size:13px; color:var(--ink-soft); margin-right:auto; max-width:600px; line-height:1.45;}
+  .toolbar .hint b{color:var(--ink);}
+
+  .legend{
+    max-width:1300px; margin:0 auto; padding:0 24px 6px;
+    display:flex; gap:18px; flex-wrap:wrap; font-size:12.5px; color:var(--ink-soft);
+  }
+  .legend span{display:inline-flex; align-items:center; gap:6px;}
+  .swatch{width:11px;height:11px;border-radius:3px;display:inline-block;}
+  .swatch.travel{background:#6E8AA6;}
+  .swatch.activity{background:var(--teal);}
+  .swatch.meal{background:#C98A3B;}
+  .swatch.match{background:#2E8B47;}
+  .swatch.work{background:repeating-linear-gradient(135deg, #C9BEA0 0 6px, #DCD3B8 6px 12px);}
+
+  /* ---------- Board ---------- */
+  .board-wrap{max-width:1300px; margin:0 auto 60px; padding:0 24px;}
+  .grid-scroll{
+    overflow-x:auto; overflow-y:hidden;
+    border:1px solid var(--line); border-radius:10px;
+    background:var(--card); box-shadow:var(--shadow);
+  }
+  .board-grid{
+    display:grid;
+    grid-template-columns: 66px repeat(8, minmax(148px,1fr));
+    grid-template-rows: 26px 62px auto;
+    min-width:1260px;
+  }
+  .brk{background:var(--sand-deep); border-bottom:1px solid var(--line); grid-row:1;}
+  .dayhead{
+    grid-row:2; position:sticky; top:0; z-index:5;
+    background:var(--navy); color:#F4EFE0; padding:10px 8px 9px; text-align:center;
+    border-left:1px solid rgba(255,255,255,.08);
+  }
+  .dayhead.gap-after{border-right:3px dashed var(--rope);}
+  .dayhead .dow{font-family:'Archivo Black',sans-serif; font-weight:400; font-size:14px; letter-spacing:.02em;}
+  .dayhead .md{font-family:'IBM Plex Mono',monospace; font-size:11px; color:#B9CFCB; margin-top:2px;}
+
+  .timegutter{
+    grid-row:3; grid-column:1; position:sticky; left:0; z-index:4;
+    background:var(--sand-deep); border-right:1px solid var(--line);
+  }
+  .corner{grid-row:1/3; grid-column:1; position:sticky; left:0; top:0; z-index:6; background:var(--navy);}
+
+  .timelabel{
+    position:absolute; right:8px; transform:translateY(-50%);
+    font-family:'IBM Plex Mono',monospace; color:var(--ink-soft); font-size:10.5px; white-space:nowrap;
+  }
+  .timelabel.hour{color:var(--navy); font-weight:600; font-size:11.5px;}
+
+  .daycol{
+    grid-row:3; position:relative; border-left:1px dashed var(--line-soft);
+    background-repeat:repeat-y;
+  }
+  .daycol.gap-after{border-right:3px dashed var(--rope);}
+
+  .workband{
+    position:absolute; left:0; right:0;
+    background:repeating-linear-gradient(135deg, #C9BEA0 0 7px, #DCD3B8 7px 14px);
+    border-top:1px solid var(--rope); border-bottom:1px solid var(--rope);
+    display:flex; align-items:center; justify-content:center; pointer-events:none; z-index:0;
+  }
+  .workband .lbl{
+    font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase;
+    color:#5B5330; white-space:nowrap;
+  }
+
+  .card{
+    position:absolute; left:4px; right:4px; z-index:1;
+    background:var(--card); border:1px solid var(--line); border-left:4px solid var(--teal);
+    border-radius:8px; padding:5px 8px 6px; font-size:12.5px; line-height:1.3;
+    box-shadow:0 1px 2px rgba(18,41,59,.06); cursor:pointer; user-select:none;
+    overflow:hidden;
+  }
+  .card.has-link:hover{box-shadow:var(--shadow); border-color:var(--teal);}
+  .card.travel{border-left-color:#6E8AA6;}
+  .card.meal{border-left-color:#C98A3B;}
+  .card.match{border-left-color:#2E8B47; background:linear-gradient(180deg,#FFFDF8,#F3FBF4);}
+  .card .row1{display:flex; align-items:flex-start; gap:5px;}
+  .card .ico{font-size:12.5px; line-height:1.3;}
+  .card .title{font-weight:600; color:var(--ink);}
+  .card.has-link .title{color:var(--navy); border-bottom:1px dotted var(--teal);}
+  .card .ext{font-size:10px; opacity:.6; margin-left:2px;}
+  .card .timespan{margin-top:2px; font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--ink-soft);}
+  .card .cost{margin-top:1px; font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--ink-soft);}
+
+  footer{max-width:1300px; margin:0 auto 50px; padding:0 24px; font-size:12px; color:var(--ink-soft); line-height:1.6;}
+  footer a{color:var(--navy);}
+  footer code{background:var(--sand-deep); padding:1px 5px; border-radius:4px; font-size:11px;}
+
+  @media (max-width:640px){
+    header.board{padding:26px 16px 18px;}
+    .toolbar,.legend,.board-wrap,footer{padding-left:14px; padding-right:14px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="board">
+  <div class="board-inner">
+    <div class="eyebrow"><span class="dot"></span>DEPARTURE BOARD · PORT CLINTON, OH</div>
+    <h5 id="title">The Great Weinberg/Boudberg/Loveberg and Justin Ohio 2026 Extravaganza</h5>
+    <p class="subtitle" id="subtitle">Loading…</p>
+    <div class="route">
+      <svg viewBox="0 0 800 26" preserveAspectRatio="none">
+        <line x1="0" y1="13" x2="800" y2="13" stroke="#3E5A6C" stroke-width="1.5" stroke-dasharray="1 7" stroke-linecap="round"/>
+        <text x="0" y="19" font-size="16">⛴️</text>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<div class="toolbar">
+  <div class="hint"><b>Click a card</b> to open its link in a new tab.</div>
+</div>
+
+<div class="legend">
+  <span><i class="swatch travel"></i>Travel</span>
+  <span><i class="swatch activity"></i>Activity</span>
+  <span><i class="swatch meal"></i>Meal</span>
+  <span><i class="swatch match"></i>Match (fixed broadcast time)</span>
+  <span><i class="swatch work"></i>Fixed work block (10:00 AM–7:00 PM, 1 hr for lunch)</span>
+</div>
+
+<div class="board-wrap">
+  <div class="grid-scroll">
+    <div class="board-grid" id="grid"></div>
+  </div>
+</div>
+
+
+
+<script>
+/* ===== TRIP DATA START — replace everything between these markers with your exported JSON to update the page ===== */
+const ORIGINAL_DATA = {
+  "title": "The Great Weinberg/Boudberg/Loveberg and Justin Ohio 2026 Extravaganza",
+  "subtitle": "Port Clinton · Jul 18–25",
+  "startTime": "05:00",
+  "endTime": "21:00",
+  "days": [
+    { "id": "d0", "dow": "Saturday",  "md": "Jul 18", "locked": true },
+    { "id": "d1", "dow": "Sunday",    "md": "Jul 19", "locked": true },
+    { "id": "d2", "dow": "Monday",    "md": "Jul 20", "locked": false, "work": { "start": "10:00", "end": "19:00" } },
+    { "id": "d3", "dow": "Tuesday",   "md": "Jul 21", "locked": false, "work": { "start": "10:00", "end": "19:00" } },
+    { "id": "d4", "dow": "Wednesday", "md": "Jul 22", "locked": false, "work": { "start": "10:00", "end": "19:00" } },
+    { "id": "d5", "dow": "Thursday",  "md": "Jul 23", "locked": true },
+    { "id": "d6", "dow": "Friday",    "md": "Jul 24", "locked": true },
+    { "id": "d7", "dow": "Saturday",  "md": "Jul 25", "locked": true }
+  ],
+  "activities": [
+    { "id": "afinal", "day": "d1", "start": "15:00", "end": "17:30", "title": "World Cup Final", "type": "match", "cost": "", "url": "https://worldcupwiki.com/2026-fifa-world-cup-final/" },
+    { "id": "a0",  "day": "d0", "start": "05:00", "end": "08:30", "title": "Lovebergs: Frontier 1915 MCO to CLE", "type": "travel", "cost": "", "url": "" },
+    { "id": "a1",  "day": "d1", "start": "08:30", "end": "09:00", "title": "Ferry to Put-in-Bay", "type": "travel", "cost": "$18/$3", "url": "https://millerferry.com/put-in-bay/put-in-bay-schedule/" },
+    { "id": "a2",  "day": "d4", "start": "08:30", "end": "09:00", "title": "East Harbor State Park", "type": "activity", "cost": "", "url": "https://ohiodnr.gov/go-and-do/plan-a-visit/find-a-property/east-harbor-state-park" },
+    { "id": "a3",  "day": "d1", "start": "09:00", "end": "09:30", "title": "Golf Cart", "type": "activity", "cost": "$150", "url": "https://www.esputinbaygolfcarts.com/full-day-cart-rentals/" },
+    { "id": "a4",  "day": "d6", "start": "09:00", "end": "09:30", "title": "Ferry to Kelleys Island", "type": "travel", "cost": "$24/$16", "url": "https://kelleysislandferry.com/schedule/" },
+    { "id": "a5",  "day": "d1", "start": "09:30", "end": "10:00", "title": "Butterfly House", "type": "activity", "cost": "$13/$7", "url": "https://perryscave.com/attractions/" },
+    { "id": "a6",  "day": "d6", "start": "09:30", "end": "10:00", "title": "Golf Cart", "type": "activity", "cost": "$20/hr", "url": "https://www.kelleysislandseawaymarina.com/pricing-1" },
+    { "id": "a7",  "day": "d2", "start": "9:00", "end": "10:30", "title": "African Safari Wildlife Park", "type": "activity", "cost": "$33/$27", "url": "https://africansafariwildlifepark.com/visit/hours/" },
+    { "id": "a8",  "day": "d3", "start": "10:00", "end": "11:30", "title": "Liberty Aviation Museum", "type": "activity", "cost": "$14/$8", "url": "http://www.libertyaviationmuseum.org/visit.html" },
+    { "id": "a11", "day": "d6", "start": "10:30", "end": "11:00", "title": "Glacial Grooves", "type": "activity", "cost": "", "url": "https://kelleysisland.com/listing/glacial-grooves/" },
+    { "id": "a12", "day": "d6", "start": "11:00", "end": "11:30", "title": "Alvar Preserve", "type": "activity", "cost": "", "url": "https://ohiodnr.gov/go-and-do/plan-a-visit/find-a-property/north-shore-alvar-state-nature-preserve" },
+    { "id": "a13", "day": "d7", "start": "11:00", "end": "11:30", "title": "Drive to CLE", "type": "travel", "cost": "", "url": "" },
+    { "id": "a14", "day": "d1", "start": "11:30", "end": "12:00", "title": "Goat, Soup & Whiskey", "type": "meal", "cost": "", "url": "https://soupandwhiskey.wixsite.com/goatsoupandwhiskey/put-in-bay-menu" },
+    { "id": "a15", "day": "d6", "start": "11:30", "end": "12:30", "title": "Kelleys Island State Park", "type": "activity", "cost": "", "url": "https://kelleysislandchamber.com/kelleys-island-state-park/" },
+    { "id": "a16", "day": "d4", "start": "12:00", "end": "13:30", "title": "Merry-Go-Round Museum", "type": "activity", "cost": "$10/$6", "url": "https://merrygoroundmuseum.org/visit" },
+    { "id": "a18", "day": "d3", "start": "11:30", "end": "12:30", "title": "Fast Eddie's", "type": "meal", "cost": "", "url": "https://www.fasteddiescatawba.com/sports-park" },
+
+    { "id": "a20", "day": "d5", "start": "8:00", "end": "16:00", "title": "Cedar Point", "type": "activity", "cost": "$57", "url": "https://www.sixflags.com/cedarpoint/daily-tickets" },
+    { "id": "a21", "day": "d6", "start": "12:30", "end": "13:00", "title": "KIWC", "type": "activity", "cost": "", "url": "https://www.kelleysislandwineco.com/" },
+    { "id": "a22", "day": "d3", "start": "12:30", "end": "13:30", "title": "Sports Park", "type": "activity", "cost": "$8-9/$3-5", "url": "" },
+    { "id": "a23", "day": "d4", "start": "13:00", "end": "13:30", "title": "Toft's Ice Cream", "type": "meal", "cost": "", "url": "https://toftdairy.com/scoop-shops/" },
+    { "id": "a24", "day": "d1", "start": "11:00", "end": "12:30", "title": "Crystal Cave", "type": "activity", "cost": "$14/$8", "url": "https://heinemanswinery.com/crystal-cave/" },
+    { "id": "a25", "day": "d2", "start": "13:30", "end": "14:00", "title": "Lakeview Park", "type": "activity", "cost": "", "url": "https://www.portclinton.com/business_detail_t30_r25.php" },
+    { "id": "a26", "day": "d6", "start": "13:30", "end": "14:00", "title": "Scheele Preserve", "type": "activity", "cost": "", "url": "https://kelleysisland.com/listing/scheele-preserve/" },
+    { "id": "a27", "day": "d6", "start": "14:30", "end": "15:00", "title": "North Pond", "type": "activity", "cost": "", "url": "https://ohiodnr.gov/go-and-do/plan-a-visit/find-a-property/north-pond-state-nature-preserve" },
+    { "id": "a28", "day": "d7", "start": "14:28", "end": "17:24", "title": "Lovebergs: Frontier 3916 to MCO", "type": "travel", "cost": "", "url": "" },
+    { "id": "a29", "day": "d6", "start": "15:00", "end": "15:30", "title": "East Quarry Trail", "type": "activity", "cost": "", "url": "https://kelleysislandchamber.com/east-quarry-trails-horseshoe-lake/" },
+    { "id": "a30", "day": "d0", "start": "18:30", "end": "19:00", "title": "Twin Oast Brewing", "type": "meal", "cost": "", "url": "https://www.twinoast.com/" },
+    { "id": "a31", "day": "d1", "start": "18:30", "end": "19:00", "title": "Dinner", "type": "meal", "cost": "", "url": "" },
+    { "id": "a32", "day": "d2", "start": "18:30", "end": "19:00", "title": "Dinner", "type": "meal", "cost": "", "url": "" },
+    { "id": "a33", "day": "d3", "start": "18:30", "end": "19:00", "title": "Dinner", "type": "meal", "cost": "", "url": "" },
+    { "id": "a34", "day": "d4", "start": "18:30", "end": "19:00", "title": "Dinner", "type": "meal", "cost": "", "url": "" },
+    { "id": "a35", "day": "d5", "start": "18:30", "end": "19:00", "title": "Dinner", "type": "meal", "cost": "", "url": "" },
+    { "id": "a36", "day": "d6", "start": "18:30", "end": "19:00", "title": "Dinner", "type": "meal", "cost": "", "url": "" },
+  { "id": "a36", "day": "d7", "start": "18:15", "end": "20:13", "title": "Boudbergs: Delta 880 to ATL", "type": "travel", "cost": "", "url": "" }
+  
+  ]
+};
+/* ===== TRIP DATA END ===== */
+
+let DATA = JSON.parse(JSON.stringify(ORIGINAL_DATA));
+
+document.getElementById('title').textContent = DATA.title;
+document.getElementById('subtitle').textContent = DATA.subtitle;
+
+const PXMIN = 1.4;
+
+function toMin(hhmm){
+  const [h,m] = hhmm.split(':').map(Number);
+  return h*60 + m;
+}
+function fmtTime(min){
+  let h=Math.floor(min/60), mm=Math.round(min%60);
+  const ap = h>=12 ? 'PM':'AM';
+  let h12 = h%12; if(h12===0) h12=12;
+  return h12 + (mm ? ':'+String(mm).padStart(2,'0') : '') + ' ' + ap;
+}
+
+function globalStart(){ return toMin(DATA.startTime); }
+function globalEnd(){ return toMin(DATA.endTime); }
+
+function iconFor(a){
+  const t=(a.title||'').toLowerCase();
+  if(a.type==='match') return '⚽';
+  if(t.includes('flight')) return '✈️';
+  if(t.includes('ferry')) return '⛴️';
+  if(t.includes('drive')) return '🚗';
+  if(a.type==='meal') return '🍽️';
+  if(a.type==='activity') return '📍';
+  return '•';
+}
+
+function costLine(cost){
+  if(!cost) return '';
+  const m = cost.match(/^\$([\d.\-]+)\/\$([\d.\-]+)$/);
+  if(m) return `Adult $${m[1]} · Kid $${m[2]}`;
+  return cost.replace(/^\$/, 'Cost: $');
+}
+
+function render(){
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  const gStart = globalStart(), gEnd = globalEnd();
+  const totalH = (gEnd - gStart) * PXMIN;
+
+  grid.style.gridTemplateColumns = `66px repeat(${DATA.days.length}, minmax(148px,1fr))`;
+
+  // corner (sticky top-left, spans caption+header rows)
+  const corner = document.createElement('div');
+  corner.className = 'corner';
+  grid.appendChild(corner);
+
+  // row 1: caption strip
+  DATA.days.forEach((d,i)=>{
+    const cap = document.createElement('div');
+    cap.className='brk' + (d.gapAfter ? ' gap-after' : '');
+    cap.style.gridColumn = `${2+i}`;
+    grid.appendChild(cap);
+  });
+
+  // row 2: day headers
+  DATA.days.forEach((d,i)=>{
+    const h = document.createElement('div');
+    h.className='dayhead' + (d.gapAfter ? ' gap-after' : '');
+    h.style.gridColumn = `${2+i}`;
+    h.innerHTML = `<div class="dow">${d.dow}</div><div class="md">${d.md}</div>`;
+    grid.appendChild(h);
+  });
+
+  // row 3: time gutter
+  const gutter = document.createElement('div');
+  gutter.className = 'timegutter';
+  gutter.style.height = totalH + 'px';
+  for(let m=gStart; m<=gEnd; m+=30){
+    const lbl = document.createElement('div');
+    const isHour = m%60===0;
+    lbl.className = 'timelabel' + (isHour ? ' hour' : '');
+    lbl.style.top = ((m-gStart)*PXMIN) + 'px';
+    lbl.textContent = isHour ? fmtTime(m).replace(':00','') : fmtTime(m);
+    gutter.appendChild(lbl);
+  }
+  grid.appendChild(gutter);
+
+  // row 3: day columns
+  const hourPx = 60*PXMIN, halfPx = 30*PXMIN;
+  DATA.days.forEach((d,ci)=>{
+    const col = document.createElement('div');
+    col.className = 'daycol' + (d.gapAfter ? ' gap-after' : '');
+    col.style.gridColumn = `${2+ci}`;
+    col.style.height = totalH + 'px';
+    col.style.backgroundImage =
+      `repeating-linear-gradient(to bottom, var(--line) 0 1px, transparent 1px ${hourPx}px),` +
+      `repeating-linear-gradient(to bottom, var(--line-soft) 0 1px, transparent 1px ${halfPx}px)`;
+    col.style.backgroundPosition = `0 0, 0 ${halfPx}px`;
+    col.dataset.day = d.id;
+
+    if(d.work){
+      const ws = toMin(d.work.start), we = toMin(d.work.end);
+      const band = document.createElement('div');
+      band.className = 'workband';
+      band.style.top = ((ws-gStart)*PXMIN) + 'px';
+      band.style.height = ((we-ws)*PXMIN) + 'px';
+      band.innerHTML = `<span class="lbl">WORK · ${fmtTime(ws)}–${fmtTime(we)}</span>`;
+      col.appendChild(band);
+    }
+
+    grid.appendChild(col);
+  });
+
+  // cards
+  DATA.activities.forEach(a=>{
+    const col = grid.querySelector(`.daycol[data-day="${a.day}"]`);
+    if(!col) return;
+    const s = toMin(a.start), e = toMin(a.end || a.start);
+    const dur = Math.max(e-s, 15);
+    const card = document.createElement('div');
+    card.className = 'card ' + a.type + (a.url ? ' has-link' : '');
+    card.dataset.id = a.id;
+    card.style.top = ((s-gStart)*PXMIN) + 'px';
+    card.style.height = (dur*PXMIN) + 'px';
+    const cl = costLine(a.cost);
+    card.innerHTML = `<div class="row1"><span class="ico">${iconFor(a)}</span><span class="title">${a.title}</span>${a.url?'<span class="ext">↗</span>':''}</div>
+      <div class="timespan">${fmtTime(s)} – ${fmtTime(e)}</div>
+      ${cl?`<div class="cost">${cl}</div>`:''}`;
+    if(a.url){
+      card.addEventListener('click', ()=> window.open(a.url, '_blank', 'noopener'));
+    }
+    col.appendChild(card);
+  });
+}
+
+render();
+</script>
+</body>
+</html>
