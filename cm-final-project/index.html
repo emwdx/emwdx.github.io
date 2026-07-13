@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presentation Assessment Rubric</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        .modal-bg { backdrop-filter: blur(4px); }
+        .flag-btn.flagged { color: #ef4444; }
+        /* Hide arrows on number inputs for the timer */
+        .hide-arrows::-webkit-inner-spin-button, .hide-arrows::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        .hide-arrows { -moz-appearance: textfield; }
+    </style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-200 px-6 py-3 flex flex-wrap items-center justify-between shadow-sm z-10 gap-4">
+        <div class="flex items-center gap-4">
+            <i class="fa-solid fa-graduation-cap text-blue-600 text-2xl"></i>
+            <h1 class="text-xl font-bold text-gray-800">CM Presentation Rubrics</h1>
+        </div>
+        
+        <!-- Center/Right Controls -->
+        <div class="flex items-center gap-4 ml-auto">
+            
+            <!-- Timer Component -->
+            <div id="timer-container" class="flex items-center gap-2 bg-gray-50 rounded-md border border-gray-300 px-3 py-1 transition-colors">
+                <i class="fa-solid fa-stopwatch text-gray-400"></i>
+                <div class="flex items-center text-lg font-mono font-bold">
+                    <input type="number" id="timer-min" value="05" min="0" max="99" class="w-7 bg-transparent text-center focus:outline-none focus:bg-white focus:ring-1 focus:ring-blue-400 rounded appearance-none hide-arrows" onchange="updateDefaultTime()">:
+                    <input type="number" id="timer-sec" value="15" min="0" max="59" class="w-7 bg-transparent text-center focus:outline-none focus:bg-white focus:ring-1 focus:ring-blue-400 rounded appearance-none hide-arrows" onchange="updateDefaultTime()">
+                </div>
+                <button id="timer-play-btn" onclick="toggleTimer()" class="text-blue-600 hover:text-blue-800 w-6 flex justify-center"><i class="fa-solid fa-play"></i></button>
+                <button onclick="resetTimer()" class="text-gray-400 hover:text-gray-700 w-5 flex justify-center"><i class="fa-solid fa-rotate-right text-sm"></i></button>
+            </div>
+
+            <div class="h-6 border-l border-gray-300 mx-1"></div>
+
+            <!-- Class & Export Controls -->
+            <div class="relative flex items-center bg-gray-100 rounded-md border border-gray-300 px-3 py-1.5">
+                <i class="fa-solid fa-users text-gray-500 mr-2"></i>
+                <select id="class-selector" class="bg-transparent font-medium focus:outline-none w-48 text-gray-700 cursor-pointer text-sm" onchange="selectClass(this.value)">
+                    <option value="">Select a class...</option>
+                </select>
+            </div>
+            <button onclick="showModal('classModal')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-md font-medium text-sm transition shadow-sm whitespace-nowrap">
+                <i class="fa-solid fa-plus mr-1"></i> New Class
+            </button>
+            <button onclick="exportCSV()" class="text-gray-600 hover:text-green-600 transition p-1 ml-1" title="Export Class to CSV">
+                <i class="fa-solid fa-file-export text-lg"></i>
+            </button>
+            <label class="text-gray-600 hover:text-blue-600 transition cursor-pointer p-1" title="Import Class from CSV">
+                <i class="fa-solid fa-file-import text-lg"></i>
+                <input type="file" id="csv-upload" accept=".csv" class="hidden" onchange="importCSV(event)">
+            </label>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <div class="flex flex-1 overflow-hidden">
+        
+        <!-- Sidebar: Students -->
+        <aside class="w-72 bg-white border-r border-gray-200 flex flex-col h-full shadow-sm z-0">
+            <div id="student-actions-header" class="p-4 border-b border-gray-100 bg-gray-50 hidden">
+                <div class="flex justify-between items-center mb-3">
+                    <h2 class="font-semibold text-gray-700">Students</h2>
+                    <div class="flex items-center gap-3">
+                        <button onclick="showRenameClass()" class="text-gray-500 hover:text-blue-600 text-xs font-medium" title="Rename Class">
+                            <i class="fa-solid fa-pen-to-square"></i> Rename
+                        </button>
+                        <button onclick="confirmDeleteClass()" class="text-red-500 hover:text-red-700 text-xs font-medium" title="Delete Class">
+                            <i class="fa-solid fa-trash"></i> Delete Class
+                        </button>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="showModal('singleStudentModal')" class="flex-1 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 py-1.5 rounded text-sm font-medium transition shadow-sm">
+                        + Single
+                    </button>
+                    <button onclick="showModal('bulkStudentModal')" class="flex-1 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 py-1.5 rounded text-sm font-medium transition shadow-sm">
+                        + Bulk
+                    </button>
+                </div>
+            </div>
+            
+            <div id="student-list" class="flex-1 overflow-y-auto p-2 scrollbar-hide space-y-1">
+                <div class="p-6 text-center text-gray-400 text-sm italic mt-10" id="no-class-msg">
+                    Create or select a class first.
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content: Rubric -->
+        <main class="flex-1 overflow-y-auto bg-gray-50 relative p-6 pb-24 scrollbar-hide">
+            <div id="no-student-selected" class="h-full flex flex-col items-center justify-center text-gray-400">
+                <i class="fa-solid fa-clipboard-check text-6xl mb-4 text-gray-300"></i>
+                <h2 class="text-xl font-medium">No Student Selected</h2>
+                <p class="text-sm mt-2">Select a student from the sidebar to begin assessing.</p>
+            </div>
+
+            <div id="evaluator-content" class="hidden max-w-5xl mx-auto">
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-5 mb-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <h2 class="text-2xl font-bold text-gray-800" id="eval-student-name">Student Name</h2>
+                        <button onclick="confirmDeleteStudent()" class="text-gray-400 hover:text-red-500 transition text-sm">
+                            <i class="fa-solid fa-trash mr-1"></i> Remove Student
+                        </button>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <!-- Overall Notes -->
+                        <div class="flex flex-col">
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Overall Notes</label>
+                            <textarea id="overall-notes" oninput="updateStudentData('overall', this.value)" class="flex-1 w-full border border-gray-300 rounded-md p-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-y min-h-[120px]" placeholder="Add general presentation feedback here..."></textarea>
+                        </div>
+                        <!-- Transcript -->
+                        <div class="flex flex-col">
+                            <label class="block text-sm font-semibold text-gray-700 mb-1 flex justify-between items-end">
+                                Transcript 
+                                <span class="text-[10px] font-normal text-gray-400">Pasted output will be saved</span>
+                            </label>
+                            <textarea id="transcript-text" oninput="updateStudentData('transcript', this.value)" class="flex-1 w-full border border-gray-300 rounded-md p-3 text-xs font-mono focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-y min-h-[120px] text-gray-600 bg-gray-50 focus:bg-white" placeholder="Paste presentation transcript here..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="rubric-container" class="space-y-6">
+                    <!-- Standard Blocks Injected Here -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODALS -->
+    
+    <!-- Confirm Modal -->
+    <div id="confirmModal" class="fixed inset-0 bg-gray-900/50 modal-bg hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-sm p-6 text-center">
+            <i class="fa-solid fa-triangle-exclamation text-4xl text-red-500 mb-4"></i>
+            <h3 id="confirm-title" class="text-lg font-bold text-gray-900 mb-2">Warning</h3>
+            <p id="confirm-message" class="text-gray-600 text-sm mb-6">Are you sure?</p>
+            <div class="flex justify-center gap-3">
+                <button onclick="hideModal('confirmModal')" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded font-medium text-sm">Cancel</button>
+                <button id="confirm-btn" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded font-medium text-sm">Yes, Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rename Class Modal -->
+    <div id="renameClassModal" class="fixed inset-0 bg-gray-900/50 modal-bg hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
+            <div class="px-6 py-4 border-b border-gray-200 flex justify-between bg-gray-50">
+                <h3 class="font-bold text-gray-800">Rename Class</h3>
+                <button onclick="hideModal('renameClassModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="p-6">
+                <label class="block text-sm font-medium mb-2">Class Name</label>
+                <input type="text" id="rename-class-name" class="w-full border rounded px-3 py-2 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+            </div>
+            <div class="px-6 py-4 bg-gray-50 flex justify-end gap-2 border-t">
+                <button onclick="hideModal('renameClassModal')" class="px-4 py-2 bg-white border rounded text-sm font-medium">Cancel</button>
+                <button onclick="renameClass()" class="px-4 py-2 bg-blue-600 text-white rounded text-sm font-medium">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Class Modal -->
+    <div id="classModal" class="fixed inset-0 bg-gray-900/50 modal-bg hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
+            <div class="px-6 py-4 border-b border-gray-200 flex justify-between bg-gray-50">
+                <h3 class="font-bold text-gray-800">Add New Class</h3>
+                <button onclick="hideModal('classModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="p-6">
+                <label class="block text-sm font-medium mb-2">Class Name</label>
+                <input type="text" id="new-class-name" class="w-full border rounded px-3 py-2 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" placeholder="e.g. Period 1, History 101">
+            </div>
+            <div class="px-6 py-4 bg-gray-50 flex justify-end gap-2 border-t">
+                <button onclick="hideModal('classModal')" class="px-4 py-2 bg-white border rounded text-sm font-medium">Cancel</button>
+                <button onclick="addClass()" class="px-4 py-2 bg-blue-600 text-white rounded text-sm font-medium">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Single Student Modal -->
+    <div id="singleStudentModal" class="fixed inset-0 bg-gray-900/50 modal-bg hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
+            <div class="px-6 py-4 border-b flex justify-between bg-gray-50">
+                <h3 class="font-bold text-gray-800">Add Student</h3>
+                <button onclick="hideModal('singleStudentModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="p-6">
+                <label class="block text-sm font-medium mb-2">Student Name</label>
+                <input type="text" id="new-student-name" class="w-full border rounded px-3 py-2 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" placeholder="e.g. Jane Doe">
+            </div>
+            <div class="px-6 py-4 bg-gray-50 flex justify-end gap-2 border-t">
+                <button onclick="hideModal('singleStudentModal')" class="px-4 py-2 bg-white border rounded text-sm font-medium">Cancel</button>
+                <button onclick="addSingleStudent()" class="px-4 py-2 bg-blue-600 text-white rounded text-sm font-medium">Add</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bulk Student Modal -->
+    <div id="bulkStudentModal" class="fixed inset-0 bg-gray-900/50 modal-bg hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-lg">
+            <div class="px-6 py-4 border-b flex justify-between bg-gray-50">
+                <h3 class="font-bold text-gray-800">Bulk Add Students</h3>
+                <button onclick="hideModal('bulkStudentModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="p-6">
+                <label class="block text-sm font-medium mb-2">Paste Student Names (one per line)</label>
+                <textarea id="bulk-student-names" class="w-full border rounded px-3 py-2 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 min-h-[200px]" placeholder="Alice Smith&#10;Bob Jones&#10;Charlie Brown"></textarea>
+            </div>
+            <div class="px-6 py-4 bg-gray-50 flex justify-end gap-2 border-t">
+                <button onclick="hideModal('bulkStudentModal')" class="px-4 py-2 bg-white border rounded text-sm font-medium">Cancel</button>
+                <button onclick="addBulkStudents()" class="px-4 py-2 bg-blue-600 text-white rounded text-sm font-medium">Import</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Timer Logic ---
+        let timerInterval = null;
+        let timerDefault = (5 * 60) + 15; // 5 min 15 sec
+        let timeRemaining = timerDefault;
+        let timerRunning = false;
+
+        function updateDefaultTime() {
+            if(timerRunning) return; // Prevent changing while running
+            let m = parseInt(document.getElementById('timer-min').value) || 0;
+            let s = parseInt(document.getElementById('timer-sec').value) || 0;
+            
+            // Normalize time (e.g., user types 90 in seconds)
+            timerDefault = (m * 60) + s;
+            timeRemaining = timerDefault;
+            renderTimer();
+        }
+
+        function renderTimer() {
+            let m = Math.floor(timeRemaining / 60);
+            let s = timeRemaining % 60;
+            
+            document.getElementById('timer-min').value = m.toString().padStart(2, '0');
+            document.getElementById('timer-sec').value = s.toString().padStart(2, '0');
+            
+            const container = document.getElementById('timer-container');
+            const inputs = container.querySelectorAll('input');
+            
+            if (timeRemaining <= 0) {
+                container.classList.add('bg-red-100', 'border-red-400', 'text-red-700', 'animate-pulse');
+                inputs.forEach(i => i.classList.add('text-red-700'));
+            } else {
+                container.classList.remove('bg-red-100', 'border-red-400', 'text-red-700', 'animate-pulse');
+                inputs.forEach(i => i.classList.remove('text-red-700'));
+            }
+        }
+
+        function toggleTimer() {
+            if (timerRunning) {
+                clearInterval(timerInterval);
+                timerRunning = false;
+                document.getElementById('timer-play-btn').innerHTML = '<i class="fa-solid fa-play"></i>';
+            } else {
+                if (timeRemaining <= 0) resetTimer(); // Auto reset if starting from 0
+                
+                timerInterval = setInterval(() => {
+                    timeRemaining--;
+                    if (timeRemaining <= 0) {
+                        clearInterval(timerInterval);
+                        timerRunning = false;
+                        document.getElementById('timer-play-btn').innerHTML = '<i class="fa-solid fa-play"></i>';
+                        timeRemaining = 0;
+                    }
+                    renderTimer();
+                }, 1000);
+                timerRunning = true;
+                document.getElementById('timer-play-btn').innerHTML = '<i class="fa-solid fa-pause"></i>';
+            }
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timerRunning = false;
+            timeRemaining = timerDefault;
+            document.getElementById('timer-play-btn').innerHTML = '<i class="fa-solid fa-play"></i>';
+            renderTimer();
+        }
+
+
+        // --- Data Structure ---
+        const RUBRIC_DEF = [
+            {
+                id: 'actionAdvocacy',
+                title: 'Action and Advocacy',
+                description: 'This can be shown in my Canvas and the presentation.',
+                levels: [
+                    { score: '1.0', text: '<ul class="list-disc pl-4 space-y-1"><li><strong>Change:</strong> Implementing a change based on stakeholder need and research</li><li><strong>Connection:</strong> Connecting with the community that is connected to our project.</li></ul>' },
+                    { score: '2.0', text: '<ul class="list-disc pl-4 space-y-1"><li><strong>Change:</strong> Work toward a change built on some feedback from stakeholders and research</li><li><strong>Reflection:</strong> Somewhat analyze the impact of the change</li><li><strong>Connection:</strong> Have some connections to the community but may need more consistency</li></ul>' },
+                    { score: '3.0', text: '<ul class="list-disc pl-4 space-y-1"><li><strong>Change:</strong> Implement a change built on feedback from stakeholders and potentially research</li><li><strong>Reflection:</strong> Analyze the impact of the change, including successes and failures</li><li><strong>Connection:</strong> Build ongoing connections with the various communities and individuals...</li></ul>' },
+                    { score: '4.0', text: '<ul class="list-disc pl-4 space-y-1"><li><strong>Change:</strong> Complete a meaningful positive change that impacts the community or plans for ongoing/sustainable impact</li></ul><p class="text-[11px] text-gray-500 mt-2 italic">*Note: "Meaningful change" refers to significant transformation... characterized by Sustainability & Adaptability.</p>' }
+                ]
+            },
+            {
+                id: 'adaptiveThinking',
+                title: 'Adaptive Thinking',
+                description: 'Shown in the presentation and in the Canvas.',
+                levels: [
+                    { score: '1.0', text: '<ul class="list-disc pl-4 space-y-1"><li>Seeing the complexity of the issue</li><li>Finding and choosing evidence related to our issue.</li></ul>' },
+                    { score: '2.0', text: '<ul class="list-disc pl-4 space-y-1"><li>Articulate a perspective that supports our project, however, it may need further research.</li><li>Select minimal evidence related to our issue.</li></ul>' },
+                    { score: '3.0', text: '<ul class="list-disc pl-4 space-y-1"><li>Select and apply relevant evidence from varied sources to make and defend claims from a single perspective.</li></ul>' },
+                    { score: '4.0', text: '<ul class="list-disc pl-4 space-y-1"><li>Select and apply relevant evidence from varied sources to make and defend claims from multiple perspectives.</li><li>You demonstrate an understanding of the complexity of the issue.</li></ul>' }
+                ]
+            },
+            {
+                id: 'communication',
+                title: 'Communication',
+                description: 'Shown in the presentation.',
+                levels: [
+                    { score: '1.0', text: '<ul class="list-disc pl-4 space-y-1"><li>Using effective presentation skills</li><li>Using effective visuals to support my presentation</li><li>Content is not entirely relevant nor is it organized in a logical manner.</li></ul>' },
+                    { score: '2.0', text: '<ul class="list-disc pl-4 space-y-1"><li>Use some effective eye contact, volume, body language, gestures, movement.</li><li>Use some effective visuals</li><li>Create a presentation with organized and relevant content.</li></ul>' },
+                    { score: '3.0', text: '<p class="font-medium mb-1 text-xs">Engage my audience through:</p><ul class="list-disc pl-4 space-y-1"><li>effective use of eye contact, volume, body language, gestures, movement</li><li>effective visuals that support what I’m discussing...</li><li>The use of a hook and conclusion</li></ul>' },
+                    { score: '4.0', text: '<ul class="list-disc pl-4 space-y-1"><li>Adapt and master public speaking skills; reading the room, responding to cues...</li><li>Use visuals in a unique way that enhances/amplifies the presentation</li><li>Use a strong hook and conclusion to create interest...</li></ul>' }
+                ]
+            }
+        ];
+
+        const POSSIBLE_SCORES = ['0.5', '1.0', '1.5', '2.0', '2.5', '3.0', '3.5', '4.0'];
+
+        let appData = { classes: [] };
+        let activeClassId = null;
+        let activeStudentId = null;
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                const saved = localStorage.getItem('rubricAppData');
+                if (saved) appData = JSON.parse(saved);
+            } catch(e) { 
+                console.warn("Could not load from localStorage. Using fresh data.", e); 
+            }
+            
+            renderRubricUI();
+            updateClassSelector();
+            
+            if (appData.classes.length > 0) {
+                selectClass(appData.classes[0].id);
+            }
+        });
+
+        function saveToLocal() {
+            try {
+                localStorage.setItem('rubricAppData', JSON.stringify(appData));
+            } catch(e) {
+                console.warn("Could not save to localStorage.", e);
+            }
+        }
+
+        // --- Core ID Gen ---
+        const genId = () => '_' + Math.random().toString(36).substr(2, 9);
+
+        // --- UI Builders ---
+        function processLevelText(rubricId, score, htmlText) {
+            const temp = document.createElement('div');
+            temp.innerHTML = htmlText;
+            temp.querySelectorAll('ul').forEach(ul => {
+                ul.classList.remove('list-disc', 'pl-4');
+                ul.classList.add('pl-0');
+            });
+            temp.querySelectorAll('li').forEach((li, idx) => {
+                const chkId = `chk-${rubricId}-${score}-${idx}`;
+                const inner = li.innerHTML;
+                li.style.listStyle = 'none';
+                li.innerHTML = `<label class="flex items-start gap-1.5 cursor-pointer">
+                    <input type="checkbox" id="${chkId}" class="peer mt-0.5 shrink-0 w-3.5 h-3.5 rounded border-gray-300 text-blue-600 cursor-pointer" onchange="updateBullet('${rubricId}', '${score}', ${idx}, this.checked)">
+                    <span class="peer-checked:line-through peer-checked:text-gray-400 transition-colors">${inner}</span>
+                </label>`;
+            });
+            return temp.innerHTML;
+        }
+
+        function updateBullet(rubricId, score, idx, checked) {
+            const std = getActiveStudent();
+            if (!std) return;
+            if (!std.rubric[rubricId].bullets) std.rubric[rubricId].bullets = {};
+            std.rubric[rubricId].bullets[`${score}-${idx}`] = checked;
+            saveToLocal();
+        }
+
+        function renderRubricUI() {
+            const container = document.getElementById('rubric-container');
+            container.innerHTML = '';
+
+            let scoreOptionsHtml = `<option value="">--</option>`;
+            POSSIBLE_SCORES.forEach(s => {
+                scoreOptionsHtml += `<option value="${s}">${s}</option>`;
+            });
+
+            RUBRIC_DEF.forEach(rubric => {
+                const section = document.createElement('div');
+                section.className = "bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden";
+                
+                let rubricLevelsHtml = rubric.levels.map(lvl => `
+                    <div class="p-4 bg-gray-50 border border-gray-100 rounded flex flex-col">
+                        <div class="font-bold text-blue-800 border-b border-blue-200 pb-2 mb-2">${lvl.score}</div>
+                        <div class="text-[13px] text-gray-700 flex-1 leading-relaxed">${processLevelText(rubric.id, lvl.score, lvl.text)}</div>
+                    </div>
+                `).join('');
+
+                section.innerHTML = `
+                    <div class="bg-gray-100 px-5 py-3 border-b border-gray-200 flex flex-wrap justify-between items-center gap-4">
+                        <div class="flex items-center gap-3">
+                            <input type="checkbox" id="check-${rubric.id}" onchange="updateStudentData('check', this.checked, '${rubric.id}')" class="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500 cursor-pointer">
+                            <div>
+                                <h3 class="font-bold text-lg text-gray-800">${rubric.title}</h3>
+                                <p class="text-xs text-gray-500">${rubric.description}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-5">
+                            <div class="flex flex-col items-end">
+                                <label class="text-[10px] uppercase font-bold text-gray-500 mb-0.5" for="score-${rubric.id}">Grade</label>
+                                <select id="score-${rubric.id}" onchange="setScore('${rubric.id}', this.value)" class="border border-gray-300 rounded px-2 py-1 text-sm bg-white focus:ring-2 focus:ring-blue-500 outline-none font-semibold text-blue-700 cursor-pointer shadow-sm w-20">
+                                    ${scoreOptionsHtml}
+                                </select>
+                            </div>
+                            <button onclick="toggleFlag('${rubric.id}')" id="flag-${rubric.id}" class="flag-btn text-gray-400 hover:text-red-500 transition text-xl p-1 mt-3" title="Flag for later">
+                                <i class="fa-solid fa-flag"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-5">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                            ${rubricLevelsHtml}
+                        </div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Notes for ${rubric.title}</label>
+                        <textarea id="notes-${rubric.id}" oninput="updateStudentData('notes', this.value, '${rubric.id}')" class="w-full border border-gray-300 rounded-md p-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-y min-h-[60px]" placeholder="Specific feedback for this criterion..."></textarea>
+                    </div>
+                `;
+                container.appendChild(section);
+            });
+        }
+
+        // --- Class Management ---
+        function updateClassSelector() {
+            const selector = document.getElementById('class-selector');
+            selector.innerHTML = '<option value="">Select a class...</option>';
+            appData.classes.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c.id;
+                opt.textContent = c.name;
+                selector.appendChild(opt);
+            });
+            selector.value = activeClassId || '';
+        }
+
+        function addClass() {
+            const input = document.getElementById('new-class-name');
+            const name = input.value.trim();
+            if (!name) return;
+
+            const newClass = { id: genId(), name: name, students: [] };
+            appData.classes.push(newClass);
+            input.value = '';
+            hideModal('classModal');
+            saveToLocal();
+            updateClassSelector();
+            selectClass(newClass.id);
+        }
+
+        function selectClass(id) {
+            activeClassId = id;
+            activeStudentId = null;
+            document.getElementById('class-selector').value = id;
+            
+            const actionsHeader = document.getElementById('student-actions-header');
+            const noMsg = document.getElementById('no-class-msg');
+            
+            if (id) {
+                actionsHeader.classList.remove('hidden');
+                if(noMsg) noMsg.style.display = 'none';
+            } else {
+                actionsHeader.classList.add('hidden');
+                if(noMsg) noMsg.style.display = 'block';
+            }
+            
+            updateStudentList();
+            showStudentPane();
+        }
+
+        function showRenameClass() {
+            const cls = getActiveClass();
+            if (!cls) return;
+            document.getElementById('rename-class-name').value = cls.name;
+            showModal('renameClassModal');
+        }
+
+        function renameClass() {
+            const cls = getActiveClass();
+            if (!cls) return;
+            const name = document.getElementById('rename-class-name').value.trim();
+            if (!name) return;
+            cls.name = name;
+            hideModal('renameClassModal');
+            saveToLocal();
+            updateClassSelector();
+        }
+
+        function confirmDeleteClass() {
+            const cls = getActiveClass();
+            if (!cls) return;
+            showConfirm(`Delete "${cls.name}"?`, "All students and their rubrics will be permanently deleted.", () => {
+                appData.classes = appData.classes.filter(c => c.id !== activeClassId);
+                saveToLocal();
+                selectClass("");
+                updateClassSelector();
+            });
+        }
+
+        // --- Student Management ---
+        function createNewStudentObj(name) {
+            let std = { id: genId(), name: name, overallNotes: '', transcript: '', rubric: {} };
+            RUBRIC_DEF.forEach(r => {
+                std.rubric[r.id] = { score: '', notes: '', checked: false, flagged: false, bullets: {} };
+            });
+            return std;
+        }
+
+        function addSingleStudent() {
+            const input = document.getElementById('new-student-name');
+            const name = input.value.trim();
+            const cls = getActiveClass();
+            if (!name || !cls) return;
+
+            const std = createNewStudentObj(name);
+            cls.students.push(std);
+            input.value = '';
+            hideModal('singleStudentModal');
+            saveToLocal();
+            updateStudentList();
+            selectStudent(std.id);
+        }
+
+        function addBulkStudents() {
+            const txt = document.getElementById('bulk-student-names').value;
+            const cls = getActiveClass();
+            if (!txt.trim() || !cls) return;
+
+            const names = txt.split('\n').map(n => n.trim()).filter(n => n);
+            names.forEach(name => {
+                cls.students.push(createNewStudentObj(name));
+            });
+            
+            document.getElementById('bulk-student-names').value = '';
+            hideModal('bulkStudentModal');
+            saveToLocal();
+            updateStudentList();
+        }
+
+        function updateStudentList() {
+            const list = document.getElementById('student-list');
+            const cls = getActiveClass();
+            list.innerHTML = '';
+            
+            if (!cls) return;
+
+            if (cls.students.length === 0) {
+                list.innerHTML = '<div class="p-6 text-center text-gray-400 text-sm italic mt-4">No students yet. Add one above.</div>';
+                return;
+            }
+
+            // Sort alphabetically
+            cls.students.sort((a,b) => a.name.localeCompare(b.name)).forEach(std => {
+                const btn = document.createElement('button');
+                
+                // Determine status icon
+                let isComplete = true;
+                let hasFlag = false;
+                RUBRIC_DEF.forEach(r => {
+                    if (!std.rubric[r.id]?.checked) isComplete = false;
+                    if (std.rubric[r.id]?.flagged) hasFlag = true;
+                });
+
+                let statusIcon = '';
+                if (hasFlag) statusIcon = '<i class="fa-solid fa-flag text-red-500 ml-2 text-xs"></i>';
+                else if (isComplete) statusIcon = '<i class="fa-solid fa-check-circle text-green-500 ml-2 text-xs"></i>';
+
+                const isSelected = std.id === activeStudentId;
+                btn.className = `w-full text-left px-4 py-3 rounded-md text-sm font-medium transition flex justify-between items-center border ${isSelected ? 'bg-blue-50 border-blue-300 text-blue-700 shadow-sm' : 'bg-white border-transparent text-gray-700 hover:bg-gray-100 border-b-gray-100'}`;
+                btn.onclick = () => selectStudent(std.id);
+                btn.innerHTML = `<span class="truncate">${std.name}</span> <span>${statusIcon}</span>`;
+                list.appendChild(btn);
+            });
+        }
+
+        function selectStudent(id) {
+            activeStudentId = id;
+            updateStudentList(); // refresh selection highlight
+            showStudentPane();
+        }
+
+        function confirmDeleteStudent() {
+            const std = getActiveStudent();
+            if (!std) return;
+            showConfirm(`Remove ${std.name}?`, "Their assessment data will be lost.", () => {
+                const cls = getActiveClass();
+                cls.students = cls.students.filter(s => s.id !== activeStudentId);
+                activeStudentId = null;
+                saveToLocal();
+                updateStudentList();
+                showStudentPane();
+            });
+        }
+
+        // --- Data Binding & State Management ---
+        function getActiveClass() { return appData.classes.find(c => c.id === activeClassId); }
+        function getActiveStudent() {
+            const cls = getActiveClass();
+            return cls ? cls.students.find(s => s.id === activeStudentId) : null;
+        }
+
+        function showStudentPane() {
+            const std = getActiveStudent();
+            if (!std) {
+                document.getElementById('no-student-selected').classList.remove('hidden');
+                document.getElementById('evaluator-content').classList.add('hidden');
+                return;
+            }
+
+            document.getElementById('no-student-selected').classList.add('hidden');
+            document.getElementById('evaluator-content').classList.remove('hidden');
+            document.getElementById('eval-student-name').textContent = std.name;
+            
+            // Text areas
+            document.getElementById('overall-notes').value = std.overallNotes || '';
+            document.getElementById('transcript-text').value = std.transcript || '';
+
+            RUBRIC_DEF.forEach(r => {
+                const stdData = std.rubric[r.id];
+                
+                // Set dropdown
+                const selectElement = document.getElementById(`score-${r.id}`);
+                if(selectElement) selectElement.value = stdData.score || '';
+
+                // Set notes
+                const notesElement = document.getElementById(`notes-${r.id}`);
+                if(notesElement) notesElement.value = stdData.notes || '';
+                
+                // Set checkbox
+                const checkElement = document.getElementById(`check-${r.id}`);
+                if(checkElement) checkElement.checked = !!stdData.checked;
+                
+                // Set flag
+                const flagBtn = document.getElementById(`flag-${r.id}`);
+                if(flagBtn) {
+                    if (stdData.flagged) flagBtn.classList.add('flagged');
+                    else flagBtn.classList.remove('flagged');
+                }
+
+                // Restore bullet checkboxes
+                document.querySelectorAll(`[id^="chk-${r.id}-"]`).forEach(el => el.checked = false);
+                const bullets = stdData.bullets || {};
+                Object.keys(bullets).forEach(key => {
+                    const el = document.getElementById(`chk-${r.id}-${key}`);
+                    if (el) el.checked = !!bullets[key];
+                });
+            });
+        }
+
+        function updateStudentData(type, value, rubricId = null) {
+            const std = getActiveStudent();
+            if (!std) return;
+
+            if (type === 'overall') {
+                std.overallNotes = value;
+            } else if (type === 'transcript') {
+                std.transcript = value;
+            } else if (rubricId) {
+                if (!std.rubric[rubricId]) std.rubric[rubricId] = {};
+                std.rubric[rubricId][type] = value;
+            }
+            saveToLocal();
+            
+            // Checkbox changes might affect sidebar icons
+            if (type === 'check') updateStudentList(); 
+        }
+
+        function setScore(rubricId, scoreValue) {
+            const std = getActiveStudent();
+            if (!std) return;
+
+            std.rubric[rubricId].score = scoreValue;
+            saveToLocal();
+        }
+
+        function toggleFlag(rubricId) {
+            const std = getActiveStudent();
+            if (!std) return;
+            std.rubric[rubricId].flagged = !std.rubric[rubricId].flagged;
+            saveToLocal();
+            showStudentPane();
+            updateStudentList(); // update sidebar icon
+        }
+
+        // --- Modals ---
+        window.showModal = function(id) { 
+            document.getElementById(id).classList.remove('hidden'); 
+            document.getElementById(id).classList.add('flex'); 
+        };
+        window.hideModal = function(id) { 
+            document.getElementById(id).classList.add('hidden'); 
+            document.getElementById(id).classList.remove('flex'); 
+        };
+        
+        function showConfirm(title, message, callback) {
+            document.getElementById('confirm-title').textContent = title;
+            document.getElementById('confirm-message').textContent = message;
+            document.getElementById('confirm-btn').onclick = () => {
+                callback();
+                hideModal('confirmModal');
+            };
+            showModal('confirmModal');
+        }
+
+        // --- CSV Export / Import ---
+        function escapeCSV(str) {
+            if (str == null) return '""';
+            let formatted = String(str).replace(/"/g, '""');
+            return `"${formatted}"`;
+        }
+
+        window.exportCSV = function() {
+            const cls = getActiveClass();
+            if (!cls || cls.students.length === 0) return alert("Select a class with students to export.");
+
+            let headers = ['Student Name', 'Overall Notes'];
+            RUBRIC_DEF.forEach(r => {
+                headers.push(`${r.title} Score`);
+                headers.push(`${r.title} Notes`);
+                headers.push(`${r.title} Complete`);
+                headers.push(`${r.title} Flagged`);
+            });
+            headers.push('Transcript');
+
+            let csvContent = headers.join(',') + '\n';
+
+            cls.students.forEach(std => {
+                let row = [escapeCSV(std.name), escapeCSV(std.overallNotes)];
+                RUBRIC_DEF.forEach(r => {
+                    const rData = std.rubric[r.id];
+                    row.push(escapeCSV(rData.score || ''));
+                    row.push(escapeCSV(rData.notes || ''));
+                    row.push(rData.checked ? 'Y' : 'N');
+                    row.push(rData.flagged ? 'Y' : 'N');
+                });
+                row.push(escapeCSV(std.transcript || ''));
+                csvContent += row.join(',') + '\n';
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', `${cls.name.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_rubrics.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        };
+
+        window.importCSV = function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const text = e.target.result;
+                parseAndImportCSV(text, file.name.replace('.csv', ''));
+                event.target.value = ''; // reset
+            };
+            reader.readAsText(file);
+        };
+
+        function parseAndImportCSV(csvText, fallbackClassName) {
+            // Basic CSV parser handling quotes
+            let rows = [];
+            let row = [];
+            let inQuotes = false;
+            let val = "";
+            for (let i = 0; i < csvText.length; i++) {
+                let c = csvText[i];
+                if (c === '"') {
+                    if (inQuotes && csvText[i+1] === '"') { val += '"'; i++; } // escaped quote
+                    else { inQuotes = !inQuotes; }
+                } else if (c === ',' && !inQuotes) {
+                    row.push(val); val = "";
+                } else if (c === '\n' && !inQuotes) {
+                    row.push(val); rows.push(row); row = []; val = "";
+                } else if (c !== '\r') {
+                    val += c;
+                }
+            }
+            if (val || row.length > 0) { row.push(val); rows.push(row); }
+
+            if (rows.length < 2) return alert("Invalid or empty CSV file.");
+
+            const newClass = { id: genId(), name: `Imported - ${fallbackClassName}`, students: [] };
+
+            // skip header row[0]
+            for (let i = 1; i < rows.length; i++) {
+                const r = rows[i];
+                if (r.length < 2 || !r[0]) continue; // skip empty
+                
+                let std = createNewStudentObj(r[0]);
+                std.overallNotes = r[1] || '';
+
+                let colIdx = 2;
+                RUBRIC_DEF.forEach(rub => {
+                    if (colIdx < r.length) std.rubric[rub.id].score = r[colIdx] || '';
+                    colIdx++;
+                    if (colIdx < r.length) std.rubric[rub.id].notes = r[colIdx];
+                    colIdx++;
+                    if (colIdx < r.length) std.rubric[rub.id].checked = r[colIdx] === 'Y';
+                    colIdx++;
+                    if (colIdx < r.length) std.rubric[rub.id].flagged = r[colIdx] === 'Y';
+                    colIdx++;
+                });
+                
+                // Load Transcript if available in CSV
+                if (colIdx < r.length) std.transcript = r[colIdx] || '';
+
+                newClass.students.push(std);
+            }
+
+            appData.classes.push(newClass);
+            saveToLocal();
+            updateClassSelector();
+            selectClass(newClass.id);
+        }
+    </script>
+</body>
+</html>
