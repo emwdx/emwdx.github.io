@@ -92,6 +92,7 @@
     overflow-x:auto; overflow-y:hidden;
     border:1px solid var(--line); border-radius:10px;
     background:var(--card); box-shadow:var(--shadow);
+    scroll-snap-type:x proximity; -webkit-overflow-scrolling:touch;
   }
   .board-grid{
     display:grid;
@@ -104,10 +105,16 @@
     grid-row:2; position:sticky; top:0; z-index:5;
     background:var(--navy); color:#F4EFE0; padding:10px 8px 9px; text-align:center;
     border-left:1px solid rgba(255,255,255,.08);
+    scroll-snap-align:start;
   }
   .dayhead.gap-after{border-right:3px dashed var(--rope);}
   .dayhead .dow{font-family:'Archivo Black',sans-serif; font-weight:400; font-size:14px; letter-spacing:.02em;}
   .dayhead .md{font-family:'IBM Plex Mono',monospace; font-size:11px; color:#B9CFCB; margin-top:2px;}
+  .dayhead .wx{
+    margin-top:4px; font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:#DCEAE7;
+    display:flex; align-items:center; justify-content:center; gap:4px;
+  }
+  .dayhead .wx .wx-ico{font-size:13px; line-height:1;}
 
   .timegutter{
     grid-row:3; grid-column:1; position:sticky; left:0; z-index:4;
@@ -164,6 +171,14 @@
   @media (max-width:640px){
     header.board{padding:26px 16px 18px;}
     .toolbar,.legend,.board-wrap,footer{padding-left:14px; padding-right:14px;}
+    .grid-scroll{scroll-snap-type:x mandatory;}
+    .board-grid{min-width:0;}
+    .dayhead .dow{font-size:12.5px;}
+    .dayhead .md{font-size:10px;}
+    .dayhead .wx{font-size:9.5px;}
+    .dayhead .wx .wx-ico{font-size:11px;}
+    .card{font-size:11px; padding:4px 6px 5px;}
+    .card .timespan,.card .cost{font-size:9.5px;}
   }
 </style>
 </head>
@@ -208,6 +223,7 @@
 const ORIGINAL_DATA = {
   "title": "The Great Weinberg/Boudberg/Loveberg and Justin Ohio 2026 Extravaganza",
   "subtitle": "Port Clinton · Jul 18–25",
+  "year": 2026,
   "startTime": "05:00",
   "endTime": "21:00",
   "days": [
@@ -283,6 +299,54 @@ function fmtTime(min){
 function globalStart(){ return toMin(DATA.startTime); }
 function globalEnd(){ return toMin(DATA.endTime); }
 
+// ---------- Weather (Open-Meteo, Port Clinton, OH) ----------
+const WX_LAT = 41.5129, WX_LON = -82.9377;
+const MONTHS = {Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12};
+let WEATHER = {}; // 'YYYY-MM-DD' -> {code, hi, lo}
+
+function isoForDay(d){
+  const [mon, day] = d.md.split(' ');
+  const m = String(MONTHS[mon]).padStart(2,'0');
+  return `${DATA.year}-${m}-${String(day).padStart(2,'0')}`;
+}
+
+function wxIcon(code){
+  if(code===0) return '☀️';
+  if(code===1) return '🌤️';
+  if(code===2) return '⛅';
+  if(code===3) return '☁️';
+  if(code===45||code===48) return '🌫️';
+  if([51,53,55,56,57].includes(code)) return '🌦️';
+  if([61,63,65,66,67,80,81,82].includes(code)) return '🌧️';
+  if([71,73,75,77,85,86].includes(code)) return '❄️';
+  if([95,96,99].includes(code)) return '⛈️';
+  return '🌡️';
+}
+
+async function fetchWeather(){
+  const isoDates = DATA.days.map(isoForDay);
+  const start = isoDates[0], end = isoDates[isoDates.length-1];
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${WX_LAT}&longitude=${WX_LON}` +
+    `&daily=weathercode,temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit` +
+    `&timezone=America%2FNew_York&start_date=${start}&end_date=${end}`;
+  try{
+    const res = await fetch(url);
+    if(!res.ok) return;
+    const json = await res.json();
+    if(!json.daily || !json.daily.time) return;
+    json.daily.time.forEach((iso,i)=>{
+      WEATHER[iso] = {
+        code: json.daily.weathercode[i],
+        hi: Math.round(json.daily.temperature_2m_max[i]),
+        lo: Math.round(json.daily.temperature_2m_min[i])
+      };
+    });
+    render();
+  }catch(err){
+    // no forecast available (e.g. trip too far out) — leave days without a badge
+  }
+}
+
 function iconFor(a){
   const t=(a.title||'').toLowerCase();
   if(a.type==='match') return '⚽';
@@ -327,7 +391,9 @@ function render(){
     const h = document.createElement('div');
     h.className='dayhead' + (d.gapAfter ? ' gap-after' : '');
     h.style.gridColumn = `${2+i}`;
-    h.innerHTML = `<div class="dow">${d.dow}</div><div class="md">${d.md}</div>`;
+    const wx = WEATHER[isoForDay(d)];
+    const wxHtml = wx ? `<div class="wx"><span class="wx-ico">${wxIcon(wx.code)}</span>${wx.hi}°/${wx.lo}°</div>` : '';
+    h.innerHTML = `<div class="dow">${d.dow}</div><div class="md">${d.md}</div>${wxHtml}`;
     grid.appendChild(h);
   });
 
@@ -394,6 +460,7 @@ function render(){
 }
 
 render();
+fetchWeather();
 </script>
 </body>
 </html>
