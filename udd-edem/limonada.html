@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Puesto de Limonada 🍋</title>
+    <style>
+        :root {
+            --primary: #f1c40f;
+            --secondary: #2ecc71;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --danger: #e74c3c;
+            --info: #3498db;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        h1, h2, h3 { margin-top: 0; }
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--primary);
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .panel {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        button {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        button:hover { background: #27ae60; }
+        button.buy-btn { font-size: 0.9em; padding: 5px 10px; margin-top: 10px; width: 100%; }
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .shop-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .weather-hot { color: #d35400; }
+        .weather-mild { color: #2980b9; }
+        .weather-cold { color: #8e44ad; }
+        
+        /* Pantallas */
+        #game-screen, #end-screen, #day-result-screen, #animation-screen { display: none; }
+
+        /* Animación */
+        .anim-emoji {
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            display: inline-block;
+            margin: 0 5px;
+        }
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <!-- PANTALLA DE INICIO -->
+    <div id="login-screen">
+        <h1 style="text-align: center;">🍋 Puesto de Limonada</h1>
+        <p style="text-align: center;">Administra tu negocio por 10 días. ¡Encuentra la receta y el precio perfecto para maximizar tus ganancias!</p>
+        <div class="panel" style="max-width: 400px; margin: 40px auto;">
+            <label><strong>Ingresa tu nombre:</strong></label>
+            <input type="text" id="player-name" placeholder="Ej: Camila">
+            <button onclick="startGame()" style="width: 100%;">Iniciar Negocio</button>
+        </div>
+    </div>
+
+    <!-- PANTALLA PRINCIPAL DEL JUEGO -->
+    <div id="game-screen">
+        <div class="header-bar">
+            <span>Día: <span id="day-display">1</span> / 10</span>
+            <span>Clima: <span id="weather-display">☀️ Caluroso</span></span>
+            <span>Dinero: <span id="money-display">$10.000 CLP</span></span>
+        </div>
+
+        <div class="grid">
+            <!-- TIENDA E INVENTARIO -->
+            <div class="panel">
+                <h3>🛒 Tienda e Inventario</h3>
+                <p style="font-size: 0.9em; color: #666;">Los ingredientes crudos no se echan a perder.</p>
+                
+                <div class="shop-item">
+                    <div>
+                        <strong>🥤 Vasos</strong><br>
+                        Tienes: <span id="inv-cups">0</span>
+                    </div>
+                    <div style="text-align: right;">
+                        $1.000 por 50<br>
+                        <button class="buy-btn" onclick="buy('cups', 1000, 50)">Comprar</button>
+                    </div>
+                </div>
+                <div class="shop-item">
+                    <div>
+                        <strong>🍋 Limones</strong><br>
+                        Tienes: <span id="inv-lemons">0</span>
+                    </div>
+                    <div style="text-align: right;">
+                        $2.000 por 10<br>
+                        <button class="buy-btn" onclick="buy('lemons', 2000, 10)">Comprar</button>
+                    </div>
+                </div>
+                <div class="shop-item">
+                    <div>
+                        <strong>🧂 Azúcar (g)</strong><br>
+                        Tienes: <span id="inv-sugar">0</span>g
+                    </div>
+                    <div style="text-align: right;">
+                        $1.500 por 1000g<br>
+                        <button class="buy-btn" onclick="buy('sugar', 1500, 1000)">Comprar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COCINA Y NEGOCIO -->
+            <div class="panel">
+                <h3>🧑‍🍳 El Plan de Hoy</h3>
+                <p style="font-size: 0.9em; color: #666;">1 Jarro rinde 10 vasos.</p>
+                
+                <label>Limones por Jarro:</label>
+                <!-- OJO: Modificado para que empiecen con una receta mala -->
+                <input type="number" id="recipe-lemons" min="1" value="1">
+                
+                <label>Azúcar por Jarro (gramos):</label>
+                <!-- OJO: Modificado para que empiecen con una receta mala -->
+                <input type="number" id="recipe-sugar" min="10" step="10" value="50">
+                
+                <hr style="border: 0; border-top: 1px solid #ddd; margin: 15px 0;">
+                
+                <label>¿Cuántos Jarros vas a preparar hoy?</label>
+                <input type="number" id="brew-amount" min="1" value="1">
+                <p style="font-size: 0.8em; color: var(--danger); margin-top: -10px;">¡La limonada que no vendas hoy se bota en la noche!</p>
+                
+                <label>Precio por Vaso (CLP):</label>
+                <input type="number" id="cup-price" min="50" step="50" value="500">
+                
+                <button onclick="runDay()" style="width: 100%; margin-top: 10px; background: var(--primary); color: var(--dark);">¡Abrir Puesto! 🚀</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANTALLA DE ANIMACIÓN -->
+    <div id="animation-screen">
+        <h1 style="text-align: center;">🍋 ¡Puesto Abierto!</h1>
+        <div class="panel" style="text-align: center; padding: 40px 20px;">
+            <h2 style="font-size: 2em; color: var(--info);">🕒 <span id="anim-time">09:00 AM</span></h2>
+            <div style="font-size: 4em; margin: 20px 0;">🍋🏚️</div>
+            
+            <!-- Aquí aparecen los clientes -->
+            <div id="anim-street" style="height: 60px; font-size: 2em; margin-bottom: 20px; display: flex; justify-content: center; align-items: center;">
+            </div>
+            
+            <h3>Vasos Vendidos: <span id="anim-sold-count">0</span> / <span id="anim-total-brewed"></span></h3>
+            <p id="anim-log" style="color: #666; font-style: italic; min-height: 24px;">Esperando clientes...</p>
+        </div>
+    </div>
+
+    <!-- PANTALLA DE RESULTADOS DEL DÍA -->
+    <div id="day-result-screen">
+        <h2 id="result-title">Fin del Día 1</h2>
+        <div class="panel">
+            <p><strong>Clima:</strong> <span id="res-weather"></span></p>
+            <p><strong>Vasos Preparados:</strong> <span id="res-brewed"></span></p>
+            <p><strong>Vasos Vendidos:</strong> <span id="res-sold"></span></p>
+            <p><strong>Comentario de Clientes:</strong> <span id="res-feedback"></span></p>
+            <hr>
+            <h3 style="color: var(--secondary);">Ingresos de hoy: +$<span id="res-revenue"></span></h3>
+            <p style="color: var(--danger); font-size: 0.9em;">Vasos botados a la basura (pérdida): <span id="res-spoiled"></span></p>
+        </div>
+        <br>
+        <button onclick="nextDay()">Siguiente Día ➡️</button>
+    </div>
+
+    <!-- PANTALLA FINAL -->
+    <div id="end-screen">
+        <h1 style="text-align: center;">📊 ¡Negocio Cerrado!</h1>
+        <div class="panel" style="text-align: center;">
+            <h2>¡Buen trabajo, <span id="final-name"></span>!</h2>
+            <p>Dinero Inicial: $10.000</p>
+            <h2 style="color: var(--secondary);">Dinero Final: $<span id="final-money"></span></h2>
+            <p>Descarga tu archivo de datos y súbelo al dashboard del curso para ver cómo te fue comparado con el resto.</p>
+            <br>
+            <button onclick="exportData()" style="background: var(--dark); font-size: 1.2em; padding: 15px 30px; color: white;">💾 Descargar Mis Datos</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // Estado del juego
+    let state = {
+        name: "",
+        day: 1,
+        money: 10000,
+        inventory: { cups: 0, lemons: 0, sugar: 0 },
+        weather: "",
+        weatherType: "", 
+        history: []
+    };
+
+    const weathers = [
+        { type: "hot", display: "☀️ Caluroso y Soleado", modifier: 1.5 },
+        { type: "mild", display: "⛅ Templado y Nublado", modifier: 1.0 },
+        { type: "cold", display: "🌧️ Frío y Lluvioso", modifier: 0.5 }
+    ];
+
+    const formatCLP = (num) => num.toLocaleString('es-CL');
+
+    function updateUI() {
+        document.getElementById("day-display").innerText = state.day;
+        document.getElementById("money-display").innerText = `$${formatCLP(state.money)}`;
+        document.getElementById("inv-cups").innerText = state.inventory.cups;
+        document.getElementById("inv-lemons").innerText = state.inventory.lemons;
+        document.getElementById("inv-sugar").innerText = state.inventory.sugar;
+        
+        let wSpan = document.getElementById("weather-display");
+        wSpan.innerText = state.weather;
+        wSpan.className = `weather-${state.weatherType}`;
+    }
+
+    function setRandomWeather() {
+        const w = weathers[Math.floor(Math.random() * weathers.length)];
+        state.weather = w.display;
+        state.weatherType = w.type;
+        state.weatherModifier = w.modifier;
+    }
+
+    function startGame() {
+        const nameInput = document.getElementById("player-name").value.trim();
+        if (!nameInput) {
+            alert("¡Por favor ingresa tu nombre para empezar!");
+            return;
+        }
+        state.name = nameInput;
+        document.getElementById("login-screen").style.display = "none";
+        document.getElementById("game-screen").style.display = "block";
+        setRandomWeather();
+        updateUI();
+    }
+
+    function buy(item, cost, amount) {
+        if (state.money >= cost) {
+            state.money -= cost;
+            state.inventory[item] += amount;
+            updateUI();
+        } else {
+            alert("¡No tienes suficiente plata! 💸");
+        }
+    }
+
+    function runDay() {
+        // Entradas
+        let rLemons = parseInt(document.getElementById("recipe-lemons").value);
+        let rSugar = parseInt(document.getElementById("recipe-sugar").value);
+        let pitchers = parseInt(document.getElementById("brew-amount").value);
+        let price = parseInt(document.getElementById("cup-price").value);
+
+        if (rLemons <= 0 || rSugar <= 0 || pitchers <= 0 || price <= 0) {
+            alert("Por favor ingresa valores mayores a 0.");
+            return;
+        }
+
+        let cupsNeeded = pitchers * 10;
+        let lemonsNeeded = rLemons * pitchers;
+        let sugarNeeded = rSugar * pitchers;
+
+        if (state.inventory.cups < cupsNeeded || 
+            state.inventory.lemons < lemonsNeeded || 
+            state.inventory.sugar < sugarNeeded) {
+            alert("¡No tienes suficientes ingredientes en tu inventario para preparar eso! Revisa la tienda.");
+            return;
+        }
+
+        // Descontar inventario
+        state.inventory.cups -= cupsNeeded;
+        state.inventory.lemons -= lemonsNeeded;
+        state.inventory.sugar -= sugarNeeded;
+
+        // --- MATEMÁTICA DE LA SIMULACIÓN ---
+        let recipeScore = 100 - (Math.abs(rLemons - 4) * 10) - (Math.abs(rSugar - 200) * 0.2);
+        if (recipeScore < 0) recipeScore = 0;
+
+        let feedback = "Estaba piola.";
+        if (recipeScore > 85) feedback = "¡A los clientes les encantó la receta! 😋";
+        else if (rLemons > 6) feedback = "¡Demasiado ácido! 😖";
+        else if (rSugar > 300) feedback = "¡Hostigoso, mucho azúcar! 🦷";
+        else if (rLemons < 3) feedback = "¡Sabe a pura agua! 💧";
+
+        let priceScore = Math.max(0, 1000 - price) / 10; 
+        
+        let baseDemand = 15;
+        let demand = Math.floor((baseDemand + (recipeScore / 5) + (priceScore)) * state.weatherModifier);
+        
+        demand += Math.floor(Math.random() * 10) - 5; 
+        if (demand < 0) demand = 0;
+        if (price > 1200) demand = Math.floor(demand * 0.1); 
+
+        let cupsSold = Math.min(demand, cupsNeeded);
+        let revenue = cupsSold * price;
+        let spoiled = cupsNeeded - cupsSold;
+
+        state.money += revenue;
+
+        state.history.push({
+            day: state.day,
+            weather: state.weatherType,
+            lemonsPerPitcher: rLemons,
+            sugarPerPitcher: rSugar,
+            pitchersBrewed: pitchers,
+            pricePerCup: price,
+            demandFound: demand,
+            cupsSold: cupsSold,
+            revenue: revenue,
+            spoiled: spoiled
+        });
+
+        // --- INICIAR ANIMACIÓN ---
+        startDayAnimation(cupsNeeded, cupsSold, demand, price, feedback, revenue, spoiled);
+    }
+
+    function startDayAnimation(cupsNeeded, cupsSold, demand, price, feedback, revenue, spoiled) {
+        document.getElementById("game-screen").style.display = "none";
+        document.getElementById("animation-screen").style.display = "block";
+        
+        document.getElementById("anim-total-brewed").innerText = cupsNeeded;
+        document.getElementById("anim-sold-count").innerText = "0";
+        document.getElementById("anim-street").innerHTML = "";
+        document.getElementById("anim-log").innerText = "Abriendo el puesto...";
+
+        let hours = ["09:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "13:00 PM", "14:00 PM", "15:00 PM", "16:00 PM", "17:00 PM"];
+        let currentTick = 0;
+        let runningSold = 0;
+
+        let salesDistribution = Array(8).fill(0);
+        for(let i = 0; i < cupsSold; i++) {
+            salesDistribution[Math.floor(Math.random() * 8)]++;
+        }
+
+        let animInterval = setInterval(() => {
+            document.getElementById("anim-time").innerText = hours[currentTick];
+            
+            if (currentTick < 8) {
+                let soldThisHour = salesDistribution[currentTick];
+                runningSold += soldThisHour;
+                
+                document.getElementById("anim-sold-count").innerText = runningSold;
+                
+                let streetHTML = "";
+                
+                if (soldThisHour > 0) {
+                    let visualCount = Math.min(soldThisHour, 5);
+                    for(let s = 0; s < visualCount; s++) {
+                        streetHTML += `<span class="anim-emoji">🧍🥤</span>`;
+                    }
+                    if(soldThisHour > 5) streetHTML += `<span class="anim-emoji" style="font-size:0.5em; margin-left:10px;">¡+${soldThisHour-5} más!</span>`;
+                    
+                    document.getElementById("anim-log").innerText = `¡Vendiste ${soldThisHour} vasos!`;
+                } else {
+                    if (price > 800 && Math.random() > 0.5) {
+                        streetHTML = `<span class="anim-emoji">🚶‍♂️💭💸</span>`;
+                        document.getElementById("anim-log").innerText = "Te encontraron muy caro...";
+                    } else {
+                        streetHTML = `<span class="anim-emoji">🍃</span>`;
+                        document.getElementById("anim-log").innerText = "Hora tranquila, sin clientes...";
+                    }
+                }
+
+                if (runningSold === cupsNeeded && cupsNeeded > 0) {
+                    document.getElementById("anim-log").innerText = "¡Todo agotado! Esperando que termine el día...";
+                    if(soldThisHour === 0) streetHTML = `<span class="anim-emoji">🚫</span>`;
+                }
+                
+                document.getElementById("anim-street").innerHTML = streetHTML;
+                currentTick++;
+
+            } else {
+                clearInterval(animInterval);
+                
+                document.getElementById("animation-screen").style.display = "none";
+                document.getElementById("day-result-screen").style.display = "block";
+                
+                document.getElementById("result-title").innerText = `Resumen del Día ${state.day}`;
+                document.getElementById("res-weather").innerText = state.weather;
+                document.getElementById("res-brewed").innerText = cupsNeeded;
+                document.getElementById("res-sold").innerText = cupsSold;
+                document.getElementById("res-feedback").innerText = feedback;
+                document.getElementById("res-revenue").innerText = formatCLP(revenue);
+                document.getElementById("res-spoiled").innerText = spoiled;
+            }
+        }, 600); 
+    }
+
+    function nextDay() {
+        if (state.day >= 10) {
+            document.getElementById("day-result-screen").style.display = "none";
+            document.getElementById("end-screen").style.display = "block";
+            document.getElementById("final-name").innerText = state.name;
+            document.getElementById("final-money").innerText = formatCLP(state.money);
+        } else {
+            state.day++;
+            setRandomWeather();
+            updateUI();
+            document.getElementById("day-result-screen").style.display = "none";
+            document.getElementById("game-screen").style.display = "block";
+        }
+    }
+
+    function exportData() {
+        const exportObj = {
+            studentName: state.name,
+            finalBalanceCLP: state.money,
+            profitCLP: state.money - 10000,
+            dailyLogs: state.history
+        };
+
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj, null, 2));
+        const downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        downloadAnchorNode.setAttribute("download", state.name.replace(/\s+/g, '_') + "_limonada_datos.json");
+        document.body.appendChild(downloadAnchorNode); 
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive SWOT Analysis Board</title>
+    <style>
+        :root {
+            --strengths-color: #d4edda;
+            --strengths-border: #c3e6cb;
+            --strengths-text: #155724;
+            
+            --weaknesses-color: #f8d7da;
+            --weaknesses-border: #f5c6cb;
+            --weaknesses-text: #721c24;
+            
+            --opportunities-color: #cce5ff;
+            --opportunities-border: #b8daff;
+            --opportunities-text: #004085;
+            
+            --threats-color: #fff3cd;
+            --threats-border: #ffeeba;
+            --threats-text: #856404;
+
+            --bg-color: #f8f9fa;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(#d1d1d1 1px, transparent 1px);
+            background-size: 20px 20px;
+            height: 100vh;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 0 0 20px 0;
+            color: #333;
+            font-size: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 20px;
+            flex-grow: 1;
+            min-height: 0; /* Important for scrollable inner areas */
+        }
+
+        .quadrant {
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .quadrant.drag-over {
+            border: 2px dashed #666;
+            transform: scale(1.01);
+            opacity: 0.9;
+        }
+
+        .q-strengths { background-color: var(--strengths-color); border-color: var(--strengths-border); }
+        .q-weaknesses { background-color: var(--weaknesses-color); border-color: var(--weaknesses-border); }
+        .q-opportunities { background-color: var(--opportunities-color); border-color: var(--opportunities-border); }
+        .q-threats { background-color: var(--threats-color); border-color: var(--threats-border); }
+
+        .q-strengths h2 { color: var(--strengths-text); }
+        .q-weaknesses h2 { color: var(--weaknesses-text); }
+        .q-opportunities h2 { color: var(--opportunities-text); }
+        .q-threats h2 { color: var(--threats-text); }
+
+        .quadrant h2 {
+            margin: 0 0 15px 0;
+            font-size: 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .quadrant-input {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            font-size: 1rem;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+            outline: none;
+            transition: box-shadow 0.2s;
+        }
+
+        .quadrant-input:focus {
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1), 0 0 0 3px rgba(255,255,255,0.7);
+        }
+
+        .card-container {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding-right: 5px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Custom Scrollbar for inner lists */
+        .card-container::-webkit-scrollbar { width: 6px; }
+        .card-container::-webkit-scrollbar-track { background: transparent; }
+        .card-container::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 10px; }
+
+        .card {
+            background: white;
+            padding: 15px 40px 15px 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            cursor: grab;
+            position: relative;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            color: #333;
+            transition: transform 0.1s, box-shadow 0.1s;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .card:active {
+            cursor: grabbing;
+        }
+
+        .card.is-dragging {
+            opacity: 0.4;
+            transform: rotate(3deg) scale(0.95);
+        }
+
+        .delete-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: #aaa;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px;
+            display: none;
+            border-radius: 50%;
+            line-height: 1;
+        }
+
+        .card:hover .delete-btn {
+            display: block;
+        }
+
+        .delete-btn:hover {
+            color: #ff4757;
+            background: #ffeaa7;
+        }
+
+        /* Empty state hint */
+        .empty-hint {
+            color: rgba(0,0,0,0.3);
+            text-align: center;
+            font-style: italic;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            pointer-events: none;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>SWOT Analysis</h1>
+    
+    <div class="board">
+        <!-- STRENGTHS -->
+        <div class="quadrant q-strengths" data-quadrant="strengths">
+            <h2>Strengths</h2>
+            <input type="text" class="quadrant-input" placeholder="Type a strength and hit Enter..." />
+            <div class="card-container" id="strengths"></div>
+        </div>
+
+        <!-- WEAKNESSES -->
+        <div class="quadrant q-weaknesses" data-quadrant="weaknesses">
+            <h2>Weaknesses</h2>
+            <input type="text" class="quadrant-input" placeholder="Type a weakness and hit Enter..." />
+            <div class="card-container" id="weaknesses"></div>
+        </div>
+
+        <!-- OPPORTUNITIES -->
+        <div class="quadrant q-opportunities" data-quadrant="opportunities">
+            <h2>Opportunities</h2>
+            <input type="text" class="quadrant-input" placeholder="Type an opportunity and hit Enter..." />
+            <div class="card-container" id="opportunities"></div>
+        </div>
+
+        <!-- THREATS -->
+        <div class="quadrant q-threats" data-quadrant="threats">
+            <h2>Threats</h2>
+            <input type="text" class="quadrant-input" placeholder="Type a threat and hit Enter..." />
+            <div class="card-container" id="threats"></div>
+        </div>
+    </div>
+
+    <script>
+        // 1. App State & Initialization
+        let cards = JSON.parse(localStorage.getItem('swot-cards')) || [];
+
+        function saveCards() {
+            localStorage.setItem('swot-cards', JSON.stringify(cards));
+        }
+
+        // 2. DOM Elements
+        const containers = {
+            strengths: document.getElementById('strengths'),
+            weaknesses: document.getElementById('weaknesses'),
+            opportunities: document.getElementById('opportunities'),
+            threats: document.getElementById('threats')
+        };
+        const quadrants = document.querySelectorAll('.quadrant');
+        const inputs = document.querySelectorAll('.quadrant-input');
+
+        // 3. Render Engine
+        function render() {
+            // Clear all containers
+            Object.values(containers).forEach(container => {
+                container.innerHTML = '';
+            });
+
+            // Group and append cards
+            const counts = { strengths: 0, weaknesses: 0, opportunities: 0, threats: 0 };
+            
+            cards.forEach(card => {
+                const el = createCardElement(card);
+                if (containers[card.quadrant]) {
+                    containers[card.quadrant].appendChild(el);
+                    counts[card.quadrant]++;
+                }
+            });
+
+            // Add empty hints if needed
+            Object.keys(counts).forEach(key => {
+                if (counts[key] === 0) {
+                    const hint = document.createElement('div');
+                    hint.className = 'empty-hint';
+                    hint.textContent = 'Drag cards here...';
+                    containers[key].appendChild(hint);
+                }
+            });
+        }
+
+        function createCardElement(card) {
+            const div = document.createElement('div');
+            div.className = 'card';
+            div.draggable = true;
+            div.dataset.id = card.id;
+            
+            const textNode = document.createTextNode(card.text);
+            div.appendChild(textNode);
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'delete-btn';
+            deleteBtn.innerHTML = '×';
+            deleteBtn.title = "Delete idea";
+            deleteBtn.onclick = () => deleteCard(card.id);
+            div.appendChild(deleteBtn);
+
+            // Drag event listeners
+            div.addEventListener('dragstart', handleDragStart);
+            div.addEventListener('dragend', handleDragEnd);
+
+            return div;
+        }
+
+        // 4. Data Actions
+        function addCard(text, quadrant) {
+            if (!text.trim()) return;
+            const newCard = {
+                id: 'card-' + Date.now(),
+                text: text.trim(),
+                quadrant: quadrant
+            };
+            cards.push(newCard);
+            saveCards();
+            render();
+        }
+
+        function deleteCard(id) {
+            cards = cards.filter(c => c.id !== id);
+            saveCards();
+            render();
+        }
+
+        function moveCard(id, newQuadrant) {
+            const card = cards.find(c => c.id === id);
+            if (card && card.quadrant !== newQuadrant) {
+                card.quadrant = newQuadrant;
+                saveCards();
+                render();
+            }
+        }
+
+        // 5. Input Event Listeners
+        inputs.forEach(input => {
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const quadrant = e.target.closest('.quadrant').dataset.quadrant;
+                    addCard(e.target.value, quadrant);
+                    e.target.value = ''; // clear input
+                }
+            });
+        });
+
+        // 6. Drag and Drop Logic
+        let draggedCardId = null;
+
+        function handleDragStart(e) {
+            draggedCardId = this.dataset.id;
+            e.dataTransfer.effectAllowed = 'move';
+            // Slight delay so the original element can be styled transparent while the drag-ghost remains visible
+            setTimeout(() => { this.classList.add('is-dragging'); }, 0);
+        }
+
+        function handleDragEnd(e) {
+            this.classList.remove('is-dragging');
+            quadrants.forEach(q => q.classList.remove('drag-over'));
+            draggedCardId = null;
+        }
+
+        quadrants.forEach(quadrant => {
+            quadrant.addEventListener('dragover', e => {
+                e.preventDefault(); // Necessary to allow dropping
+                e.dataTransfer.dropEffect = 'move';
+                quadrant.classList.add('drag-over');
+            });
+
+            quadrant.addEventListener('dragleave', e => {
+                // Prevent flicker when dragging over children
+                if (!quadrant.contains(e.relatedTarget)) {
+                    quadrant.classList.remove('drag-over');
+                }
+            });
+
+            quadrant.addEventListener('drop', e => {
+                e.preventDefault();
+                quadrant.classList.remove('drag-over');
+                const newQuadrant = quadrant.dataset.quadrant;
+                if (draggedCardId && newQuadrant) {
+                    moveCard(draggedCardId, newQuadrant);
+                }
+            });
+        });
+
+        // 7. Initial Render
+        render();
+
+    </script>
+</body>
+</html>

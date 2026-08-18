@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Limonadas 📊</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #f1c40f;
+            --secondary: #2ecc71;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --hot: #e67e22;
+            --mild: #3498db;
+            --cold: #9b59b6;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .upload-section {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+            border: 3px dashed #bdc3c7;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .upload-section input[type="file"] {
+            display: none;
+        }
+        .upload-btn {
+            background: var(--secondary);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1.2em;
+            cursor: pointer;
+            font-weight: bold;
+            border: none;
+            display: inline-block;
+        }
+        .upload-btn:hover { background: #27ae60; }
+        
+        #dashboard-content { display: none; }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border-bottom: 5px solid var(--primary);
+        }
+        .stat-card h3 { margin: 0 0 10px 0; color: #7f8c8d; font-size: 1em; text-transform: uppercase; }
+        .stat-card .value { font-size: 2em; font-weight: bold; color: var(--dark); }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .panel {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        th { background-color: #f8f9fa; position: sticky; top: 0; }
+        tr:nth-child(even) { background-color: #fafafa; }
+        
+        .chart-container {
+            position: relative;
+            height: 350px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>📊 Dashboard de Datos: Puesto de Limonada</h1>
+        <p>Sube los archivos JSON generados por el simulador para analizar los datos del curso y encontrar la estrategia de negocio óptima.</p>
+    </div>
+
+    <!-- ZONA DE CARGA -->
+    <div class="upload-section" id="upload-zone">
+        <h2>📥 Importar Datos del Curso</h2>
+        <p>Selecciona uno o múltiples archivos .json descargados del simulador.</p>
+        <label class="upload-btn">
+            Elegir Archivos JSON
+            <input type="file" id="file-input" accept=".json" multiple onchange="handleFiles(this.files)">
+        </label>
+    </div>
+
+    <!-- CONTENIDO DEL DASHBOARD -->
+    <div id="dashboard-content">
+        
+        <!-- Estadísticas -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total de Negocios</h3>
+                <div class="value" id="stat-students">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Días Simulados</h3>
+                <div class="value" id="stat-days">0</div>
+            </div>
+            <div class="stat-card" style="border-color: var(--secondary);">
+                <h3>Ganancia Promedio del Curso</h3>
+                <div class="value" id="stat-profit">$0</div>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- Tabla de posiciones -->
+            <div class="panel" style="max-height: 800px; overflow-y: auto;">
+                <h2>🏆 Ranking</h2>
+                <table id="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>Lugar</th>
+                            <th>Estudiante</th>
+                            <th>Dinero Final</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body">
+                        <!-- Llenado por JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Gráficos -->
+            <div class="panel">
+                <h2>📈 Precio vs. Demanda (por Clima)</h2>
+                <p style="font-size: 0.9em; color: #666;">¿Cómo afecta el precio a la cantidad de vasos que la gente quiere comprar según el clima que haga?</p>
+                <div class="chart-container">
+                    <canvas id="priceChart"></canvas>
+                </div>
+                
+                <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
+
+                <h2>🧪 La Receta Perfecta (Burbujas de Demanda)</h2>
+                <p style="font-size: 0.9em; color: #666;">Burbuja más grande = Mayor demanda. ¿Puedes identificar el punto perfecto entre Limones y Azúcar?</p>
+                <div class="chart-container">
+                    <canvas id="recipeChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-bottom: 40px;">
+            <button class="upload-btn" style="background: var(--dark);" onclick="location.reload()">Reiniciar Dashboard</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let rawData = []; 
+    let allDays = []; 
+    
+    let priceChartInstance = null;
+    let recipeChartInstance = null;
+
+    const formatCLP = (num) => new Intl.NumberFormat('es-CL').format(num);
+
+    function handleFiles(files) {
+        if (files.length === 0) return;
+        
+        let filesProcessed = 0;
+
+        Array.from(files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const json = JSON.parse(e.target.result);
+                    if (json.studentName && json.dailyLogs) {
+                        rawData.push(json);
+                        allDays.push(...json.dailyLogs);
+                    }
+                } catch (err) {
+                    console.error("Error leyendo archivo:", file.name);
+                }
+                
+                filesProcessed++;
+                if (filesProcessed === files.length) {
+                    buildDashboard();
+                }
+            };
+            reader.readAsText(file);
+        });
+    }
+
+    function buildDashboard() {
+        document.getElementById('upload-zone').style.display = 'none';
+        document.getElementById('dashboard-content').style.display = 'block';
+
+        updateStats();
+        buildLeaderboard();
+        drawPriceChart();
+        drawRecipeChart();
+    }
+
+    function updateStats() {
+        document.getElementById('stat-students').innerText = rawData.length;
+        document.getElementById('stat-days').innerText = allDays.length;
+        
+        let totalProfit = rawData.reduce((sum, s) => sum + s.profitCLP, 0);
+        let avgProfit = rawData.length > 0 ? Math.floor(totalProfit / rawData.length) : 0;
+        
+        document.getElementById('stat-profit').innerText = `$${formatCLP(avgProfit)}`;
+    }
+
+    function buildLeaderboard() {
+        let sorted = [...rawData].sort((a, b) => b.finalBalanceCLP - a.finalBalanceCLP);
+        
+        let tbody = document.getElementById('leaderboard-body');
+        tbody.innerHTML = '';
+        
+        sorted.forEach((student, index) => {
+            let tr = document.createElement('tr');
+            let medal = index === 0 ? '🥇 ' : index === 1 ? '🥈 ' : index === 2 ? '🥉 ' : `${index + 1}.`;
+            
+            tr.innerHTML = `
+                <td><strong>${medal}</strong></td>
+                <td>${student.studentName}</td>
+                <td style="color: ${student.profitCLP >= 0 ? 'green' : 'red'}; font-weight: bold;">
+                    $${formatCLP(student.finalBalanceCLP)}
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function drawPriceChart() {
+        const ctx = document.getElementById('priceChart').getContext('2d');
+        
+        // Extraer según clima
+        const hotData = allDays.filter(d => d.weather === 'hot').map(d => ({ x: d.pricePerCup, y: d.demandFound }));
+        const mildData = allDays.filter(d => d.weather === 'mild').map(d => ({ x: d.pricePerCup, y: d.demandFound }));
+        const coldData = allDays.filter(d => d.weather === 'cold').map(d => ({ x: d.pricePerCup, y: d.demandFound }));
+
+        if (priceChartInstance) priceChartInstance.destroy();
+
+        priceChartInstance = new Chart(ctx, {
+            type: 'scatter',
+            data: {
+                datasets: [
+                    { label: '☀️ Días Calurosos', data: hotData, backgroundColor: 'rgba(230, 126, 34, 0.6)', borderColor: '#e67e22' },
+                    { label: '⛅ Días Templados', data: mildData, backgroundColor: 'rgba(52, 152, 219, 0.6)', borderColor: '#3498db' },
+                    { label: '🌧️ Días Fríos', data: coldData, backgroundColor: 'rgba(155, 89, 182, 0.6)', borderColor: '#9b59b6' }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { title: { display: true, text: 'Precio por Vaso (CLP)' }, min: 0 },
+                    y: { title: { display: true, text: 'Demanda (Personas que quisieron comprar)' }, min: 0 }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: (ctx) => `Precio: $${ctx.raw.x} | Demanda: ${ctx.raw.y} personas`
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    function drawRecipeChart() {
+        const ctx = document.getElementById('recipeChart').getContext('2d');
+        
+        const bubbleData = allDays.map(d => ({
+            x: d.lemonsPerPitcher,
+            y: d.sugarPerPitcher,
+            r: Math.max(2, d.demandFound / 1.5), 
+            rawDemand: d.demandFound 
+        }));
+
+        if (recipeChartInstance) recipeChartInstance.destroy();
+
+        recipeChartInstance = new Chart(ctx, {
+            type: 'bubble',
+            data: {
+                datasets: [{
+                    label: 'Recetas Diarias',
+                    data: bubbleData,
+                    backgroundColor: 'rgba(46, 204, 113, 0.4)', 
+                    borderColor: '#27ae60',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { 
+                        title: { display: true, text: 'Limones por Jarro' }, 
+                        min: 0 
+                    },
+                    y: { 
+                        title: { display: true, text: 'Azúcar por Jarro (gramos)' }, 
+                        min: 0 
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: (ctx) => `Limones: ${ctx.raw.x} | Azúcar: ${ctx.raw.y}g | Demanda: ${ctx.raw.rawDemand}`
+                        }
+                    }
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

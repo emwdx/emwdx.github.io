@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lemonade Stand Simulator 🍋</title>
+    <style>
+        :root {
+            --primary: #f1c40f;
+            --secondary: #2ecc71;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --danger: #e74c3c;
+            --info: #3498db;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        h1, h2, h3 { margin-top: 0; }
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--primary);
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .panel {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        button {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        button:hover { background: #27ae60; }
+        button.buy-btn { font-size: 0.9em; padding: 5px 10px; margin-top: 10px; width: 100%; }
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .shop-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .weather-hot { color: #d35400; }
+        .weather-mild { color: #2980b9; }
+        .weather-cold { color: #8e44ad; }
+        
+        /* Screens */
+        #game-screen, #end-screen, #day-result-screen, #animation-screen { display: none; }
+
+        /* Animation specific */
+        .anim-emoji {
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            display: inline-block;
+            margin: 0 5px;
+        }
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <!-- LOGIN SCREEN -->
+    <div id="login-screen">
+        <h1 style="text-align: center;">🍋 Lemonade Stand Simulator</h1>
+        <p style="text-align: center;">Run your business for 10 days. Find the perfect recipe and price to maximize your profits!</p>
+        <div class="panel" style="max-width: 400px; margin: 40px auto;">
+            <label><strong>Enter your name:</strong></label>
+            <input type="text" id="player-name" placeholder="E.g., Maria">
+            <button onclick="startGame()" style="width: 100%;">Start Business</button>
+        </div>
+    </div>
+
+    <!-- MAIN GAME SCREEN -->
+    <div id="game-screen">
+        <div class="header-bar">
+            <span>Day: <span id="day-display">1</span> / 10</span>
+            <span>Weather: <span id="weather-display">☀️ Hot</span></span>
+            <span>Money: <span id="money-display">$10,000 CLP</span></span>
+        </div>
+
+        <div class="grid">
+            <!-- SHOP & INVENTORY -->
+            <div class="panel">
+                <h3>🛒 Shop & Inventory</h3>
+                <p style="font-size: 0.9em; color: #666;">Raw ingredients don't spoil.</p>
+                
+                <div class="shop-item">
+                    <div>
+                        <strong>🥤 Cups</strong><br>
+                        Owned: <span id="inv-cups">0</span>
+                    </div>
+                    <div style="text-align: right;">
+                        $1,000 CLP for 50<br>
+                        <button class="buy-btn" onclick="buy('cups', 1000, 50)">Buy</button>
+                    </div>
+                </div>
+                <div class="shop-item">
+                    <div>
+                        <strong>🍋 Lemons</strong><br>
+                        Owned: <span id="inv-lemons">0</span>
+                    </div>
+                    <div style="text-align: right;">
+                        $2,000 CLP for 10<br>
+                        <button class="buy-btn" onclick="buy('lemons', 2000, 10)">Buy</button>
+                    </div>
+                </div>
+                <div class="shop-item">
+                    <div>
+                        <strong>🧂 Sugar (g)</strong><br>
+                        Owned: <span id="inv-sugar">0</span>g
+                    </div>
+                    <div style="text-align: right;">
+                        $1,500 CLP for 1000g<br>
+                        <button class="buy-btn" onclick="buy('sugar', 1500, 1000)">Buy</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KITCHEN & BUSINESS -->
+            <div class="panel">
+                <h3>🧑‍🍳 Today's Plan</h3>
+                <p style="font-size: 0.9em; color: #666;">1 Pitcher makes 10 cups.</p>
+                
+                <label>Lemons per Pitcher:</label>
+                <input type="number" id="recipe-lemons" min="1" value="2">
+                
+                <label>Sugar per Pitcher (grams):</label>
+                <input type="number" id="recipe-sugar" min="10" step="10" value="50">
+                
+                <hr style="border: 0; border-top: 1px solid #ddd; margin: 15px 0;">
+                
+                <label>How many Pitchers to brew today?</label>
+                <input type="number" id="brew-amount" min="1" value="1">
+                <p style="font-size: 0.8em; color: var(--danger); margin-top: -10px;">Unsold brewed lemonade spoils at night!</p>
+                
+                <label>Price per Cup (CLP):</label>
+                <input type="number" id="cup-price" min="50" step="50" value="500">
+                
+                <button onclick="runDay()" style="width: 100%; margin-top: 10px; background: var(--primary); color: var(--dark);">Open Stand! 🚀</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ANIMATION SCREEN -->
+    <div id="animation-screen">
+        <h1 style="text-align: center;">🍋 Stand is Open!</h1>
+        <div class="panel" style="text-align: center; padding: 40px 20px;">
+            <h2 style="font-size: 2em; color: var(--info);">🕒 <span id="anim-time">09:00 AM</span></h2>
+            <div style="font-size: 4em; margin: 20px 0;">🍋🏚️</div>
+            
+            <!-- Where customers will appear -->
+            <div id="anim-street" style="height: 60px; font-size: 2em; margin-bottom: 20px; display: flex; justify-content: center; align-items: center;">
+            </div>
+            
+            <h3>Cups Sold: <span id="anim-sold-count">0</span> / <span id="anim-total-brewed"></span></h3>
+            <p id="anim-log" style="color: #666; font-style: italic; min-height: 24px;">Waiting for customers...</p>
+        </div>
+    </div>
+
+    <!-- DAILY RESULT MODAL -->
+    <div id="day-result-screen">
+        <h2 id="result-title">End of Day 1</h2>
+        <div class="panel">
+            <p><strong>Weather:</strong> <span id="res-weather"></span></p>
+            <p><strong>Cups Brewed:</strong> <span id="res-brewed"></span></p>
+            <p><strong>Cups Sold:</strong> <span id="res-sold"></span></p>
+            <p><strong>Customer Feedback:</strong> <span id="res-feedback"></span></p>
+            <hr>
+            <h3 style="color: var(--secondary);">Revenue: +$<span id="res-revenue"></span> CLP</h3>
+            <p style="color: var(--danger); font-size: 0.9em;">Spoiled cups thrown away: <span id="res-spoiled"></span></p>
+        </div>
+        <br>
+        <button onclick="nextDay()">Continue to Next Day ➡️</button>
+    </div>
+
+    <!-- END SCREEN -->
+    <div id="end-screen">
+        <h1 style="text-align: center;">📊 Business Closed!</h1>
+        <div class="panel" style="text-align: center;">
+            <h2>Great job, <span id="final-name"></span>!</h2>
+            <p>Starting Money: $10,000 CLP</p>
+            <h2 style="color: var(--secondary);">Final Money: $<span id="final-money"></span> CLP</h2>
+            <p>Download your data file and upload it to the class dashboard to see how your strategy compared to others.</p>
+            <br>
+            <button onclick="exportData()" style="background: var(--dark); font-size: 1.2em; padding: 15px 30px; color: white;">💾 Download My Data</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // Game State
+    let state = {
+        name: "",
+        day: 1,
+        money: 10000,
+        inventory: { cups: 0, lemons: 0, sugar: 0 },
+        weather: "",
+        weatherType: "", 
+        history: []
+    };
+
+    const weathers = [
+        { type: "hot", display: "☀️ Hot & Sunny", modifier: 1.5 },
+        { type: "mild", display: "⛅ Mild & Cloudy", modifier: 1.0 },
+        { type: "cold", display: "🌧️ Cold & Rainy", modifier: 0.5 }
+    ];
+
+    const formatCLP = (num) => num.toLocaleString('es-CL');
+
+    function updateUI() {
+        document.getElementById("day-display").innerText = state.day;
+        document.getElementById("money-display").innerText = `$${formatCLP(state.money)} CLP`;
+        document.getElementById("inv-cups").innerText = state.inventory.cups;
+        document.getElementById("inv-lemons").innerText = state.inventory.lemons;
+        document.getElementById("inv-sugar").innerText = state.inventory.sugar;
+        
+        let wSpan = document.getElementById("weather-display");
+        wSpan.innerText = state.weather;
+        wSpan.className = `weather-${state.weatherType}`;
+    }
+
+    function setRandomWeather() {
+        const w = weathers[Math.floor(Math.random() * weathers.length)];
+        state.weather = w.display;
+        state.weatherType = w.type;
+        state.weatherModifier = w.modifier;
+    }
+
+    function startGame() {
+        const nameInput = document.getElementById("player-name").value.trim();
+        if (!nameInput) {
+            alert("Please enter your name!");
+            return;
+        }
+        state.name = nameInput;
+        document.getElementById("login-screen").style.display = "none";
+        document.getElementById("game-screen").style.display = "block";
+        setRandomWeather();
+        updateUI();
+    }
+
+    function buy(item, cost, amount) {
+        if (state.money >= cost) {
+            state.money -= cost;
+            state.inventory[item] += amount;
+            updateUI();
+        } else {
+            alert("Not enough money! 💸");
+        }
+    }
+
+    function runDay() {
+        // Get Inputs
+        let rLemons = parseInt(document.getElementById("recipe-lemons").value);
+        let rSugar = parseInt(document.getElementById("recipe-sugar").value);
+        let pitchers = parseInt(document.getElementById("brew-amount").value);
+        let price = parseInt(document.getElementById("cup-price").value);
+
+        if (rLemons <= 0 || rSugar <= 0 || pitchers <= 0 || price <= 0) {
+            alert("Please enter values greater than 0.");
+            return;
+        }
+
+        let cupsNeeded = pitchers * 10;
+        let lemonsNeeded = rLemons * pitchers;
+        let sugarNeeded = rSugar * pitchers;
+
+        if (state.inventory.cups < cupsNeeded || 
+            state.inventory.lemons < lemonsNeeded || 
+            state.inventory.sugar < sugarNeeded) {
+            alert("Not enough ingredients in inventory to brew that much! Check your Shop & Inventory.");
+            return;
+        }
+
+        // Deduct inventory
+        state.inventory.cups -= cupsNeeded;
+        state.inventory.lemons -= lemonsNeeded;
+        state.inventory.sugar -= sugarNeeded;
+
+        // --- SIMULATION MATH ---
+        let recipeScore = 100 - (Math.abs(rLemons - 4) * 10) - (Math.abs(rSugar - 200) * 0.2);
+        if (recipeScore < 0) recipeScore = 0;
+
+        let feedback = "Tasted okay.";
+        if (recipeScore > 85) feedback = "Customers loved the recipe! 😋";
+        else if (rLemons > 6) feedback = "Too sour! 😖";
+        else if (rSugar > 300) feedback = "Too sweet! 🦷";
+        else if (rLemons < 3) feedback = "Tastes like water! 💧";
+
+        let priceScore = Math.max(0, 1000 - price) / 10; 
+        
+        let baseDemand = 15;
+        let demand = Math.floor((baseDemand + (recipeScore / 5) + (priceScore)) * state.weatherModifier);
+        
+        demand += Math.floor(Math.random() * 10) - 5; 
+        if (demand < 0) demand = 0;
+        if (price > 1200) demand = Math.floor(demand * 0.1); 
+
+        let cupsSold = Math.min(demand, cupsNeeded);
+        let revenue = cupsSold * price;
+        let spoiled = cupsNeeded - cupsSold;
+
+        state.money += revenue;
+
+        state.history.push({
+            day: state.day,
+            weather: state.weatherType,
+            lemonsPerPitcher: rLemons,
+            sugarPerPitcher: rSugar,
+            pitchersBrewed: pitchers,
+            pricePerCup: price,
+            demandFound: demand,
+            cupsSold: cupsSold,
+            revenue: revenue,
+            spoiled: spoiled
+        });
+
+        // --- START ANIMATION ---
+        startDayAnimation(cupsNeeded, cupsSold, demand, price, feedback, revenue, spoiled);
+    }
+
+    function startDayAnimation(cupsNeeded, cupsSold, demand, price, feedback, revenue, spoiled) {
+        // Switch UI to animation screen
+        document.getElementById("game-screen").style.display = "none";
+        document.getElementById("animation-screen").style.display = "block";
+        
+        // Reset animation UI
+        document.getElementById("anim-total-brewed").innerText = cupsNeeded;
+        document.getElementById("anim-sold-count").innerText = "0";
+        document.getElementById("anim-street").innerHTML = "";
+        document.getElementById("anim-log").innerText = "Opening stand...";
+
+        // Set up timeline (8 hours total: 9am to 4pm -> closes at 5pm)
+        let hours = ["09:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "01:00 PM", "02:00 PM", "03:00 PM", "04:00 PM", "05:00 PM"];
+        let currentTick = 0;
+        let runningSold = 0;
+
+        // Distribute the sales randomly across the 8 hours
+        let salesDistribution = Array(8).fill(0);
+        for(let i = 0; i < cupsSold; i++) {
+            salesDistribution[Math.floor(Math.random() * 8)]++;
+        }
+
+        let animInterval = setInterval(() => {
+            document.getElementById("anim-time").innerText = hours[currentTick];
+            
+            if (currentTick < 8) {
+                let soldThisHour = salesDistribution[currentTick];
+                runningSold += soldThisHour;
+                
+                document.getElementById("anim-sold-count").innerText = runningSold;
+                
+                let streetHTML = "";
+                
+                if (soldThisHour > 0) {
+                    // Create emojis based on sales (max 5 so it doesn't break the UI layout)
+                    let visualCount = Math.min(soldThisHour, 5);
+                    for(let s = 0; s < visualCount; s++) {
+                        streetHTML += `<span class="anim-emoji">🧍🥤</span>`;
+                    }
+                    if(soldThisHour > 5) streetHTML += `<span class="anim-emoji" style="font-size:0.5em; margin-left:10px;">+${soldThisHour-5} more!</span>`;
+                    
+                    document.getElementById("anim-log").innerText = `Sold ${soldThisHour} cups!`;
+                } else {
+                    // If no one bought, maybe they thought it was too expensive or just quiet
+                    if (price > 800 && Math.random() > 0.5) {
+                        streetHTML = `<span class="anim-emoji">🚶‍♂️💭💸</span>`;
+                        document.getElementById("anim-log").innerText = "Too expensive...";
+                    } else {
+                        streetHTML = `<span class="anim-emoji">🍃</span>`;
+                        document.getElementById("anim-log").innerText = "Quiet hour...";
+                    }
+                }
+
+                // If they sold out completely mid-day
+                if (runningSold === cupsNeeded && cupsNeeded > 0) {
+                    document.getElementById("anim-log").innerText = "Sold out! Waiting for the day to end...";
+                    if(soldThisHour === 0) streetHTML = `<span class="anim-emoji">🚫</span>`;
+                }
+                
+                document.getElementById("anim-street").innerHTML = streetHTML;
+                currentTick++;
+
+            } else {
+                // Day ends
+                clearInterval(animInterval);
+                
+                // Show final result screen
+                document.getElementById("animation-screen").style.display = "none";
+                document.getElementById("day-result-screen").style.display = "block";
+                
+                // Populate Results
+                document.getElementById("result-title").innerText = `End of Day ${state.day}`;
+                document.getElementById("res-weather").innerText = state.weather;
+                document.getElementById("res-brewed").innerText = cupsNeeded;
+                document.getElementById("res-sold").innerText = cupsSold;
+                document.getElementById("res-feedback").innerText = feedback;
+                document.getElementById("res-revenue").innerText = formatCLP(revenue);
+                document.getElementById("res-spoiled").innerText = spoiled;
+            }
+        }, 600); // 600 milliseconds per hour (4.8 seconds total)
+    }
+
+    function nextDay() {
+        if (state.day >= 10) {
+            document.getElementById("day-result-screen").style.display = "none";
+            document.getElementById("end-screen").style.display = "block";
+            document.getElementById("final-name").innerText = state.name;
+            document.getElementById("final-money").innerText = formatCLP(state.money);
+        } else {
+            state.day++;
+            setRandomWeather();
+            updateUI();
+            document.getElementById("day-result-screen").style.display = "none";
+            document.getElementById("game-screen").style.display = "block";
+        }
+    }
+
+    function exportData() {
+        const exportObj = {
+            studentName: state.name,
+            finalBalanceCLP: state.money,
+            profitCLP: state.money - 10000,
+            dailyLogs: state.history
+        };
+
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj, null, 2));
+        const downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        downloadAnchorNode.setAttribute("download", state.name.replace(/\s+/g, '_') + "_lemonade_data.json");
+        document.body.appendChild(downloadAnchorNode); 
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+    }
+</script>
+</body>
+</html>
