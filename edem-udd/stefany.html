@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PITCH QUEST | Supera el Reto</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --secondary: #00cec9;
+            --accent: #fdcb6e;
+            --danger: #ff7675;
+            --bg: #2d3436;
+            --text: #ffffff;
+            --block-shadow: 5px 5px 0px #000000;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1, h2, h3, .btn { font-family: 'Bungee', cursive; }
+
+        /* Estética Roblox/Blocky */
+        .card {
+            background: var(--primary);
+            border: 4px solid #000;
+            box-shadow: var(--block-shadow);
+            padding: 20px;
+            margin: 20px;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 4px;
+        }
+
+        .btn {
+            background: var(--accent);
+            color: #000;
+            padding: 15px 25px;
+            border: 3px solid #000;
+            box-shadow: 4px 4px 0px #000;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: 0.1s;
+            display: inline-block;
+            margin: 10px;
+        }
+
+        .btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px #000;
+        }
+
+        .btn-small { padding: 8px 15px; font-size: 0.8rem; }
+
+        /* Pantallas */
+        .screen { display: none; width: 100%; max-width: 600px; text-align: center; padding: 20px; }
+        .active { display: block; animation: fadeIn 0.5s; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Mapa y Progreso */
+        .hud {
+            position: sticky; top: 0; background: #1e272e; width: 100%; 
+            padding: 10px; display: flex; justify-content: space-around; 
+            border-bottom: 4px solid #000; z-index: 100;
+        }
+
+        .bravery-meter {
+            width: 100px; height: 20px; background: #444; border: 2px solid #000; position: relative;
+        }
+        #bravery-fill { width: 0%; height: 100%; background: #55efc4; transition: 0.5s; }
+
+        /* Avatares */
+        .avatar-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 20px 0; }
+        .avatar-option { 
+            border: 3px solid transparent; cursor: pointer; padding: 10px; background: rgba(255,255,255,0.1); 
+        }
+        .avatar-option.selected { border-color: var(--secondary); background: var(--primary); }
+        .avatar-svg { width: 60px; height: 60px; }
+
+        /* Nivel 2: Cronómetro */
+        #timer { font-size: 3rem; color: var(--accent); margin: 20px 0; text-shadow: 3px 3px 0 #000; }
+
+        /* Notificaciones */
+        .badge-unlock {
+            position: fixed; bottom: 20px; right: 20px; background: var(--secondary);
+            color: #000; padding: 15px; border: 3px solid #000; box-shadow: var(--block-shadow);
+            display: none; z-index: 200;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .hud { font-size: 0.7rem; }
+            h1 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hud">
+        <div>XP: <span id="xp-val">0</span></div>
+        <div>VALENTÍA: 
+            <div class="bravery-meter"><div id="bravery-fill"></div></div>
+        </div>
+        <div id="nav-project-name">---</div>
+    </div>
+
+    <!-- PANTALLA 1: INICIO/AVATAR -->
+    <div id="screen-start" class="screen active">
+        <h1>PITCH QUEST</h1>
+        <p>Transforma tus nervios en poder</p>
+        
+        <div class="card">
+            <h3>Crea tu Avatar</h3>
+            <div class="avatar-grid" id="avatar-selector">
+                <div class="avatar-option" onclick="selectAvatar(0)" id="av-0">
+                    <svg class="avatar-svg" viewBox="0 0 100 100"><rect x="25" y="25" width="50" height="50" fill="#fab1a0" stroke="#000" stroke-width="4"/><rect x="35" y="40" width="10" height="10" fill="#000"/><rect x="55" y="40" width="10" height="10" fill="#000"/></svg>
+                </div>
+                <div class="avatar-option" onclick="selectAvatar(1)" id="av-1">
+                    <svg class="avatar-svg" viewBox="0 0 100 100"><rect x="25" y="25" width="50" height="50" fill="#81ecec" stroke="#000" stroke-width="4"/><rect x="35" y="40" width="10" height="10" fill="#000"/><rect x="55" y="40" width="10" height="10" fill="#000"/></svg>
+                </div>
+                <div class="avatar-option" onclick="selectAvatar(2)" id="av-2">
+                    <svg class="avatar-svg" viewBox="0 0 100 100"><rect x="25" y="25" width="50" height="50" fill="#a29bfe" stroke="#000" stroke-width="4"/><rect x="35" y="40" width="10" height="10" fill="#000"/><rect x="55" y="40" width="10" height="10" fill="#000"/></svg>
+                </div>
+            </div>
+            <input type="text" id="input-team" placeholder="Nombre del Equipo" style="width: 100%; padding: 10px; margin-bottom: 10px;">
+            <input type="text" id="input-project" placeholder="Nombre del Proyecto" style="width: 100%; padding: 10px;">
+        </div>
+        <button class="btn" onclick="startQuest()">¡Comenzar Misión!</button>
+    </div>
+
+    <!-- PANTALLA 2: MAPA -->
+    <div id="screen-map" class="screen">
+        <h2>Mapa de Aventuras</h2>
+        <div style="position: relative; height: 400px; background: #34495e; border: 4px solid #000; margin: 20px 0;">
+            <button class="btn btn-small" onclick="goToLevel(1)" style="position: absolute; top: 70%; left: 10%;">1. Zona Segura</button>
+            <button class="btn btn-small" id="btn-l2" onclick="goToLevel(2)" style="position: absolute; top: 50%; left: 50%; opacity: 0.5;" disabled>2. Torre del Pitch</button>
+            <button class="btn btn-small" id="btn-l3" onclick="goToLevel(3)" style="position: absolute; top: 20%; left: 20%; opacity: 0.5;" disabled>3. Bosque NPC</button>
+            <button class="btn btn-small" id="btn-l4" onclick="goToLevel(4)" style="position: absolute; top: 10%; left: 60%; opacity: 0.5;" disabled>4. Arena Final</button>
+        </div>
+        <p>Desbloquea niveles ganando Valentía</p>
+    </div>
+
+    <!-- NIVEL 1: ZONA SEGURA -->
+    <div id="level-1" class="screen">
+        <h2>Zona Segura</h2>
+        <p>Responde para calentar motores. Nadie te mira.</p>
+        <div class="card" id="q-container">
+            <h4 id="q-text">¿Qué problema encontraron?</h4>
+            <textarea id="q-answer" style="width:100%; height:80px; margin-top:10px;"></textarea>
+        </div>
+        <button class="btn" onclick="nextSafeQuestion()">Siguiente Pregunta</button>
+    </div>
+
+    <!-- NIVEL 2: ELEVATOR CHALLENGE -->
+    <div id="level-2" class="screen">
+        <h2>Torre del Pitch</h2>
+        <p>¡Explica tu idea antes de que el elevador llegue al piso 50!</p>
+        <div id="timer">30</div>
+        <button class="btn" id="start-timer-btn" onclick="startTimer()">¡HABLAR!</button>
+        <div class="card" id="timer-feedback" style="display:none;">
+            <h3>¡Lo lograste!</h3>
+            <p>No importa si te trabaste, el tiempo corrió y tú no te detuviste.</p>
+            <button class="btn btn-small" onclick="completeLevel2()">Continuar</button>
+        </div>
+    </div>
+
+    <!-- NIVEL 3: NPC CURIOSO -->
+    <div id="level-3" class="screen">
+        <h2>Bosque de Preguntas</h2>
+        <div class="card">
+            <p><strong>Sr. Cubo:</strong> "¡Hola! Me interesa tu proyecto, pero no entiendo una cosa..."</p>
+            <p id="npc-question" style="font-style: italic; margin: 15px 0; color: var(--accent);"></p>
+            <button class="btn btn-small" onclick="answerNPC()">Responder con Seguridad</button>
+            <button class="btn btn-small" onclick="answerNPC()">Explicar con calma</button>
+        </div>
+    </div>
+
+    <!-- PANTALLA FINAL -->
+    <div id="level-4" class="screen">
+        <h1 style="color: var(--accent);">¡EQUIPO VALIENTE!</h1>
+        <div class="card">
+            <h3>Checklist de Batalla:</h3>
+            <ul style="text-align: left; list-style: none;">
+                <li>✅ Problema Clarificado</li>
+                <li>✅ Pitch de 30 seg Dominado</li>
+                <li>✅ Preguntas del NPC Superadas</li>
+                <li>✅ Miedo transformado en XP</li>
+            </ul>
+        </div>
+        <p>Están listos para la presentación real.</p>
+        <button class="btn" onclick="resetGame()">Reiniciar Entrenamiento</button>
+    </div>
+
+    <div id="badge-box" class="badge-unlock">
+        🏆 ¡Insignia Ganada: <span id="badge-name"></span>!
+    </div>
+
+    <script>
+        let gameState = {
+            xp: 0,
+            bravery: 0,
+            level: 1,
+            team: "",
+            project: "",
+            avatar: 0,
+            safeStep: 0
+        };
+
+        const safeQuestions = [
+            "¿A quién afecta principalmente este problema?",
+            "¿Cuál es el 'superpoder' de su solución?",
+            "¿Qué es lo más difícil de explicar de su proyecto?"
+        ];
+
+        const npcQuestions = [
+            "¿Por qué esto es mejor que lo que ya existe?",
+            "¿Qué harían si se quedan sin presupuesto?",
+            "¿Cómo se imaginan este proyecto en 2 años?",
+            "¿Quién es el más creativo del equipo?"
+        ];
+
+        // Inicialización
+        function startQuest() {
+            gameState.team = document.getElementById('input-team').value || "Equipo Alfa";
+            gameState.project = document.getElementById('input-project').value || "Proyecto X";
+            
+            if(gameState.team && gameState.project) {
+                document.getElementById('nav-project-name').innerText = gameState.project;
+                showScreen('screen-map');
+                saveProgress();
+            } else {
+                alert("Escribe el nombre de tu equipo y proyecto");
+            }
+        }
+
+        function selectAvatar(id) {
+            gameState.avatar = id;
+            document.querySelectorAll('.avatar-option').forEach(el => el.classList.remove('selected'));
+            document.getElementById('av-' + id).classList.add('selected');
+        }
+
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        function goToLevel(num) {
+            if(num === 1) showScreen('level-1');
+            if(num === 2 && gameState.level >= 2) showScreen('level-2');
+            if(num === 3 && gameState.level >= 3) showScreen('level-3');
+            if(num === 4 && gameState.level >= 4) showScreen('level-4');
+        }
+
+        // Lógica Nivel 1
+        function nextSafeQuestion() {
+            if(gameState.safeStep < safeQuestions.length) {
+                document.getElementById('q-text').innerText = safeQuestions[gameState.safeStep];
+                document.getElementById('q-answer').value = "";
+                gameState.safeStep++;
+                addXP(10);
+            } else {
+                unlockLevel(2, "Me Atreví");
+            }
+        }
+
+        // Lógica Nivel 2
+        function startTimer() {
+            let timeLeft = 30;
+            document.getElementById('start-timer-btn').style.display = 'none';
+            const interval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer').innerText = timeLeft;
+                if(timeLeft <= 0) {
+                    clearInterval(interval);
+                    document.getElementById('timer-feedback').style.display = 'block';
+                }
+            }, 1000);
+        }
+
+        function completeLevel2() {
+            unlockLevel(3, "Hablé sin leer");
+        }
+
+        // Lógica Nivel 3
+        function loadNPC() {
+            const q = npcQuestions[Math.floor(Math.random() * npcQuestions.length)];
+            document.getElementById('npc-question').innerText = q;
+        }
+
+        function answerNPC() {
+            addXP(20);
+            unlockLevel(4, "Respondedor Experto");
+        }
+
+        // Sistema de Recompensas
+        function addXP(amount) {
+            gameState.xp += amount;
+            gameState.bravery += 10;
+            if(gameState.bravery > 100) gameState.bravery = 100;
+            updateHUD();
+        }
+
+        function updateHUD() {
+            document.getElementById('xp-val').innerText = gameState.xp;
+            document.getElementById('bravery-fill').style.width = gameState.bravery + "%";
+        }
+
+        function unlockLevel(num, badge) {
+            gameState.level = num;
+            if(badge) showBadge(badge);
+            
+            const btn = document.getElementById('btn-l' + num);
+            if(btn) {
+                btn.disabled = false;
+                btn.style.opacity = "1";
+            }
+            showScreen('screen-map');
+            if(num === 3) loadNPC();
+            saveProgress();
+        }
+
+        function showBadge(name) {
+            const box = document.getElementById('badge-box');
+            document.getElementById('badge-name').innerText = name;
+            box.style.display = 'block';
+            setTimeout(() => { box.style.display = 'none'; }, 3000);
+        }
+
+        function saveProgress() {
+            localStorage.setItem('pitchQuestProgress', JSON.stringify(gameState));
+        }
+
+        function resetGame() {
+            localStorage.clear();
+            location.reload();
+        }
+
+        // Cargar progreso al iniciar
+        window.onload = () => {
+            const saved = localStorage.getItem('pitchQuestProgress');
+            if(saved) {
+                gameState = JSON.parse(saved);
+                updateHUD();
+                // Desbloquear botones visualmente
+                for(let i=2; i<=gameState.level; i++) {
+                    const btn = document.getElementById('btn-l' + i);
+                    if(btn) { btn.disabled = false; btn.style.opacity = "1"; }
+                }
+            }
+        };
+    </script>
+</body>
+</html>

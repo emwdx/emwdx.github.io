@@ -1,0 +1,19 @@
+{
+  "paola": {
+    "titulo": "Arcade Emprendedor",
+    "descripcion": "Tres dinámicas de aula con generadores al azar: dilemas éticos, roleplay de venta de un objeto inútil y un juicio a la innovación."
+  },
+  "stefany": {
+    "titulo": "Crafting Mi Día",
+    "descripcion": "Planificador de las 24 horas con estética de inventario pixelado, gráfico circular en vivo y alertas de equilibrio."
+  },
+  "josefa": {
+    "titulo": "Agustín ayuda a Pororo",
+    "descripcion": "Juego de conteo del 1 al 10: hay que tocar los bloques en orden para levantar el iglú del pingüino, con refuerzo al acertar y sacudida al equivocarse."
+  },
+  "andres": {
+    "titulo": "Modelo A.C.T.I.V.O.",
+    "descripcion": "Presentación interactiva 16:9 sobre neurociencia del aprendizaje: ocho pasos cronometrados, sincronización en vivo y vista para celular.",
+    "url": "https://modelo-activo-presentaciones-interactivas-16-9.ai.studio/"
+  }
+}

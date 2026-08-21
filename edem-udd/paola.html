@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arcade Emprendedor - Dinámicas y Juego de Rol</title>
+    <style>
+        :root {
+            --bg: #090d16;
+            --card-bg: #131c2e;
+            --accent-green: #10b981;
+            --accent-purple: #a855f7;
+            --accent-amber: #f59e0b;
+            --accent-red: #ef4444;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(168, 85, 247, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.15) 0%, transparent 40%);
+            min-height: 100vh;
+        }
+
+        header {
+            text-align: center;
+            max-width: 800px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #fff;
+            font-size: 2.8rem;
+            margin-bottom: 5px;
+            text-shadow: 0 0 10px rgba(16, 185, 129, 0.5), 0 0 20px rgba(168, 85, 247, 0.3);
+            letter-spacing: 1px;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-left: 6px solid var(--accent-purple);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card.yellow { border-left-color: var(--accent-amber); }
+        .card.green { border-left-color: var(--accent-green); }
+
+        h2 {
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: #fff;
+        }
+
+        .badge {
+            font-size: 0.8rem;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .step-list {
+            padding-left: 20px;
+            margin-top: 15px;
+        }
+
+        .step-list li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .generator-box {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 15px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .timer-box {
+            margin-top: 15px;
+            padding: 12px;
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .timer-display {
+            font-size: 1.8rem;
+            font-weight: bold;
+            font-family: monospace;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 100%;
+            background: var(--accent-green);
+            transition: width 1s linear, background-color 0.3s ease;
+        }
+
+        .timer-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .btn-purple { 
+            background: linear-gradient(135deg, #a855f7, #7c3aed);
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+        }
+        .btn-amber { 
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+        }
+        .btn-green { 
+            background: linear-gradient(135deg, #10b981, #059669);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+        }
+        .btn-control {
+            background: rgba(255, 255, 255, 0.15);
+            font-size: 0.85rem;
+            padding: 6px 12px;
+        }
+        .btn-control:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        .result-display {
+            margin-top: 15px;
+            font-size: 1.15rem;
+            font-weight: 500;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            padding: 15px;
+            background: rgba(15, 23, 42, 0.6);
+            line-height: 1.4;
+            transition: all 0.3s ease;
+        }
+
+        .result-display.active {
+            border-style: solid;
+            border-color: rgba(255, 255, 255, 0.3);
+            animation: popIn 0.3s ease;
+        }
+
+        .value-tag { color: var(--accent-amber); font-weight: bold; }
+        .skill-tag { color: var(--accent-green); font-weight: bold; }
+
+        @keyframes popIn {
+            0% { transform: scale(0.98); opacity: 0.8; }
+            50% { transform: scale(1.01); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🎮 ARCADE EMPRENDEDOR</h1>
+        <p class="subtitle">Dinámicas de pensamiento crítico, innovación y ética para jóvenes de 14 y 15 años</p>
+    </header>
+
+    <div class="container">
+
+        <!-- DINÁMICA 1 -->
+        <div class="card yellow">
+            <h2>🔥 1. El Dilema del Tiburón <span class="badge">⏱️ 15 Min Total</span></h2>
+            <p><strong>Objetivo:</strong> Evaluar decisiones rápidas equilibrando rentabilidad y ética comercial.</p>
+            <p><strong>Instrucciones:</strong> Genera un dilema al azar. Las parejas tienen 2 minutos para discutir y exponer su respuesta.</p>
+            
+            <div class="generator-box">
+                <button class="btn-amber" onclick="generateDilemma()">🎲 Generar Dilema Ético</button>
+                <div id="dilemma-display" class="result-display">Haz clic para obtener un dilema...</div>
+                
+                <div class="timer-box">
+                    <div id="timer-1" class="timer-display">02:00</div>
+                    <div class="progress-bar-bg">
+                        <div id="bar-1" class="progress-bar"></div>
+                    </div>
+                    <div class="timer-controls">
+                        <button class="btn-control" onclick="startTimer(1, 120)">▶️ Iniciar 2 min</button>
+                        <button class="btn-control" onclick="pauseTimer(1)">⏸️ Pausa</button>
+                        <button class="btn-control" onclick="resetTimer(1, 120)">🔄 Reiniciar</button>
+                    </div>
+                </div>
+            </div>
+            
+            <ul class="step-list">
+                <li><span class="skill-tag">Pensamiento Crítico:</span> Evaluar consecuencias a corto y largo plazo.</li>
+                <li><span class="value-tag">Valores:</span> Honestidad, Responsabilidad Social, Empatía.</li>
+            </ul>
+        </div>
+
+        <!-- DINÁMICA 2 -->
+        <div class="card">
+            <h2>🚀 2. Roleplay: El Objeto Inútil <span class="badge">⏱️ 20 Min Total</span></h2>
+            <p><strong>Objetivo:</strong> Desarrollar creatividad, pensamiento lateral y flexibilidad mental.</p>
+            <p><strong>Instrucciones:</strong> Elige un objeto absurdo. Un estudiante tiene 3 minutos como <strong>"Vendedor Visionario"</strong> para convencer al cliente.</p>
+
+            <div class="generator-box">
+                <button class="btn-purple" onclick="generateObject()">💡 Generar Objeto Absurdo</button>
+                <div id="object-display" class="result-display">Haz clic para obtener un objeto...</div>
+
+                <div class="timer-box">
+                    <div id="timer-2" class="timer-display">03:00</div>
+                    <div class="progress-bar-bg">
+                        <div id="bar-2" class="progress-bar"></div>
+                    </div>
+                    <div class="timer-controls">
+                        <button class="btn-control" onclick="startTimer(2, 180)">▶️ Iniciar 3 min</button>
+                        <button class="btn-control" onclick="pauseTimer(2)">⏸️ Pausa</button>
+                        <button class="btn-control" onclick="resetTimer(2, 180)">🔄 Reiniciar</button>
+                    </div>
+                </div>
+            </div>
+
+            <ul class="step-list">
+                <li><span class="skill-tag">Pensamiento Crítico:</span> Reencuadrar un problema y encontrar propuesta de valor.</li>
+                <li><span class="value-tag">Valores:</span> Resiliencia, Asertividad, Escucha Activa.</li>
+            </ul>
+        </div>
+
+        <!-- DINÁMICA 3 -->
+        <div class="card green">
+            <h2>🛡️ 3. El Juicio de la Innovación <span class="badge">⏱️ 15 Min Total</span></h2>
+            <p><strong>Objetivo:</strong> Desmontar supuestos y analizar impactos ambientales y sociales.</p>
+            <p><strong>Instrucciones:</strong> Elige una idea. 3 minutos de preparación y 2 minutos de alegato por equipo (Defensores vs Fiscales).</p>
+
+            <div class="generator-box">
+                <button class="btn-green" onclick="generateIdea()">🤖 Generar Idea de Negocio</button>
+                <div id="idea-display" class="result-display">Haz clic para obtener una idea...</div>
+
+                <div class="timer-box">
+                    <div id="timer-3" class="timer-display">03:00</div>
+                    <div class="progress-bar-bg">
+                        <div id="bar-3" class="progress-bar"></div>
+                    </div>
+                    <div class="timer-controls">
+                        <button class="btn-control" onclick="startTimer(3, 180)">▶️ Prep (3m)</button>
+                        <button class="btn-control" onclick="startTimer(3, 120)">▶️ Debate (2m)</button>
+                        <button class="btn-control" onclick="pauseTimer(3)">⏸️ Pausa</button>
+                        <button class="btn-control" onclick="resetTimer(3, 180)">🔄 Reiniciar</button>
+                    </div>
+                </div>
+            </div>
+
+            <ul class="step-list">
+                <li><span class="skill-tag">Pensamiento Crítico:</span> Cuestionar argumentos, detectar sesgos y prever riesgos.</li>
+                <li><span class="value-tag">Valores:</span> Justicia, Sostenibilidad, Trabajo en Equipo.</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <script>
+        const dilemmas = [
+            "Descubres que tu proveedor principal usa materiales poco ecológicos, pero cambiarlo aumentará tus costos un 40% y podrías quebrar. ¿Qué haces?",
+            "Un competidor comete un error grave en sus redes sociales. Puedes aprovecharlo para quitarle todos sus clientes inmediatamente. ¿Aprovechas la oportunidad?",
+            "Tienes presupuesto para contratar a una persona más: un experto con muy mala actitud o un principiante apasionado y muy ético. ¿A quién eliges?",
+            "Un cliente importante te pide modificar un informe para ocultar un pequeño defecto que no afecta la seguridad. Si te niegas, cancela el contrato.",
+            "Descubres un vacío legal que te permite pagar menos impuestos de forma legal pero moralmente dudosa. ¿Lo usas para reinvertir en tu empresa?",
+            "Tu producto estrella se vende muy bien, pero te das cuenta de que genera adicción en los usuarios más jóvenes. ¿Rediseñas la experiencia aunque bajen tus ventas?"
+        ];
+
+        const objects = [
+            "Un tenedor con cuchara de goma derretida",
+            "Zapatos con ruedas cuadradas",
+            "Un paraguas hecho de papel de periódico",
+            "Una alarma que suena con susurros imperceptibles",
+            "Un reloj de pared sin agujas ni números",
+            "Gafas de sol para usar en completa oscuridad",
+            "Una mochila que se abre solo por abajo"
+        ];
+
+        const ideas = [
+            "Una App que monitorea las emociones de los empleados para aumentar la productividad.",
+            "Zapatillas desechables superbaratas hechas de plástico reciclado no biodegradable.",
+            "Un servicio de entrega con drones que operan a baja altura las 24 horas del día.",
+            "Una inteligencia artificial que decide automáticamente qué estudiantes aprueban o reprueban.",
+            "Un chip implantable que reemplaza todas las tarjetas bancarias y llaves de la casa.",
+            "Comida ultra-procesada personalizada que sustituye por completo la cocina casera."
+        ];
+
+        function getRandomItem(array) {
+            return array[Math.floor(Math.random() * array.length)];
+        }
+
+        function updateDisplay(elementId, text) {
+            const display = document.getElementById(elementId);
+            display.innerText = text;
+            display.classList.remove('active');
+            void display.offsetWidth;
+            display.classList.add('active');
+        }
+
+        function generateDilemma() { updateDisplay('dilemma-display', getRandomItem(dilemmas)); }
+        function generateObject() { updateDisplay('object-display', getRandomItem(objects)); }
+        function generateIdea() { updateDisplay('idea-display', getRandomItem(ideas)); }
+
+        // LÓGICA DE TEMPORIZADORES
+        const timers = {};
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function startTimer(id, durationSeconds) {
+            if (!timers[id]) {
+                timers[id] = { timeLeft: durationSeconds, total: durationSeconds, interval: null };
+            }
+            
+            // Si cambió el tiempo solicitado o ya llegó a cero, reinicia con la nueva duración
+            if (timers[id].timeLeft <= 0 || timers[id].total !== durationSeconds) {
+                timers[id].total = durationSeconds;
+                timers[id].timeLeft = durationSeconds;
+            }
+
+            clearInterval(timers[id].interval);
+
+            timers[id].interval = setInterval(() => {
+                if (timers[id].timeLeft > 0) {
+                    timers[id].timeLeft--;
+                    renderTimer(id);
+                } else {
+                    clearInterval(timers[id].interval);
+                    playAlarm();
+                }
+            }, 1000);
+            renderTimer(id);
+        }
+
+        function pauseTimer(id) {
+            if (timers[id]) {
+                clearInterval(timers[id].interval);
+            }
+        }
+
+        function resetTimer(id, defaultSeconds) {
+            pauseTimer(id);
+            timers[id] = { timeLeft: defaultSeconds, total: defaultSeconds, interval: null };
+            renderTimer(id);
+        }
+
+        function renderTimer(id) {
+            const timerData = timers[id];
+            const display = document.getElementById(`timer-${id}`);
+            const bar = document.getElementById(`bar-${id}`);
+            
+            display.innerText = formatTime(timerData.timeLeft);
+            
+            const percentage = (timerData.timeLeft / timerData.total) * 100;
+            bar.style.width = `${percentage}%`;
+
+            if (percentage < 25) {
+                bar.style.backgroundColor = 'var(--accent-red)';
+            } else if (percentage < 50) {
+                bar.style.backgroundColor = 'var(--accent-amber)';
+            } else {
+                bar.style.backgroundColor = 'var(--accent-green)';
+            }
+        }
+
+        function playAlarm() {
+            // Beep auditivo del navegador usando Web Audio API
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(587.33, ctx.currentTime); // Nota D5
+                osc.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.6);
+            } catch(e) {}
+        }
+    </script>
+</body>
+</html>

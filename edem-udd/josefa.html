@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Agustín ayuda a Pororo</title>
+    <style>
+        :root {
+            --azul-hielo: #e1f5fe;
+            --azul-fuerte: #0288d1;
+            --borde-bloque: #81d4fa;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f0faff;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            touch-action: manipulation;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        #cabecera {
+            text-align: center;
+            color: #01579b;
+            padding: 10px;
+            font-size: 1.1rem;
+        }
+
+        #area-juego {
+            position: relative;
+            width: 95vw;
+            height: 70vh;
+            max-width: 400px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+            border: 4px solid #fff;
+        }
+
+        /* El Iglú (Puzzle) */
+        #contenedor-iglu {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 280px;
+            height: 180px;
+            display: flex;
+            flex-wrap: wrap-reverse;
+            justify-content: center;
+            gap: 5px;
+            padding: 10px;
+        }
+
+        .hueco-iglu {
+            width: 50px;
+            height: 45px;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fafafa;
+        }
+
+        /* Bloques sueltos */
+        .bloque {
+            width: 55px;
+            height: 50px;
+            background-color: var(--azul-hielo);
+            border: 3px solid var(--azul-fuerte);
+            border-radius: 10px;
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: var(--azul-fuerte);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 10;
+        }
+
+        .pinguino {
+            font-size: 60px;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 5;
+        }
+
+        /* Animaciones */
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+
+        .error { animation: shake 0.3s; background-color: #ffcdd2; }
+
+        .celebracion {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.9);
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            text-align: center;
+        }
+
+        button {
+            background: var(--azul-fuerte);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="cabecera">
+        <p>🐧 <strong>Agustín</strong>, ayuda a Pororo a construir su casa usando los números en orden.</p>
+    </div>
+
+    <div id="area-juego" id="zona-bloques">
+        <div class="pinguino">🐧</div>
+        
+        <!-- Aquí se generarán los huecos del iglú -->
+        <div id="contenedor-iglu"></div>
+    </div>
+
+    <div id="celebracion" class="celebracion">
+        <h1 style="font-size: 3rem;">🏠✨</h1>
+        <h2 style="color: #2e7d32;">¡Felicitaciones Agustín!</h2>
+        <p>Construiste el iglú de Pororo</p>
+        <button onclick="location.reload()">Jugar otra vez</button>
+    </div>
+
+    <script>
+        const areaJuego = document.getElementById('area-juego');
+        const contenedorIglu = document.getElementById('contenedor-iglu');
+        const pantallaFinal = document.getElementById('celebracion');
+        let numeroActual = 1;
+
+        // 1. Crear huecos para el iglú
+        for (let i = 1; i <= 10; i++) {
+            const hueco = document.createElement('div');
+            hueco.className = 'hueco-iglu';
+            hueco.id = 'hueco-' + i;
+            contenedorIglu.appendChild(hueco);
+        }
+
+        // 2. Crear bloques con números aleatorios
+        const numeros = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        numeros.sort(() => Math.random() - 0.5); // Desordenar
+
+        numeros.forEach((num, index) => {
+            const bloque = document.createElement('div');
+            bloque.className = 'bloque';
+            bloque.innerText = num;
+            
+            // Posiciones aleatorias en la parte superior/media del área
+            bloque.style.left = (Math.random() * (areaJuego.offsetWidth - 70)) + 'px';
+            bloque.style.top = (50 + Math.random() * (areaJuego.offsetHeight / 2 - 50)) + 'px';
+            
+            bloque.onclick = () => verificarBloque(bloque, num);
+            areaJuego.appendChild(bloque);
+        });
+
+        function verificarBloque(elemento, valor) {
+            if (valor === numeroActual) {
+                // Sonido o vibración ligera si el dispositivo lo permite
+                if (navigator.vibrate) navigator.vibrate(50);
+
+                const destino = document.getElementById('hueco-' + valor);
+                const rectDestino = destino.getBoundingClientRect();
+                const rectArea = areaJuego.getBoundingClientRect();
+
+                // Mover bloque al hueco correspondiente
+                elemento.style.left = (rectDestino.left - rectArea.left) + 'px';
+                elemento.style.top = (rectDestino.top - rectArea.top) + 'px';
+                elemento.style.backgroundColor = '#b3e5fc';
+                elemento.style.zIndex = "1";
+                elemento.onclick = null; // Desactivar click
+
+                numeroActual++;
+
+                if (numeroActual > 10) {
+                    setTimeout(() => {
+                        pantallaFinal.style.display = 'flex';
+                    }, 800);
+                }
+            } else {
+                // Error: Sacudir bloque
+                elemento.classList.add('error');
+                setTimeout(() => elemento.classList.remove('error'), 300);
+            }
+        }
+    </script>
+</body>
+</html>
