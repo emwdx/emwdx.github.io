@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Universal Word & Concept Sort</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+
+      --card-bg: #ffffff;
+      --card-shadow: 0 2px 6px rgba(15, 23, 42, 0.08), 0 1px 2px rgba(15, 23, 42, 0.04);
+      --card-hover-shadow: 0 8px 16px rgba(15, 23, 42, 0.12);
+
+      --correct-bg: #dcfce7;
+      --correct-border: #22c55e;
+      --correct-text: #14532d;
+
+      --wrong-bg: #fee2e2;
+      --wrong-border: #ef4444;
+      --wrong-text: #7f1d1d;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* Header Bar */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid #e2e8f0;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+
+    .title-group h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #1e293b;
+    }
+
+    .title-group p {
+      font-size: 0.825rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      font-family: inherit;
+      font-size: 0.875rem;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .btn-secondary {
+      background: #f1f5f9;
+      color: #334155;
+      border-color: #cbd5e1;
+    }
+    .btn-secondary:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+      box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+    }
+    .btn-primary:hover {
+      background: #1d4ed8;
+      box-shadow: 0 4px 8px rgba(37, 99, 235, 0.25);
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.825rem;
+      font-weight: 600;
+      background: #f1f5f9;
+      color: #475569;
+    }
+
+    /* Main Container */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 16px 20px;
+      gap: 16px;
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* Dynamic Category Grid */
+    .categories {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      flex: 1;
+      min-height: 280px;
+    }
+
+    .drop-zone {
+      border-radius: 14px;
+      border: 2px dashed;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      transition: background-color 0.2s, border-color 0.2s;
+      background-color: var(--surface);
+      cursor: pointer;
+    }
+
+    .drop-zone.drag-over, .drop-zone.highlight-zone {
+      filter: brightness(0.96);
+      transform: scale(1.005);
+    }
+
+    .zone-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      margin-bottom: 10px;
+      pointer-events: none;
+    }
+
+    .zone-header h2 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .zone-badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 12px;
+      background: rgba(0,0,0,0.05);
+    }
+
+    .card-container {
+      flex: 1;
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start;
+      gap: 8px;
+      min-height: 120px;
+    }
+
+    /* Word Bank */
+    .bank-wrapper {
+      background: var(--surface);
+      border-radius: 14px;
+      border: 1px solid #e2e8f0;
+      padding: 14px 18px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    }
+
+    .bank-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .bank-header h3 {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+
+    .bank-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      min-height: 80px;
+      padding: 8px;
+      border-radius: 8px;
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      align-items: center;
+    }
+
+    .bank-container.drag-over, .bank-container.highlight-zone {
+      background: #e2e8f0;
+    }
+
+    /* Word Cards */
+    .card {
+      background: var(--card-bg);
+      color: var(--text-main);
+      padding: 9px 18px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: grab;
+      border: 1px solid #cbd5e1;
+      box-shadow: var(--card-shadow);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      touch-action: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.2s, border-color 0.2s;
+    }
+
+    .card:hover {
+      box-shadow: var(--card-hover-shadow);
+      transform: translateY(-1px);
+    }
+
+    .card.selected {
+      outline: 3px solid #2563eb;
+      outline-offset: 2px;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(37, 99, 235, 0.25);
+    }
+
+    .card.dragging {
+      position: fixed !important;
+      z-index: 99999 !important;
+      pointer-events: none !important;
+      transform: scale(1.08) rotate(3deg) !important;
+      box-shadow: 0 18px 30px rgba(15, 23, 42, 0.22) !important;
+      opacity: 0.95;
+      cursor: grabbing;
+    }
+
+    .card.placeholder {
+      opacity: 0.3;
+      background: #e2e8f0;
+      border: 2px dashed #94a3b8;
+      box-shadow: none;
+      pointer-events: none;
+    }
+
+    .card.correct {
+      background-color: var(--correct-bg);
+      border-color: var(--correct-border);
+      color: var(--correct-text);
+    }
+    .card.correct::after {
+      content: "✓";
+      font-weight: 800;
+    }
+
+    .card.incorrect {
+      background-color: var(--wrong-bg);
+      border-color: var(--wrong-border);
+      color: var(--wrong-text);
+      animation: shake 0.3s ease;
+    }
+    .card.incorrect::after {
+      content: "✕";
+      font-weight: 800;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      75% { transform: translateX(4px); }
+    }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      padding: 20px;
+    }
+
+    .modal-backdrop.open { display: flex; }
+
+    .modal {
+      background: var(--surface);
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 560px;
+      width: 100%;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .modal h2 { font-size: 1.25rem; font-weight: 700; }
+    .modal p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; }
+
+    textarea {
+      width: 100%;
+      height: 240px;
+      font-family: monospace;
+      font-size: 0.9rem;
+      padding: 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      resize: vertical;
+      background: #f8fafc;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="title-group">
+      <h1>Word &amp; Concept Sort</h1>
+      <p>Drag or tap cards into their matching category box</p>
+    </div>
+
+    <div class="toolbar">
+      <div id="stats" class="status-badge">0 / 0 Sorted</div>
+      <button class="btn-secondary" id="btn-shuffle" title="Put all cards back in the pile">
+        🔀 Shuffle
+      </button>
+      <button class="btn-primary" id="btn-check">
+        ✓ Check Answers
+      </button>
+      <button class="btn-secondary" id="btn-edit" title="Configure your custom word list">
+        ⚙️ Edit Word List
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Dynamically generated category boxes appear here -->
+    <div class="categories" id="categories-container"></div>
+
+    <!-- Word Bank at bottom -->
+    <div class="bank-wrapper">
+      <div class="bank-header">
+        <h3>Word Pile (<span id="bank-count">0</span> remaining)</h3>
+      </div>
+      <div class="drop-zone bank-container" id="container-bank" data-category="__bank__"></div>
+    </div>
+  </main>
+
+  <!-- Edit List Modal -->
+  <div class="modal-backdrop" id="modal">
+    <div class="modal">
+      <h2>Edit Word &amp; Category List</h2>
+      <p>Enter one item per line, followed by a comma and its category. The page creates a labeled box for every unique category it finds.</p>
+      <textarea id="word-input" spellcheck="false"></textarea>
+      <div class="modal-actions">
+        <button class="btn-secondary" id="modal-cancel">Cancel</button>
+        <button class="btn-primary" id="modal-save">Save &amp; Update</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Default list provided
+    const DEFAULT_WORDS = `island, noun
+teacher, noun
+kitchen, noun
+umbrella, noun
+breakfast, noun
+library, noun
+swim, verb
+explain, verb
+borrow, verb
+forget, verb
+arrive, verb
+choose, verb
+quiet, adjective
+brave, adjective
+expensive, adjective
+narrow, adjective
+careful, adjective
+noisy, adjective
+quickly, adverb
+always, adverb`;
+
+    const STORAGE_KEY = 'eal_dynamic_word_sort_list_v2';
+
+    // Harmonious palette cycled dynamically across discovered categories
+    const PALETTE = [
+      { border: '#bfdbfe', bg: '#eff6ff', text: '#1d4ed8' }, // Blue
+      { border: '#fed7aa', bg: '#fff7ed', text: '#c2410c' }, // Orange
+      { border: '#a7f3d0', bg: '#ecfdf5', text: '#047857' }, // Emerald
+      { border: '#e9d5ff', bg: '#faf5ff', text: '#7e22ce' }, // Purple
+      { border: '#fecdd3', bg: '#fff1f2', text: '#be123c' }, // Rose
+      { border: '#fde68a', bg: '#fffbeb', text: '#b45309' }, // Amber
+      { border: '#a5f3fc', bg: '#ecfeff', text: '#0e7490' }, // Cyan
+      { border: '#c7d2fe', bg: '#eef2ff', text: '#4338ca' }  // Indigo
+    ];
+
+    let wordData = [];
+    let dropZones = [];
+    let activeDrag = null;
+    let selectedForTapMove = null;
+
+    const categoriesContainer = document.getElementById('categories-container');
+    const containerBank = document.getElementById('container-bank');
+    const statsBadge = document.getElementById('stats');
+    const bankCount = document.getElementById('bank-count');
+    const modal = document.getElementById('modal');
+    const wordInput = document.getElementById('word-input');
+
+    function loadWordListText() {
+      return localStorage.getItem(STORAGE_KEY) || DEFAULT_WORDS;
+    }
+
+    function capitalize(str) {
+      if (!str) return '';
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    function parseInputText(text) {
+      const lines = text.split('\n');
+      const items = [];
+      const categoriesSet = new Set();
+      let counter = 0;
+
+      for (let rawLine of lines) {
+        const line = rawLine.trim();
+        if (!line || line.startsWith('#')) continue;
+
+        const parts = line.split(',');
+        if (parts.length >= 2) {
+          const word = parts[0].trim();
+          const categoryRaw = parts.slice(1).join(',').trim(); // handles commas in category if any
+
+          if (word && categoryRaw) {
+            const categoryKey = categoryRaw.toLowerCase();
+            categoriesSet.add(categoryRaw);
+
+            items.push({
+              id: 'card-' + (++counter),
+              text: word,
+              categoryRaw: categoryRaw,
+              categoryKey: categoryKey
+            });
+          }
+        }
+      }
+
+      return {
+        items,
+        categories: Array.from(categoriesSet)
+      };
+    }
+
+    function buildBoard() {
+      // Abort any ongoing drag cleanly
+      if (activeDrag) endDrag(null);
+      document.querySelectorAll('.card.placeholder').forEach(p => p.remove());
+
+      categoriesContainer.innerHTML = '';
+      containerBank.innerHTML = '';
+      dropZones = [];
+
+      const text = loadWordListText();
+      const { items, categories } = parseInputText(text);
+
+      // Create dynamic category boxes in order of appearance
+      categories.forEach((catName, index) => {
+        const catKey = catName.toLowerCase();
+        const theme = PALETTE[index % PALETTE.length];
+
+        const box = document.createElement('div');
+        box.className = 'drop-zone';
+        box.setAttribute('data-category', catKey);
+        box.style.borderColor = theme.border;
+        box.style.backgroundColor = theme.bg;
+
+        const header = document.createElement('div');
+        header.className = 'zone-header';
+
+        const title = document.createElement('h2');
+        title.style.color = theme.text;
+        title.textContent = capitalize(catName);
+
+        const badge = document.createElement('span');
+        badge.className = 'zone-badge';
+        badge.id = `count-${catKey}`;
+        badge.textContent = '0';
+
+        header.appendChild(title);
+        header.appendChild(badge);
+
+        const cardContainer = document.createElement('div');
+        cardContainer.className = 'card-container';
+
+        box.appendChild(header);
+        box.appendChild(cardContainer);
+        categoriesContainer.appendChild(box);
+
+        dropZones.push(box);
+        bindZoneClick(box);
+      });
+
+      // Include word bank in drop targets
+      dropZones.push(containerBank);
+
+      // Build cards
+      wordData = items.map(item => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.textContent = item.text;
+        card.setAttribute('data-id', item.id);
+        card.setAttribute('data-expected', item.categoryKey);
+
+        bindCardEvents(card);
+
+        return { ...item, el: card };
+      });
+
+      // Randomize initial placement into bottom word pile
+      shuffleArray(wordData);
+      wordData.forEach(item => containerBank.appendChild(item.el));
+      updateCounts();
+    }
+
+    function shuffleArray(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+    }
+
+    // --- Card Interactions (Touch/Drag & Tap-to-Place) ---
+    function bindCardEvents(card) {
+      card.addEventListener('pointerdown', onPointerDown);
+
+      card.addEventListener('click', () => {
+        if (card.dataset.dragged === 'true') {
+          delete card.dataset.dragged;
+          return;
+        }
+        toggleCardSelect(card);
+      });
+    }
+
+    function toggleCardSelect(card) {
+      if (selectedForTapMove === card) {
+        card.classList.remove('selected');
+        selectedForTapMove = null;
+        dropZones.forEach(z => z.classList.remove('highlight-zone'));
+      } else {
+        if (selectedForTapMove) selectedForTapMove.classList.remove('selected');
+        selectedForTapMove = card;
+        card.classList.add('selected');
+        dropZones.forEach(z => z.classList.add('highlight-zone'));
+      }
+    }
+
+    function onPointerDown(e) {
+      if (e.button !== 0 && e.pointerType === 'mouse') return;
+      if (activeDrag) endDrag(null);
+
+      const card = e.currentTarget;
+      card.classList.remove('correct', 'incorrect');
+      if (selectedForTapMove) {
+        selectedForTapMove.classList.remove('selected');
+        selectedForTapMove = null;
+        dropZones.forEach(z => z.classList.remove('highlight-zone'));
+      }
+
+      const rect = card.getBoundingClientRect();
+      const startX = e.clientX;
+      const startY = e.clientY;
+      const offsetX = startX - rect.left;
+      const offsetY = startY - rect.top;
+
+      let isDragging = false;
+      const dragThreshold = 4;
+
+      const placeholder = document.createElement('div');
+      placeholder.className = 'card placeholder';
+      placeholder.style.width = `${rect.width}px`;
+      placeholder.style.height = `${rect.height}px`;
+
+      function onPointerMove(moveEvent) {
+        const dist = Math.hypot(moveEvent.clientX - startX, moveEvent.clientY - startY);
+
+        if (!isDragging && dist > dragThreshold) {
+          isDragging = true;
+          card.dataset.dragged = 'true';
+
+          card.parentNode.insertBefore(placeholder, card);
+          card.classList.add('dragging');
+          card.style.width = `${rect.width}px`;
+          document.body.appendChild(card);
+
+          activeDrag = { card, placeholder };
+        }
+
+        if (isDragging) {
+          card.style.left = `${moveEvent.clientX - offsetX}px`;
+          card.style.top = `${moveEvent.clientY - offsetY}px`;
+
+          card.style.display = 'none';
+          const elemBelow = document.elementFromPoint(moveEvent.clientX, moveEvent.clientY);
+          card.style.display = '';
+
+          const zone = elemBelow ? elemBelow.closest('.drop-zone') : null;
+          dropZones.forEach(z => {
+            if (z === zone) z.classList.add('drag-over');
+            else z.classList.remove('drag-over');
+          });
+        }
+      }
+
+      function onPointerUp(upEvent) {
+        window.removeEventListener('pointermove', onPointerMove);
+        window.removeEventListener('pointerup', onPointerUp);
+        window.removeEventListener('pointercancel', onPointerUp);
+
+        if (isDragging) {
+          endDrag(upEvent);
+        } else {
+          placeholder.remove();
+        }
+      }
+
+      window.addEventListener('pointermove', onPointerMove, { passive: true });
+      window.addEventListener('pointerup', onPointerUp);
+      window.addEventListener('pointercancel', onPointerUp);
+    }
+
+    function endDrag(e) {
+      if (!activeDrag) return;
+      const { card, placeholder } = activeDrag;
+
+      let targetZone = null;
+      if (e && e.clientX !== undefined) {
+        card.style.display = 'none';
+        const elemBelow = document.elementFromPoint(e.clientX, e.clientY);
+        card.style.display = '';
+        if (elemBelow) {
+          targetZone = elemBelow.closest('.drop-zone');
+        }
+      }
+
+      card.classList.remove('dragging');
+      card.style.position = '';
+      card.style.left = '';
+      card.style.top = '';
+      card.style.width = '';
+
+      dropZones.forEach(z => z.classList.remove('drag-over'));
+
+      if (targetZone) {
+        const targetContainer = targetZone.classList.contains('card-container') 
+          ? targetZone 
+          : (targetZone.querySelector('.card-container') || targetZone);
+        targetContainer.appendChild(card);
+      } else if (placeholder.parentNode) {
+        placeholder.parentNode.insertBefore(card, placeholder);
+      }
+
+      if (placeholder.parentNode) {
+        placeholder.remove();
+      }
+
+      activeDrag = null;
+      updateCounts();
+    }
+
+    function bindZoneClick(zone) {
+      zone.addEventListener('click', (e) => {
+        if (!selectedForTapMove) return;
+        if (e.target.classList.contains('card')) return;
+
+        const targetContainer = zone.classList.contains('card-container') 
+          ? zone 
+          : (zone.querySelector('.card-container') || zone);
+
+        targetContainer.appendChild(selectedForTapMove);
+        selectedForTapMove.classList.remove('selected', 'correct', 'incorrect');
+        selectedForTapMove = null;
+        dropZones.forEach(z => z.classList.remove('highlight-zone'));
+        updateCounts();
+      });
+    }
+
+    bindZoneClick(containerBank);
+
+    // --- Validation & Counters ---
+    function checkAnswers() {
+      let correctCount = 0;
+      let totalPlaced = 0;
+
+      wordData.forEach(w => {
+        const parentZone = w.el.closest('.drop-zone');
+        const currentCategory = parentZone ? parentZone.getAttribute('data-category') : null;
+
+        w.el.classList.remove('correct', 'incorrect');
+
+        if (currentCategory && currentCategory !== '__bank__') {
+          totalPlaced++;
+          if (currentCategory === w.categoryKey) {
+            w.el.classList.add('correct');
+            correctCount++;
+          } else {
+            w.el.classList.add('incorrect');
+          }
+        }
+      });
+
+      if (totalPlaced === 0) {
+        statsBadge.textContent = "Place cards into boxes first!";
+        return;
+      }
+
+      statsBadge.textContent = `${correctCount} / ${totalPlaced} Correct`;
+      if (correctCount === wordData.length && wordData.length > 0) {
+        statsBadge.textContent = `🌟 Perfect Score! (All ${correctCount} Correct)`;
+      }
+    }
+
+    function shuffleBackToBank() {
+      wordData.forEach(w => {
+        w.el.classList.remove('correct', 'incorrect', 'selected');
+      });
+      selectedForTapMove = null;
+      dropZones.forEach(z => z.classList.remove('highlight-zone'));
+
+      const shuffled = [...wordData];
+      shuffleArray(shuffled);
+      shuffled.forEach(w => containerBank.appendChild(w.el));
+      updateCounts();
+    }
+
+    function updateCounts() {
+      const bankItems = containerBank.querySelectorAll('.card').length;
+      const total = wordData.length;
+      bankCount.textContent = bankItems;
+      statsBadge.textContent = `${total - bankItems} / ${total} Sorted`;
+
+      // Update badge counts on individual category headers
+      dropZones.forEach(zone => {
+        const cat = zone.getAttribute('data-category');
+        if (cat && cat !== '__bank__') {
+          const badge = document.getElementById(`count-${cat}`);
+          const count = zone.querySelectorAll('.card').length;
+          if (badge) badge.textContent = `${count}`;
+        }
+      });
+    }
+
+    // --- Modal Configuration ---
+    document.getElementById('btn-check').addEventListener('click', checkAnswers);
+    document.getElementById('btn-shuffle').addEventListener('click', shuffleBackToBank);
+
+    document.getElementById('btn-edit').addEventListener('click', () => {
+      wordInput.value = loadWordListText();
+      modal.classList.add('open');
+    });
+
+    document.getElementById('modal-cancel').addEventListener('click', () => {
+      modal.classList.remove('open');
+    });
+
+    document.getElementById('modal-save').addEventListener('click', () => {
+      const text = wordInput.value.trim();
+      if (text) {
+        localStorage.setItem(STORAGE_KEY, text);
+        buildBoard();
+        modal.classList.remove('open');
+      }
+    });
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.classList.remove('open');
+    });
+
+    // Start with default/stored list
+    buildBoard();
+  </script>
+</body>
+</html>

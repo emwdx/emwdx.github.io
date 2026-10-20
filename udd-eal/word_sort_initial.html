@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Parts of Speech Word Sort</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      
+      --noun-color: #3b82f6;
+      --noun-bg: #eff6ff;
+      --noun-border: #bfdbfe;
+
+      --verb-color: #f97316;
+      --verb-bg: #fff7ed;
+      --verb-border: #fed7aa;
+
+      --adj-color: #10b981;
+      --adj-bg: #ecfdf5;
+      --adj-border: #a7f3d0;
+
+      --card-bg: #ffffff;
+      --card-shadow: 0 3px 8px rgba(15, 23, 42, 0.08), 0 1px 2px rgba(15, 23, 42, 0.04);
+      --card-hover-shadow: 0 10px 18px rgba(15, 23, 42, 0.12), 0 3px 6px rgba(15, 23, 42, 0.06);
+
+      --correct-bg: #dcfce7;
+      --correct-border: #22c55e;
+      --correct-text: #14532d;
+
+      --wrong-bg: #fee2e2;
+      --wrong-border: #ef4444;
+      --wrong-text: #7f1d1d;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* Top Navigation / Controls */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid #e2e8f0;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+
+    .title-group h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #1e293b;
+    }
+
+    .title-group p {
+      font-size: 0.825rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    button {
+      font-family: inherit;
+      font-size: 0.875rem;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .btn-secondary {
+      background: #f1f5f9;
+      color: #334155;
+      border-color: #cbd5e1;
+    }
+    .btn-secondary:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+      box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+    }
+    .btn-primary:hover {
+      background: #1d4ed8;
+      box-shadow: 0 4px 8px rgba(37, 99, 235, 0.25);
+    }
+
+    /* Status Banner */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.825rem;
+      font-weight: 600;
+      background: #f1f5f9;
+      color: #475569;
+    }
+
+    /* Main Board */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 16px 20px;
+      gap: 16px;
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* Category Boxes */
+    .categories {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      flex: 1;
+      min-height: 280px;
+    }
+
+    @media (max-width: 768px) {
+      .categories {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .drop-zone {
+      border-radius: 14px;
+      border: 2px dashed;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.2s ease;
+      background-color: var(--surface);
+    }
+
+    .zone-noun {
+      border-color: var(--noun-border);
+      background-color: var(--noun-bg);
+    }
+    .zone-noun.drag-over {
+      background-color: #dbeafe;
+      border-color: var(--noun-color);
+      transform: scale(1.01);
+    }
+
+    .zone-verb {
+      border-color: var(--verb-border);
+      background-color: var(--verb-bg);
+    }
+    .zone-verb.drag-over {
+      background-color: #ffedd5;
+      border-color: var(--verb-color);
+      transform: scale(1.01);
+    }
+
+    .zone-adj {
+      border-color: var(--adj-border);
+      background-color: var(--adj-bg);
+    }
+    .zone-adj.drag-over {
+      background-color: #d1fae5;
+      border-color: var(--adj-color);
+      transform: scale(1.01);
+    }
+
+    .zone-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      margin-bottom: 10px;
+    }
+
+    .zone-header h2 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .zone-noun .zone-header h2 { color: #1e40af; }
+    .zone-verb .zone-header h2 { color: #9a3412; }
+    .zone-adj .zone-header h2 { color: #065f46; }
+
+    .zone-hint {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .card-container {
+      flex: 1;
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start;
+      gap: 8px;
+      padding: 4px;
+      min-height: 120px;
+    }
+
+    /* Word Bank at Bottom */
+    .bank-wrapper {
+      background: var(--surface);
+      border-radius: 14px;
+      border: 1px solid #e2e8f0;
+      padding: 14px 18px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    }
+
+    .bank-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .bank-header h3 {
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+
+    .bank-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      min-height: 80px;
+      padding: 6px;
+      border-radius: 8px;
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      align-items: center;
+    }
+
+    .bank-container.drag-over {
+      background: #e2e8f0;
+    }
+
+    /* Word Card Styling */
+    .card {
+      background: var(--card-bg);
+      color: var(--text-main);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      cursor: grab;
+      border: 1px solid #cbd5e1;
+      box-shadow: var(--card-shadow);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      touch-action: none; /* Crucial for pointer events drag */
+      transition: transform 0.15s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.15s ease;
+    }
+
+    .card:hover {
+      box-shadow: var(--card-hover-shadow);
+      transform: translateY(-1px);
+    }
+
+    .card:active {
+      cursor: grabbing;
+    }
+
+    /* Dragging State */
+    .card.dragging {
+      position: fixed;
+      pointer-events: none;
+      z-index: 1000;
+      transform: scale(1.08) rotate(3deg);
+      box-shadow: 0 16px 30px rgba(0, 0, 0, 0.2);
+      border-color: #3b82f6;
+    }
+
+    .card.placeholder {
+      opacity: 0.25;
+      background: #cbd5e1;
+      border: 2px dashed #64748b;
+    }
+
+    /* Feedback states */
+    .card.correct {
+      background-color: var(--correct-bg);
+      border-color: var(--correct-border);
+      color: var(--correct-text);
+    }
+    .card.correct::after {
+      content: "✓";
+      font-size: 0.85em;
+      font-weight: bold;
+    }
+
+    .card.incorrect {
+      background-color: var(--wrong-bg);
+      border-color: var(--wrong-border);
+      color: var(--wrong-text);
+      animation: shake 0.35s ease;
+    }
+    .card.incorrect::after {
+      content: "✕";
+      font-size: 0.8em;
+      font-weight: bold;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      75% { transform: translateX(4px); }
+    }
+
+    /* Teacher Configuration Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      padding: 20px;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--surface);
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 540px;
+      width: 100%;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .modal h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .modal p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    textarea {
+      width: 100%;
+      height: 180px;
+      font-family: monospace;
+      font-size: 0.9rem;
+      padding: 10px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      resize: vertical;
+      background: #f8fafc;
+      color: #1e293b;
+    }
+    textarea:focus {
+      outline: 2px solid #2563eb;
+      background: white;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="title-group">
+      <h1>Word Sort Challenge</h1>
+      <p>Drag each word into its correct part of speech box</p>
+    </div>
+
+    <div class="toolbar">
+      <div id="stats" class="status-badge">0 / 0 Sorted</div>
+      <button class="btn-secondary" id="btn-shuffle" title="Put all cards back in a new random order">
+        🔀 Shuffle
+      </button>
+      <button class="btn-primary" id="btn-check">
+        ✓ Check Answers
+      </button>
+      <button class="btn-secondary" id="btn-edit" title="Configure your custom word list">
+        ⚙️ Edit Word List
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Three Target Boxes -->
+    <div class="categories">
+      <div class="drop-zone zone-noun" data-category="noun">
+        <div class="zone-header">
+          <h2>📘 Nouns</h2>
+          <span class="zone-hint">person, place, thing, idea</span>
+        </div>
+        <div class="card-container" id="container-noun"></div>
+      </div>
+
+      <div class="drop-zone zone-verb" data-category="verb">
+        <div class="zone-header">
+          <h2>⚡ Verbs</h2>
+          <span class="zone-hint">action or state of being</span>
+        </div>
+        <div class="card-container" id="container-verb"></div>
+      </div>
+
+      <div class="drop-zone zone-adj" data-category="adjective">
+        <div class="zone-header">
+          <h2>🎨 Adjectives</h2>
+          <span class="zone-hint">describes a noun</span>
+        </div>
+        <div class="card-container" id="container-adjective"></div>
+      </div>
+    </div>
+
+    <!-- Bottom Word Pile -->
+    <div class="bank-wrapper">
+      <div class="bank-header">
+        <h3>Word Pile (<span id="bank-count">0</span> remaining)</h3>
+      </div>
+      <div class="drop-zone bank-container" id="container-bank" data-category="bank"></div>
+    </div>
+  </main>
+
+  <!-- Edit Words Modal -->
+  <div class="modal-backdrop" id="modal">
+    <div class="modal">
+      <h2>Edit Word List</h2>
+      <p>Type or paste your words below, one per line, followed by a comma and the part of speech (<strong>noun</strong>, <strong>verb</strong>, or <strong>adjective</strong>). Short forms like <em>adj</em> or <em>v</em> work too!</p>
+      
+      <textarea id="word-input" spellcheck="false" placeholder="island, noun
+explore, verb
+vibrant, adjective"></textarea>
+
+      <div class="modal-actions">
+        <button class="btn-secondary" id="modal-cancel">Cancel</button>
+        <button class="btn-primary" id="modal-save">Save &amp; Update</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- Default Word List ---
+    const DEFAULT_WORDS = `island, noun
+bridge, noun
+mountain, noun
+discover, verb
+whisper, verb
+protect, verb
+ancient, adjective
+brilliant, adjective
+mysterious, adjective
+celebrate, verb
+curiosity, noun
+peaceful, adjective`;
+
+    const STORAGE_KEY = 'eal_word_sort_custom_list_v1';
+
+    // Categories mapping for flexible teacher input
+    const POS_ALIASES = {
+      noun: 'noun',
+      n: 'noun',
+      nouns: 'noun',
+      verb: 'verb',
+      v: 'verb',
+      verbs: 'verb',
+      adjective: 'adjective',
+      adj: 'adjective',
+      adjectives: 'adjective'
+    };
+
+    let wordData = []; // Array of { id, text, expectedPos, element }
+
+    // DOM Elements
+    const containerNoun = document.getElementById('container-noun');
+    const containerVerb = document.getElementById('container-verb');
+    const containerAdj = document.getElementById('container-adjective');
+    const containerBank = document.getElementById('container-bank');
+    const dropZones = [containerNoun, containerVerb, containerAdj, containerBank];
+
+    const statsBadge = document.getElementById('stats');
+    const bankCount = document.getElementById('bank-count');
+    const modal = document.getElementById('modal');
+    const wordInput = document.getElementById('word-input');
+
+    // --- Data Loading & Parsing ---
+    function loadWordListText() {
+      return localStorage.getItem(STORAGE_KEY) || DEFAULT_WORDS;
+    }
+
+    function parseInputText(text) {
+      const lines = text.split('\n');
+      const parsed = [];
+      let counter = 0;
+
+      for (let rawLine of lines) {
+        const line = rawLine.trim();
+        if (!line || line.startsWith('#')) continue;
+
+        const parts = line.split(',');
+        if (parts.length >= 2) {
+          const word = parts[0].trim();
+          const rawPos = parts[1].trim().toLowerCase();
+          const cleanPos = POS_ALIASES[rawPos];
+
+          if (cleanPos && word) {
+            parsed.push({
+              id: 'card-' + (++counter),
+              text: word,
+              expectedPos: cleanPos
+            });
+          }
+        }
+      }
+      return parsed;
+    }
+
+    function saveAndRebuild(newText) {
+      localStorage.setItem(STORAGE_KEY, newText);
+      buildBoard();
+    }
+
+    // --- Board Construction ---
+    function buildBoard() {
+      // Clear all zones
+      dropZones.forEach(zone => zone.innerHTML = '');
+
+      const text = loadWordListText();
+      const parsed = parseInputText(text);
+
+      wordData = parsed.map(item => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.textContent = item.text;
+        card.setAttribute('data-id', item.id);
+        card.setAttribute('data-expected', item.expectedPos);
+
+        // Attach pointer drag handler
+        makeDraggable(card);
+
+        return {
+          ...item,
+          el: card
+        };
+      });
+
+      // Shuffle initial placement into word bank
+      shuffleArray(wordData);
+      wordData.forEach(item => containerBank.appendChild(item.el));
+      updateCounts();
+    }
+
+    function shuffleArray(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+    }
+
+    // --- Shuffle / Reset Function ---
+    function shuffleBackToBank() {
+      // Remove validation classes
+      wordData.forEach(w => {
+        w.el.classList.remove('correct', 'incorrect');
+      });
+
+      // Collect all cards, shuffle them, and append to the bank
+      const shuffled = [...wordData];
+      shuffleArray(shuffled);
+      shuffled.forEach(w => containerBank.appendChild(w.el));
+      updateCounts();
+    }
+
+    // --- Validation (Check Button) ---
+    function checkAnswers() {
+      let correctCount = 0;
+      let totalPlaced = 0;
+
+      wordData.forEach(w => {
+        const parentZone = w.el.closest('.drop-zone');
+        const currentCategory = parentZone ? parentZone.getAttribute('data-category') : null;
+
+        // Reset previous check classes
+        w.el.classList.remove('correct', 'incorrect');
+
+        if (currentCategory && currentCategory !== 'bank') {
+          totalPlaced++;
+          if (currentCategory === w.expectedPos) {
+            w.el.classList.add('correct');
+            correctCount++;
+          } else {
+            w.el.classList.add('incorrect');
+          }
+        }
+      });
+
+      if (totalPlaced === 0) {
+        statsBadge.textContent = "Drag cards into boxes first!";
+        return;
+      }
+
+      statsBadge.textContent = `${correctCount} / ${totalPlaced} Correct`;
+      if (correctCount === wordData.length && wordData.length > 0) {
+        statsBadge.textContent = `🌟 Perfect Score! (All ${correctCount} Correct)`;
+      }
+    }
+
+    function updateCounts() {
+      const bankItems = containerBank.querySelectorAll('.card').length;
+      const total = wordData.length;
+      const sortedItems = total - bankItems;
+      bankCount.textContent = bankItems;
+      statsBadge.textContent = `${sortedItems} / ${total} Sorted`;
+    }
+
+    // --- Smooth Pointer Drag-and-Drop (Touch & Mouse Native) ---
+    let activeDrag = null;
+
+    function makeDraggable(card) {
+      card.addEventListener('pointerdown', onPointerDown);
+    }
+
+    function onPointerDown(e) {
+      // Only main button / touch
+      if (e.button !== 0 && e.pointerType === 'mouse') return;
+
+      const card = e.currentTarget;
+      // Clear verification status as soon as card is picked up
+      card.classList.remove('correct', 'incorrect');
+
+      const rect = card.getBoundingClientRect();
+      const offsetX = e.clientX - rect.left;
+      const offsetY = e.clientY - rect.top;
+
+      // Create a visual placeholder in the container
+      const placeholder = document.createElement('div');
+      placeholder.className = 'card placeholder';
+      placeholder.style.width = `${rect.width}px`;
+      placeholder.style.height = `${rect.height}px`;
+
+      card.parentNode.insertBefore(placeholder, card);
+
+      // Float the card
+      card.classList.add('dragging');
+      card.style.width = `${rect.width}px`;
+      card.style.left = `${e.clientX - offsetX}px`;
+      card.style.top = `${e.clientY - offsetY}px`;
+      document.body.appendChild(card);
+
+      activeDrag = {
+        card,
+        placeholder,
+        offsetX,
+        offsetY,
+        currentZone: null
+      };
+
+      card.setPointerCapture(e.pointerId);
+      card.addEventListener('pointermove', onPointerMove);
+      card.addEventListener('pointerup', onPointerUp);
+      card.addEventListener('pointercancel', onPointerUp);
+    }
+
+    function onPointerMove(e) {
+      if (!activeDrag) return;
+
+      const { card, offsetX, offsetY } = activeDrag;
+      card.style.left = `${e.clientX - offsetX}px`;
+      card.style.top = `${e.clientY - offsetY}px`;
+
+      // Find zone beneath pointer
+      card.style.visibility = 'hidden';
+      const elemBelow = document.elementFromPoint(e.clientX, e.clientY);
+      card.style.visibility = 'visible';
+
+      const zone = elemBelow ? elemBelow.closest('.drop-zone') : null;
+
+      // Update drop zone highlights
+      dropZones.forEach(z => {
+        if (z === zone) {
+          z.classList.add('drag-over');
+        } else {
+          z.classList.remove('drag-over');
+        }
+      });
+
+      activeDrag.currentZone = zone;
+    }
+
+    function onPointerUp(e) {
+      if (!activeDrag) return;
+
+      const { card, placeholder, currentZone } = activeDrag;
+      card.releasePointerCapture(e.pointerId);
+      card.removeEventListener('pointermove', onPointerMove);
+      card.removeEventListener('pointerup', onPointerUp);
+      card.removeEventListener('pointercancel', onPointerUp);
+
+      // Clean up styles
+      card.classList.remove('dragging');
+      card.style.position = '';
+      card.style.left = '';
+      card.style.top = '';
+      card.style.width = '';
+
+      dropZones.forEach(z => z.classList.remove('drag-over'));
+
+      if (currentZone) {
+        // Find internal card container if dropping into category box
+        const targetContainer = currentZone.classList.contains('card-container') 
+          ? currentZone 
+          : (currentZone.querySelector('.card-container') || currentZone);
+        targetContainer.appendChild(card);
+      } else {
+        // Return to placeholder location if dropped outside
+        placeholder.parentNode.insertBefore(card, placeholder);
+      }
+
+      placeholder.remove();
+      activeDrag = null;
+      updateCounts();
+    }
+
+    // --- Modal & Toolbar Wiring ---
+    document.getElementById('btn-check').addEventListener('click', checkAnswers);
+    document.getElementById('btn-shuffle').addEventListener('click', shuffleBackToBank);
+
+    document.getElementById('btn-edit').addEventListener('click', () => {
+      wordInput.value = loadWordListText();
+      modal.classList.add('open');
+    });
+
+    document.getElementById('modal-cancel').addEventListener('click', () => {
+      modal.classList.remove('open');
+    });
+
+    document.getElementById('modal-save').addEventListener('click', () => {
+      const text = wordInput.value.trim();
+      if (text) {
+        saveAndRebuild(text);
+        modal.classList.remove('open');
+      }
+    });
+
+    // Close modal on click outside modal window
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.classList.remove('open');
+    });
+
+    // Initialize on page load
+    buildBoard();
+  </script>
+</body>
+</html>
