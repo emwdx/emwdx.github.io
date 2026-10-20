@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Black Line Converter</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
+<style>
+  :root {
+    --bg: #f4f2ee;
+    --panel: #ffffff;
+    --ink: #1c1c1c;
+    --muted: #6b6760;
+    --line: #dedad3;
+    --accent: #2f5d8a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 14px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif;
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    min-height: 100vh;
+  }
+  aside {
+    background: var(--panel);
+    border-right: 1px solid var(--line);
+    padding: 18px 18px 28px;
+    overflow-y: auto;
+    max-height: 100vh;
+    position: sticky;
+    top: 0;
+  }
+  h1 { font-size: 18px; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin: 0 0 16px; font-size: 13px; }
+  fieldset { border: 0; border-top: 1px solid var(--line); margin: 0; padding: 14px 0 6px; }
+  legend { font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); padding: 0; }
+  label { display: block; margin: 10px 0 2px; }
+  .row { display: flex; justify-content: space-between; align-items: baseline; }
+  .val { color: var(--muted); font-variant-numeric: tabular-nums; }
+  input[type=range] { width: 100%; accent-color: var(--accent); }
+  select { width: 100%; padding: 6px; border: 1px solid var(--line); border-radius: 6px; background: #fff; font: inherit; }
+  .check { display: flex; gap: 8px; align-items: center; margin: 10px 0 0; }
+  .hint { color: var(--muted); font-size: 12px; margin: 2px 0 0; }
+  button, .filebtn {
+    display: inline-block; font: inherit; cursor: pointer;
+    padding: 8px 12px; border-radius: 6px; border: 1px solid var(--line);
+    background: #fff; color: var(--ink);
+  }
+  button:hover, .filebtn:hover { border-color: var(--accent); }
+  .primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  #file { display: none; }
+  main { padding: 24px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  #stage {
+    width: 100%; flex: 1; display: flex; align-items: center; justify-content: center;
+    border: 2px dashed transparent; border-radius: 10px; min-height: 60vh;
+  }
+  #stage.drag { border-color: var(--accent); background: rgba(47,93,138,.05); }
+  #stage canvas { box-shadow: 0 1px 3px rgba(0,0,0,.12), 0 8px 24px rgba(0,0,0,.08); background: #fff; }
+  #status { color: var(--muted); font-size: 13px; min-height: 1.4em; }
+  @media (max-width: 760px) {
+    body { grid-template-columns: 1fr; }
+    aside { position: static; max-height: none; border-right: 0; border-bottom: 1px solid var(--line); }
+    main { padding: 16px; }
+  }
+  @media print {
+    aside, #status { display: none; }
+    body { display: block; background: #fff; }
+    main { padding: 0; }
+    #stage canvas { box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+<aside>
+  <h1>Black Line Converter</h1>
+  <p class="sub">Turn a photo into uniform black line art for colouring sheets and tracing.</p>
+
+  <div class="btns" style="margin:0 0 14px">
+    <label class="filebtn primary" for="file" style="margin:0">Choose image…</label>
+    <input type="file" id="file" accept="image/*">
+  </div>
+  <p class="hint" style="margin-top:-6px">…or drag and drop an image onto the page.</p>
+
+  <fieldset>
+    <legend>Style</legend>
+    <label for="mode">Line style</label>
+    <select id="mode">
+      <option value="edges">Outlines (edge detection)</option>
+      <option value="contours">Tone regions (colouring-book)</option>
+      <option value="both" selected>Both</option>
+    </select>
+
+    <label for="weight"><span class="row"><span>Line weight</span><span class="val" id="weightVal"></span></span></label>
+    <input type="range" id="weight" min="0.5" max="8" step="0.25" value="2">
+
+    <label for="res"><span class="row"><span>Working resolution</span><span class="val" id="resVal"></span></span></label>
+    <input type="range" id="res" min="200" max="1200" step="50" value="600">
+    <p class="hint">Higher = more detail, slower.</p>
+
+    <label for="blur"><span class="row"><span>Smoothing (blur)</span><span class="val" id="blurVal"></span></span></label>
+    <input type="range" id="blur" min="0" max="6" step="0.25" value="1.75">
+  </fieldset>
+
+  <fieldset id="edgeSet">
+    <legend>Outlines</legend>
+    <label for="edgeT"><span class="row"><span>Edge threshold</span><span class="val" id="edgeTVal"></span></span></label>
+    <input type="range" id="edgeT" min="2" max="60" step="1" value="18">
+    <p class="hint">Lower finds more (fainter) edges.</p>
+  </fieldset>
+
+  <fieldset id="contourSet">
+    <legend>Tone regions</legend>
+    <label for="levels"><span class="row"><span>Number of tones</span><span class="val" id="levelsVal"></span></span></label>
+    <input type="range" id="levels" min="2" max="8" step="1" value="3">
+    <label class="check"><input type="checkbox" id="balance" checked> Auto-balance tones</label>
+    <p class="hint">Spreads boundaries so each tone covers a similar area.</p>
+  </fieldset>
+
+  <fieldset>
+    <legend>Clean-up</legend>
+    <label for="minLen"><span class="row"><span>Remove short lines under</span><span class="val" id="minLenVal"></span></span></label>
+    <input type="range" id="minLen" min="0" max="80" step="1" value="14">
+
+    <label for="simplify"><span class="row"><span>Simplify</span><span class="val" id="simplifyVal"></span></span></label>
+    <input type="range" id="simplify" min="0" max="3" step="0.1" value="0.8">
+
+    <label class="check"><input type="checkbox" id="smooth" checked> Smooth curves</label>
+    <label class="check"><input type="checkbox" id="frame"> Draw border frame</label>
+    <label class="check"><input type="checkbox" id="showOrig"> Show original underneath</label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Export</legend>
+    <div class="btns">
+      <button id="svgBtn" class="primary">Download SVG</button>
+      <button id="pngBtn">Download PNG</button>
+      <button id="printBtn">Print</button>
+    </div>
+    <p class="hint">SVG is vector — scales to any paper size without blurring.</p>
+  </fieldset>
+</aside>
+
+<main>
+  <div id="stage"></div>
+  <div id="status"></div>
+</main>
+
+<script>
+/* ============================================================
+   Image processing (plain JS on Float32 grayscale buffers)
+   ============================================================ */
+
+// Grayscale 0..1 from RGBA pixel array; transparent pixels become white.
+function toGray(pixels, w, h) {
+  const g = new Float32Array(w * h);
+  for (let i = 0; i < w * h; i++) {
+    const r = pixels[i * 4], gr = pixels[i * 4 + 1], b = pixels[i * 4 + 2], a = pixels[i * 4 + 3] / 255;
+    const lum = (0.299 * r + 0.587 * gr + 0.114 * b) / 255;
+    g[i] = lum * a + (1 - a);
+  }
+  return g;
+}
+
+// Separable Gaussian blur with edge clamping.
+function gaussianBlur(src, w, h, sigma) {
+  if (sigma <= 0) return src.slice();
+  const rad = Math.ceil(sigma * 3);
+  const k = new Float32Array(rad * 2 + 1);
+  let sum = 0;
+  for (let i = -rad; i <= rad; i++) { k[i + rad] = Math.exp(-(i * i) / (2 * sigma * sigma)); sum += k[i + rad]; }
+  for (let i = 0; i < k.length; i++) k[i] /= sum;
+
+  const tmp = new Float32Array(w * h), out = new Float32Array(w * h);
+  for (let y = 0; y < h; y++) {
+    const row = y * w;
+    for (let x = 0; x < w; x++) {
+      let acc = 0;
+      for (let i = -rad; i <= rad; i++) {
+        const xx = Math.min(w - 1, Math.max(0, x + i));
+        acc += src[row + xx] * k[i + rad];
+      }
+      tmp[row + x] = acc;
+    }
+  }
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      let acc = 0;
+      for (let i = -rad; i <= rad; i++) {
+        const yy = Math.min(h - 1, Math.max(0, y + i));
+        acc += tmp[yy * w + x] * k[i + rad];
+      }
+      out[y * w + x] = acc;
+    }
+  }
+  return out;
+}
+
+// Canny edge detector -> Uint8Array (1 = thin edge pixel).
+// highPct is a percentage of the max gradient magnitude.
+function canny(g, w, h, highPct) {
+  const mag = new Float32Array(w * h), dir = new Uint8Array(w * h);
+  let maxMag = 0;
+  for (let y = 1; y < h - 1; y++) {
+    for (let x = 1; x < w - 1; x++) {
+      const i = y * w + x;
+      const gx = -g[i - w - 1] - 2 * g[i - 1] - g[i + w - 1] + g[i - w + 1] + 2 * g[i + 1] + g[i + w + 1];
+      const gy = -g[i - w - 1] - 2 * g[i - w] - g[i - w + 1] + g[i + w - 1] + 2 * g[i + w] + g[i + w + 1];
+      const m = Math.hypot(gx, gy);
+      mag[i] = m;
+      if (m > maxMag) maxMag = m;
+      // Quantise gradient direction to 0,45,90,135 degrees.
+      let a = Math.atan2(gy, gx) * 180 / Math.PI;
+      if (a < 0) a += 180;
+      dir[i] = a < 22.5 || a >= 157.5 ? 0 : a < 67.5 ? 1 : a < 112.5 ? 2 : 3;
+    }
+  }
+
+  // Non-maximum suppression.
+  const nms = new Float32Array(w * h);
+  for (let y = 1; y < h - 1; y++) {
+    for (let x = 1; x < w - 1; x++) {
+      const i = y * w + x, m = mag[i];
+      let a, b;
+      switch (dir[i]) {
+        case 0: a = mag[i - 1]; b = mag[i + 1]; break;
+        case 1: a = mag[i - w - 1]; b = mag[i + w + 1]; break;
+        case 2: a = mag[i - w]; b = mag[i + w]; break;
+        default: a = mag[i - w + 1]; b = mag[i + w - 1];
+      }
+      if (m >= a && m >= b) nms[i] = m;
+    }
+  }
+
+  // Hysteresis thresholding.
+  const high = maxMag * highPct / 100, low = high * 0.4;
+  const edges = new Uint8Array(w * h);
+  const stack = [];
+  for (let i = 0; i < w * h; i++) {
+    if (nms[i] >= high && !edges[i]) {
+      edges[i] = 1; stack.push(i);
+      while (stack.length) {
+        const j = stack.pop(), jx = j % w, jy = (j / w) | 0;
+        for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+          const nx = jx + dx, ny = jy + dy;
+          if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
+          const n = ny * w + nx;
+          if (!edges[n] && nms[n] >= low) { edges[n] = 1; stack.push(n); }
+        }
+      }
+    }
+  }
+  return edges;
+}
+
+// Follow chains of edge pixels into polylines.
+function traceEdgePixels(edges, w, h) {
+  const visited = new Uint8Array(w * h);
+  // 4-neighbours first so chains prefer straight steps over diagonal ones.
+  const N = [[1, 0], [0, 1], [-1, 0], [0, -1], [1, 1], [-1, 1], [-1, -1], [1, -1]];
+  const isEdge = (x, y) => x >= 0 && y >= 0 && x < w && y < h && edges[y * w + x];
+  const countNbrs = (x, y) => { let c = 0; for (const [dx, dy] of N) if (isEdge(x + dx, y + dy)) c++; return c; };
+
+  function walk(x, y) {
+    const pts = [];
+    for (;;) {
+      let moved = false;
+      for (const [dx, dy] of N) {
+        const nx = x + dx, ny = y + dy;
+        if (isEdge(nx, ny) && !visited[ny * w + nx]) {
+          visited[ny * w + nx] = 1; pts.push([nx + 0.5, ny + 0.5]);
+          x = nx; y = ny; moved = true; break;
+        }
+      }
+      if (!moved) return pts;
+    }
+  }
+
+  const paths = [];
+  function traceFrom(x, y) {
+    visited[y * w + x] = 1;
+    const fwd = walk(x, y);
+    const back = walk(x, y).reverse();
+    const pts = back.concat([[x + 0.5, y + 0.5]], fwd);
+    if (pts.length < 2) return;
+    const a = pts[0], b = pts[pts.length - 1];
+    const closed = pts.length > 8 && Math.abs(a[0] - b[0]) <= 1.01 && Math.abs(a[1] - b[1]) <= 1.01;
+    paths.push({ pts, closed });
+  }
+  // Pass 1: start from chain end-points; pass 2: whatever is left (loops).
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++)
+    if (edges[y * w + x] && !visited[y * w + x] && countNbrs(x, y) === 1) traceFrom(x, y);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++)
+    if (edges[y * w + x] && !visited[y * w + x]) traceFrom(x, y);
+  return paths;
+}
+
+// Marching squares iso-line at threshold t, joined into polylines.
+function isoContours(g, w, h, t) {
+  // Edge ids: H(x,y) = 2*(y*w+x) joins (x,y)-(x+1,y); V(x,y) = 2*(y*w+x)+1 joins (x,y)-(x,y+1).
+  const adj = new Int32Array(w * h * 4).fill(-1);
+  const link = (a, b) => {
+    adj[a * 2] === -1 ? (adj[a * 2] = b) : (adj[a * 2 + 1] = b);
+    adj[b * 2] === -1 ? (adj[b * 2] = a) : (adj[b * 2 + 1] = a);
+  };
+  for (let y = 0; y < h - 1; y++) {
+    for (let x = 0; x < w - 1; x++) {
+      const i = y * w + x;
+      const tl = g[i], tr = g[i + 1], br = g[i + w + 1], bl = g[i + w];
+      const c = (tl >= t ? 8 : 0) | (tr >= t ? 4 : 0) | (br >= t ? 2 : 0) | (bl >= t ? 1 : 0);
+      if (c === 0 || c === 15) continue;
+      const T = 2 * i, B = 2 * (i + w), L = 2 * i + 1, R = 2 * (i + 1) + 1;
+      const centre = (tl + tr + br + bl) / 4 >= t;
+      switch (c) {
+        case 1: case 14: link(L, B); break;
+        case 2: case 13: link(B, R); break;
+        case 3: case 12: link(L, R); break;
+        case 4: case 11: link(T, R); break;
+        case 6: case 9:  link(T, B); break;
+        case 7: case 8:  link(L, T); break;
+        case 5:  if (centre) { link(T, L); link(B, R); } else { link(T, R); link(L, B); } break;
+        case 10: if (centre) { link(T, R); link(L, B); } else { link(T, L); link(B, R); } break;
+      }
+    }
+  }
+
+  const pointOf = (id) => {
+    const base = id >> 1, x = base % w, y = (base / w) | 0;
+    const v0 = g[base];
+    if ((id & 1) === 0) { const v1 = g[base + 1]; return [x + (t - v0) / (v1 - v0) + 0.5, y + 0.5]; }
+    const v1 = g[base + w]; return [x + 0.5, y + (t - v0) / (v1 - v0) + 0.5];
+  };
+
+  const seen = new Uint8Array(w * h * 2);
+  const paths = [];
+  const follow = (start) => {
+    const pts = [];
+    let cur = start;
+    while (cur !== -1) {
+      seen[cur] = 1; pts.push(pointOf(cur));
+      const a = adj[cur * 2], b = adj[cur * 2 + 1];
+      cur = a !== -1 && !seen[a] ? a : b !== -1 && !seen[b] ? b : -1;
+    }
+    const closed = adj[start * 2 + 1] !== -1; // started mid-loop => loop
+    if (pts.length > 1) paths.push({ pts, closed });
+  };
+  const n = w * h * 2;
+  for (let id = 0; id < n; id++) if (adj[id * 2] !== -1 && adj[id * 2 + 1] === -1 && !seen[id]) follow(id); // open ends
+  for (let id = 0; id < n; id++) if (adj[id * 2] !== -1 && !seen[id]) follow(id);                          // loops
+  return paths;
+}
+
+// Ramer–Douglas–Peucker simplification.
+function simplify(pts, eps) {
+  if (eps <= 0 || pts.length < 3) return pts;
+  const keep = new Uint8Array(pts.length);
+  keep[0] = keep[pts.length - 1] = 1;
+  const stack = [[0, pts.length - 1]];
+  while (stack.length) {
+    const [s, e] = stack.pop();
+    const [ax, ay] = pts[s], [bx, by] = pts[e];
+    const dx = bx - ax, dy = by - ay, len = Math.hypot(dx, dy) || 1;
+    let maxD = 0, idx = -1;
+    for (let i = s + 1; i < e; i++) {
+      const d = Math.abs(dy * pts[i][0] - dx * pts[i][1] + bx * ay - by * ax) / len;
+      if (d > maxD) { maxD = d; idx = i; }
+    }
+    if (maxD > eps) { keep[idx] = 1; stack.push([s, idx], [idx, e]); }
+  }
+  return pts.filter((_, i) => keep[i]);
+}
+
+// Chaikin corner-cutting for smoother curves.
+function chaikin(pts, closed, iterations = 2) {
+  for (let it = 0; it < iterations; it++) {
+    if (pts.length < 3) return pts;
+    const out = closed ? [] : [pts[0]];
+    const n = pts.length, last = closed ? n : n - 1;
+    for (let i = 0; i < last; i++) {
+      const p = pts[i], q = pts[(i + 1) % n];
+      out.push([0.75 * p[0] + 0.25 * q[0], 0.75 * p[1] + 0.25 * q[1]]);
+      out.push([0.25 * p[0] + 0.75 * q[0], 0.25 * p[1] + 0.75 * q[1]]);
+    }
+    if (!closed) out.push(pts[n - 1]);
+    pts = out;
+  }
+  return pts;
+}
+
+function polyLength(pts, closed) {
+  let L = 0;
+  for (let i = 1; i < pts.length; i++) L += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]);
+  if (closed) L += Math.hypot(pts[0][0] - pts.at(-1)[0], pts[0][1] - pts.at(-1)[1]);
+  return L;
+}
+
+// Threshold values for tone boundaries: evenly spaced, or by histogram quantiles.
+function toneThresholds(g, levels, balance) {
+  const ts = [];
+  if (!balance) { for (let i = 1; i < levels; i++) ts.push(i / levels); return ts; }
+  const bins = new Uint32Array(256);
+  for (let i = 0; i < g.length; i++) bins[Math.min(255, Math.max(0, (g[i] * 255) | 0))]++;
+  let acc = 0, k = 1;
+  for (let b = 0; b < 256 && k < levels; b++) {
+    acc += bins[b];
+    while (k < levels && acc >= (g.length * k) / levels) { ts.push((b + 0.5) / 255); k++; }
+  }
+  return [...new Set(ts)];
+}
+
+/* ============================================================
+   Pipeline
+   ============================================================ */
+
+function processImage(img, opts) {
+  const w = Math.max(2, Math.round(img.width * (opts.res / Math.max(img.width, img.height))));
+  const h = Math.max(2, Math.round(img.height * (opts.res / Math.max(img.width, img.height))));
+  const pg = document.createElement('canvas');
+  pg.width = w; pg.height = h;
+  const ctx = pg.getContext('2d', { willReadFrequently: true });
+  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h);
+  ctx.drawImage(img.canvas || img.elt, 0, 0, w, h);
+  const data = ctx.getImageData(0, 0, w, h).data;
+
+  // Blur is specified relative to a 600px working size so changing resolution keeps the look.
+  const sigma = opts.blur * (Math.max(w, h) / 600);
+  const g = gaussianBlur(toGray(data, w, h), w, h, sigma);
+
+  let raw = [];
+  if (opts.mode !== 'contours') raw = raw.concat(traceEdgePixels(canny(g, w, h, opts.edgeT), w, h));
+  if (opts.mode !== 'edges') for (const t of toneThresholds(g, opts.levels, opts.balance)) raw = raw.concat(isoContours(g, w, h, t));
+
+  const unit = Math.max(w, h) / 600; // keep clean-up sliders resolution independent
+  const paths = [];
+  for (const p of raw) {
+    if (polyLength(p.pts, p.closed) < opts.minLen * unit) continue;
+    let pts = simplify(p.pts, opts.simplify * unit);
+    if (opts.smooth) pts = chaikin(pts, p.closed);
+    if (pts.length >= 2) paths.push({ pts, closed: p.closed });
+  }
+  return { w, h, paths };
+}
+
+/* ============================================================
+   UI + p5 rendering
+   ============================================================ */
+
+const $ = (id) => document.getElementById(id);
+const controls = ['mode', 'weight', 'res', 'blur', 'edgeT', 'levels', 'balance', 'minLen', 'simplify', 'smooth', 'frame', 'showOrig'];
+const fmt = { weight: (v) => v + ' px', res: (v) => v + ' px', blur: (v) => v, edgeT: (v) => v + '%', levels: (v) => v, minLen: (v) => v + ' px', simplify: (v) => v };
+
+function readOpts() {
+  const o = {};
+  for (const id of controls) {
+    const el = $(id);
+    o[id] = el.type === 'checkbox' ? el.checked : el.tagName === 'SELECT' ? el.value : parseFloat(el.value);
+    if ($(id + 'Val')) $(id + 'Val').textContent = fmt[id](el.value);
+  }
+  $('edgeSet').style.display = o.mode === 'contours' ? 'none' : '';
+  $('contourSet').style.display = o.mode === 'edges' ? 'none' : '';
+  return o;
+}
+
+let srcImg = null;     // p5.Image or p5.Graphics
+let result = null;     // { w, h, paths }
+let opts = readOpts();
+let p5i;
+
+function viewScale() {
+  // Fit the result into the stage area.
+  const stage = $('stage');
+  const maxW = stage.clientWidth - 8, maxH = Math.max(300, window.innerHeight - 110);
+  return Math.min(maxW / result.w, maxH / result.h);
+}
+
+function renderTo(pg, s, withOriginal) {
+  pg.background(255);
+  if (withOriginal && srcImg) { pg.tint(255, 90); pg.image(srcImg, 0, 0, result.w * s, result.h * s); pg.noTint(); }
+  pg.noFill(); pg.stroke(0);
+  pg.strokeWeight(opts.weight * (s / viewScale()));
+  pg.strokeJoin(pg.ROUND); pg.strokeCap(pg.ROUND);
+  for (const p of result.paths) {
+    pg.beginShape();
+    for (const [x, y] of p.pts) pg.vertex(x * s, y * s);
+    pg.endShape(p.closed ? pg.CLOSE : undefined);
+  }
+  if (opts.frame) { const inset = opts.weight * (s / viewScale()) / 2; pg.rect(inset, inset, result.w * s - inset * 2, result.h * s - inset * 2); }
+}
+
+let pending = null;
+function recompute() {
+  if (!srcImg) return;
+  clearTimeout(pending);
+  $('status').textContent = 'Processing…';
+  pending = setTimeout(() => {
+    const t0 = performance.now();
+    result = processImage(srcImg, opts);
+    const ms = Math.round(performance.now() - t0);
+    $('status').textContent = `${result.paths.length} lines · ${result.w}×${result.h} working size · ${ms} ms`;
+    fitCanvas();
+    p5i.redraw();
+  }, 60);
+}
+
+function fitCanvas() {
+  if (!result) return;
+  const s = viewScale();
+  p5i.resizeCanvas(Math.round(result.w * s), Math.round(result.h * s));
+}
+
+p5i = new p5((p) => {
+  p.setup = () => {
+    p.pixelDensity(Math.min(2, window.devicePixelRatio || 1));
+    p.createCanvas(400, 300).parent('stage');
+    p.noLoop();
+    srcImg = makeDemo(p);
+    recompute();
+  };
+  p.draw = () => {
+    if (!result) { p.background(255); return; }
+    renderTo(p, viewScale(), opts.showOrig);
+  };
+  p.windowResized = () => { fitCanvas(); p.redraw(); };
+});
+
+// Demo picture so the page isn't empty on first load.
+function makeDemo(p) {
+  const g = p.createGraphics(800, 560);
+  g.pixelDensity(1);
+  for (let y = 0; y < 560; y++) { g.stroke(p.lerpColor(p.color(170, 205, 240), p.color(250, 245, 230), y / 560)); g.line(0, y, 800, y); }
+  g.noStroke();
+  g.fill(255, 200, 60); g.circle(620, 130, 130);
+  g.fill(110, 140, 110); g.triangle(-50, 420, 250, 150, 520, 420);
+  g.fill(80, 110, 90); g.triangle(250, 420, 520, 200, 850, 420);
+  g.fill(240); g.triangle(250, 150, 205, 200, 300, 195);
+  g.fill(90, 160, 80); g.rect(0, 400, 800, 160);
+  g.fill(200, 80, 60); g.rect(120, 330, 170, 120);
+  g.fill(120, 50, 40); g.triangle(100, 335, 205, 250, 310, 335);
+  g.fill(250, 230, 150); g.rect(145, 360, 40, 35); g.rect(225, 360, 40, 35);
+  g.fill(90, 60, 40); g.rect(190, 395, 30, 55);
+  g.fill(100, 70, 45); g.rect(560, 330, 26, 120);
+  g.fill(60, 130, 60); g.circle(573, 310, 120); g.circle(535, 340, 80); g.circle(612, 340, 80);
+  return g;
+}
+
+function loadFile(file) {
+  if (!file || !file.type.startsWith('image/')) return;
+  const url = URL.createObjectURL(file);
+  $('status').textContent = 'Loading image…';
+  p5i.loadImage(url, (img) => { srcImg = img; URL.revokeObjectURL(url); recompute(); },
+    () => { $('status').textContent = 'Could not read that image.'; });
+}
+
+// Controls
+for (const id of controls) {
+  $(id).addEventListener('input', () => {
+    opts = readOpts();
+    // Pure display settings don't need reprocessing.
+    if (['weight', 'frame', 'showOrig'].includes(id)) p5i.redraw(); else recompute();
+  });
+}
+$('file').addEventListener('change', (e) => loadFile(e.target.files[0]));
+
+const stage = $('stage');
+['dragenter', 'dragover'].forEach((ev) => document.addEventListener(ev, (e) => { e.preventDefault(); stage.classList.add('drag'); }));
+['dragleave', 'drop'].forEach((ev) => document.addEventListener(ev, (e) => { e.preventDefault(); if (ev === 'drop' || e.target === document.documentElement) stage.classList.remove('drag'); }));
+document.addEventListener('drop', (e) => loadFile(e.dataTransfer.files[0]));
+
+// Export
+function buildSVG() {
+  const s = viewScale();
+  const W = Math.round(result.w * s), H = Math.round(result.h * s);
+  const f = (v) => (v * s).toFixed(2);
+  const d = result.paths.map((p) => 'M' + p.pts.map(([x, y]) => f(x) + ' ' + f(y)).join('L') + (p.closed ? 'Z' : '')).join('');
+  const sw = opts.weight;
+  const frame = opts.frame ? `<rect x="${sw / 2}" y="${sw / 2}" width="${W - sw}" height="${H - sw}"/>` : '';
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+<rect width="100%" height="100%" fill="#fff"/>
+<g fill="none" stroke="#000" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round">
+<path d="${d}"/>${frame}
+</g>
+</svg>`;
+}
+
+function download(blob, name) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+$('svgBtn').addEventListener('click', () => { if (result) download(new Blob([buildSVG()], { type: 'image/svg+xml' }), 'line-master.svg'); });
+
+$('pngBtn').addEventListener('click', () => {
+  if (!result) return;
+  // Render at print-friendly size (~3000px on the long side), strokes scaled to match.
+  const s = 3000 / Math.max(result.w, result.h);
+  const pg = p5i.createGraphics(Math.round(result.w * s), Math.round(result.h * s));
+  pg.pixelDensity(1);
+  renderTo(pg, s, false);
+  pg.elt.toBlob((b) => { download(b, 'line-master.png'); pg.remove(); }, 'image/png');
+});
+
+$('printBtn').addEventListener('click', () => {
+  if (!result) return;
+  const win = window.open('', '_blank');
+  if (!win) { alert('Please allow pop-ups to print.'); return; }
+  const svg = buildSVG().replace(/^<\?xml[^>]*>\s*/, '').replace(/width="\d+" height="\d+"/, 'style="width:100%;height:auto;max-height:100vh"');
+  win.document.write(`<!DOCTYPE html><title>Line master</title><style>@page{margin:12mm}body{margin:0;display:flex;justify-content:center}</style>${svg}`);
+  win.document.close();
+  setTimeout(() => { try { win.focus(); win.print(); } catch (e) {} }, 400);
+});
+</script>
+</body>
+</html>
