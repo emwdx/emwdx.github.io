@@ -70,6 +70,12 @@
     text-decoration: none;
   }
   li a:hover .title { color: var(--accent); }
+  li .pending {
+    display: block;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--line);
+    opacity: 0.7;
+  }
 
   .title { font-weight: 600; }
   .who { color: var(--muted); font-weight: 400; }
@@ -102,6 +108,13 @@
 <script>
   // To add a project: drop the HTML file in this folder and add one line below.
   const participants = [
+    { file: "carolina.html", title: "Shopping List Challenge", who: "Carolina",
+      desc: "Help Emma and Leo plan a supermarket trip while practicing food words, countable and uncountable nouns, some/any, and how much/how many (A1–A2). Built from the SPARK Shopping List example." },
+    { file: "maria-cristina.html", title: "The Writing Garden", who: "Christina",
+      desc: "A Socratic AI writing coach for Spanish-speaking English learners, with a student studio and a teacher view. Needs your own AI API key." },
+    // TODO: paste Felipe's Hugo Studio link into file
+    { file: "", title: "Unit 8: Restaurant", who: "Felipe",
+      desc: "Gamified food and hotel vocabulary activities for elementary-level undergraduates, made with Felipe's own app, Hugo Studio." },
     { file: "trinidad.html", title: "My English Grammar Notebook", who: "Trinidad",
       desc: "Practice the simple present through everyday situations: build sentences, write from memory, then make your own." },
   ];
@@ -117,12 +130,14 @@
       desc: "Generalized so teachers can sort any words or concepts." },
   ];
 
+  // Entries without a file yet show as "link coming soon" instead of a broken link
   function render(id, items) {
-    document.getElementById(id).innerHTML = items.map(p => `
-      <li><a href="${p.file}">
+    document.getElementById(id).innerHTML = items.map(p => {
+      const body = `
         <span class="title">${p.title}</span>${p.who ? ` <span class="who">&middot; ${p.who}</span>` : ""}
-        <span class="desc">${p.desc}</span>
-      </a></li>`).join("");
+        <span class="desc">${p.desc}${p.file ? "" : " <em>Link coming soon.</em>"}</span>`;
+      return p.file ? `<li><a href="${p.file}">${body}</a></li>` : `<li><span class="pending">${body}</span></li>`;
+    }).join("");
   }
 
   render("participants", participants);

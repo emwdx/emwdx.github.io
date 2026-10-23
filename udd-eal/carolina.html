@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping List Challenge – Learn English (A1-A2)</title>
+  <!-- Tailwind CSS & Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            fredoka: ['Fredoka', 'cursive'],
+            nunito: ['Nunito', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              yellow: '#FEF08A',
+              orange: '#F97316',
+              green: '#10B981',
+              emerald: '#059669',
+              teal: '#0D9488',
+              blue: '#0284C7',
+              coral: '#FB7185'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: linear-gradient(135deg, #F0FDF4 0%, #ECFEFF 50%, #FEF3C7 100%);
+      min-height: 100vh;
+      user-select: none;
+    }
+    .font-fun {
+      font-family: 'Fredoka', cursive;
+    }
+    .notepad-paper {
+      background: #FFFDF0;
+      background-image: radial-gradient(#E2E8F0 1.5px, transparent 1.5px);
+      background-size: 16px 16px;
+    }
+    .speech-bubble-left::after {
+      content: '';
+      position: absolute;
+      left: -10px;
+      top: 18px;
+      border-width: 8px 10px 8px 0;
+      border-style: solid;
+      border-color: transparent #ffffff transparent transparent;
+      display: block;
+      width: 0;
+    }
+    .speech-bubble-right::after {
+      content: '';
+      position: absolute;
+      right: -10px;
+      top: 18px;
+      border-width: 8px 0 8px 10px;
+      border-style: solid;
+      border-color: transparent transparent transparent #ffffff;
+      display: block;
+      width: 0;
+    }
+  </style>
+</head>
+<body class="text-slate-800 flex flex-col min-h-screen">
+
+  <!-- TOP HEADER -->
+  <header class="bg-white/90 backdrop-blur-md border-b border-emerald-100 sticky top-0 z-40 px-4 py-3 shadow-sm">
+    <div class="max-w-4xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3 cursor-pointer" onclick="app.goHome()">
+        <span class="text-3xl">🛒</span>
+        <div>
+          <h1 class="font-fun text-lg sm:text-xl font-bold text-emerald-900 tracking-wide leading-tight">Shopping List Challenge</h1>
+          <p class="text-xs text-emerald-600 font-semibold">Supermarket English (A1–A2)</p>
+        </div>
+      </div>
+      
+      <div class="flex items-center gap-2 sm:gap-4">
+        <!-- Live Score -->
+        <div id="score-badge" class="flex items-center gap-1.5 bg-amber-50 border-2 border-amber-300 text-amber-900 px-3 py-1 rounded-full font-bold text-sm sm:text-base shadow-sm">
+          <span>⭐</span>
+          <span id="score-display">0</span>
+          <span class="text-xs text-amber-700 hidden sm:inline">pts</span>
+        </div>
+
+        <!-- Teacher Mode Button -->
+        <button onclick="teacherPortal.openAuthModal()" class="flex items-center gap-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-3 py-1.5 rounded-xl text-xs sm:text-sm border border-slate-300 transition active:scale-95">
+          <span>👩‍🏫</span>
+          <span class="hidden sm:inline">Teacher</span> Mode
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WRAPPER -->
+  <main class="flex-grow flex items-center justify-center p-3 sm:p-6">
+    <div class="w-full max-w-3xl">
+
+      <!-- SCREEN 1: WELCOME SCREEN -->
+      <section id="screen-welcome" class="text-center space-y-6">
+        <div class="bg-white p-6 sm:p-10 rounded-3xl shadow-xl border-4 border-emerald-100 relative overflow-hidden">
+          <div class="text-6xl sm:text-7xl mb-3 animate-bounce">🧺</div>
+          <h2 class="font-fun text-3xl sm:text-4xl font-extrabold text-slate-900 mb-2">
+            Shopping List Challenge!
+          </h2>
+          <p class="text-base sm:text-lg text-emerald-700 font-bold mb-4 font-fun">
+            Help Emma and Leo agree on what to buy at the supermarket.
+          </p>
+
+          <div class="bg-emerald-50 rounded-2xl p-4 max-w-md mx-auto text-left text-xs sm:text-sm text-emerald-950 space-y-2 border border-emerald-200 mb-6">
+            <p class="font-bold text-emerald-900 flex items-center gap-1"><span>🎯</span> In this game, you will practice:</p>
+            <ul class="list-disc pl-5 space-y-1 text-slate-700">
+              <li><strong>Food vocabulary</strong> (milk, apples, cheese, bread...)</li>
+              <li><strong>Countable & Uncountable nouns</strong></li>
+              <li><strong>Some</strong> & <strong>Any</strong></li>
+              <li><strong>How much</strong> & <strong>How many</strong></li>
+              <li>Making suggestions: <em>"Let's buy...", "We need...", "Can you buy...?"</em></li>
+            </ul>
+          </div>
+
+          <!-- Characters Introduction -->
+          <div class="flex justify-center items-center gap-6 mb-8">
+            <div class="text-center">
+              <div class="w-16 h-16 rounded-full bg-rose-100 border-2 border-rose-300 flex items-center justify-center text-3xl mx-auto mb-1">👩</div>
+              <p class="font-bold text-xs text-slate-800">Emma</p>
+              <p class="text-[10px] text-slate-500">Checking the fridge</p>
+            </div>
+            <div class="text-2xl font-fun font-bold text-emerald-600">+</div>
+            <div class="text-center">
+              <div class="w-16 h-16 rounded-full bg-blue-100 border-2 border-blue-300 flex items-center justify-center text-3xl mx-auto mb-1">👨</div>
+              <p class="font-bold text-xs text-slate-800">Leo</p>
+              <p class="text-[10px] text-slate-500">Writing the list</p>
+            </div>
+          </div>
+
+          <button onclick="app.startStage1()" class="w-full sm:w-auto px-10 py-4 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-fun font-bold text-xl rounded-2xl shadow-lg shadow-emerald-600/30 transition transform">
+            🚀 Start Challenge!
+          </button>
+        </div>
+      </section>
+
+      <!-- SCREEN 2: STAGE 1 (CHOOSE NEEDED ITEMS) -->
+      <section id="screen-stage1" class="hidden space-y-4">
+        <!-- Stage Step Header -->
+        <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
+          <div>
+            <span class="text-xs font-bold text-emerald-700 uppercase tracking-wider">Stage 1 of 3</span>
+            <h3 class="font-fun text-lg font-bold text-slate-800">Check the Kitchen & Pick What We Need</h3>
+          </div>
+          <span class="text-2xl">📋</span>
+        </div>
+
+        <!-- Fridge / Scenario Dialogue Box -->
+        <div class="bg-white p-4 sm:p-5 rounded-2xl border-2 border-emerald-200 shadow-sm flex items-start gap-3">
+          <div class="w-12 h-12 rounded-full bg-rose-100 border border-rose-300 flex items-center justify-center text-2xl shrink-0">👩</div>
+          <div class="space-y-1">
+            <p class="font-bold text-xs text-rose-700">Emma says:</p>
+            <p class="text-xs sm:text-sm text-slate-700 leading-relaxed" id="stage1-prompt-text">
+              "Tonight we are cooking pasta and making a fresh fruit salad! 
+              Look inside the kitchen: we already have pasta and rice, but we <strong>don't have any tomatoes</strong>, 
+              we need <strong>some cheese</strong>, we need <strong>some milk</strong> for breakfast, and we need <strong>some apples</strong> for dessert. 
+              Please click the 4 items we need to buy!"
+            </p>
+          </div>
+        </div>
+
+        <!-- Items Selection Grid -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+          <div class="flex justify-between items-center mb-3">
+            <p class="text-xs font-bold text-slate-500 uppercase tracking-wide">Click items to add or remove from list:</p>
+            <span id="stage1-counter-tag" class="text-xs bg-emerald-100 text-emerald-800 font-bold px-2.5 py-1 rounded-full">0 selected</span>
+          </div>
+
+          <div id="stage1-items-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <!-- Dynamically populated food cards -->
+          </div>
+        </div>
+
+        <!-- Feedback & Validation Bar -->
+        <div id="stage1-feedback" class="hidden p-4 rounded-xl border text-xs sm:text-sm font-semibold transition"></div>
+
+        <div class="flex justify-end gap-3 pt-2">
+          <button id="stage1-check-btn" onclick="app.checkStage1()" class="w-full sm:w-auto px-8 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-fun font-bold text-base rounded-xl shadow-md transition active:scale-95">
+            Check Items ✓
+          </button>
+          <button id="stage1-next-btn" onclick="app.startStage2()" class="hidden w-full sm:w-auto px-8 py-3 bg-brand-blue hover:bg-sky-700 text-white font-fun font-bold text-base rounded-xl shadow-md transition active:scale-95">
+            Continue to Stage 2 →
+          </button>
+        </div>
+      </section>
+
+      <!-- SCREEN 3: STAGE 2 (COMPLETE DIALOGUE) -->
+      <section id="screen-stage2" class="hidden space-y-4">
+        <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
+          <div>
+            <span class="text-xs font-bold text-sky-700 uppercase tracking-wider">Stage 2 of 3</span>
+            <h3 class="font-fun text-lg font-bold text-slate-800">Complete the Conversation</h3>
+          </div>
+          <span class="text-2xl">💬</span>
+        </div>
+
+        <!-- Dialogue Instruction Box -->
+        <div class="bg-sky-50 border border-sky-200 p-3.5 rounded-2xl text-xs sm:text-sm text-sky-950 flex items-center gap-2">
+          <span>💡</span>
+          <p>Choose the correct word for each gap to make polite agreements and use <strong>some / any</strong> and <strong>how much / how many</strong>.</p>
+        </div>
+
+        <!-- Interactive Dialogue Container -->
+        <div id="stage2-dialogue-container" class="space-y-4">
+          <!-- Dynamically populated dialogue lines -->
+        </div>
+
+        <!-- Global Feedback Panel for Stage 2 -->
+        <div id="stage2-feedback" class="hidden p-4 rounded-xl border text-xs sm:text-sm font-semibold transition"></div>
+
+        <div class="flex justify-end gap-3 pt-2">
+          <button id="stage2-check-btn" onclick="app.checkStage2()" class="w-full sm:w-auto px-8 py-3 bg-sky-600 hover:bg-sky-700 text-white font-fun font-bold text-base rounded-xl shadow-md transition active:scale-95">
+            Check Dialogue ✓
+          </button>
+          <button id="stage2-next-btn" onclick="app.startStage3()" class="hidden w-full sm:w-auto px-8 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-fun font-bold text-base rounded-xl shadow-md transition active:scale-95">
+            Continue to Stage 3 →
+          </button>
+        </div>
+      </section>
+
+      <!-- SCREEN 4: STAGE 3 (REVIEW FINAL LIST & GRAMMAR CHECK) -->
+      <section id="screen-stage3" class="hidden space-y-4">
+        <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
+          <div>
+            <span class="text-xs font-bold text-amber-700 uppercase tracking-wider">Stage 3 of 3</span>
+            <h3 class="font-fun text-lg font-bold text-slate-800">Final Shopping List & Grammar Check</h3>
+          </div>
+          <span class="text-2xl">📝</span>
+        </div>
+
+        <!-- Shopping Notepad UI -->
+        <div class="notepad-paper p-5 sm:p-6 rounded-2xl border-2 border-amber-300 shadow-md relative">
+          <div class="flex justify-between items-center border-b-2 border-amber-200 pb-2 mb-4">
+            <h4 class="font-fun font-bold text-base sm:text-lg text-slate-800 flex items-center gap-2">
+              <span>🛒</span> Our Official Shopping List:
+            </h4>
+            <span class="text-[11px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full">Ready for Supermarket</span>
+          </div>
+
+          <div id="stage3-shopping-list-display" class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs sm:text-sm">
+            <!-- Dynamically populated items with quantities -->
+          </div>
+        </div>
+
+        <!-- 3 Quick Final Check Questions -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+          <h4 class="font-fun font-bold text-slate-800 text-sm sm:text-base flex items-center gap-2">
+            <span>🔍</span> Supermarket Review Questions:
+          </h4>
+          <div id="stage3-questions-container" class="space-y-4">
+            <!-- Dynamically populated review items -->
+          </div>
+        </div>
+
+        <div id="stage3-feedback" class="hidden p-4 rounded-xl border text-xs sm:text-sm font-semibold transition"></div>
+
+        <div class="flex justify-end gap-3 pt-2">
+          <button id="stage3-check-btn" onclick="app.checkStage3()" class="w-full sm:w-auto px-8 py-3 bg-amber-500 hover:bg-amber-600 text-white font-fun font-bold text-base rounded-xl shadow-md transition active:scale-95">
+            Verify Final List ✓
+          </button>
+          <button id="stage3-next-btn" onclick="app.finishGame()" class="hidden w-full sm:w-auto px-8 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-fun font-bold text-base rounded-xl shadow-md transition active:scale-95">
+            See Final Results 🏆
+          </button>
+        </div>
+      </section>
+
+      <!-- SCREEN 5: FINAL SUMMARY / CONGRATULATIONS -->
+      <section id="screen-finish" class="hidden text-center space-y-6">
+        <div class="bg-white p-6 sm:p-10 rounded-3xl shadow-xl border-4 border-amber-200">
+          <div class="text-6xl mb-3">🎉</div>
+          <h2 class="font-fun text-3xl sm:text-4xl font-extrabold text-slate-900 mb-2">Shopping List Complete!</h2>
+          <p class="text-emerald-700 font-bold text-base sm:text-lg mb-6">Emma & Leo are ready to go to the supermarket!</p>
+
+          <div class="bg-amber-50 p-6 rounded-2xl border border-amber-200 max-w-sm mx-auto mb-6 space-y-2">
+            <p class="text-xs font-bold text-amber-800 uppercase tracking-widest">Your Total Score</p>
+            <p class="font-fun text-5xl font-extrabold text-amber-500 flex items-center justify-center gap-2">
+              ⭐ <span id="final-score-display">0</span>
+            </p>
+            <p id="final-eval-comment" class="text-xs text-slate-700 font-semibold pt-2">
+              Great job practicing English for the supermarket!
+            </p>
+          </div>
+
+          <div class="flex flex-col sm:flex-row justify-center gap-3">
+            <button onclick="app.restartGame()" class="px-8 py-3.5 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-fun font-bold rounded-xl shadow-md transition">
+              🔄 Play Again
+            </button>
+            <button onclick="app.goHome()" class="px-8 py-3.5 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold rounded-xl transition">
+              🏠 Home
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- TEACHER PORTAL MODAL -->
+  <div id="modal-teacher" class="hidden fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+    <div class="bg-white w-full max-w-4xl rounded-3xl shadow-2xl border border-slate-200 max-h-[92vh] flex flex-col overflow-hidden my-auto">
+      
+      <!-- Modal Header -->
+      <div class="px-6 py-4 bg-emerald-800 text-white flex justify-between items-center">
+        <div class="flex items-center gap-3">
+          <span class="text-2xl">👩‍🏫</span>
+          <div>
+            <h3 class="font-fun text-lg sm:text-xl font-bold">Teacher Management Mode</h3>
+            <p class="text-xs text-emerald-200">Edit grocery items, dialogue gaps, grammar questions & hints</p>
+          </div>
+        </div>
+        <button onclick="teacherPortal.close()" class="text-emerald-200 hover:text-white text-3xl font-bold leading-none">&times;</button>
+      </div>
+
+      <!-- Tab Buttons -->
+      <div class="flex border-b border-slate-200 bg-slate-50 px-6 pt-3 gap-2 overflow-x-auto">
+        <button onclick="teacherPortal.setTab('items')" id="tab-btn-items" class="px-4 py-2 text-xs sm:text-sm font-bold border-b-2 border-emerald-600 text-emerald-800">
+          Stage 1: Food Items
+        </button>
+        <button onclick="teacherPortal.setTab('dialogue')" id="tab-btn-dialogue" class="px-4 py-2 text-xs sm:text-sm font-bold border-b-2 border-transparent text-slate-600 hover:text-emerald-600">
+          Stage 2: Dialogue Gaps
+        </button>
+        <button onclick="teacherPortal.setTab('review')" id="tab-btn-review" class="px-4 py-2 text-xs sm:text-sm font-bold border-b-2 border-transparent text-slate-600 hover:text-emerald-600">
+          Stage 3: Review Questions
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 overflow-y-auto space-y-6 flex-grow">
+        
+        <!-- Controls: Reset, Export, Import -->
+        <div class="flex flex-wrap items-center justify-between gap-2 p-3 bg-slate-100 rounded-xl text-xs">
+          <span class="text-slate-600 font-semibold">Changes are saved automatically to this computer's browser storage.</span>
+          <div class="flex items-center gap-2">
+            <button onclick="teacherPortal.resetToDefaults()" class="bg-white border border-red-200 text-red-600 hover:bg-red-50 font-bold px-3 py-1.5 rounded-lg transition">
+              Reset to Defaults
+            </button>
+            <button onclick="teacherPortal.exportJSON()" class="bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 font-bold px-3 py-1.5 rounded-lg transition">
+              Export JSON
+            </button>
+            <label class="bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 font-bold px-3 py-1.5 rounded-lg cursor-pointer transition">
+              Import JSON
+              <input type="file" onchange="teacherPortal.importJSON(event)" class="hidden" accept=".json">
+            </label>
+          </div>
+        </div>
+
+        <!-- TAB CONTENT 1: ITEMS -->
+        <div id="tab-content-items" class="space-y-4">
+          <div class="space-y-1">
+            <label class="block text-xs font-bold text-slate-700 uppercase">Emma's Stage 1 Prompt Story:</label>
+            <textarea id="teacher-stage1-prompt" rows="3" class="w-full text-xs sm:text-sm p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none"></textarea>
+          </div>
+
+          <div class="flex justify-between items-center pt-2">
+            <h4 class="font-bold text-sm text-slate-800">Supermarket Food Items (Select checkbox if item is NEEDED on the list):</h4>
+            <button onclick="teacherPortal.addNewItem()" class="text-xs bg-emerald-600 text-white font-bold px-3 py-1.5 rounded-lg hover:bg-emerald-700">
+              + Add New Item
+            </button>
+          </div>
+
+          <div id="teacher-items-container" class="space-y-2">
+            <!-- Dynamically populated item editors -->
+          </div>
+        </div>
+
+        <!-- TAB CONTENT 2: DIALOGUE -->
+        <div id="tab-content-dialogue" class="hidden space-y-4">
+          <div class="flex justify-between items-center">
+            <h4 class="font-bold text-sm text-slate-800">Stage 2 Dialogue Gaps (some/any, how much/many, suggestions):</h4>
+            <button onclick="teacherPortal.addNewDialogueLine()" class="text-xs bg-emerald-600 text-white font-bold px-3 py-1.5 rounded-lg hover:bg-emerald-700">
+              + Add Dialogue Line
+            </button>
+          </div>
+          <div id="teacher-dialogue-container" class="space-y-4">
+            <!-- Dynamically populated dialogue editors -->
+          </div>
+        </div>
+
+        <!-- TAB CONTENT 3: REVIEW QUESTIONS -->
+        <div id="tab-content-review" class="hidden space-y-4">
+          <div class="flex justify-between items-center">
+            <h4 class="font-bold text-sm text-slate-800">Stage 3 Grammar & Comprehension Questions:</h4>
+            <button onclick="teacherPortal.addNewReviewQuestion()" class="text-xs bg-emerald-600 text-white font-bold px-3 py-1.5 rounded-lg hover:bg-emerald-700">
+              + Add Question
+            </button>
+          </div>
+          <div id="teacher-review-container" class="space-y-4">
+            <!-- Dynamically populated review questions -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-6 py-3 bg-slate-100 border-t border-slate-200 flex justify-end">
+        <button onclick="teacherPortal.saveAndClose()" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl transition shadow active:scale-95">
+          Save & Apply Changes ✓
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PIN PROMPT MODAL -->
+  <div id="modal-pin" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-6 max-w-xs w-full shadow-2xl text-center space-y-4">
+      <div class="text-3xl">🔐</div>
+      <h3 class="font-fun text-xl font-bold text-slate-800">Teacher Portal</h3>
+      <p class="text-xs text-slate-500">Enter PIN to edit dialogues and shopping items.<br>(Default PIN: <strong class="text-emerald-700">1234</strong>)</p>
+      <input type="password" id="pin-input" maxlength="6" class="text-center font-mono text-xl tracking-widest w-full py-2 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-emerald-500" placeholder="••••">
+      <div class="flex gap-2">
+        <button onclick="document.getElementById('modal-pin').classList.add('hidden')" class="w-1/2 py-2 bg-slate-100 text-slate-600 font-bold rounded-xl text-sm">Cancel</button>
+        <button onclick="teacherPortal.verifyPin()" class="w-1/2 py-2 bg-emerald-600 text-white font-bold rounded-xl text-sm">Enter</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT APPLICATION LOGIC -->
+  <script>
+    // ==========================================
+    // 1. DEFAULT CURRICULUM DATA
+    // ==========================================
+    const DEFAULT_DATA = {
+      stage1Prompt: `"Tonight we are cooking pasta and making a fresh fruit salad! Look inside the kitchen: we already have pasta and rice, but we don't have any tomatoes, we need some cheese, we need some milk for breakfast, and we need some apples for dessert. Please click the 4 items we need to buy!"`,
+      items: [
+        { id: 1, name: 'Tomatoes', emoji: '🍅', needed: true, type: 'countable', quantity: '4 tomatoes' },
+        { id: 2, name: 'Cheese', emoji: '🧀', needed: true, type: 'uncountable', quantity: '1 pack of cheese' },
+        { id: 3, name: 'Milk', emoji: '🥛', needed: true, type: 'uncountable', quantity: '2 bottles of milk' },
+        { id: 4, name: 'Apples', emoji: '🍎', needed: true, type: 'countable', quantity: '6 red apples' },
+        { id: 5, name: 'Pasta', emoji: '🍝', needed: false, type: 'uncountable', quantity: '1 bag' },
+        { id: 6, name: 'Rice', emoji: '🍚', needed: false, type: 'uncountable', quantity: '1 box' },
+        { id: 7, name: 'Chocolate', emoji: '🍫', needed: false, type: 'uncountable', quantity: '1 bar' },
+        { id: 8, name: 'Fish', emoji: '🐟', needed: false, type: 'countable', quantity: '2 pieces' }
+      ],
+      dialogue: [
+        {
+          id: 1,
+          speaker: 'Leo',
+          avatar: '👨',
+          color: 'blue',
+          textBefore: 'Great, let\'s make the list. First, ',
+          options: ['How much', 'How many'],
+          correct: 'How much',
+          textAfter: ' milk do we need for breakfast?',
+          hint: 'Remember: "milk" is an uncountable liquid noun, so we ask "How much", not "How many"!'
+        },
+        {
+          id: 2,
+          speaker: 'Emma',
+          avatar: '👩',
+          color: 'rose',
+          textBefore: 'We need two bottles. Also, do we have ',
+          options: ['some', 'any'],
+          correct: 'any',
+          textAfter: ' cheese in the fridge?',
+          hint: 'Remember: in questions like "Do we have...?", we normally use "any"!'
+        },
+        {
+          id: 3,
+          speaker: 'Leo',
+          avatar: '👨',
+          color: 'blue',
+          textBefore: 'No, we don\'t have ',
+          options: ['any', 'some'],
+          correct: 'any',
+          textAfter: ' cheese at all. ',
+          hint: 'Remember: in negative sentences with "don\'t have", we use "any"!'
+        },
+        {
+          id: 4,
+          speaker: 'Emma',
+          avatar: '👩',
+          color: 'rose',
+          textBefore: '',
+          options: ['Let\'s buy', 'Let\'s buying', 'Let to buy'],
+          correct: 'Let\'s buy',
+          textAfter: ' a block of cheddar cheese! And can you buy some apples too?',
+          hint: 'Remember: we make suggestions with "Let\'s" + base verb: "Let\'s buy"!'
+        },
+        {
+          id: 5,
+          speaker: 'Leo',
+          avatar: '👨',
+          color: 'blue',
+          textBefore: 'Yes, good idea! ',
+          options: ['How many', 'How much'],
+          correct: 'How many',
+          textAfter: ' apples should we get for the dessert?',
+          hint: 'Remember: "apples" is a plural countable noun (one apple, two apples), so we use "How many"!'
+        },
+        {
+          id: 6,
+          speaker: 'Emma',
+          avatar: '👩',
+          color: 'rose',
+          textBefore: '',
+          options: ['We need', 'We needing', 'We are need'],
+          correct: 'We need',
+          textAfter: ' six red apples, and four tomatoes for dinner.',
+          hint: 'Remember: the present simple form is simply "We need"!'
+        }
+      ],
+      reviewQuestions: [
+        {
+          id: 1,
+          question: 'In the sentence "We don\'t have any cheese", is "cheese" countable or uncountable?',
+          options: ['Countable', 'Uncountable'],
+          correct: 1,
+          hint: 'Uncountable! You cannot count "one cheese, two cheeses" directly without containers (like pieces or grams).'
+        },
+        {
+          id: 2,
+          question: 'We wrote "6 apples" and "4 tomatoes". Are apples and tomatoes countable or uncountable?',
+          options: ['Countable (we can count 1, 2, 3...)', 'Uncountable'],
+          correct: 0,
+          hint: 'Countable! We can count individual apples and tomatoes and add "-s" or "-es".'
+        },
+        {
+          id: 3,
+          question: 'Which is the most natural way to agree with Leo when he says "Let\'s go to the supermarket now!"?',
+          options: ['Great idea! Let\'s go!', 'I don\'t like food.', 'Yesterday I went.'],
+          correct: 0,
+          hint: '"Great idea! Let\'s go!" shows positive agreement with a suggestion.'
+        }
+      ]
+    };
+
+    // ==========================================
+    // 2. AUDIO SYNTHESIS ENGINE (ZERO ASSETS)
+    // ==========================================
+    const SoundFx = {
+      ctx: null,
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) this.ctx = new AudioContext();
+        }
+      },
+      play(type) {
+        try {
+          this.init();
+          if (!this.ctx) return;
+          if (this.ctx.state === 'suspended') this.ctx.resume();
+
+          const now = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          if (type === 'correct') {
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(523.25, now); // C5
+            osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.15); // G5
+            gain.gain.setValueAtTime(0.2, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+            osc.start(now);
+            osc.stop(now + 0.35);
+          } else if (type === 'wrong') {
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(280, now);
+            osc.frequency.linearRampToValueAtTime(200, now + 0.2);
+            gain.gain.setValueAtTime(0.18, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+            osc.start(now);
+            osc.stop(now + 0.25);
+          } else if (type === 'fanfare') {
+            [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+              const o = this.ctx.createOscillator();
+              const g = this.ctx.createGain();
+              o.connect(g);
+              g.connect(this.ctx.destination);
+              o.type = 'triangle';
+              o.frequency.value = freq;
+              g.gain.setValueAtTime(0.18, now + idx * 0.1);
+              g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.1 + 0.45);
+              o.start(now + idx * 0.1);
+              o.stop(now + idx * 0.1 + 0.45);
+            });
+          }
+        } catch(e) {
+          console.warn('Audio synthesis disabled', e);
+        }
+      }
+    };
+
+    // ==========================================
+    // 3. MAIN GAME CONTROLLER
+    // ==========================================
+    class ShoppingApp {
+      constructor() {
+        this.data = this.loadData();
+        this.score = 0;
+        this.stage1Selected = new Set();
+        this.stage1Tries = 0;
+        this.stage2Tries = 0;
+        this.stage3Tries = 0;
+      }
+
+      loadData() {
+        const saved = localStorage.getItem('shopping_challenge_data');
+        if (saved) {
+          try {
+            return JSON.parse(saved);
+          } catch(e) {
+            console.error('Error loading data', e);
+          }
+        }
+        return JSON.parse(JSON.stringify(DEFAULT_DATA));
+      }
+
+      saveData() {
+        localStorage.setItem('shopping_challenge_data', JSON.stringify(this.data));
+      }
+
+      init() {
+        this.updateScore(0);
+        this.goHome();
+      }
+
+      updateScore(pts) {
+        this.score += pts;
+        document.getElementById('score-display').innerText = this.score;
+      }
+
+      hideAllScreens() {
+        ['screen-welcome', 'screen-stage1', 'screen-stage2', 'screen-stage3', 'screen-finish'].forEach(id => {
+          document.getElementById(id).classList.add('hidden');
+        });
+      }
+
+      goHome() {
+        this.hideAllScreens();
+        document.getElementById('screen-welcome').classList.remove('hidden');
+      }
+
+      // ----------------------------------------
+      // STAGE 1: CHOOSE ITEMS
+      // ----------------------------------------
+      startStage1() {
+        this.hideAllScreens();
+        document.getElementById('screen-stage1').classList.remove('hidden');
+        document.getElementById('stage1-prompt-text').innerHTML = this.data.stage1Prompt;
+        this.stage1Selected.clear();
+        this.stage1Tries = 0;
+
+        document.getElementById('stage1-check-btn').classList.remove('hidden');
+        document.getElementById('stage1-next-btn').classList.add('hidden');
+        document.getElementById('stage1-feedback').classList.add('hidden');
+
+        this.renderStage1Grid();
+      }
+
+      renderStage1Grid() {
+        const container = document.getElementById('stage1-items-grid');
+        container.innerHTML = '';
+
+        this.data.items.forEach(item => {
+          const isSelected = this.stage1Selected.has(item.id);
+          const card = document.createElement('div');
+          card.className = `p-3.5 rounded-2xl border-2 transition cursor-pointer flex flex-col items-center justify-center text-center gap-1 ${
+            isSelected 
+              ? 'border-emerald-500 bg-emerald-50 shadow-md ring-2 ring-emerald-300' 
+              : 'border-slate-200 bg-white hover:border-emerald-300 shadow-sm'
+          }`;
+
+          card.onclick = () => {
+            if (this.stage1Selected.has(item.id)) {
+              this.stage1Selected.delete(item.id);
+            } else {
+              this.stage1Selected.add(item.id);
+            }
+            this.renderStage1Grid();
+          };
+
+          card.innerHTML = `
+            <span class="text-3xl sm:text-4xl mb-1">${item.emoji}</span>
+            <span class="font-bold text-xs sm:text-sm text-slate-800">${item.name}</span>
+            <span class="text-[10px] text-slate-500 uppercase font-semibold">${item.type}</span>
+            <span class="mt-1 text-xs font-bold px-2 py-0.5 rounded-full ${isSelected ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-500'}">
+              ${isSelected ? 'Added ✓' : '+ Add'}
+            </span>
+          `;
+          container.appendChild(card);
+        });
+
+        document.getElementById('stage1-counter-tag').innerText = `${this.stage1Selected.size} selected`;
+      }
+
+      checkStage1() {
+        const neededItemIds = this.data.items.filter(i => i.needed).map(i => i.id);
+        const selectedArr = Array.from(this.stage1Selected);
+
+        const allNeededSelected = neededItemIds.every(id => this.stage1Selected.has(id));
+        const noExtraSelected = selectedArr.every(id => neededItemIds.includes(id));
+        const fb = document.getElementById('stage1-feedback');
+        fb.classList.remove('hidden');
+
+        if (allNeededSelected && noExtraSelected) {
+          SoundFx.play('correct');
+          if (this.stage1Tries === 0) this.updateScore(30);
+          else this.updateScore(15);
+
+          fb.className = 'p-4 rounded-xl border border-emerald-300 bg-emerald-50 text-emerald-900';
+          fb.innerHTML = `
+            <div class="flex items-center gap-2 font-bold font-fun text-base text-emerald-800 mb-1">
+              <span>🎉</span> Great Job! Shopping List Started! (+${this.stage1Tries === 0 ? '30' : '15'} pts)
+            </div>
+            <p>You chose exactly what we need: <strong>Tomatoes, Cheese, Milk, and Apples</strong>. We already had pasta and rice at home!</p>
+          `;
+
+          document.getElementById('stage1-check-btn').classList.add('hidden');
+          document.getElementById('stage1-next-btn').classList.remove('hidden');
+        } else {
+          SoundFx.play('wrong');
+          this.stage1Tries++;
+          fb.className = 'p-4 rounded-xl border border-amber-300 bg-amber-50 text-amber-900';
+          
+          let hintText = "Look closely at Emma's story: ";
+          if (!allNeededSelected) {
+            hintText += "You missed some items we don't have (remember: tomatoes, cheese, milk, apples). ";
+          }
+          if (!noExtraSelected) {
+            hintText += "You selected some items we already have in the kitchen (like pasta or rice). ";
+          }
+          hintText += "Adjust your choices and click Check again!";
+
+          fb.innerHTML = `
+            <div class="flex items-center gap-2 font-bold font-fun text-sm text-amber-800 mb-1">
+              <span>💡</span> Not quite! Let's check the kitchen again:
+            </div>
+            <p>${hintText}</p>
+          `;
+        }
+      }
+
+      // ----------------------------------------
+      // STAGE 2: COMPLETE THE DIALOGUE
+      // ----------------------------------------
+      startStage2() {
+        this.hideAllScreens();
+        document.getElementById('screen-stage2').classList.remove('hidden');
+        this.stage2Tries = 0;
+        document.getElementById('stage2-check-btn').classList.remove('hidden');
+        document.getElementById('stage2-next-btn').classList.add('hidden');
+        document.getElementById('stage2-feedback').classList.add('hidden');
+
+        this.renderStage2Dialogue();
+      }
+
+      renderStage2Dialogue() {
+        const container = document.getElementById('stage2-dialogue-container');
+        container.innerHTML = '';
+
+        this.data.dialogue.forEach((line, idx) => {
+          const isEmma = line.speaker === 'Emma';
+          const bubble = document.createElement('div');
+          bubble.className = `flex items-start gap-3 ${isEmma ? 'flex-row' : 'flex-row-reverse'}`;
+
+          const avatarBg = isEmma ? 'bg-rose-100 border-rose-300' : 'bg-blue-100 border-blue-300';
+          const bubbleTail = isEmma ? 'speech-bubble-left' : 'speech-bubble-right';
+          const nameColor = isEmma ? 'text-rose-700' : 'text-blue-700';
+
+          bubble.innerHTML = `
+            <div class="w-12 h-12 rounded-full ${avatarBg} border-2 flex items-center justify-center text-2xl shrink-0 shadow-sm">
+              ${line.avatar}
+            </div>
+            <div class="relative bg-white border border-slate-200 p-4 rounded-2xl shadow-sm text-xs sm:text-sm text-slate-800 max-w-lg ${bubbleTail}">
+              <p class="font-bold text-[11px] ${nameColor} mb-1">${line.speaker}</p>
+              <div class="leading-relaxed">
+                <span>${line.textBefore}</span>
+                <select id="stage2-select-${idx}" class="inline-block mx-1 font-bold bg-amber-50 border border-amber-300 text-amber-900 rounded-lg px-2 py-1 text-xs sm:text-sm focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                  <option value="">-- choose --</option>
+                  ${line.options.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
+                </select>
+                <span>${line.textAfter}</span>
+              </div>
+              <p id="stage2-hint-${idx}" class="hidden mt-2 text-[11px] font-semibold text-amber-800 bg-amber-50 p-2 rounded-lg border border-amber-200"></p>
+            </div>
+          `;
+          container.appendChild(bubble);
+        });
+      }
+
+      checkStage2() {
+        let allCorrect = true;
+        let answeredAll = true;
+
+        this.data.dialogue.forEach((line, idx) => {
+          const select = document.getElementById(`stage2-select-${idx}`);
+          const hint = document.getElementById(`stage2-hint-${idx}`);
+          const val = select.value;
+
+          if (!val) {
+            answeredAll = false;
+          }
+
+          if (val === line.correct) {
+            select.className = "inline-block mx-1 font-bold bg-emerald-100 border-2 border-emerald-500 text-emerald-900 rounded-lg px-2 py-1 text-xs sm:text-sm";
+            hint.classList.add('hidden');
+          } else {
+            allCorrect = false;
+            select.className = "inline-block mx-1 font-bold bg-rose-50 border-2 border-rose-400 text-rose-900 rounded-lg px-2 py-1 text-xs sm:text-sm";
+            if (val !== "") {
+              hint.innerText = `💡 Hint: ${line.hint}`;
+              hint.classList.remove('hidden');
+            }
+          }
+        });
+
+        const fb = document.getElementById('stage2-feedback');
+        fb.classList.remove('hidden');
+
+        if (!answeredAll) {
+          SoundFx.play('wrong');
+          fb.className = 'p-3.5 rounded-xl border border-amber-300 bg-amber-50 text-amber-900 text-xs sm:text-sm';
+          fb.innerHTML = '⚠️ Please choose an answer for all the conversation gaps before checking!';
+          return;
+        }
+
+        if (allCorrect) {
+          SoundFx.play('correct');
+          if (this.stage2Tries === 0) this.updateScore(40);
+          else this.updateScore(20);
+
+          fb.className = 'p-4 rounded-xl border border-emerald-300 bg-emerald-50 text-emerald-900';
+          fb.innerHTML = `
+            <div class="flex items-center gap-2 font-bold font-fun text-base text-emerald-800 mb-1">
+              <span>🌟</span> Perfect Conversation! (+${this.stage2Tries === 0 ? '40' : '20'} pts)
+            </div>
+            <p>You used <strong>some / any</strong>, <strong>how much / how many</strong>, and <strong>Let's buy</strong> accurately!</p>
+          `;
+
+          document.getElementById('stage2-check-btn').classList.add('hidden');
+          document.getElementById('stage2-next-btn').classList.remove('hidden');
+        } else {
+          SoundFx.play('wrong');
+          this.stage2Tries++;
+          fb.className = 'p-4 rounded-xl border border-amber-300 bg-amber-50 text-amber-900';
+          fb.innerHTML = `
+            <div class="flex items-center gap-2 font-bold font-fun text-sm text-amber-800 mb-1">
+              <span>💡</span> Some answers need another look:
+            </div>
+            <p>Read the hints under the highlighted red gaps, change your selections, and try again!</p>
+          `;
+        }
+      }
+
+      // ----------------------------------------
+      // STAGE 3: FINAL REVIEW & GRAMMAR
+      // ----------------------------------------
+      startStage3() {
+        this.hideAllScreens();
+        document.getElementById('screen-stage3').classList.remove('hidden');
+        this.stage3Tries = 0;
+        document.getElementById('stage3-check-btn').classList.remove('hidden');
+        document.getElementById('stage3-next-btn').classList.add('hidden');
+        document.getElementById('stage3-feedback').classList.add('hidden');
+
+        this.renderStage3Notepad();
+        this.renderStage3Questions();
+      }
+
+      renderStage3Notepad() {
+        const container = document.getElementById('stage3-shopping-list-display');
+        container.innerHTML = '';
+
+        const neededItems = this.data.items.filter(i => i.needed);
+        neededItems.forEach(item => {
+          const row = document.createElement('div');
+          row.className = "flex items-center gap-2 bg-white/80 border border-amber-200 p-2.5 rounded-xl shadow-xs";
+          row.innerHTML = `
+            <span class="text-xl">${item.emoji}</span>
+            <div class="leading-tight">
+              <p class="font-bold text-slate-800">${item.quantity || item.name}</p>
+              <p class="text-[10px] text-amber-800 font-semibold">${item.type.toUpperCase()}</p>
+            </div>
+          `;
+          container.appendChild(row);
+        });
+      }
+
+      renderStage3Questions() {
+        const container = document.getElementById('stage3-questions-container');
+        container.innerHTML = '';
+
+        this.data.reviewQuestions.forEach((q, qIdx) => {
+          const qBox = document.createElement('div');
+          qBox.className = "p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2";
+          qBox.innerHTML = `
+            <p class="font-bold text-xs sm:text-sm text-slate-800">${qIdx + 1}. ${q.question}</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              ${q.options.map((opt, optIdx) => `
+                <label class="flex items-center gap-2 bg-white p-2.5 rounded-lg border border-slate-300 hover:border-amber-400 cursor-pointer text-xs sm:text-sm font-semibold transition">
+                  <input type="radio" name="stage3-radio-${qIdx}" value="${optIdx}" class="text-amber-600 focus:ring-amber-500">
+                  <span>${opt}</span>
+                </label>
+              `).join('')}
+            </div>
+            <p id="stage3-hint-${qIdx}" class="hidden text-xs text-amber-900 bg-amber-50 p-2 rounded-lg border border-amber-200"></p>
+          `;
+          container.appendChild(qBox);
+        });
+      }
+
+      checkStage3() {
+        let allCorrect = true;
+        let answeredAll = true;
+
+        this.data.reviewQuestions.forEach((q, qIdx) => {
+          const radios = document.getElementsByName(`stage3-radio-${qIdx}`);
+          const hint = document.getElementById(`stage3-hint-${qIdx}`);
+          let chosen = null;
+
+          radios.forEach(r => {
+            if (r.checked) chosen = parseInt(r.value, 10);
+          });
+
+          if (chosen === null) {
+            answeredAll = false;
+          } else if (chosen === q.correct) {
+            hint.classList.add('hidden');
+          } else {
+            allCorrect = false;
+            hint.innerText = `💡 ${q.hint}`;
+            hint.classList.remove('hidden');
+          }
+        });
+
+        const fb = document.getElementById('stage3-feedback');
+        fb.classList.remove('hidden');
+
+        if (!answeredAll) {
+          SoundFx.play('wrong');
+          fb.className = 'p-3.5 rounded-xl border border-amber-300 bg-amber-50 text-amber-900 text-xs sm:text-sm';
+          fb.innerHTML = '⚠️ Please answer all 3 questions before checking!';
+          return;
+        }
+
+        if (allCorrect) {
+          SoundFx.play('correct');
+          if (this.stage3Tries === 0) this.updateScore(30);
+          else this.updateScore(15);
+
+          fb.className = 'p-4 rounded-xl border border-emerald-300 bg-emerald-50 text-emerald-900';
+          fb.innerHTML = `
+            <div class="flex items-center gap-2 font-fun font-bold text-base text-emerald-800 mb-1">
+              <span>🏆</span> Brilliant! All Review Questions Correct! (+${this.stage3Tries === 0 ? '30' : '15'} pts)
+            </div>
+            <p>Your shopping list is 100% verified and ready for the supermarket!</p>
+          `;
+
+          document.getElementById('stage3-check-btn').classList.add('hidden');
+          document.getElementById('stage3-next-btn').classList.remove('hidden');
+        } else {
+          SoundFx.play('wrong');
+          this.stage3Tries++;
+          fb.className = 'p-4 rounded-xl border border-amber-300 bg-amber-50 text-amber-900';
+          fb.innerHTML = `
+            <div class="flex items-center gap-2 font-bold font-fun text-sm text-amber-800 mb-1">
+              <span>💡</span> Review your answers:
+            </div>
+            <p>Check the hints shown under the questions and try again!</p>
+          `;
+        }
+      }
+
+      finishGame() {
+        SoundFx.play('fanfare');
+        this.hideAllScreens();
+        document.getElementById('screen-finish').classList.remove('hidden');
+        document.getElementById('final-score-display').innerText = this.score;
+
+        let comment = "You are ready to plan and speak at the supermarket in English!";
+        if (this.score >= 90) {
+          comment = "🌟 Outstanding Master! 100% fluent on countable, uncountable, and suggestions!";
+        } else if (this.score >= 70) {
+          comment = "👏 Great job! You made a complete shopping list with Emma and Leo!";
+        }
+        document.getElementById('final-eval-comment').innerText = comment;
+      }
+
+      restartGame() {
+        this.score = 0;
+        this.updateScore(0);
+        this.startStage1();
+      }
+    }
+
+    // ==========================================
+    // 4. TEACHER MANAGEMENT PORTAL
+    // ==========================================
+    const teacherPortal = {
+      activeTab: 'items',
+
+      openAuthModal() {
+        document.getElementById('modal-pin').classList.remove('hidden');
+        document.getElementById('pin-input').value = '';
+        document.getElementById('pin-input').focus();
+      },
+
+      verifyPin() {
+        const val = document.getElementById('pin-input').value;
+        if (val === '1234' || val === '') {
+          document.getElementById('modal-pin').classList.add('hidden');
+          this.open();
+        } else {
+          alert('Incorrect PIN. The default teacher code is 1234');
+        }
+      },
+
+      open() {
+        document.getElementById('modal-teacher').classList.remove('hidden');
+        this.renderAll();
+      },
+
+      close() {
+        document.getElementById('modal-teacher').classList.add('hidden');
+      },
+
+      setTab(tab) {
+        this.activeTab = tab;
+        ['items', 'dialogue', 'review'].forEach(t => {
+          const btn = document.getElementById(`tab-btn-${t}`);
+          const content = document.getElementById(`tab-content-${t}`);
+          if (t === tab) {
+            btn.className = 'px-4 py-2 text-xs sm:text-sm font-bold border-b-2 border-emerald-600 text-emerald-800';
+            content.classList.remove('hidden');
+          } else {
+            btn.className = 'px-4 py-2 text-xs sm:text-sm font-bold border-b-2 border-transparent text-slate-600 hover:text-emerald-600';
+            content.classList.add('hidden');
+          }
+        });
+      },
+
+      renderAll() {
+        // Stage 1 Prompt
+        document.getElementById('teacher-stage1-prompt').value = app.data.stage1Prompt;
+
+        // Stage 1 Items
+        const itemsContainer = document.getElementById('teacher-items-container');
+        itemsContainer.innerHTML = '';
+        app.data.items.forEach((item, idx) => {
+          const row = document.createElement('div');
+          row.className = 'flex flex-wrap items-center gap-2 p-2 bg-white rounded-xl border border-slate-200 text-xs';
+          row.innerHTML = `
+            <input type="checkbox" ${item.needed ? 'checked' : ''} onchange="app.data.items[${idx}].needed = this.checked" class="w-4 h-4 text-emerald-600" title="Needed in list?">
+            <input type="text" value="${item.emoji}" onchange="app.data.items[${idx}].emoji = this.value" class="w-12 text-center p-1 border rounded" title="Emoji">
+            <input type="text" value="${item.name}" onchange="app.data.items[${idx}].name = this.value" class="w-28 p-1 border rounded font-semibold" placeholder="Item Name">
+            <input type="text" value="${item.quantity}" onchange="app.data.items[${idx}].quantity = this.value" class="w-36 p-1 border rounded" placeholder="Quantity (e.g. 4 apples)">
+            <select onchange="app.data.items[${idx}].type = this.value" class="p-1 border rounded font-bold">
+              <option value="countable" ${item.type === 'countable' ? 'selected' : ''}>Countable</option>
+              <option value="uncountable" ${item.type === 'uncountable' ? 'selected' : ''}>Uncountable</option>
+            </select>
+            <button onclick="teacherPortal.deleteItem(${idx})" class="text-red-500 hover:text-red-700 font-bold ml-auto px-2">Delete</button>
+          `;
+          itemsContainer.appendChild(row);
+        });
+
+        // Stage 2 Dialogue
+        const dialogueContainer = document.getElementById('teacher-dialogue-container');
+        dialogueContainer.innerHTML = '';
+        app.data.dialogue.forEach((line, idx) => {
+          const card = document.createElement('div');
+          card.className = 'p-3 bg-white rounded-xl border border-slate-200 text-xs space-y-2';
+          card.innerHTML = `
+            <div class="flex justify-between items-center border-b pb-1 font-bold text-slate-700">
+              <span>Gap #${idx + 1} (${line.speaker})</span>
+              <button onclick="teacherPortal.deleteDialogue(${idx})" class="text-red-500 hover:text-red-700">Delete</button>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div>
+                <label class="block font-semibold text-slate-500">Text Before Gap:</label>
+                <input type="text" value="${this.escapeHtml(line.textBefore)}" onchange="app.data.dialogue[${idx}].textBefore = this.value" class="w-full p-1 border rounded">
+              </div>
+              <div>
+                <label class="block font-semibold text-slate-500">Text After Gap:</label>
+                <input type="text" value="${this.escapeHtml(line.textAfter)}" onchange="app.data.dialogue[${idx}].textAfter = this.value" class="w-full p-1 border rounded">
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div>
+                <label class="block font-semibold text-slate-500">Options (comma-separated):</label>
+                <input type="text" value="${line.options.join(', ')}" onchange="teacherPortal.updateDialogueOptions(${idx}, this.value)" class="w-full p-1 border rounded">
+              </div>
+              <div>
+                <label class="block font-semibold text-slate-500">Correct Option:</label>
+                <input type="text" value="${line.correct}" onchange="app.data.dialogue[${idx}].correct = this.value.trim()" class="w-full p-1 border rounded font-bold text-emerald-700">
+              </div>
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-500">Grammar Hint on Mistake:</label>
+              <input type="text" value="${this.escapeHtml(line.hint)}" onchange="app.data.dialogue[${idx}].hint = this.value" class="w-full p-1 border border-amber-300 bg-amber-50 rounded">
+            </div>
+          `;
+          dialogueContainer.appendChild(card);
+        });
+
+        // Stage 3 Review
+        const reviewContainer = document.getElementById('teacher-review-container');
+        reviewContainer.innerHTML = '';
+        app.data.reviewQuestions.forEach((q, idx) => {
+          const card = document.createElement('div');
+          card.className = 'p-3 bg-white rounded-xl border border-slate-200 text-xs space-y-2';
+          card.innerHTML = `
+            <div class="flex justify-between items-center border-b pb-1 font-bold text-slate-700">
+              <span>Question #${idx + 1}</span>
+              <button onclick="teacherPortal.deleteReview(${idx})" class="text-red-500 hover:text-red-700">Delete</button>
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-500">Question Text:</label>
+              <input type="text" value="${this.escapeHtml(q.question)}" onchange="app.data.reviewQuestions[${idx}].question = this.value" class="w-full p-1 border rounded font-semibold">
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-500">Options (comma-separated):</label>
+              <input type="text" value="${q.options.join(', ')}" onchange="teacherPortal.updateReviewOptions(${idx}, this.value)" class="w-full p-1 border rounded">
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div>
+                <label class="block font-semibold text-slate-500">Correct Option Index (0 for first, 1 for second...):</label>
+                <input type="number" min="0" max="4" value="${q.correct}" onchange="app.data.reviewQuestions[${idx}].correct = parseInt(this.value, 10)" class="w-full p-1 border rounded font-bold">
+              </div>
+              <div>
+                <label class="block font-semibold text-slate-500">Explanation / Hint:</label>
+                <input type="text" value="${this.escapeHtml(q.hint)}" onchange="app.data.reviewQuestions[${idx}].hint = this.value" class="w-full p-1 border border-amber-300 bg-amber-50 rounded">
+              </div>
+            </div>
+          `;
+          reviewContainer.appendChild(card);
+        });
+      },
+
+      addNewItem() {
+        app.data.items.push({
+          id: Date.now(),
+          name: 'Bananas',
+          emoji: '🍌',
+          needed: true,
+          type: 'countable',
+          quantity: '5 bananas'
+        });
+        this.renderAll();
+      },
+
+      deleteItem(idx) {
+        if (app.data.items.length <= 4) {
+          alert('You need at least 4 items in the list!');
+          return;
+        }
+        app.data.items.splice(idx, 1);
+        this.renderAll();
+      },
+
+      addNewDialogueLine() {
+        app.data.dialogue.push({
+          id: Date.now(),
+          speaker: 'Emma',
+          avatar: '👩',
+          color: 'rose',
+          textBefore: 'Can you buy ',
+          options: ['some', 'any'],
+          correct: 'some',
+          textAfter: ' oranges too?',
+          hint: 'Use "some" in positive suggestions or offers!'
+        });
+        this.renderAll();
+      },
+
+      deleteDialogue(idx) {
+        if (app.data.dialogue.length <= 2) {
+          alert('Keep at least 2 dialogue lines!');
+          return;
+        }
+        app.data.dialogue.splice(idx, 1);
+        this.renderAll();
+      },
+
+      updateDialogueOptions(idx, commaStr) {
+        app.data.dialogue[idx].options = commaStr.split(',').map(s => s.trim()).filter(Boolean);
+      },
+
+      addNewReviewQuestion() {
+        app.data.reviewQuestions.push({
+          id: Date.now(),
+          question: 'New grammar question here:',
+          options: ['Option A', 'Option B'],
+          correct: 0,
+          hint: 'Helpful explanation here.'
+        });
+        this.renderAll();
+      },
+
+      deleteReview(idx) {
+        if (app.data.reviewQuestions.length <= 1) {
+          alert('Keep at least one review question!');
+          return;
+        }
+        app.data.reviewQuestions.splice(idx, 1);
+        this.renderAll();
+      },
+
+      updateReviewOptions(idx, commaStr) {
+        app.data.reviewQuestions[idx].options = commaStr.split(',').map(s => s.trim()).filter(Boolean);
+      },
+
+      saveAndClose() {
+        app.data.stage1Prompt = document.getElementById('teacher-stage1-prompt').value;
+        app.saveData();
+        this.close();
+        alert('Curriculum updates successfully applied and saved!');
+        app.goHome();
+      },
+
+      resetToDefaults() {
+        if (confirm('Reset all items, dialogues, and questions to default curriculum? Custom changes will be deleted.')) {
+          localStorage.removeItem('shopping_challenge_data');
+          app.data = JSON.parse(JSON.stringify(DEFAULT_DATA));
+          this.renderAll();
+          alert('Reset complete.');
+        }
+      },
+
+      exportJSON() {
+        const str = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(app.data, null, 2));
+        const a = document.createElement('a');
+        a.setAttribute("href", str);
+        a.setAttribute("download", "shopping_list_challenge_lesson.json");
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      },
+
+      importJSON(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const parsed = JSON.parse(e.target.result);
+            if (parsed.items && parsed.dialogue) {
+              app.data = parsed;
+              app.saveData();
+              this.renderAll();
+              alert('Lesson successfully loaded!');
+            }
+          } catch(err) {
+            alert('Invalid JSON curriculum file.');
+          }
+        };
+        reader.readAsText(file);
+      },
+
+      escapeHtml(str) {
+        return (str || '').replace(/"/g, '&quot;');
+      }
+    };
+
+    // Instantiate and start
+    const app = new ShoppingApp();
+    window.addEventListener('DOMContentLoaded', () => {
+      app.init();
+    });
+  </script>
+</body>
+</html>
