@@ -414,7 +414,7 @@ You must respond ONLY with a JSON object in this exact schema, with no markdown 
     }
 
     async function callGeminiAPI(apiKey, systemPrompt, userText) {
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`;
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=${apiKey}`;
       const payload = {
         contents: [
           { role: "user", parts: [{ text: `${systemPrompt}\n\nStudent writing to analyze:\n"""${userText}"""` }] }
