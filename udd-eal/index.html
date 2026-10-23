@@ -1,55 +1,132 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Redirecting...</title>
-    
-    <meta http-equiv="refresh" content="3; url=https://docs.google.com/document/d/1c5mWQwmU5tMD73Q-nKbwPIMLqxOWzG1Ktebdq8F5w2s/edit?usp=sharing">
-    
-    <style>
-        /* This CSS makes the background image fill the screen */
-        body {
-            /* Remove default browser margins */
-            margin: 0;
-            padding: 0;
-            
-            /* Make the body take up 100% of the viewport height */
-            height: 100vh;
-            
-            /* Set the background image */
-            background-image: url('udd-redirect.jpeg');
-            
-            /* Ensure the image covers the entire screen without stretching */
-            background-size: cover;
-            
-            /* Center the image */
-            background-position: center;
-            
-            /* Prevent the image from tiling */
-            background-repeat: no-repeat;
-            
-            /* Optional: Make the fallback text look a bit nicer over an image */
-            font-family: sans-serif;
-            color: white; 
-            text-align: center;
-            /* Adds a dark shadow so text is readable on light or dark images */
-            text-shadow: 1px 1px 4px rgba(0,0,0,0.8); 
-            
-            /* Centers the text vertically and horizontally */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UDD EAL Workshop</title>
+<style>
+  :root {
+    --bg: #fbfaf7;
+    --ink: #1f2328;
+    --muted: #6b6f76;
+    --line: #e6e3dc;
+    --accent: #2f6f5e;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16181b;
+      --ink: #e8e6e1;
+      --muted: #9a9ea5;
+      --line: #2c2f34;
+      --accent: #7cc4ad;
+    }
+  }
 
-    <script>
-        setTimeout(function() {
-            window.location.href = "https://docs.google.com/document/d/1c5mWQwmU5tMD73Q-nKbwPIMLqxOWzG1Ktebdq8F5w2s/edit?usp=sharing";
-        }, 3000);
-    </script>
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    line-height: 1.55;
+  }
+
+  main {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 56px 16px 80px;
+  }
+
+  h1 { font-size: 1.9rem; margin: 0 0 6px; letter-spacing: -0.01em; }
+  .sub { color: var(--muted); margin: 0 0 28px; }
+
+  .toolkit {
+    display: inline-block;
+    padding: 10px 18px;
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .toolkit:hover { background: var(--accent); color: var(--bg); }
+
+  h2 {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin: 52px 0 8px;
+  }
+
+  ul { list-style: none; margin: 0; padding: 0; }
+
+  li a {
+    display: block;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--line);
+    color: inherit;
+    text-decoration: none;
+  }
+  li a:hover .title { color: var(--accent); }
+
+  .title { font-weight: 600; }
+  .who { color: var(--muted); font-weight: 400; }
+  .desc { display: block; color: var(--muted); font-size: 0.95rem; }
+
+  footer { margin-top: 56px; color: var(--muted); font-size: 0.85rem; }
+  footer a { color: inherit; }
+</style>
 </head>
 <body>
-    <h2>Redirecting you in a few seconds...</h2>
-    <p>If you are not redirected automatically, follow this <a href="https://docs.google.com/document/d/1c5mWQwmU5tMD73Q-nKbwPIMLqxOWzG1Ktebdq8F5w2s/edit?usp=sharing" style="color: #add8e6;">link</a>.</p>
+<main>
+  <h1>UDD EAL Workshop</h1>
+  <p class="sub">Classroom tools built with AI by workshop participants.<br>
+    Herramientas para el aula creadas con IA por los participantes del taller.</p>
+
+  <a class="toolkit" href="https://docs.google.com/document/d/1c5mWQwmU5tMD73Q-nKbwPIMLqxOWzG1Ktebdq8F5w2s/edit?usp=sharing">Open the Toolkit &rarr;</a>
+
+  <h2>Participant projects &middot; Proyectos</h2>
+  <ul id="participants"></ul>
+
+  <h2>Workshop demos &middot; Ejemplos</h2>
+  <ul id="demos"></ul>
+
+  <footer>
+    Built something? Send your HTML file to Evan and it will be added here.<br>
+    &iquest;Creaste algo? Env&iacute;a tu archivo HTML a Evan y lo agregaremos aqu&iacute;.
+  </footer>
+</main>
+
+<script>
+  // To add a project: drop the HTML file in this folder and add one line below.
+  const participants = [
+    { file: "trinidad.html", title: "My English Grammar Notebook", who: "Trinidad",
+      desc: "Practice the simple present through everyday situations: build sentences, write from memory, then make your own." },
+  ];
+
+  const demos = [
+    { file: "pairlab.html", title: "Minimal Pairs Listening Lab",
+      desc: "Listen and choose between similar-sounding words, with a teacher setup and class results view." },
+    { file: "word_sort_initial.html", title: "Parts of Speech Word Sort (v1)",
+      desc: "First draft from a single prompt." },
+    { file: "word_sort_fix.html", title: "Parts of Speech Word Sort (v2)",
+      desc: "The same tool after a round of fixes." },
+    { file: "word_sort_part3.html", title: "Universal Word & Concept Sort (v3)",
+      desc: "Generalized so teachers can sort any words or concepts." },
+  ];
+
+  function render(id, items) {
+    document.getElementById(id).innerHTML = items.map(p => `
+      <li><a href="${p.file}">
+        <span class="title">${p.title}</span>${p.who ? ` <span class="who">&middot; ${p.who}</span>` : ""}
+        <span class="desc">${p.desc}</span>
+      </a></li>`).join("");
+  }
+
+  render("participants", participants);
+  render("demos", demos);
+</script>
 </body>
 </html>

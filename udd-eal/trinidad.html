@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My English Grammar Notebook</title>
+<style>
+  :root {
+    --paper-bg: #faf7ee;
+    --paper-line: #e3decb;
+    --margin-line: #f2a6a6;
+    --ink-blue: #2c3e50;
+    --pencil-gray: #4a5568;
+    --highlight-yellow: #fff3bf;
+    --success-green: #38a169;
+    --card-bg: #ffffff;
+    --soft-border: #dcd6c5;
+    --button-accent: #6b8e23;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background-color: #ede8db;
+    font-family: "Chalkboard SE", "Comic Sans MS", "Nunito", -apple-system, sans-serif;
+    color: var(--ink-blue);
+    display: flex;
+    justify-content: center;
+    padding: 24px 12px;
+    min-height: 100vh;
+  }
+
+  /* Notebook Page Shell */
+  .notebook-binder {
+    max-width: 820px;
+    width: 100%;
+    background-color: var(--paper-bg);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1), 0 1px 4px rgba(0,0,0,0.08);
+    position: relative;
+    padding: 30px 35px 40px 65px;
+    border: 1px solid var(--soft-border);
+    overflow: hidden;
+  }
+
+  /* Left Margin Red Line */
+  .notebook-binder::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50px;
+    width: 2px;
+    background-color: var(--margin-line);
+  }
+
+  /* Spiral binding holes */
+  .holes {
+    position: absolute;
+    left: 15px;
+    top: 25px;
+    bottom: 25px;
+    width: 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .hole {
+    width: 16px;
+    height: 16px;
+    background-color: #d8d0bf;
+    border-radius: 50%;
+    box-shadow: inset 1px 1px 3px rgba(0,0,0,0.25);
+  }
+
+  /* Top Navigation */
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px dashed var(--paper-line);
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    color: #4a5d4e;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .nav-buttons {
+    display: flex;
+    gap: 10px;
+  }
+
+  button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    transition: all 0.15s ease-in-out;
+  }
+
+  .btn-help {
+    background: #e2e8f0;
+    color: #334155;
+    padding: 6px 14px;
+    font-weight: 600;
+  }
+  .btn-help:hover { background: #cbd5e1; }
+
+  /* Situation Selector / Progress */
+  .situation-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f1ede1;
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+  }
+
+  .lesson-nav-btn {
+    background: #dfd8c4;
+    padding: 5px 12px;
+    font-size: 0.9rem;
+    font-weight: bold;
+  }
+
+  /* Situation Prompt Section */
+  .prompt-box {
+    background: #ffffff;
+    border: 2px solid var(--paper-line);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 22px;
+    position: relative;
+  }
+
+  .badge {
+    position: absolute;
+    top: -12px;
+    left: 16px;
+    background: #dfaa5b;
+    color: white;
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  .question-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 5px;
+  }
+
+  .question-text {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #2b3a4a;
+  }
+
+  .speak-btn {
+    background: #6082b6;
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .speak-btn:hover { background: #4a6fa5; }
+
+  .pattern-hint {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: #64748b;
+    background: #f8fafc;
+    padding: 6px 10px;
+    border-radius: 6px;
+    display: inline-block;
+  }
+
+  /* 3-Step Stages Indicator */
+  .step-tracker {
+    display: flex;
+    margin-bottom: 20px;
+    gap: 6px;
+  }
+
+  .step-tab {
+    flex: 1;
+    text-align: center;
+    padding: 8px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    background: #ece7d7;
+    color: #8c8270;
+    border-radius: 6px;
+  }
+
+  .step-tab.active {
+    background: #739e82;
+    color: #ffffff;
+  }
+
+  .step-tab.done {
+    background: #c3d9c9;
+    color: #2e5339;
+  }
+
+  /* Activity Area */
+  .activity-card {
+    background: var(--card-bg);
+    border: 1px solid var(--soft-border);
+    border-radius: 10px;
+    padding: 20px;
+    min-height: 250px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .step-description {
+    font-size: 1rem;
+    margin-bottom: 14px;
+    font-weight: bold;
+    color: #3b4d61;
+  }
+
+  /* Sentence construction slot */
+  .sentence-slot {
+    min-height: 56px;
+    border-bottom: 2px dashed #94a3b8;
+    background: #fafbfc;
+    padding: 8px;
+    border-radius: 6px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .word-bank {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 12px;
+    background: #f7f9fa;
+    border-radius: 8px;
+    min-height: 60px;
+    margin-bottom: 16px;
+  }
+
+  .word-tile {
+    background: #fefefe;
+    border: 1.5px solid #cbd5e1;
+    color: #1e293b;
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    user-select: none;
+  }
+  .word-tile:hover {
+    background: #e2e8f0;
+    transform: translateY(-2px);
+  }
+
+  /* Step 2 & 3 Input Fields */
+  .input-area {
+    margin: 15px 0;
+  }
+
+  .notebook-input {
+    width: 100%;
+    font-family: inherit;
+    font-size: 1.15rem;
+    padding: 12px 14px;
+    border: 2px solid #cbd5e1;
+    border-radius: 8px;
+    outline: none;
+    background: #fff;
+    color: var(--ink-blue);
+  }
+  .notebook-input:focus {
+    border-color: #6082b6;
+    box-shadow: 0 0 0 3px rgba(96, 130, 182, 0.2);
+  }
+
+  /* Action Buttons & Feedback */
+  .action-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 15px;
+  }
+
+  .btn-check {
+    background: #5b8266;
+    color: white;
+    padding: 10px 22px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 8px;
+  }
+  .btn-check:hover { background: #466750; }
+
+  .btn-reset {
+    background: transparent;
+    color: #64748b;
+    padding: 8px 12px;
+    text-decoration: underline;
+  }
+
+  .feedback-msg {
+    margin-top: 14px;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    display: none;
+  }
+  .feedback-msg.show { display: block; }
+  .feedback-success {
+    background: #e6f4ea;
+    color: #137333;
+    border-left: 5px solid #34a853;
+  }
+  .feedback-retry {
+    background: #fef7e0;
+    color: #b06000;
+    border-left: 5px solid #f9ab00;
+  }
+
+  /* Help Modal */
+  .help-modal {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.45);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 100;
+  }
+  .help-modal.open { display: flex; }
+
+  .help-card {
+    background: var(--paper-bg);
+    border-radius: 12px;
+    padding: 24px;
+    max-width: 500px;
+    width: 100%;
+    border: 2px solid var(--soft-border);
+    position: relative;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  }
+
+  .help-card h2 {
+    color: #3b503e;
+    margin-bottom: 12px;
+    font-size: 1.3rem;
+  }
+
+  .help-rule {
+    background: white;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    border: 1px solid var(--soft-border);
+    line-height: 1.5;
+  }
+
+  .close-help-btn {
+    background: #64748b;
+    color: white;
+    padding: 8px 16px;
+    float: right;
+    margin-top: 10px;
+  }
+
+  /* Responsive Adjustments */
+  @media(max-width: 600px) {
+    .notebook-binder {
+      padding: 20px 15px 25px 35px;
+    }
+    .notebook-binder::before {
+      left: 26px;
+    }
+    .holes { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="notebook-binder">
+  <!-- Spiral Binder holes -->
+  <div class="holes">
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+  </div>
+
+  <header>
+    <h1>✏️ English Grammar Notebook</h1>
+    <div class="nav-buttons">
+      <button class="btn-help" onclick="toggleHelp(true)">💡 Help & Pattern</button>
+    </div>
+  </header>
+
+  <!-- Situation Bar -->
+  <div class="situation-bar">
+    <button class="lesson-nav-btn" onclick="prevSituation()">← Previous</button>
+    <span id="situation-indicator" style="font-weight: bold;">Situation 1 of 3</span>
+    <button class="lesson-nav-btn" onclick="nextSituation()">Next →</button>
+  </div>
+
+  <!-- Situation Question Box -->
+  <div class="prompt-box">
+    <span class="badge" id="situation-title">Situation: Morning Routine</span>
+    <div class="question-container">
+      <div class="question-text" id="situation-question">What does Leo do in the morning?</div>
+      <button class="speak-btn" onclick="readQuestion()" title="Listen to question">🔊</button>
+    </div>
+    <div class="pattern-hint" id="pattern-display">Pattern: [Subject] + [verb with -s] + [time/place].</div>
+  </div>
+
+  <!-- Step Tracker -->
+  <div class="step-tracker">
+    <div class="step-tab active" id="tab-1">1. Build with Words</div>
+    <div class="step-tab" id="tab-2">2. Write from Memory</div>
+    <div class="step-tab" id="tab-3">3. Make Your Own Answer</div>
+  </div>
+
+  <!-- Step Activity Content Container -->
+  <div class="activity-card" id="activity-area">
+    <!-- Populated dynamically via JavaScript -->
+  </div>
+
+  <!-- Feedback Alert Box -->
+  <div class="feedback-msg" id="feedback-box"></div>
+</div>
+
+<!-- Help Guide Modal Window -->
+<div class="help-modal" id="help-modal">
+  <div class="help-card">
+    <h2>📖 Grammar Helper Guide</h2>
+    <div class="help-rule" id="help-content">
+      Loading grammar tips...
+    </div>
+    <button class="close-help-btn" onclick="toggleHelp(false)">Close</button>
+  </div>
+</div>
+
+<script>
+  // Curriculum data containing 3rd-grade situations
+  const situations = [
+    {
+      title: "Morning Routine",
+      question: "What does Leo do in the morning?",
+      grammarHint: "Pattern: Subject + verb with -s + details.",
+      helpText: "<strong>Simple Present Tense:</strong><br>When talking about one person (he, she, Leo), add <strong>-s</strong> or <strong>-es</strong> to the verb!<br><em>Example:</em> Leo <strong>brushes</strong> his teeth.",
+      
+      // Step 1: Scrambled words
+      targetSentence: "Leo eats cereal for breakfast.",
+      scrambled: ["Leo", "cereal", "eats", "for breakfast."],
+      
+      // Step 3: Application question with same grammar pattern
+      step3Question: "Now answer this: What does Maya do in the morning? (Eat / Fruit)",
+      step3ExpectedKeywords: ["maya", "eats"],
+      step3Example: "Maya eats fruit."
+    },
+    {
+      title: "At the Park",
+      question: "What is the happy dog doing right now?",
+      grammarHint: "Pattern: Subject + is/are + verb-ing.",
+      helpText: "<strong>Present Continuous:</strong><br>Use <strong>is + verb-ing</strong> for one thing happening right now.<br><em>Example:</em> The cat <strong>is sleeping</strong>.",
+      
+      targetSentence: "The dog is running after a ball.",
+      scrambled: ["is", "The dog", "running", "after", "a ball."],
+      
+      step3Question: "Now answer this: What is the cat doing right now? (Sleep / Under tree)",
+      step3ExpectedKeywords: ["cat", "is", "sleeping"],
+      step3Example: "The cat is sleeping under the tree."
+    },
+    {
+      title: "Describing Animals",
+      question: "How do the giraffes look?",
+      grammarHint: "Pattern: Plural Subject + are + adjective.",
+      helpText: "<strong>Describing with 'Are':</strong><br>For more than one person or animal, use <strong>are</strong> with an adjective!<br><em>Example:</em> Giraffes <strong>are tall</strong>.",
+      
+      targetSentence: "Giraffes are very tall and gentle.",
+      scrambled: ["Giraffes", "are", "very tall", "and gentle."],
+      
+      step3Question: "Now answer this: How do the baby puppies look? (Cute / Small)",
+      step3ExpectedKeywords: ["puppies", "are"],
+      step3Example: "Puppies are cute and small."
+    }
+  ];
+
+  let currentSitIndex = 0;
+  let currentStep = 1; 
+  let selectedWords = [];
+
+  // Offline Speech Synthesis
+  function speakText(text) {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 0.85; // slightly slower for ESL students
+      utterance.lang = 'en-US';
+      window.speechSynthesis.speak(utterance);
+    }
+  }
+
+  function readQuestion() {
+    const sit = situations[currentSitIndex];
+    if (currentStep === 3) {
+      speakText(sit.step3Question);
+    } else {
+      speakText(sit.question);
+    }
+  }
+
+  function loadCurrentSituation() {
+    const sit = situations[currentSitIndex];
+    document.getElementById("situation-indicator").textContent = `Situation ${currentSitIndex + 1} of ${situations.length}`;
+    document.getElementById("situation-title").textContent = `Situation: ${sit.title}`;
+    document.getElementById("situation-question").textContent = currentStep === 3 ? sit.step3Question : sit.question;
+    document.getElementById("pattern-display").textContent = sit.grammarHint;
+    document.getElementById("help-content").innerHTML = sit.helpText;
+
+    hideFeedback();
+    updateStepTabs();
+    renderStepActivity();
+  }
+
+  function updateStepTabs() {
+    for (let i = 1; i <= 3; i++) {
+      const tab = document.getElementById(`tab-${i}`);
+      tab.className = "step-tab";
+      if (i < currentStep) tab.classList.add("done");
+      if (i === currentStep) tab.classList.add("active");
+    }
+  }
+
+  function renderStepActivity() {
+    const sit = situations[currentSitIndex];
+    const area = document.getElementById("activity-area");
+    area.innerHTML = "";
+
+    if (currentStep === 1) {
+      // Step 1: Clickable word tiles
+      selectedWords = [];
+      area.innerHTML = `
+        <div>
+          <div class="step-description">Step 1: Click the words in the right order to form the sentence:</div>
+          <div class="sentence-slot" id="drop-slot">
+            <span style="color: #94a3b8; font-size: 0.9rem;">(Click word tiles below to place them here...)</span>
+          </div>
+          <div class="word-bank" id="word-bank"></div>
+        </div>
+        <div class="action-footer">
+          <button class="btn-reset" onclick="resetStep1()">Clear Words</button>
+          <button class="btn-check" onclick="checkStep1()">Check Answer ✓</button>
+        </div>
+      `;
+
+      const bank = document.getElementById("word-bank");
+      sit.scrambled.forEach((w) => {
+        const tile = document.createElement("button");
+        tile.className = "word-tile";
+        tile.textContent = w;
+        tile.onclick = () => selectWord(w, tile);
+        bank.appendChild(tile);
+      });
+
+    } else if (currentStep === 2) {
+      // Step 2: Write from memory
+      area.innerHTML = `
+        <div>
+          <div class="step-description">Step 2: Good job! Now write the exact same sentence without any help tiles:</div>
+          <div class="input-area">
+            <input type="text" id="memory-input" class="notebook-input" placeholder="Type the sentence here..." autocomplete="off">
+          </div>
+          <p style="font-size:0.85rem; color:#64748b;">Tip: Don't forget capital letters and periods!</p>
+        </div>
+        <div class="action-footer">
+          <button class="btn-reset" onclick="showHintStep2()">Need a peek?</button>
+          <button class="btn-check" onclick="checkStep2()">Check Answer ✓</button>
+        </div>
+      `;
+      setTimeout(() => document.getElementById("memory-input").focus(), 150);
+
+    } else if (currentStep === 3) {
+      // Step 3: Pattern application
+      area.innerHTML = `
+        <div>
+          <div class="step-description">Step 3: Following the exact same grammar pattern, answer the new question in a full sentence:</div>
+          <p style="margin-bottom:10px; font-weight:bold; color: #1e3a8a;">${sit.step3Question}</p>
+          <div class="input-area">
+            <input type="text" id="pattern-input" class="notebook-input" placeholder="Write your full answer here..." autocomplete="off">
+          </div>
+          <p style="font-size:0.85rem; color:#64748b;">Example style: "${sit.step3Example}"</p>
+        </div>
+        <div class="action-footer">
+          <button class="btn-reset" onclick="speakText('${sit.step3Example}')">Listen to Example</button>
+          <button class="btn-check" onclick="checkStep3()">Finish Situation 🌟</button>
+        </div>
+      `;
+      setTimeout(() => document.getElementById("pattern-input").focus(), 150);
+    }
+  }
+
+  // --- Step 1 Handlers ---
+  function selectWord(word, tileElement) {
+    selectedWords.push(word);
+    tileElement.style.visibility = "hidden";
+    updateSentenceSlot();
+  }
+
+  function updateSentenceSlot() {
+    const slot = document.getElementById("drop-slot");
+    slot.innerHTML = "";
+    if (selectedWords.length === 0) {
+      slot.innerHTML = `<span style="color: #94a3b8; font-size: 0.9rem;">(Click word tiles below to place them here...)</span>`;
+      return;
+    }
+    selectedWords.forEach((word) => {
+      const tile = document.createElement("span");
+      tile.className = "word-tile";
+      tile.textContent = word;
+      slot.appendChild(tile);
+    });
+  }
+
+  function resetStep1() {
+    renderStepActivity();
+    hideFeedback();
+  }
+
+  function checkStep1() {
+    const sit = situations[currentSitIndex];
+    const formed = selectedWords.join(" ").trim();
+    if (cleanPunctuation(formed) === cleanPunctuation(sit.targetSentence)) {
+      showFeedback(true, "Great job! You arranged the words correctly! Let's try writing it now.");
+      speakText("Awesome work! Now try writing it.");
+      setTimeout(() => {
+        currentStep = 2;
+        loadCurrentSituation();
+      }, 1600);
+    } else {
+      showFeedback(false, "Not quite in the right order yet. Let's try again! Check which word comes first.");
+      speakText("Try again, you can do it!");
+    }
+  }
+
+  // --- Step 2 Handlers ---
+  function checkStep2() {
+    const sit = situations[currentSitIndex];
+    const val = document.getElementById("memory-input").value.trim();
+    if (cleanPunctuation(val) === cleanPunctuation(sit.targetSentence)) {
+      showFeedback(true, "Superstar! You remembered and wrote it correctly! Now let's use the pattern.");
+      speakText("Superstar! Now let's make your own sentence.");
+      setTimeout(() => {
+        currentStep = 3;
+        loadCurrentSituation();
+      }, 1600);
+    } else {
+      showFeedback(false, `Almost! Remember the sentence was: "${sit.targetSentence}"`);
+      speakText("Almost! Look closely at the spelling.");
+    }
+  }
+
+  function showHintStep2() {
+    const sit = situations[currentSitIndex];
+    alert(`Hint: The sentence is -> "${sit.targetSentence}"`);
+  }
+
+  // --- Step 3 Handlers ---
+  function checkStep3() {
+    const sit = situations[currentSitIndex];
+    const val = document.getElementById("pattern-input").value.trim().toLowerCase();
+    
+    // Check if sentence has basic words & minimum length
+    const hasKeywords = sit.step3ExpectedKeywords.every(kw => val.includes(kw));
+
+    if (val.length >= 8 && hasKeywords) {
+      showFeedback(true, `⭐ Excellent! You applied the grammar pattern perfectly! Situation Complete!`);
+      speakText("Excellent job! You finished this situation.");
+    } else {
+      showFeedback(false, `Good try! Remember to use complete words. Example: "${sit.step3Example}"`);
+      speakText("Good try! Use the full pattern.");
+    }
+  }
+
+  // Helpers
+  function cleanPunctuation(str) {
+    return str.toLowerCase().replace(/[\.\,\?\!\;]/g, '').replace(/\s+/g, ' ').trim();
+  }
+
+  function showFeedback(isSuccess, message) {
+    const fb = document.getElementById("feedback-box");
+    fb.className = "feedback-msg show " + (isSuccess ? "feedback-success" : "feedback-retry");
+    fb.innerHTML = (isSuccess ? "🎉 " : "✏️ ") + message;
+  }
+
+  function hideFeedback() {
+    const fb = document.getElementById("feedback-box");
+    fb.className = "feedback-msg";
+    fb.innerHTML = "";
+  }
+
+  function nextSituation() {
+    if (currentSitIndex < situations.length - 1) {
+      currentSitIndex++;
+      currentStep = 1;
+      loadCurrentSituation();
+    }
+  }
+
+  function prevSituation() {
+    if (currentSitIndex > 0) {
+      currentSitIndex--;
+      currentStep = 1;
+      loadCurrentSituation();
+    }
+  }
+
+  function toggleHelp(show) {
+    const modal = document.getElementById("help-modal");
+    if (show) modal.classList.add("open");
+    else modal.classList.remove("open");
+  }
+
+  // Initial load
+  loadCurrentSituation();
+</script>
+</body>
+</html>
